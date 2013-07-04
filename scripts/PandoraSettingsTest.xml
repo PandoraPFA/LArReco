@@ -146,10 +146,10 @@
         <algorithm type = "LArClusterCreation" description = "Clustering"/>
         <algorithm type = "LArClusterAssociation"description = "ClusterAssociation"/>
     </algorithm>
-    <algorithm type = "LArTwoDParticleCreation">
+    <!--algorithm type = "LArTwoDParticleCreation">
         <ClusterListName>SeedClustersW</ClusterListName>
         <OutputPfoListName>TwoDParticlesW</OutputPfoListName>
-    </algorithm>
+    </algorithm-->
 
 
 
@@ -208,10 +208,10 @@
         <algorithm type = "LArClusterCreation" description = "Clustering"/>
         <algorithm type = "LArClusterAssociation"description = "ClusterAssociation"/>
     </algorithm>
-    <algorithm type = "LArTwoDParticleCreation">
+    <!--algorithm type = "LArTwoDParticleCreation">
         <ClusterListName>SeedClustersU</ClusterListName>
         <OutputPfoListName>TwoDParticlesU</OutputPfoListName>
-    </algorithm>  
+    </algorithm-->
 
 
   
@@ -268,10 +268,10 @@
         <algorithm type = "LArClusterCreation" description = "Clustering"/>
         <algorithm type = "LArClusterAssociation"description = "ClusterAssociation"/>
     </algorithm>
-    <algorithm type = "LArTwoDParticleCreation">
+    <!--algorithm type = "LArTwoDParticleCreation">
         <ClusterListName>SeedClustersV</ClusterListName>
         <OutputPfoListName>TwoDParticlesV</OutputPfoListName>
-    </algorithm>  
+    </algorithm-->
 
 
 
@@ -351,7 +351,7 @@
     </algorithm>
 
    <!-- 3D Reconstruction -->
-   <algorithm type = "LArThreeDParticleCreation">
+   <algorithm type = "LArThreeDTrackSegments">
         <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
