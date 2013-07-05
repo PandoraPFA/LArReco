@@ -338,7 +338,7 @@
 
 
    <!-- 3D Reconstruction -->
-   <algorithm type = "LArThreeDTrackSegments">
+   <algorithm type = "LArThreeDStraightTracks">
         <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
