@@ -11,7 +11,7 @@
 
 #include "LArContent.h"
 
-#include "Helpers/LArVertexHelper.h"
+#include "LArHelpers/LArVertexHelper.h"
 
 #include <cstdlib>
 #include <iostream>
