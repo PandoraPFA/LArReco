@@ -146,13 +146,6 @@
         <algorithm type = "LArClusterCreation" description = "Clustering"/>
         <algorithm type = "LArClusterAssociation"description = "ClusterAssociation"/>
     </algorithm>
-    <!--algorithm type = "LArTwoDParticleCreation">
-        <ClusterListName>SeedClustersW</ClusterListName>
-        <OutputPfoListName>TwoDParticlesW</OutputPfoListName>
-    </algorithm-->
-
-
-
 
 
 
@@ -208,13 +201,8 @@
         <algorithm type = "LArClusterCreation" description = "Clustering"/>
         <algorithm type = "LArClusterAssociation"description = "ClusterAssociation"/>
     </algorithm>
-    <!--algorithm type = "LArTwoDParticleCreation">
-        <ClusterListName>SeedClustersU</ClusterListName>
-        <OutputPfoListName>TwoDParticlesU</OutputPfoListName>
-    </algorithm-->
 
 
-  
 
     <!-- 2D Particles, V view -->
     <algorithm type = "LArTwoDPreparation">
@@ -268,10 +256,6 @@
         <algorithm type = "LArClusterCreation" description = "Clustering"/>
         <algorithm type = "LArClusterAssociation"description = "ClusterAssociation"/>
     </algorithm>
-    <!--algorithm type = "LArTwoDParticleCreation">
-        <ClusterListName>SeedClustersV</ClusterListName>
-        <OutputPfoListName>TwoDParticlesV</OutputPfoListName>
-    </algorithm-->
 
 
 
@@ -291,6 +275,7 @@
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
         <VertexName>VertexV</VertexName>
     </algorithm-->
+
 
 
     <!-- View W Display-->
@@ -350,6 +335,8 @@
         <ThresholdEnergy>0.</ThresholdEnergy>
     </algorithm>
 
+
+
    <!-- 3D Reconstruction -->
    <algorithm type = "LArThreeDTrackSegments">
         <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
@@ -357,6 +344,5 @@
         <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
    </algorithm>
-
 
 </pandora>

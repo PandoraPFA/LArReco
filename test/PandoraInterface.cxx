@@ -10,7 +10,8 @@
 #include "Api/PandoraApi.h"
 
 #include "LArContent.h"
-#include "LArVertexHelper.h"
+
+#include "Helpers/LArVertexHelper.h"
 
 #include <cstdlib>
 #include <iostream>
