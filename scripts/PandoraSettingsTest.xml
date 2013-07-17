@@ -100,6 +100,9 @@
         <CaloHitListName>CaloHitListW</CaloHitListName>
         <VertexName>VertexW</VertexName>
     </algorithm>
+    <algorithm type = "LArVertexSplitting">
+        <InputClusterListName>ProtoClustersW</InputClusterListName>
+    </algorithm>
     <algorithm type = "LArVertexSeedFinding">
         <SeedClusterListName>SeedClustersW</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
@@ -155,6 +158,9 @@
         <CaloHitListName>CaloHitListU</CaloHitListName>
         <VertexName>VertexU</VertexName>
     </algorithm>
+    <algorithm type = "LArVertexSplitting">
+        <InputClusterListName>ProtoClustersW</InputClusterListName>
+    </algorithm>
     <algorithm type = "LArVertexSeedFinding">
         <SeedClusterListName>SeedClustersU</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
@@ -209,6 +215,9 @@
         <ClusterListName>ProtoClustersV</ClusterListName>
         <CaloHitListName>CaloHitListV</CaloHitListName>
         <VertexName>VertexV</VertexName>
+    </algorithm>
+    <algorithm type = "LArVertexSplitting">
+        <InputClusterListName>ProtoClustersW</InputClusterListName>
     </algorithm>
     <algorithm type = "LArVertexSeedFinding">
         <SeedClusterListName>SeedClustersV</SeedClusterListName>
