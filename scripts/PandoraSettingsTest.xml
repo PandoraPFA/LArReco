@@ -346,12 +346,24 @@
 
 
 
-   <!-- 3D Reconstruction -->
-   <algorithm type = "LArThreeDStraightTracks">
+    <!-- 3D Reconstruction -->
+    <algorithm type = "LArThreeDStraightTracks">
         <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
-   </algorithm>
+    </algorithm>
+
+    <algorithm type = "LArVisualMonitoring" instance = "PFODisplay">
+        <ShowMCParticles>false</ShowMCParticles>
+        <ShowCurrentVertex>false</ShowCurrentVertex>
+        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
+        <ShowCurrentTracks>false</ShowCurrentTracks>
+        <ShowCurrentClusters>false</ShowCurrentClusters>
+        <ShowCurrentPfos>true</ShowCurrentPfos>
+        <ShowDetector>false</ShowDetector>
+        <BlackBackground>false</BlackBackground>
+        <HitColors>Iterate</HitColors>
+    </algorithm>
 
 </pandora>
