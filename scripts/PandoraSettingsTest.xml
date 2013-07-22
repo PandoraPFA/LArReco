@@ -20,7 +20,7 @@
 
     <!-- PANDORA ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
-         <EventFileName>/r01/lbne/argon/pndr/uBooNE_Events_Beam_Numu2Nue_001.pndr</EventFileName>
+         <EventFileName>/r01/lbne/argon/pndr/uBooNE_Events_Beam_NoOsc_001.pndr</EventFileName>
          <GeometryFileName>/r01/lbne/argon/pndr/uBooNE_Geometry.pndr</GeometryFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <ShouldReadGeometry>true</ShouldReadGeometry>
@@ -42,9 +42,9 @@
         <ClusterListName> ProtoClustersW </ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
-    <algorithm type = "LArClusterAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseAssociation"/>
     <algorithm type = "LArClusterExtension"/>
-    <algorithm type = "LArTransverseClustering"/>
     <algorithm type = "LArKinkSplitting"/>
     
 
@@ -56,9 +56,9 @@
         <ClusterListName> ProtoClustersU </ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
-    <algorithm type = "LArClusterAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseAssociation"/>
     <algorithm type = "LArClusterExtension"/>
-    <algorithm type = "LArTransverseClustering"/>
     <algorithm type = "LArKinkSplitting"/>
     
 
@@ -70,9 +70,9 @@
         <ClusterListName> ProtoClustersV </ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
-    <algorithm type = "LArClusterAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseAssociation"/>
     <algorithm type = "LArClusterExtension"/>
-    <algorithm type = "LArTransverseClustering"/>
     <algorithm type = "LArKinkSplitting"/>
     
 
@@ -147,7 +147,7 @@
     </algorithm>
     <algorithm type = "LArShowerMipSeparation">
         <algorithm type = "LArClusterCreation" description = "Clustering"/>
-        <algorithm type = "LArClusterAssociation"description = "ClusterAssociation"/>
+        <algorithm type = "LArLongitudinalAssociation" description = "ClusterAssociation"/>
     </algorithm>
 
 
@@ -205,7 +205,7 @@
     </algorithm>
     <algorithm type = "LArShowerMipSeparation">
         <algorithm type = "LArClusterCreation" description = "Clustering"/>
-        <algorithm type = "LArClusterAssociation"description = "ClusterAssociation"/>
+        <algorithm type = "LArLongitudinalAssociation" description = "ClusterAssociation"/>
     </algorithm>
 
 
@@ -263,7 +263,7 @@
     </algorithm>
     <algorithm type = "LArShowerMipSeparation">
         <algorithm type = "LArClusterCreation" description = "Clustering"/>
-        <algorithm type = "LArClusterAssociation"description = "ClusterAssociation"/>
+        <algorithm type = "LArLongitudinalAssociation" description = "ClusterAssociation"/>
     </algorithm>
 
 
