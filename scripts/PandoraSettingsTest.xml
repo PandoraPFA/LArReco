@@ -27,6 +27,7 @@
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
+
     <!-- Separate U, V and W views -->
     <algorithm type = "LArEventPreparation">
       <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
@@ -34,6 +35,7 @@
       <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
       <CurrentCaloHitListReplacement>CaloHitListW</CurrentCaloHitListReplacement>
     </algorithm>
+
 
     <!-- Proto Clusters, W View -->
     <algorithm type = "LArClusteringParent">
@@ -46,7 +48,7 @@
     <algorithm type = "LArTransverseAssociation"/>
     <algorithm type = "LArClusterExtension"/>
     <algorithm type = "LArKinkSplitting"/>
-    
+
 
 
     <!-- Proto Clusters, U View -->
@@ -60,7 +62,7 @@
     <algorithm type = "LArTransverseAssociation"/>
     <algorithm type = "LArClusterExtension"/>
     <algorithm type = "LArKinkSplitting"/>
-    
+
 
 
     <!-- Proto Clusters, V View -->
@@ -74,7 +76,7 @@
     <algorithm type = "LArTransverseAssociation"/>
     <algorithm type = "LArClusterExtension"/>
     <algorithm type = "LArKinkSplitting"/>
-    
+
 
 
     <!-- Vertex-Finding -->
@@ -88,9 +90,6 @@
         <UseTrueVertex>false</UseTrueVertex>
         <RunBeamMode>true</RunBeamMode>
     </algorithm>
-
-
-
 
 
 
@@ -144,10 +143,6 @@
     </algorithm>
     <algorithm type = "LArIsolatedHitMerging">
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
-    </algorithm>
-    <algorithm type = "LArShowerMipSeparation">
-        <algorithm type = "LArClusterCreation" description = "Clustering"/>
-        <algorithm type = "LArLongitudinalAssociation" description = "ClusterAssociation"/>
     </algorithm>
 
 
@@ -203,10 +198,6 @@
     <algorithm type = "LArIsolatedHitMerging">
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
     </algorithm>
-    <algorithm type = "LArShowerMipSeparation">
-        <algorithm type = "LArClusterCreation" description = "Clustering"/>
-        <algorithm type = "LArLongitudinalAssociation" description = "ClusterAssociation"/>
-    </algorithm>
 
 
 
@@ -260,10 +251,6 @@
     </algorithm>
     <algorithm type = "LArIsolatedHitMerging">
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
-    </algorithm>
-    <algorithm type = "LArShowerMipSeparation">
-        <algorithm type = "LArClusterCreation" description = "Clustering"/>
-        <algorithm type = "LArLongitudinalAssociation" description = "ClusterAssociation"/>
     </algorithm>
 
 
@@ -347,6 +334,42 @@
 
 
     <!-- 3D Reconstruction -->
+    <algorithm type = "LArTrackSplitting">
+        <algorithm type = "LArClusterCreation" description = "Clustering"/>
+        <associationAlgorithms>
+            <algorithm type = "LArLongitudinalAssociation"/>
+            <algorithm type = "LArTransverseAssociation"/>
+            <algorithm type = "LArClusterExtension"/>
+            <algorithm type = "LArKinkSplitting"/>
+        </associationAlgorithms>
+        <SeedClusterListName>SeedClustersW</SeedClusterListName>
+        <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
+    </algorithm>
+
+    <algorithm type = "LArTrackSplitting">
+        <algorithm type = "LArClusterCreation" description = "Clustering"/>
+        <associationAlgorithms>
+            <algorithm type = "LArLongitudinalAssociation"/>
+            <algorithm type = "LArTransverseAssociation"/>
+            <algorithm type = "LArClusterExtension"/>
+            <algorithm type = "LArKinkSplitting"/>
+        </associationAlgorithms>
+        <SeedClusterListName>SeedClustersU</SeedClusterListName>
+        <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
+    </algorithm>
+
+    <algorithm type = "LArTrackSplitting">
+        <algorithm type = "LArClusterCreation" description = "Clustering"/>
+        <associationAlgorithms>
+            <algorithm type = "LArLongitudinalAssociation"/>
+            <algorithm type = "LArTransverseAssociation"/>
+            <algorithm type = "LArClusterExtension"/>
+            <algorithm type = "LArKinkSplitting"/>
+        </associationAlgorithms>
+        <SeedClusterListName>SeedClustersV</SeedClusterListName>
+        <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
+    </algorithm>
+
     <algorithm type = "LArThreeDStraightTracks">
         <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
