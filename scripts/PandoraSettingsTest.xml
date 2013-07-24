@@ -342,7 +342,9 @@
             <algorithm type = "LArClusterExtension"/>
             <algorithm type = "LArKinkSplitting"/>
         </associationAlgorithms>
-        <SeedClusterListName>SeedClustersW</SeedClusterListName>
+        <InputSeedClusterListName>SeedClustersW</InputSeedClusterListName>
+        <ShowerSeedClusterListName>ShowerSeedClustersW</ShowerSeedClusterListName>
+        <TrackSeedClusterListName>TrackSeedClustersW</TrackSeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
     </algorithm>
 
@@ -354,7 +356,9 @@
             <algorithm type = "LArClusterExtension"/>
             <algorithm type = "LArKinkSplitting"/>
         </associationAlgorithms>
-        <SeedClusterListName>SeedClustersU</SeedClusterListName>
+        <InputSeedClusterListName>SeedClustersU</InputSeedClusterListName>
+        <ShowerSeedClusterListName>ShowerSeedClustersU</ShowerSeedClusterListName>
+        <TrackSeedClusterListName>TrackSeedClustersU</TrackSeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
     </algorithm>
 
@@ -366,14 +370,16 @@
             <algorithm type = "LArClusterExtension"/>
             <algorithm type = "LArKinkSplitting"/>
         </associationAlgorithms>
-        <SeedClusterListName>SeedClustersV</SeedClusterListName>
+        <InputSeedClusterListName>SeedClustersV</InputSeedClusterListName>
+        <ShowerSeedClusterListName>ShowerSeedClustersV</ShowerSeedClusterListName>
+        <TrackSeedClusterListName>TrackSeedClustersV</TrackSeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
     </algorithm>
 
     <algorithm type = "LArThreeDStraightTracks">
-        <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
+        <InputClusterListNameU>TrackSeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>TrackSeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>TrackSeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
     </algorithm>
 
