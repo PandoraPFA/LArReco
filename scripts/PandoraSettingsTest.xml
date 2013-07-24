@@ -376,10 +376,17 @@
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
     </algorithm>
 
-    <algorithm type = "LArThreeDStraightTracks">
+    <algorithm type = "LArThreeDTracks">
         <InputClusterListNameU>TrackSeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>TrackSeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>TrackSeedClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+    </algorithm>
+
+    <algorithm type = "LArThreeDShowers">
+        <InputClusterListNameU>ShowerSeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
     </algorithm>
 
@@ -390,6 +397,20 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>true</ShowCurrentPfos>
+        <ShowDetector>false</ShowDetector>
+        <BlackBackground>false</BlackBackground>
+        <HitColors>Iterate</HitColors>
+    </algorithm>
+
+    <algorithm type = "LArVisualMonitoring" instance = "RemainingDisplay">
+        <ShowMCParticles>false</ShowMCParticles>
+        <ShowCurrentVertex>false</ShowCurrentVertex>
+        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
+        <ShowCurrentTracks>false</ShowCurrentTracks>
+        <ShowCurrentClusters>false</ShowCurrentClusters>
+        <ShowCurrentPfos>false</ShowCurrentPfos>
+        <ClusterListNames>TrackSeedClustersW TrackSeedClustersU TrackSeedClustersV ShowerSeedClustersW ShowerSeedClustersU ShowerSeedClustersV</ClusterListNames>
+        <ShowOnlyAvailable>true</ShowOnlyAvailable>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
