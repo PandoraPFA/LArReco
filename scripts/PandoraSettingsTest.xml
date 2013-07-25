@@ -20,7 +20,7 @@
 
     <!-- PANDORA ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
-         <EventFileName>/r01/lbne/argon/pndr/uBooNE_Events_Beam_NoOsc_001.pndr</EventFileName>
+         <EventFileName>/r01/lbne/argon/pndr/uBooNE_Events_Beam_Numu2Nue_001.pndr</EventFileName>
          <GeometryFileName>/r01/lbne/argon/pndr/uBooNE_Geometry.pndr</GeometryFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <ShouldReadGeometry>true</ShouldReadGeometry>
@@ -380,14 +380,14 @@
         <InputClusterListNameU>TrackSeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>TrackSeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>TrackSeedClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <OutputPfoListName>ThreeDTrackParticles</OutputPfoListName>
     </algorithm>
 
     <algorithm type = "LArThreeDShowers">
         <InputClusterListNameU>ShowerSeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <OutputPfoListName>ThreeDShowerParticles</OutputPfoListName>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring" instance = "PFODisplay">
@@ -396,7 +396,8 @@
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
-        <ShowCurrentPfos>true</ShowCurrentPfos>
+        <ShowCurrentPfos>false</ShowCurrentPfos>
+        <PfoListNames>ThreeDTrackParticles ThreeDShowerParticles</PfoListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
