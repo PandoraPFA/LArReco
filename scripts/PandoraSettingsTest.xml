@@ -141,9 +141,9 @@
     <algorithm type = "LArRemnantClustering">
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
     </algorithm>
-    <algorithm type = "LArIsolatedHitMerging">
+    <!--algorithm type = "LArIsolatedHitMerging">
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
-    </algorithm>
+    </algorithm-->
 
 
 
@@ -195,9 +195,9 @@
     <algorithm type = "LArRemnantClustering">
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
     </algorithm>
-    <algorithm type = "LArIsolatedHitMerging">
+    <!--algorithm type = "LArIsolatedHitMerging">
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
-    </algorithm>
+    </algorithm-->
 
 
 
@@ -249,9 +249,9 @@
     <algorithm type = "LArRemnantClustering">
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
     </algorithm>
-    <algorithm type = "LArIsolatedHitMerging">
+    <!--algorithm type = "LArIsolatedHitMerging">
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
-    </algorithm>
+    </algorithm-->
 
 
 
@@ -383,12 +383,29 @@
         <OutputPfoListName>ThreeDTrackParticles</OutputPfoListName>
     </algorithm>
 
-    <algorithm type = "LArThreeDShowers">
+    <algorithm type = "LArThreeDTracks">
         <InputClusterListNameU>ShowerSeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDShowerParticles</OutputPfoListName>
     </algorithm>
+
+    <algorithm type = "LArShowerRebuilding">
+        <ParticleListName>ThreeDShowerParticles</ParticleListName>
+        <SeedClusterListNameU>ShowerSeedClustersU</SeedClusterListNameU>
+        <SeedClusterListNameV>ShowerSeedClustersV</SeedClusterListNameV>
+        <SeedClusterListNameW>ShowerSeedClustersW</SeedClusterListNameW>
+        <NonSeedClusterListNameU>NonSeedClustersU</NonSeedClusterListNameU>
+        <NonSeedClusterListNameV>NonSeedClustersV</NonSeedClusterListNameV>
+        <NonSeedClusterListNameW>NonSeedClustersW</NonSeedClusterListNameW>
+    </algorithm>
+
+    <!--algorithm type = "LArThreeDShowers">
+        <InputClusterListNameU>ShowerSeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDShowerParticles</OutputPfoListName>
+    </algorithm-->
 
     <algorithm type = "LArVisualMonitoring" instance = "PFODisplay">
         <ShowMCParticles>false</ShowMCParticles>
