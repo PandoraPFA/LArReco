@@ -400,14 +400,7 @@
         <NonSeedClusterListNameW>NonSeedClustersW</NonSeedClusterListNameW>
     </algorithm>
 
-    <!--algorithm type = "LArThreeDShowers">
-        <InputClusterListNameU>ShowerSeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDShowerParticles</OutputPfoListName>
-    </algorithm-->
-
-    <algorithm type = "LArVisualMonitoring" instance = "PFODisplay">
+    <algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
         <ShowCurrentVertex>false</ShowCurrentVertex>
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
@@ -415,19 +408,27 @@
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
         <PfoListNames>ThreeDTrackParticles ThreeDShowerParticles</PfoListNames>
+        <ShowOnlyAvailable>false</ShowOnlyAvailable>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
     </algorithm>
 
-    <algorithm type = "LArVisualMonitoring" instance = "RemainingDisplay">
+    <!--algorithm type = "LArThreeDShowers">
+        <InputClusterListNameU>ShowerSeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDShowerParticles</OutputPfoListName>
+    </algorithm-->
+
+    <algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
         <ShowCurrentVertex>false</ShowCurrentVertex>
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
-        <ClusterListNames>TrackSeedClustersW TrackSeedClustersU TrackSeedClustersV ShowerSeedClustersW ShowerSeedClustersU ShowerSeedClustersV</ClusterListNames>
+        <ClusterListNames>NonSeedClustersW NonSeedClustersU NonSeedClustersV ShowerSeedClustersW ShowerSeedClustersU ShowerSeedClustersV TrackSeedClustersW TrackSeedClustersU TrackSeedClustersV</ClusterListNames>
         <ShowOnlyAvailable>true</ShowOnlyAvailable>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
