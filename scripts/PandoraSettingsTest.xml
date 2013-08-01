@@ -388,6 +388,7 @@
         <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDShowerParticles</OutputPfoListName>
+        <MinMatchedFraction>0.5</MinMatchedFraction>
     </algorithm>
 
     <algorithm type = "LArShowerRebuilding">
@@ -398,6 +399,13 @@
         <NonSeedClusterListNameU>NonSeedClustersU</NonSeedClusterListNameU>
         <NonSeedClusterListNameV>NonSeedClustersV</NonSeedClusterListNameV>
         <NonSeedClusterListNameW>NonSeedClustersW</NonSeedClusterListNameW>
+    </algorithm>
+
+    <algorithm type = "LArThreeDShowers">
+        <InputClusterListNameU>ShowerSeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDShowerParticles</OutputPfoListName>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
@@ -413,13 +421,6 @@
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
     </algorithm>
-
-    <!--algorithm type = "LArThreeDShowers">
-        <InputClusterListNameU>ShowerSeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDShowerParticles</OutputPfoListName>
-    </algorithm-->
 
     <algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
