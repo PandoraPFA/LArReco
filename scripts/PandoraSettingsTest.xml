@@ -138,7 +138,7 @@
         <SeedClusterListName>SeedClustersW</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
     </algorithm>
-    <algorithm type = "LArRemnantClustering">
+    <!--algorithm type = "LArRemnantClustering">
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
     </algorithm>
     <!--algorithm type = "LArIsolatedHitMerging">
@@ -192,7 +192,7 @@
         <SeedClusterListName>SeedClustersU</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
     </algorithm>
-    <algorithm type = "LArRemnantClustering">
+    <!--algorithm type = "LArRemnantClustering">
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
     </algorithm>
     <!--algorithm type = "LArIsolatedHitMerging">
@@ -246,7 +246,7 @@
         <SeedClusterListName>SeedClustersV</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
     </algorithm>
-    <algorithm type = "LArRemnantClustering">
+    <!--algorithm type = "LArRemnantClustering">
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
     </algorithm>
     <!--algorithm type = "LArIsolatedHitMerging">
