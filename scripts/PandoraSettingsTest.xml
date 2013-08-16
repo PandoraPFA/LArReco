@@ -154,7 +154,7 @@
         <VertexName>VertexU</VertexName>
     </algorithm>
     <algorithm type = "LArVertexSplitting">
-        <InputClusterListName>ProtoClustersW</InputClusterListName>
+        <InputClusterListName>ProtoClustersU</InputClusterListName>
     </algorithm>
     <algorithm type = "LArVertexSeedFinding">
         <SeedClusterListName>SeedClustersU</SeedClusterListName>
@@ -208,7 +208,7 @@
         <VertexName>VertexV</VertexName>
     </algorithm>
     <algorithm type = "LArVertexSplitting">
-        <InputClusterListName>ProtoClustersW</InputClusterListName>
+        <InputClusterListName>ProtoClustersV</InputClusterListName>
     </algorithm>
     <algorithm type = "LArVertexSeedFinding">
         <SeedClusterListName>SeedClustersV</SeedClusterListName>
