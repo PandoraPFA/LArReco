@@ -340,7 +340,7 @@
             <algorithm type = "LArKinkSplitting"/>
         </associationAlgorithms>
         <InputSeedClusterListName>SeedClustersW</InputSeedClusterListName>
-        <ShowerSeedClusterListName>ShowerSeedClustersW</ShowerSeedClusterListName>
+        <ShowerSeedClusterListName>ParticleSeedClustersW</ShowerSeedClusterListName>
         <TrackSeedClusterListName>TrackSeedClustersW</TrackSeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
     </algorithm>
@@ -354,7 +354,7 @@
             <algorithm type = "LArKinkSplitting"/>
         </associationAlgorithms>
         <InputSeedClusterListName>SeedClustersU</InputSeedClusterListName>
-        <ShowerSeedClusterListName>ShowerSeedClustersU</ShowerSeedClusterListName>
+        <ShowerSeedClusterListName>ParticleSeedClustersU</ShowerSeedClusterListName>
         <TrackSeedClusterListName>TrackSeedClustersU</TrackSeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
     </algorithm>
@@ -368,7 +368,7 @@
             <algorithm type = "LArKinkSplitting"/>
         </associationAlgorithms>
         <InputSeedClusterListName>SeedClustersV</InputSeedClusterListName>
-        <ShowerSeedClusterListName>ShowerSeedClustersV</ShowerSeedClusterListName>
+        <ShowerSeedClusterListName>ParticleSeedClustersV</ShowerSeedClusterListName>
         <TrackSeedClusterListName>TrackSeedClustersV</TrackSeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
     </algorithm>
@@ -377,29 +377,34 @@
         <InputClusterListNameU>TrackSeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>TrackSeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>TrackSeedClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDTrackParticles</OutputPfoListName>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
     </algorithm>
 
     <algorithm type = "LArThreeDLongitudinalTracks">
         <InputClusterListNameU>TrackSeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>TrackSeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>TrackSeedClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDTrackParticles</OutputPfoListName>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+    </algorithm>
+
+    <algorithm type = "LArListMerging">
+        <SourceClusterListNames>TrackSeedClustersU TrackSeedClustersV TrackSeedClustersW</SourceClusterListNames>
+        <TargetClusterListNames>ParticleSeedClustersU ParticleSeedClustersV ParticleSeedClustersW</TargetClusterListNames>
     </algorithm>
 
     <algorithm type = "LArThreeDTransverseTracks">
-        <InputClusterListNameU>ShowerSeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDShowerParticles</OutputPfoListName>
+        <InputClusterListNameU>ParticleSeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ParticleSeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ParticleSeedClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
         <MinMatchedFraction>0.5</MinMatchedFraction>
     </algorithm>
 
     <algorithm type = "LArThreeDLongitudinalTracks">
-        <InputClusterListNameU>ShowerSeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDShowerParticles</OutputPfoListName>
+        <InputClusterListNameU>ParticleSeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ParticleSeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ParticleSeedClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
         <MinMatchedFraction>0.5</MinMatchedFraction>
     </algorithm>
 
@@ -410,7 +415,7 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
-        <PfoListNames>ThreeDTrackParticles ThreeDShowerParticles</PfoListNames>
+        <PfoListNames>ThreeDParticles</PfoListNames>
         <ShowOnlyAvailable>false</ShowOnlyAvailable>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
@@ -418,10 +423,10 @@
     </algorithm>
 
     <algorithm type = "LArShowerRebuilding">
-        <ParticleListName>ThreeDShowerParticles</ParticleListName>
-        <SeedClusterListNameU>ShowerSeedClustersU</SeedClusterListNameU>
-        <SeedClusterListNameV>ShowerSeedClustersV</SeedClusterListNameV>
-        <SeedClusterListNameW>ShowerSeedClustersW</SeedClusterListNameW>
+        <ParticleListName>ThreeDParticles</ParticleListName>
+        <SeedClusterListNameU>ParticleSeedClustersU</SeedClusterListNameU>
+        <SeedClusterListNameV>ParticleSeedClustersV</SeedClusterListNameV>
+        <SeedClusterListNameW>ParticleSeedClustersW</SeedClusterListNameW>
         <NonSeedClusterListNameU>NonSeedClustersU</NonSeedClusterListNameU>
         <NonSeedClusterListNameV>NonSeedClustersV</NonSeedClusterListNameV>
         <NonSeedClusterListNameW>NonSeedClustersW</NonSeedClusterListNameW>
@@ -434,7 +439,7 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
-        <PfoListNames>ThreeDTrackParticles ThreeDShowerParticles</PfoListNames>
+        <PfoListNames>ThreeDParticles</PfoListNames>
         <ShowOnlyAvailable>false</ShowOnlyAvailable>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
@@ -445,7 +450,7 @@
         <InputClusterListNameU>ShowerSeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDShowerParticles</OutputPfoListName>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
@@ -455,7 +460,7 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
-        <PfoListNames>ThreeDTrackParticles ThreeDShowerParticles</PfoListNames>
+        <PfoListNames>ThreeDParticles</PfoListNames>
         <ShowOnlyAvailable>false</ShowOnlyAvailable>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
@@ -469,7 +474,7 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
-        <ClusterListNames>NonSeedClustersW NonSeedClustersU NonSeedClustersV ShowerSeedClustersW ShowerSeedClustersU ShowerSeedClustersV TrackSeedClustersW TrackSeedClustersU TrackSeedClustersV</ClusterListNames>
+        <ClusterListNames>NonSeedClustersW NonSeedClustersU NonSeedClustersV ParticleSeedClustersW ParticleSeedClustersU ParticleSeedClustersV</ClusterListNames>
         <ShowOnlyAvailable>true</ShowOnlyAvailable>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
