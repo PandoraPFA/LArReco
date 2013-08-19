@@ -137,12 +137,6 @@
         <SeedClusterListName>SeedClustersW</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
     </algorithm>
-    <!--algorithm type = "LArRemnantClustering">
-        <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
-    </algorithm>
-    <!--algorithm type = "LArIsolatedHitMerging">
-        <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
-    </algorithm-->
 
 
 
@@ -190,12 +184,6 @@
         <SeedClusterListName>SeedClustersU</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
     </algorithm>
-    <!--algorithm type = "LArRemnantClustering">
-        <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
-    </algorithm>
-    <!--algorithm type = "LArIsolatedHitMerging">
-        <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
-    </algorithm-->
 
 
 
@@ -243,12 +231,6 @@
         <SeedClusterListName>SeedClustersV</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
     </algorithm>
-    <!--algorithm type = "LArRemnantClustering">
-        <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
-    </algorithm>
-    <!--algorithm type = "LArIsolatedHitMerging">
-        <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
-    </algorithm-->
 
 
 
@@ -330,7 +312,7 @@
 
 
 
-    <!-- 3D Reconstruction -->
+    <!-- 3D Reconstruction: split clusters to find best seeds for 3D matching -->
     <algorithm type = "LArTrackSplitting">
         <algorithm type = "LArClusterCreation" description = "Clustering"/>
         <associationAlgorithms>
@@ -373,6 +355,7 @@
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
     </algorithm>
 
+    <!-- Match track-like seeds with other track-like seeds -->
     <algorithm type = "LArThreeDTransverseTracks">
         <InputClusterListNameU>TrackSeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>TrackSeedClustersV</InputClusterListNameV>
@@ -387,6 +370,7 @@
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
     </algorithm>
 
+    <!-- Try to match any/all remaining seeds -->
     <algorithm type = "LArListMerging">
         <SourceClusterListNames>TrackSeedClustersU TrackSeedClustersV TrackSeedClustersW</SourceClusterListNames>
         <TargetClusterListNames>ParticleSeedClustersU ParticleSeedClustersV ParticleSeedClustersW</TargetClusterListNames>
@@ -422,6 +406,7 @@
         <HitColors>Iterate</HitColors>
     </algorithm>
 
+    <!-- Reassemble 2D showers within 3D particles -->
     <algorithm type = "LArShowerRebuilding">
         <ParticleListName>ThreeDParticles</ParticleListName>
         <SeedClusterListNameU>ParticleSeedClustersU</SeedClusterListNameU>
@@ -430,20 +415,6 @@
         <NonSeedClusterListNameU>NonSeedClustersU</NonSeedClusterListNameU>
         <NonSeedClusterListNameV>NonSeedClustersV</NonSeedClusterListNameV>
         <NonSeedClusterListNameW>NonSeedClustersW</NonSeedClusterListNameW>
-    </algorithm>
-
-    <algorithm type = "LArVisualMonitoring">
-        <ShowMCParticles>false</ShowMCParticles>
-        <ShowCurrentVertex>false</ShowCurrentVertex>
-        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
-        <ShowCurrentTracks>false</ShowCurrentTracks>
-        <ShowCurrentClusters>false</ShowCurrentClusters>
-        <ShowCurrentPfos>false</ShowCurrentPfos>
-        <PfoListNames>ThreeDParticles</PfoListNames>
-        <ShowOnlyAvailable>false</ShowOnlyAvailable>
-        <ShowDetector>false</ShowDetector>
-        <BlackBackground>false</BlackBackground>
-        <HitColors>Iterate</HitColors>
     </algorithm>
 
     <algorithm type = "LArThreeDShowers">
