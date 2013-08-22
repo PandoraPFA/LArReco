@@ -433,6 +433,19 @@
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
     </algorithm>
 
+    <algorithm type = "LArIsolatedHitMerging">
+        <SeedClusterListName>ParticleSeedClustersW</SeedClusterListName>
+        <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
+    </algorithm>
+    <algorithm type = "LArIsolatedHitMerging">
+        <SeedClusterListName>ParticleSeedClustersU</SeedClusterListName>
+        <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
+    </algorithm>
+    <algorithm type = "LArIsolatedHitMerging">
+        <SeedClusterListName>ParticleSeedClustersV</SeedClusterListName>
+        <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
+    </algorithm>
+
     <algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
         <ShowCurrentVertex>false</ShowCurrentVertex>
@@ -454,11 +467,11 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
+        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
         <ClusterListNames>NonSeedClustersW NonSeedClustersU NonSeedClustersV ParticleSeedClustersW ParticleSeedClustersU ParticleSeedClustersV</ClusterListNames>
         <ShowOnlyAvailable>true</ShowOnlyAvailable>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
     </algorithm>
-
 </pandora>
