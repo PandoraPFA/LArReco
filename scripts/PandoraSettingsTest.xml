@@ -99,17 +99,20 @@
         <CaloHitListName>CaloHitListW</CaloHitListName>
         <VertexName>VertexW</VertexName>
     </algorithm>
-    <algorithm type = "LArVertexSplitting">
-    </algorithm>
+    <algorithm type = "LArVertexSplitting"/>
     <algorithm type = "LArVertexSeedFinding">
         <SeedClusterListName>SeedClustersW</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
     </algorithm>
-    <algorithm type = "LArSeedLengthGrowing">
+    <algorithm type = "LArLengthSeedFinding">
         <SeedClusterListName>SeedClustersW</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
     </algorithm>
-    <algorithm type = "LArSeedFinding">
+    <algorithm type = "LArSeedMerging">
+        <SeedClusterListName>SeedClustersW</SeedClusterListName>
+        <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
+    </algorithm>
+    <algorithm type = "LArSeedLengthGrowing">
         <SeedClusterListName>SeedClustersW</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
     </algorithm>
@@ -146,17 +149,20 @@
         <CaloHitListName>CaloHitListU</CaloHitListName>
         <VertexName>VertexU</VertexName>
     </algorithm>
-    <algorithm type = "LArVertexSplitting">
-    </algorithm>
+    <algorithm type = "LArVertexSplitting"/>
     <algorithm type = "LArVertexSeedFinding">
         <SeedClusterListName>SeedClustersU</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
     </algorithm>
-    <algorithm type = "LArSeedLengthGrowing">
+    <algorithm type = "LArLengthSeedFinding">
         <SeedClusterListName>SeedClustersU</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
-    </algorithm>  
-    <algorithm type = "LArSeedFinding">
+    </algorithm>
+    <algorithm type = "LArSeedMerging">
+        <SeedClusterListName>SeedClustersU</SeedClusterListName>
+        <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
+    </algorithm>
+    <algorithm type = "LArSeedLengthGrowing">
         <SeedClusterListName>SeedClustersU</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
     </algorithm>
@@ -193,17 +199,20 @@
         <CaloHitListName>CaloHitListV</CaloHitListName>
         <VertexName>VertexV</VertexName>
     </algorithm>
-    <algorithm type = "LArVertexSplitting">
-    </algorithm>
+    <algorithm type = "LArVertexSplitting"/>
     <algorithm type = "LArVertexSeedFinding">
         <SeedClusterListName>SeedClustersV</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
     </algorithm>
-    <algorithm type = "LArSeedLengthGrowing">
+    <algorithm type = "LArLengthSeedFinding">
         <SeedClusterListName>SeedClustersV</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
-    </algorithm>  
-    <algorithm type = "LArSeedFinding">
+    </algorithm>
+    <algorithm type = "LArSeedMerging">
+        <SeedClusterListName>SeedClustersV</SeedClusterListName>
+        <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
+    </algorithm>
+    <algorithm type = "LArSeedLengthGrowing">
         <SeedClusterListName>SeedClustersV</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
     </algorithm>
@@ -261,7 +270,7 @@
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters> 
-        <MCParticleListNames>MCParticleListW</MCParticleListNames>
+        <!--MCParticleListNames>MCParticleListW</MCParticleListNames-->
         <ClusterListNames>SeedClustersW NonSeedClustersW</ClusterListNames>
         <VertexNames>VertexW</VertexNames>
         <ShowCurrentPfos>false</ShowCurrentPfos>
@@ -280,7 +289,7 @@
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
-        <MCParticleListNames>MCParticleListU</MCParticleListNames>
+        <!--MCParticleListNames>MCParticleListU</MCParticleListNames-->
         <ClusterListNames>SeedClustersU NonSeedClustersU</ClusterListNames>
         <VertexNames>VertexU</VertexNames>
         <ShowCurrentPfos>false</ShowCurrentPfos>
@@ -299,7 +308,7 @@
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
-        <MCParticleListNames>MCParticleListV</MCParticleListNames>
+        <!--MCParticleListNames>MCParticleListV</MCParticleListNames-->
         <ClusterListNames>SeedClustersV NonSeedClustersV</ClusterListNames>
         <VertexNames>VertexV</VertexNames>
         <ShowCurrentPfos>false</ShowCurrentPfos>
