@@ -46,7 +46,7 @@
     </algorithm>
     <algorithm type = "LArLongitudinalAssociation"/>
     <algorithm type = "LArTransverseAssociation"/>
-    <algorithm type = "LArTrackExtension"/>
+    <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArKinkSplitting"/>
 
 
@@ -60,7 +60,7 @@
     </algorithm>
     <algorithm type = "LArLongitudinalAssociation"/>
     <algorithm type = "LArTransverseAssociation"/>
-    <algorithm type = "LArTrackExtension"/>
+    <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArKinkSplitting"/>
 
 
@@ -74,7 +74,7 @@
     </algorithm>
     <algorithm type = "LArLongitudinalAssociation"/>
     <algorithm type = "LArTransverseAssociation"/>
-    <algorithm type = "LArTrackExtension"/>
+    <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArKinkSplitting"/>
 
 
@@ -327,7 +327,7 @@
         <associationAlgorithms>
             <algorithm type = "LArLongitudinalAssociation"/>
             <algorithm type = "LArTransverseAssociation"/>
-            <algorithm type = "LArTrackExtension"/>
+            <algorithm type = "LArLongitudinalExtension"/>
             <algorithm type = "LArKinkSplitting"/>
         </associationAlgorithms>
         <InputSeedClusterListName>SeedClustersW</InputSeedClusterListName>
@@ -341,7 +341,7 @@
         <associationAlgorithms>
             <algorithm type = "LArLongitudinalAssociation"/>
             <algorithm type = "LArTransverseAssociation"/>
-            <algorithm type = "LArTrackExtension"/>
+            <algorithm type = "LArLongitudinalExtension"/>
             <algorithm type = "LArKinkSplitting"/>
         </associationAlgorithms>
         <InputSeedClusterListName>SeedClustersU</InputSeedClusterListName>
@@ -355,7 +355,7 @@
         <associationAlgorithms>
             <algorithm type = "LArLongitudinalAssociation"/>
             <algorithm type = "LArTransverseAssociation"/>
-            <algorithm type = "LArTrackExtension"/>
+            <algorithm type = "LArLongitudinalExtension"/>
             <algorithm type = "LArKinkSplitting"/>
         </associationAlgorithms>
         <InputSeedClusterListName>SeedClustersV</InputSeedClusterListName>
