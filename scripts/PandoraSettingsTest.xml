@@ -87,6 +87,7 @@
         <VertexNameU>VertexU</VertexNameU>
         <VertexNameV>VertexV</VertexNameV>
         <VertexNameW>VertexW</VertexNameW>
+        <VertexName3D>Vertex3D</VertexName3D>
         <UseTrueVertex>false</UseTrueVertex>
         <RunBeamMode>true</RunBeamMode>
     </algorithm>
@@ -321,6 +322,12 @@
 
 
 
+    <!-- 3D Reconstruction: preparation step -->
+    <algorithm type = "LArThreeDPreparation">
+        <VertexName>Vertex3D</VertexName>
+    </algorithm>
+
+
     <!-- 3D Reconstruction: split clusters to find best seeds for 3D matching -->
     <algorithm type = "LArTrackSplitting">
         <algorithm type = "LArClusterCreation" description = "Clustering"/>
@@ -401,6 +408,13 @@
         <MinMatchedFraction>0.5</MinMatchedFraction>
     </algorithm>
 
+    <algorithm type = "LArThreeDPairedTracks">
+        <InputClusterListNameU>ParticleSeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ParticleSeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ParticleSeedClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+    </algorithm>
+
     <algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
         <ShowCurrentVertex>false</ShowCurrentVertex>
@@ -433,6 +447,30 @@
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
     </algorithm>
 
+
+    <algorithm type = "LArEventDisplay">
+        <ParticleListName>ThreeDParticles</ParticleListName>
+        <SeedClusterListName>ParticleSeedClustersU</SeedClusterListName>
+        <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
+        <VertexName>VertexU</VertexName>
+    </algorithm>
+
+    <algorithm type = "LArEventDisplay">
+        <ParticleListName>ThreeDParticles</ParticleListName>
+        <SeedClusterListName>ParticleSeedClustersV</SeedClusterListName>
+        <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
+        <VertexName>VertexV</VertexName>
+    </algorithm>
+
+    <algorithm type = "LArEventDisplay">
+        <ParticleListName>ThreeDParticles</ParticleListName>
+        <SeedClusterListName>ParticleSeedClustersW</SeedClusterListName>
+        <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
+        <VertexName>VertexW</VertexName>
+    </algorithm>
+
+
+
     <algorithm type = "LArIsolatedHitMerging">
         <SeedClusterListName>ParticleSeedClustersW</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
@@ -445,6 +483,8 @@
         <SeedClusterListName>ParticleSeedClustersV</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
     </algorithm>
+
+
 
     <algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
