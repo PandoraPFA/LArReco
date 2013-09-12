@@ -110,6 +110,12 @@
         <SeedClusterListName>SeedClustersW</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
     </algorithm>
+    <algorithm type = "LArSeedCharacterisation">
+        <SeedClusterListName>SeedClustersW</SeedClusterListName>
+        <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
+        <TrackSeedClusterListName>TrackSeedClustersW</TrackSeedClusterListName>
+        <ShowerSeedClusterListName>ShowerSeedClustersW</ShowerSeedClusterListName>
+    </algorithm>
 
 
     <!-- 2D Particles, U view  -->
@@ -131,6 +137,12 @@
         <SeedClusterListName>SeedClustersU</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
     </algorithm>
+    <algorithm type = "LArSeedCharacterisation">
+        <SeedClusterListName>SeedClustersU</SeedClusterListName>
+        <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
+        <TrackSeedClusterListName>TrackSeedClustersU</TrackSeedClusterListName>
+        <ShowerSeedClusterListName>ShowerSeedClustersU</ShowerSeedClusterListName>
+    </algorithm>
 
 
     <!-- 2D Particles, V view -->
@@ -151,6 +163,12 @@
     <algorithm type = "LArSeedMerging">
         <SeedClusterListName>SeedClustersV</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
+    </algorithm>
+    <algorithm type = "LArSeedCharacterisation">
+        <SeedClusterListName>SeedClustersV</SeedClusterListName>
+        <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
+        <TrackSeedClusterListName>TrackSeedClustersV</TrackSeedClusterListName>
+        <ShowerSeedClusterListName>ShowerSeedClustersV</ShowerSeedClusterListName>
     </algorithm>
 
 
