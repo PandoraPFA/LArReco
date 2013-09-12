@@ -181,7 +181,7 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <!--MCParticleListNames>MCParticleListW MCParticleListU MCParticleListV</MCParticleListNames-->
-        <ClusterListNames>SeedClustersW NonSeedClustersW SeedClustersU NonSeedClustersU SeedClustersV NonSeedClustersV</ClusterListNames>
+        <ClusterListNames>SeedClustersW TrackSeedClustersW ShowerSeedClustersW NonSeedClustersW SeedClustersU TrackSeedClustersU ShowerSeedClustersU NonSeedClustersU SeedClustersV TrackSeedClustersV ShowerSeedClustersV NonSeedClustersV</ClusterListNames>
         <VertexNames>VertexW VertexU VertexV</VertexNames>
         <ShowCurrentPfos>false</ShowCurrentPfos>
         <ShowDetector>false</ShowDetector>
@@ -202,30 +202,62 @@
         <InputClusterListNameV>TrackSeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>TrackSeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
-        <MinMatchedFraction>0.5</MinMatchedFraction>
+        <MinOverallMatchedFraction>0.2</MinOverallMatchedFraction>
     </algorithm>
     <algorithm type = "LArThreeDLongitudinalTracks">
         <InputClusterListNameU>TrackSeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>TrackSeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>TrackSeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
-        <MinMatchedFraction>0.5</MinMatchedFraction>
+        <MinOverallMatchedFraction>0.2</MinOverallMatchedFraction>
     </algorithm>
+
+
+    <algorithm type = "LArVisualMonitoring">
+        <ShowMCParticles>false</ShowMCParticles>
+        <ShowCurrentVertex>false</ShowCurrentVertex>
+        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
+        <ShowCurrentTracks>false</ShowCurrentTracks>
+        <ShowCurrentClusters>false</ShowCurrentClusters>
+        <ShowCurrentPfos>false</ShowCurrentPfos>
+        <PfoListNames>ThreeDParticles</PfoListNames>
+        <ShowOnlyAvailable>false</ShowOnlyAvailable>
+        <ShowDetector>false</ShowDetector>
+        <BlackBackground>false</BlackBackground>
+        <HitColors>Iterate</HitColors>
+    </algorithm>
+
 
     <algorithm type = "LArThreeDTransverseTracks">
         <InputClusterListNameU>ShowerSeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
-        <MinMatchedFraction>0.5</MinMatchedFraction>
+        <MinOverallMatchedFraction>0.2</MinOverallMatchedFraction>
     </algorithm>
     <algorithm type = "LArThreeDLongitudinalTracks">
         <InputClusterListNameU>ShowerSeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
-        <MinMatchedFraction>0.5</MinMatchedFraction>
+        <MinOverallMatchedFraction>0.2</MinOverallMatchedFraction>
     </algorithm>
+
+
+    <algorithm type = "LArVisualMonitoring">
+        <ShowMCParticles>false</ShowMCParticles>
+        <ShowCurrentVertex>false</ShowCurrentVertex>
+        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
+        <ShowCurrentTracks>false</ShowCurrentTracks>
+        <ShowCurrentClusters>false</ShowCurrentClusters>
+        <ShowCurrentPfos>false</ShowCurrentPfos>
+        <PfoListNames>ThreeDParticles</PfoListNames>
+        <ShowOnlyAvailable>false</ShowOnlyAvailable>
+        <ShowDetector>false</ShowDetector>
+        <BlackBackground>false</BlackBackground>
+        <HitColors>Iterate</HitColors>
+    </algorithm>
+
 
     <!-- Try to match any/all remaining seeds -->
     <algorithm type = "LArListMerging">
@@ -237,19 +269,20 @@
         <TargetClusterListNames>SeedClustersU SeedClustersV SeedClustersW</TargetClusterListNames>
     </algorithm>
 
+
     <algorithm type = "LArThreeDTransverseTracks">
         <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
-        <MinMatchedFraction>0.5</MinMatchedFraction>
+        <MinOverallMatchedFraction>0.2</MinOverallMatchedFraction>
     </algorithm>
     <algorithm type = "LArThreeDLongitudinalTracks">
         <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
-        <MinMatchedFraction>0.5</MinMatchedFraction>
+        <MinOverallMatchedFraction>0.2</MinOverallMatchedFraction>
     </algorithm>
     <algorithm type = "LArThreeDPairedTracks">
         <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
