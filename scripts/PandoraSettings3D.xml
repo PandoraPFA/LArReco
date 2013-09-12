@@ -364,7 +364,7 @@
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
         <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
-        <ClusterListNames>NonSeedClustersW NonSeedClustersU NonSeedClustersV ParticleSeedClustersW ParticleSeedClustersU ParticleSeedClustersV</ClusterListNames>
+        <ClusterListNames>SeedClustersW SeedClustersU SeedClustersV NonSeedClustersW NonSeedClustersU NonSeedClustersV ParticleSeedClustersW ParticleSeedClustersU ParticleSeedClustersV</ClusterListNames>
         <ShowOnlyAvailable>true</ShowOnlyAvailable>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
