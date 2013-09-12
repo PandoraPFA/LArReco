@@ -196,6 +196,47 @@
     <algorithm type = "LArThreeDPreparation">
         <VertexName>Vertex3D</VertexName>
     </algorithm>
+
+    <algorithm type = "LArThreeDTransverseTracks">
+        <InputClusterListNameU>TrackSeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>TrackSeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>TrackSeedClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <MinMatchedFraction>0.5</MinMatchedFraction>
+    </algorithm>
+    <algorithm type = "LArThreeDLongitudinalTracks">
+        <InputClusterListNameU>TrackSeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>TrackSeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>TrackSeedClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <MinMatchedFraction>0.5</MinMatchedFraction>
+    </algorithm>
+
+    <algorithm type = "LArThreeDTransverseTracks">
+        <InputClusterListNameU>ShowerSeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <MinMatchedFraction>0.5</MinMatchedFraction>
+    </algorithm>
+    <algorithm type = "LArThreeDLongitudinalTracks">
+        <InputClusterListNameU>ShowerSeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <MinMatchedFraction>0.5</MinMatchedFraction>
+    </algorithm>
+
+    <!-- Try to match any/all remaining seeds -->
+    <algorithm type = "LArListMerging">
+        <SourceClusterListNames>TrackSeedClustersU TrackSeedClustersV TrackSeedClustersW</SourceClusterListNames>
+        <TargetClusterListNames>SeedClustersU SeedClustersV SeedClustersW</TargetClusterListNames>
+    </algorithm>
+    <algorithm type = "LArListMerging">
+        <SourceClusterListNames>ShowerSeedClustersU ShowerSeedClustersV ShowerSeedClustersW</SourceClusterListNames>
+        <TargetClusterListNames>SeedClustersU SeedClustersV SeedClustersW</TargetClusterListNames>
+    </algorithm>
+
     <algorithm type = "LArThreeDTransverseTracks">
         <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
@@ -317,9 +358,9 @@
 
     <!-- Finalise 3D seeds -->
     <algorithm type = "LArThreeDShowers">
-        <InputClusterListNameU>ShowerSeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>ShowerSeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>ShowerSeedClustersW</InputClusterListNameW>
+        <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
     </algorithm>
 
