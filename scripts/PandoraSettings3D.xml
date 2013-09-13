@@ -309,6 +309,9 @@
 
 
     <!-- Add clusters to 3D seeds: W view -->
+    <algorithm type = "LArThreeDPreparation">
+        <VertexName>VertexW</VertexName>
+    </algorithm>
     <algorithm type = "LArSeedBranchGrowing">
         <SeedClusterListName>SeedClustersW</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
@@ -336,6 +339,9 @@
 
 
     <!-- Add clusters to 3D seeds: U view -->
+    <algorithm type = "LArThreeDPreparation">
+        <VertexName>VertexU</VertexName>
+    </algorithm>
     <algorithm type = "LArSeedBranchGrowing">
         <SeedClusterListName>SeedClustersU</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
@@ -363,6 +369,9 @@
 
 
     <!-- Add clusters to 3D seeds: V view -->
+    <algorithm type = "LArThreeDPreparation">
+        <VertexName>VertexV</VertexName>
+    </algorithm>
     <algorithm type = "LArSeedBranchGrowing">
         <SeedClusterListName>SeedClustersV</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
