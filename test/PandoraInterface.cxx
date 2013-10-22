@@ -14,6 +14,9 @@
 #include "LArHelpers/LArThreeDHelper.h"
 #include "LArHelpers/LArVertexHelper.h"
 
+#include "MicroBooNEPseudoLayerCalculator.h"
+#include "MicroBooNETransformationCalculator.h"
+
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -67,14 +70,13 @@ int main(int argc, char *argv[])
         // Create Pandora Instance
         pPandora = new pandora::Pandora();
 
-        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::SetBFieldCalculator(*pPandora, new lar::LArBFieldCalculator()));
-        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::SetPseudoLayerCalculator(*pPandora, new lar::LArPseudoLayerCalculator()));
+        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArBFieldCalculator(*pPandora, new lar::LArBFieldCalculator));
+        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerCalculator(*pPandora, new lar_pandora::MicroBooNEPseudoLayerCalculator));
+        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationCalculator(*pPandora, new lar_pandora::MicroBooNETransformationCalculator));
 
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::RegisterAlgorithms(*pPandora));
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::RegisterHelperFunctions(*pPandora));
-
-        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::RegisterResetFunction(*pPandora, &lar::LArThreeDHelper::Reset));
-        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::RegisterResetFunction(*pPandora, &lar::LArVertexHelper::Reset));
+        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::RegisterResetFunctions(*pPandora));
 
         // Read in pandora settings from config file
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPandora, parameters.m_pandoraSettingsFile));

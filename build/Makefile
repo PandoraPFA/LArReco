@@ -18,6 +18,7 @@ PROJECT_TEST_DIR = $(PROJECT_DIR)/test/
 PROJECT_BINARY_DIR  = $(PROJECT_DIR)/bin/
 
 INCLUDES  = -I $(PROJECT_INCLUDE_DIR) -I $(PROJECT_SOURCE_DIR)
+INCLUDES += -I $(PROJECT_DIR)/Calculators/
 INCLUDES += -I $(PANDORA_DIR)/PandoraSDK/include/
 INCLUDES += -I $(PANDORA_LARCONTENT_DIR)/include/
 INCLUDES += -I $(shell $(ROOTSYS)/bin/root-config --incdir)
@@ -31,6 +32,7 @@ endif
 
 SOURCES  =  $(wildcard $(PROJECT_SOURCE_DIR)/*.cxx)
 SOURCES +=  $(wildcard $(PROJECT_TEST_DIR)/*.cxx)
+SOURCES +=  $(wildcard $(PROJECT_DIR)/Calculators/MicroBooNE*.cxx)
 
 OBJECTS = $(SOURCES:.cxx=.o)
 DEPENDS = $(OBJECTS:.o=.d)
