@@ -20,8 +20,8 @@
 
     <!-- PANDORA ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
-         <EventFileName>/r01/lbne/argon/pndr/uBooNE_Events_Beam_Numu2Nue_001.pndr</EventFileName>
-         <GeometryFileName>/r01/lbne/argon/pndr/uBooNE_Geometry.pndr</GeometryFileName>
+         <EventFileName>/usera/marshall/LAr/testSLC6/uBooNE_Events.pndr</EventFileName>
+         <GeometryFileName>/usera/marshall/LAr/testSLC6/uBooNE_Geometry.pndr</GeometryFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <ShouldReadGeometry>true</ShouldReadGeometry>
          <SkipToEvent>0</SkipToEvent>
@@ -33,7 +33,13 @@
       <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
       <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
       <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
+      <FilteredCaloHitListName>CaloHitListFiltered</FilteredCaloHitListName>
       <CurrentCaloHitListReplacement>CaloHitListW</CurrentCaloHitListReplacement>
+      <OutputMCParticleListNameU>MCParticleListU</OutputMCParticleListNameU>
+      <OutputMCParticleListNameV>MCParticleListV</OutputMCParticleListNameV>
+      <OutputMCParticleListNameW>MCParticleListW</OutputMCParticleListNameW>
+      <OutputMCParticleListName3D>MCParticleList3D</OutputMCParticleListName3D>
+      <CurrentMCParticleListReplacement>MCParticleList3D</CurrentMCParticleListReplacement>
     </algorithm>
 
 
@@ -50,7 +56,6 @@
     <algorithm type = "LArKinkSplitting"/>
 
 
-
     <!-- Proto Clusters, U View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
@@ -62,7 +67,6 @@
     <algorithm type = "LArTransverseAssociation"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArKinkSplitting"/>
-
 
 
     <!-- Proto Clusters, V View -->
@@ -263,15 +267,14 @@
 
 
 
-    <!-- View W Display-->
-    <algorithm type = "LArVisualMonitoring" instance = "DefaultDisplayW">
+    <!--algorithm type = "LArVisualMonitoring" instance = "DefaultDisplayW">
         <ShowMCParticles>true</ShowMCParticles>
         <SuppressMCParticles>22:0.01 2212:0.96 +16:1.e6 +14:1.e6 +12:1.e6 -12:1.e6 -14:1.e6 -16:1.e6</SuppressMCParticles> 
         <ShowCurrentVertex>false</ShowCurrentVertex>
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters> 
-        <!--MCParticleListNames>MCParticleListW</MCParticleListNames-->
+        <MCParticleListNames>MCParticleListW</MCParticleListNames>
         <ClusterListNames>SeedClustersW NonSeedClustersW</ClusterListNames>
         <VertexNames>VertexW</VertexNames>
         <ShowCurrentPfos>false</ShowCurrentPfos>
@@ -282,7 +285,6 @@
         <ThresholdEnergy>0.</ThresholdEnergy>
     </algorithm>
 
-    <!-- View U Display-->
     <algorithm type = "LArVisualMonitoring" instance = "DefaultDisplayU">
         <ShowMCParticles>true</ShowMCParticles>
         <SuppressMCParticles>22:0.01 2212:0.96 +16:1.e6 +14:1.e6 +12:1.e6 -12:1.e6 -14:1.e6 -16:1.e6</SuppressMCParticles> 
@@ -290,7 +292,7 @@
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
-        <!--MCParticleListNames>MCParticleListU</MCParticleListNames-->
+        <MCParticleListNames>MCParticleListU</MCParticleListNames>
         <ClusterListNames>SeedClustersU NonSeedClustersU</ClusterListNames>
         <VertexNames>VertexU</VertexNames>
         <ShowCurrentPfos>false</ShowCurrentPfos>
@@ -301,7 +303,6 @@
         <ThresholdEnergy>0.</ThresholdEnergy>
     </algorithm>
 
-    <!-- View V Display-->
     <algorithm type = "LArVisualMonitoring" instance = "DefaultDisplayV">
         <ShowMCParticles>true</ShowMCParticles>
         <SuppressMCParticles>22:0.01 2212:0.96 +16:1.e6 +14:1.e6 +12:1.e6 -12:1.e6 -14:1.e6 -16:1.e6</SuppressMCParticles> 
@@ -309,7 +310,7 @@
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
-        <!--MCParticleListNames>MCParticleListV</MCParticleListNames-->
+        <MCParticleListNames>MCParticleListV</MCParticleListNames>
         <ClusterListNames>SeedClustersV NonSeedClustersV</ClusterListNames>
         <VertexNames>VertexV</VertexNames>
         <ShowCurrentPfos>false</ShowCurrentPfos>
@@ -318,7 +319,7 @@
         <HitColors>Energy</HitColors>
         <EnergyScaleThresholdE>0.0005</EnergyScaleThresholdE>
         <ThresholdEnergy>0.</ThresholdEnergy>
-    </algorithm>
+    </algorithm-->
 
 
 
@@ -415,7 +416,7 @@
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
     </algorithm>
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
         <ShowCurrentVertex>false</ShowCurrentVertex>
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
@@ -427,7 +428,7 @@
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
-    </algorithm>
+    </algorithm-->
 
     <!-- Reassemble 2D showers within 3D particles -->
     <algorithm type = "LArShowerRebuilding">
@@ -448,7 +449,7 @@
     </algorithm>
 
 
-    <algorithm type = "LArEventDisplay">
+    <!--algorithm type = "LArEventDisplay">
         <ParticleListName>ThreeDParticles</ParticleListName>
         <SeedClusterListName>ParticleSeedClustersU</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
@@ -467,7 +468,7 @@
         <SeedClusterListName>ParticleSeedClustersW</SeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
         <VertexName>VertexW</VertexName>
-    </algorithm>
+    </algorithm-->
 
 
 
@@ -485,22 +486,32 @@
     </algorithm>
 
 
+    <algorithm type = "LArParticleMonitoring">
+        <CaloHitListName>CaloHitListFiltered</CaloHitListName>
+        <MCParticleListName>MCParticleList3D</MCParticleListName>
+        <PfoListName>ThreeDParticles</PfoListName>
+        <OutputTree>PfoTree3D</OutputTree>
+        <OutputFile>PfoTree3D.root</OutputFile>
+    </algorithm>
 
-    <algorithm type = "LArVisualMonitoring">
+
+    <!--algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
         <ShowCurrentVertex>false</ShowCurrentVertex>
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
+        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
         <PfoListNames>ThreeDParticles</PfoListNames>
-        <ShowOnlyAvailable>false</ShowOnlyAvailable>
+        <!--MCParticleListNames>MCParticleList3D</MCParticleListNames-->
+        <!--ShowOnlyAvailable>false</ShowOnlyAvailable>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
-    </algorithm>
+    </algorithm-->
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
         <ShowCurrentVertex>false</ShowCurrentVertex>
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
@@ -513,5 +524,5 @@
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
-    </algorithm>
+    </algorithm-->
 </pandora>
