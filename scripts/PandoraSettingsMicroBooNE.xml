@@ -193,7 +193,7 @@
 
 
     <!-- 3D Reconstruction: split clusters to find best seeds for 3D matching -->
-    <algorithm type = "LArTrackSplitting">
+    <algorithm type = "LArLowEnergyTrackSplitting">
         <algorithm type = "LArClusterCreation" description = "Clustering"/>
         <associationAlgorithms>
             <algorithm type = "LArLongitudinalAssociation"/>
@@ -207,7 +207,7 @@
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
     </algorithm>
 
-    <algorithm type = "LArTrackSplitting">
+    <algorithm type = "LArLowEnergyTrackSplitting">
         <algorithm type = "LArClusterCreation" description = "Clustering"/>
         <associationAlgorithms>
             <algorithm type = "LArLongitudinalAssociation"/>
@@ -221,7 +221,7 @@
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
     </algorithm>
 
-    <algorithm type = "LArTrackSplitting">
+    <algorithm type = "LArLowEnergyTrackSplitting">
         <algorithm type = "LArClusterCreation" description = "Clustering"/>
         <associationAlgorithms>
             <algorithm type = "LArLongitudinalAssociation"/>
