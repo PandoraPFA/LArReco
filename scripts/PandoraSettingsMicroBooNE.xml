@@ -22,7 +22,7 @@
     <algorithm type = "EventReading">
          <EventFileName>/usera/marshall/LAr/testSLC6/uBooNE_Events_numu2nue.pndr</EventFileName>
          <!--EventFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Events_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_4.pndr</EventFileName-->
-         <GeometryFileName>/usera/marshall/LAr/testSLC6/uBooNE_Geometry.pndr</GeometryFileName>
+         <GeometryFileName>/r01/lbne/argon/pndr/uBooNE_Geometry.pndr</GeometryFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <ShouldReadGeometry>true</ShouldReadGeometry>
          <SkipToEvent>0</SkipToEvent>
@@ -140,7 +140,7 @@
     </algorithm>
 
 
-    <algorithm type = "LArVisualMonitoring" instance = "DefaultDisplayW">
+    <!--algorithm type = "LArVisualMonitoring" instance = "DefaultDisplayW">
         <ShowMCParticles>true</ShowMCParticles>
         <SuppressMCParticles>22:0.01 2212:0.96 +16:1.e6 +14:1.e6 +12:1.e6 -12:1.e6 -14:1.e6 -16:1.e6</SuppressMCParticles> 
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
@@ -186,18 +186,11 @@
         <HitColors>Energy</HitColors>
         <EnergyScaleThresholdE>0.0005</EnergyScaleThresholdE>
         <ThresholdEnergy>0.</ThresholdEnergy>
-    </algorithm>
+    </algorithm-->
 
 
     <!-- 3D Reconstruction: split clusters to find best seeds for 3D matching -->
     <algorithm type = "LArLowEnergyTrackSplitting">
-        <algorithm type = "LArClusterCreation" description = "Clustering"/>
-        <associationAlgorithms>
-            <algorithm type = "LArLongitudinalAssociation"/>
-            <algorithm type = "LArTransverseAssociation"/>
-            <algorithm type = "LArLongitudinalExtension"/>
-            <algorithm type = "LArKinkSplitting"/>
-        </associationAlgorithms>
         <InputSeedClusterListName>SeedClustersW</InputSeedClusterListName>
         <ShowerSeedClusterListName>ParticleSeedClustersW</ShowerSeedClusterListName>
         <TrackSeedClusterListName>TrackSeedClustersW</TrackSeedClusterListName>
@@ -207,13 +200,6 @@
     </algorithm>
 
     <algorithm type = "LArLowEnergyTrackSplitting">
-        <algorithm type = "LArClusterCreation" description = "Clustering"/>
-        <associationAlgorithms>
-            <algorithm type = "LArLongitudinalAssociation"/>
-            <algorithm type = "LArTransverseAssociation"/>
-            <algorithm type = "LArLongitudinalExtension"/>
-            <algorithm type = "LArKinkSplitting"/>
-        </associationAlgorithms>
         <InputSeedClusterListName>SeedClustersU</InputSeedClusterListName>
         <ShowerSeedClusterListName>ParticleSeedClustersU</ShowerSeedClusterListName>
         <TrackSeedClusterListName>TrackSeedClustersU</TrackSeedClusterListName>
@@ -223,13 +209,6 @@
     </algorithm>
 
     <algorithm type = "LArLowEnergyTrackSplitting">
-        <algorithm type = "LArClusterCreation" description = "Clustering"/>
-        <associationAlgorithms>
-            <algorithm type = "LArLongitudinalAssociation"/>
-            <algorithm type = "LArTransverseAssociation"/>
-            <algorithm type = "LArLongitudinalExtension"/>
-            <algorithm type = "LArKinkSplitting"/>
-        </associationAlgorithms>
         <InputSeedClusterListName>SeedClustersV</InputSeedClusterListName>
         <ShowerSeedClusterListName>ParticleSeedClustersV</ShowerSeedClusterListName>
         <TrackSeedClusterListName>TrackSeedClustersV</TrackSeedClusterListName>
@@ -280,18 +259,6 @@
         <InputClusterListNameV>ParticleSeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>ParticleSeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
-    </algorithm>
-
-
-    <!-- Reassemble 2D showers within 3D particles -->
-    <algorithm type = "LArShowerRebuilding">
-        <ParticleListName>ThreeDParticles</ParticleListName>
-        <SeedClusterListNameU>ParticleSeedClustersU</SeedClusterListNameU>
-        <SeedClusterListNameV>ParticleSeedClustersV</SeedClusterListNameV>
-        <SeedClusterListNameW>ParticleSeedClustersW</SeedClusterListNameW>
-        <NonSeedClusterListNameU>NonSeedClustersU</NonSeedClusterListNameU>
-        <NonSeedClusterListNameV>NonSeedClustersV</NonSeedClusterListNameV>
-        <NonSeedClusterListNameW>NonSeedClustersW</NonSeedClusterListNameW>
     </algorithm>
 
 
