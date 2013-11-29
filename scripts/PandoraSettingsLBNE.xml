@@ -20,8 +20,8 @@
 
     <!-- PANDORA ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
-         <EventFileName>/usera/marshall/LAr/testSLC6/uBooNE_Events.pndr</EventFileName>
-         <GeometryFileName>/usera/marshall/LAr/testSLC6/uBooNE_Geometry.pndr</GeometryFileName>
+         <EventFileName>/r01/lbne/argon/pndr/uBooNE_Events_Beam_Numu2Nue_001.pndr</EventFileName>
+         <GeometryFileName>/r01/lbne/argon/pndr/uBooNE_Geometry.pndr</GeometryFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <ShouldReadGeometry>true</ShouldReadGeometry>
          <SkipToEvent>0</SkipToEvent>
@@ -29,7 +29,7 @@
 
 
     <!-- Separate U, V and W views -->
-    <algorithm type = "LArEventPreparation">
+    <algorithm type = "LArListPreparation">
       <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
       <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
       <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
@@ -99,7 +99,7 @@
 
 
     <!-- 2D Particles, W view -->
-    <algorithm type = "LArTwoDPreparation">
+    <algorithm type = "LArListChanging">
         <ClusterListName>ProtoClustersW</ClusterListName>
         <CaloHitListName>CaloHitListW</CaloHitListName>
         <VertexName>VertexW</VertexName>
@@ -149,7 +149,7 @@
 
 
     <!-- 2D Particles, U view  -->
-    <algorithm type = "LArTwoDPreparation">
+    <algorithm type = "LArListChanging">
         <ClusterListName>ProtoClustersU</ClusterListName>
         <CaloHitListName>CaloHitListU</CaloHitListName>
         <VertexName>VertexU</VertexName>
@@ -199,7 +199,7 @@
 
 
     <!-- 2D Particles, V view -->
-    <algorithm type = "LArTwoDPreparation">
+    <algorithm type = "LArListChanging">
         <ClusterListName>ProtoClustersV</ClusterListName>
         <CaloHitListName>CaloHitListV</CaloHitListName>
         <VertexName>VertexV</VertexName>
@@ -324,7 +324,7 @@
 
 
     <!-- 3D Reconstruction: preparation step -->
-    <algorithm type = "LArThreeDPreparation">
+    <algorithm type = "LArListChanging">
         <VertexName>Vertex3D</VertexName>
     </algorithm>
 

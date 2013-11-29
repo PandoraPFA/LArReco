@@ -30,7 +30,7 @@
 
 
     <!-- Separate U, V and W views -->
-    <algorithm type = "LArEventPreparation">
+    <algorithm type = "LArListPreparation">
       <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
       <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
       <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
@@ -92,7 +92,7 @@
 
 
     <!-- 2D Particles, W view -->
-    <algorithm type = "LArTwoDPreparation">
+    <algorithm type = "LArListChanging">
         <ClusterListName>ProtoClustersW</ClusterListName>
         <CaloHitListName>CaloHitListW</CaloHitListName>
         <VertexName>VertexW</VertexName>
@@ -119,7 +119,7 @@
 
 
     <!-- 2D Particles, U view  -->
-    <algorithm type = "LArTwoDPreparation">
+    <algorithm type = "LArListChanging">
         <ClusterListName>ProtoClustersU</ClusterListName>
         <CaloHitListName>CaloHitListU</CaloHitListName>
         <VertexName>VertexU</VertexName>
@@ -146,7 +146,7 @@
 
 
     <!-- 2D Particles, V view -->
-    <algorithm type = "LArTwoDPreparation">
+    <algorithm type = "LArListChanging">
         <ClusterListName>ProtoClustersV</ClusterListName>
         <CaloHitListName>CaloHitListV</CaloHitListName>
         <VertexName>VertexV</VertexName>
@@ -193,7 +193,7 @@
 
 
     <!-- 3D Reco -->
-    <algorithm type = "LArThreeDPreparation">
+    <algorithm type = "LArListChanging">
         <VertexName>Vertex3D</VertexName>
     </algorithm>
 

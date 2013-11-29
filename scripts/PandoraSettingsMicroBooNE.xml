@@ -20,8 +20,8 @@
 
     <!-- PANDORA ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
-         <!--EventFileName>/usera/marshall/LAr/testSLC6/uBooNE_Events_noosc.pndr</EventFileName-->
-         <EventFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Events_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_4.pndr</EventFileName>
+         <EventFileName>/usera/marshall/LAr/testSLC6/uBooNE_Events_numu2nue.pndr</EventFileName>
+         <!--EventFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Events_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_4.pndr</EventFileName-->
          <GeometryFileName>/usera/marshall/LAr/testSLC6/uBooNE_Geometry.pndr</GeometryFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <ShouldReadGeometry>true</ShouldReadGeometry>
@@ -30,7 +30,7 @@
 
 
     <!-- Separate U, V and W views -->
-    <algorithm type = "LArEventPreparation">
+    <algorithm type = "LArListPreparation">
       <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
       <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
       <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
@@ -84,10 +84,9 @@
 
 
     <!-- 2D Particles, W view -->
-    <algorithm type = "LArTwoDPreparation">
+    <algorithm type = "LArListChanging">
         <ClusterListName>ProtoClustersW</ClusterListName>
         <CaloHitListName>CaloHitListW</CaloHitListName>
-        <VertexName>VertexW</VertexName>
     </algorithm>
     <algorithm type = "LArLengthSeedFinding">
         <SeedClusterListName>SeedClustersW</SeedClusterListName>
@@ -104,10 +103,9 @@
 
 
     <!-- 2D Particles, U view  -->
-    <algorithm type = "LArTwoDPreparation">
+    <algorithm type = "LArListChanging">
         <ClusterListName>ProtoClustersU</ClusterListName>
         <CaloHitListName>CaloHitListU</CaloHitListName>
-        <VertexName>VertexU</VertexName>
     </algorithm>
     <algorithm type = "LArLengthSeedFinding">
         <SeedClusterListName>SeedClustersU</SeedClusterListName>
@@ -124,10 +122,9 @@
 
 
     <!-- 2D Particles, V view -->
-    <algorithm type = "LArTwoDPreparation">
+    <algorithm type = "LArListChanging">
         <ClusterListName>ProtoClustersV</ClusterListName>
         <CaloHitListName>CaloHitListV</CaloHitListName>
-        <VertexName>VertexV</VertexName>
     </algorithm>
     <algorithm type = "LArLengthSeedFinding">
         <SeedClusterListName>SeedClustersV</SeedClusterListName>
@@ -143,7 +140,7 @@
     </algorithm>
 
 
-<!--algorithm type = "LArVisualMonitoring" instance = "DefaultDisplayW">
+    <algorithm type = "LArVisualMonitoring" instance = "DefaultDisplayW">
         <ShowMCParticles>true</ShowMCParticles>
         <SuppressMCParticles>22:0.01 2212:0.96 +16:1.e6 +14:1.e6 +12:1.e6 -12:1.e6 -14:1.e6 -16:1.e6</SuppressMCParticles> 
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
@@ -189,7 +186,7 @@
         <HitColors>Energy</HitColors>
         <EnergyScaleThresholdE>0.0005</EnergyScaleThresholdE>
         <ThresholdEnergy>0.</ThresholdEnergy>
-    </algorithm-->
+    </algorithm>
 
 
     <!-- 3D Reconstruction: split clusters to find best seeds for 3D matching -->
@@ -205,6 +202,8 @@
         <ShowerSeedClusterListName>ParticleSeedClustersW</ShowerSeedClusterListName>
         <TrackSeedClusterListName>TrackSeedClustersW</TrackSeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
+        <OutputTree>TrackTreeW</OutputTree>
+        <OutputFile>TrackTree.root</OutputFile>
     </algorithm>
 
     <algorithm type = "LArLowEnergyTrackSplitting">
@@ -219,6 +218,8 @@
         <ShowerSeedClusterListName>ParticleSeedClustersU</ShowerSeedClusterListName>
         <TrackSeedClusterListName>TrackSeedClustersU</TrackSeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
+        <OutputTree>TrackTreeU</OutputTree>
+        <OutputFile>TrackTree.root</OutputFile>
     </algorithm>
 
     <algorithm type = "LArLowEnergyTrackSplitting">
@@ -233,6 +234,8 @@
         <ShowerSeedClusterListName>ParticleSeedClustersV</ShowerSeedClusterListName>
         <TrackSeedClusterListName>TrackSeedClustersV</TrackSeedClusterListName>
         <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
+        <OutputTree>TrackTreeV</OutputTree>
+        <OutputFile>TrackTree.root</OutputFile>
     </algorithm>
 
     <!-- Match track-like seeds with other track-like seeds -->
