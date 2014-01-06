@@ -21,8 +21,10 @@ INCLUDES  = -I $(PROJECT_INCLUDE_DIR) -I $(PROJECT_SOURCE_DIR)
 INCLUDES += -I $(PROJECT_DIR)/Calculators/
 INCLUDES += -I $(PANDORA_DIR)/PandoraSDK/include/
 INCLUDES += -I $(PANDORA_LARCONTENT_DIR)/include/
-INCLUDES += -I $(shell $(ROOTSYS)/bin/root-config --incdir)
-INCLUDES += -I $(PANDORA_DIR)/PandoraMonitoring/include/
+INCLUDES += -I $(shell root-config --incdir)
+ifdef MONITORING
+    INCLUDES += -I $(PANDORA_DIR)/PandoraMonitoring/include/
+endif
 
 CC = g++
 CFLAGS = -c -Wall -g -w -fPIC -O2 -DMONITORING=1
@@ -39,9 +41,11 @@ DEPENDS = $(OBJECTS:.o=.d)
 
 LIBS  = -L$(PANDORA_LARCONTENT_DIR)/lib -lLArContent
 LIBS += -L$(PANDORA_DIR)/lib -lPandoraSDK
-LIBS += $(shell $(ROOTSYS)/bin/root-config --glibs)
-LIBS += $(shell $(ROOTSYS)/bin/root-config --evelibs)
-LIBS += -lPandoraMonitoring
+LIBS += $(shell root-config --glibs)
+LIBS += $(shell root-config --evelibs)
+ifdef MONITORING
+    LIBS += -lPandoraMonitoring
+endif
 ifdef BUILD_32BIT_COMPATIBLE
     LIBS += -m32
 endif
