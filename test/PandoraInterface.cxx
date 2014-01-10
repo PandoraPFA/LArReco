@@ -20,8 +20,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
-#include <sys/time.h>
 #include <unistd.h>
+#include <sys/time.h>
 
 /**
  *  @brief  Parameters class
@@ -37,6 +37,7 @@ public:
     std::string     m_pandoraSettingsFile;          ///< The path to the pandora settings file (mandatory parameter)
     int             m_nEventsToProcess;             ///< The number of events to process (default all events in file)
     bool            m_shouldDisplayEventTime;       ///< Whether event times should be calculated and displayed (default false)
+    bool            m_shouldDisplayEventNumber;     ///< Whether event numbers should be displayed (default false)
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -88,6 +89,13 @@ int main(int argc, char *argv[])
         {
             struct timeval startTime, endTime;
 
+            if (parameters.m_shouldDisplayEventNumber)
+	    {
+	        std::cout << std::endl
+                          << "   PROCESSING EVENT: " << nEvents << std::endl
+                          << std::endl;
+	    }
+
             if (parameters.m_shouldDisplayEventTime)
             {
                 (void) gettimeofday(&startTime, NULL);
@@ -121,7 +129,7 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
 {
     int c(0);
 
-    while ((c = getopt(argc, argv, "i:n:t::h")) != -1)
+    while ((c = getopt(argc, argv, "i:n:t::N::h")) != -1)
     {
         switch (c)
         {
@@ -134,11 +142,15 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
         case 't':
             parameters.m_shouldDisplayEventTime = true;
             break;
+        case 'N':
+            parameters.m_shouldDisplayEventNumber = true;
+            break;
         case 'h':
         default:
             std::cout << std::endl << "./bin/PandoraInterface " << std::endl
                       << "    -i PandoraSettings.xml  (mandatory)" << std::endl
                       << "    -n NEventsToProcess     (optional)" << std::endl
+                      << "    -N                      (optional, display event numbers)" << std::endl
                       << "    -t                      (optional, display event times)" << std::endl << std::endl;
             return false;
         }
@@ -152,6 +164,7 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
 
 Parameters::Parameters() :
     m_nEventsToProcess(-1),
-    m_shouldDisplayEventTime(false)
+    m_shouldDisplayEventTime(false),
+    m_shouldDisplayEventNumber(false)
 {
 }
