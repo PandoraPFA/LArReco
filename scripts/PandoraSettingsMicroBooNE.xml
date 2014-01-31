@@ -20,14 +20,23 @@
 
     <!-- PANDORA ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
-         <EventFileName>/usera/marshall/LAr/testSLC6/uBooNE_Events_numu2nue.pndr</EventFileName>
-         <!--EventFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Events_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_4.pndr</EventFileName-->
-         <GeometryFileName>/r01/lbne/argon/pndr/uBooNE_Geometry.pndr</GeometryFileName>
+         <EventFileName>/var/clus/r01/lbne/argon/hybrid/S2013.10.21/pndr/uBooNE_Events_LBNE2013_FHC_Numu2Nue_NueCC_0010.pndr</EventFileName>
+         <GeometryFileName>/var/clus/r01/lbne/argon/hybrid/S2013.10.21/pndr/uBooNE_Geometry_LBNE2013_FHC_NoOsc_NC_0010.pndr</GeometryFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <ShouldReadGeometry>true</ShouldReadGeometry>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
+    <algorithm type = "EventWriting">
+        <EventFileName>TestEvents_15_01_14.xml</EventFileName>
+        <GeometryFileName>TestGeometry_15_01_14.xml</GeometryFileName>
+        <ShouldWriteEvents>true</ShouldWriteEvents>
+        <ShouldWriteGeometry>true</ShouldWriteGeometry>
+        <ShouldOverwriteEventFile>true</ShouldOverwriteEventFile>
+        <ShouldOverwriteGeometryFile>true</ShouldOverwriteGeometryFile>
+        <ShouldWriteMCRelationships>true</ShouldWriteMCRelationships>
+        <ShouldWriteTrackRelationships>true</ShouldWriteTrackRelationships>
+    </algorithm>
 
     <!-- Separate U, V and W views -->
     <algorithm type = "LArListPreparation">
@@ -51,10 +60,20 @@
         <ClusterListName> ProtoClustersW </ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
-    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArLayerSplitting"/>
     <algorithm type = "LArTransverseAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
+    <algorithm type = "LArBranchSplitting">
+        <CosmicMode>true</CosmicMode>
+    </algorithm>
+    <algorithm type = "LArDeltaRaySplitting">
+        <CosmicMode>true</CosmicMode>
+    </algorithm>
     <algorithm type = "LArKinkSplitting"/>
+    <!--algorithm type = "LArEndToEndMerging"/-->
+    <!--algorithm type = "LArLongitudinalConsolidation"/--> 
 
 
     <!-- Proto Clusters, U View -->
@@ -64,10 +83,20 @@
         <ClusterListName> ProtoClustersU </ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
-    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArLayerSplitting"/>
     <algorithm type = "LArTransverseAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
+    <algorithm type = "LArBranchSplitting">
+        <CosmicMode>true</CosmicMode>
+    </algorithm>
+    <algorithm type = "LArDeltaRaySplitting">
+        <CosmicMode>true</CosmicMode>
+    </algorithm>
     <algorithm type = "LArKinkSplitting"/>
+    <!--algorithm type = "LArEndToEndMerging"/-->
+    <!--algorithm type = "LArLongitudinalConsolidation"/--> 
 
 
     <!-- Proto Clusters, V View -->
@@ -77,10 +106,20 @@
         <ClusterListName> ProtoClustersV </ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
-    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArLayerSplitting"/>
     <algorithm type = "LArTransverseAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
+    <algorithm type = "LArBranchSplitting">
+        <CosmicMode>true</CosmicMode>
+    </algorithm>
+    <algorithm type = "LArDeltaRaySplitting">
+        <CosmicMode>true</CosmicMode>
+    </algorithm>
     <algorithm type = "LArKinkSplitting"/>
+    <!--algorithm type = "LArEndToEndMerging"/-->
+    <!--algorithm type = "LArLongitudinalConsolidation"/--> 
 
 
     <!-- 2D Particles, W view -->
@@ -299,7 +338,7 @@
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
-    </algorithm-->
+    </algorithm>
 
     <!--algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
