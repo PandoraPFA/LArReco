@@ -6,13 +6,11 @@
     <ShouldDisplayAlgorithmInfo> true </ShouldDisplayAlgorithmInfo>
     <ShouldCollapseMCParticlesToPfoTarget>false</ShouldCollapseMCParticlesToPfoTarget>
 
-    <!-- Plugin helper functions -->
     <EmShowerFastFunction> LArEmShowerId </EmShowerFastFunction>
     <PhotonFastFunction> LArPhotonId </PhotonFastFunction>
     <ElectronFastFunction> LArElectronId </ElectronFastFunction>
     <MuonFastFunction> LArMuonId </MuonFastFunction>
 
-    <!-- CaloHit helper settings -->
     <CaloHitHelper>
         <ShouldCalculateDensityWeight>false</ShouldCalculateDensityWeight>
         <ShouldCalculateSurroundingEnergy>false</ShouldCalculateSurroundingEnergy>
@@ -20,25 +18,14 @@
 
     <!-- PANDORA ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
-         <EventFileName>/var/clus/r01/lbne/argon/hybrid/S2013.10.21/pndr/uBooNE_Events_LBNE2013_FHC_Numu2Nue_NueCC_0010.pndr</EventFileName>
-         <GeometryFileName>/var/clus/r01/lbne/argon/hybrid/S2013.10.21/pndr/uBooNE_Geometry_LBNE2013_FHC_NoOsc_NC_0010.pndr</GeometryFileName>
+         <EventFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Events_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_1.pndr</EventFileName>
+         <GeometryFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Geometry_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_1.pndr</GeometryFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <ShouldReadGeometry>true</ShouldReadGeometry>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
-    <algorithm type = "EventWriting">
-        <EventFileName>TestEvents_15_01_14.xml</EventFileName>
-        <GeometryFileName>TestGeometry_15_01_14.xml</GeometryFileName>
-        <ShouldWriteEvents>true</ShouldWriteEvents>
-        <ShouldWriteGeometry>true</ShouldWriteGeometry>
-        <ShouldOverwriteEventFile>true</ShouldOverwriteEventFile>
-        <ShouldOverwriteGeometryFile>true</ShouldOverwriteGeometryFile>
-        <ShouldWriteMCRelationships>true</ShouldWriteMCRelationships>
-        <ShouldWriteTrackRelationships>true</ShouldWriteTrackRelationships>
-    </algorithm>
-
-    <!-- Separate U, V and W views -->
+    <!-- COSMIC RAY RECONSTRUCTION -->
     <algorithm type = "LArListPreparation">
       <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
       <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
@@ -52,8 +39,19 @@
       <CurrentMCParticleListReplacement>MCParticleList3D</CurrentMCParticleListReplacement>
     </algorithm>
 
+    <algorithm type = "LArVisualMonitoring">
+        <ShowMCParticles>false</ShowMCParticles>
+        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
+        <ShowCurrentTracks>false</ShowCurrentTracks>
+        <ShowCurrentClusters>false</ShowCurrentClusters>
+        <ShowCurrentPfos>false</ShowCurrentPfos>
+        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
+        <ShowDetector>false</ShowDetector>
+        <BlackBackground>false</BlackBackground>
+        <HitColors>Iterate</HitColors>
+    </algorithm>
 
-    <!-- Proto Clusters, W View -->
+    <!-- 2D cosmic ray reconstruction, W View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListW</InputCaloHitListName>
@@ -71,12 +69,13 @@
     <algorithm type = "LArDeltaRaySplitting">
         <CosmicMode>true</CosmicMode>
     </algorithm>
-    <algorithm type = "LArKinkSplitting"/>
-    <!--algorithm type = "LArEndToEndMerging"/-->
-    <!--algorithm type = "LArLongitudinalConsolidation"/--> 
+    <algorithm type = "LArCosmicRayExtension"/>
+    <algorithm type = "LArLengthSeedFinding">
+        <SeedClusterListName>SeedClustersW</SeedClusterListName>
+        <NonSeedClusterListName>ProtoClustersW</NonSeedClusterListName>
+    </algorithm>
 
-
-    <!-- Proto Clusters, U View -->
+    <!-- 2D cosmic ray reconstruction, U View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListU</InputCaloHitListName>
@@ -94,12 +93,13 @@
     <algorithm type = "LArDeltaRaySplitting">
         <CosmicMode>true</CosmicMode>
     </algorithm>
-    <algorithm type = "LArKinkSplitting"/>
-    <!--algorithm type = "LArEndToEndMerging"/-->
-    <!--algorithm type = "LArLongitudinalConsolidation"/--> 
+    <algorithm type = "LArCosmicRayExtension"/>
+    <algorithm type = "LArLengthSeedFinding">
+        <SeedClusterListName>SeedClustersU</SeedClusterListName>
+        <NonSeedClusterListName>ProtoClustersU</NonSeedClusterListName>
+    </algorithm>
 
-
-    <!-- Proto Clusters, V View -->
+    <!-- 2D cosmic ray reconstruction, V View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListV</InputCaloHitListName>
@@ -117,240 +117,181 @@
     <algorithm type = "LArDeltaRaySplitting">
         <CosmicMode>true</CosmicMode>
     </algorithm>
-    <algorithm type = "LArKinkSplitting"/>
-    <!--algorithm type = "LArEndToEndMerging"/-->
-    <!--algorithm type = "LArLongitudinalConsolidation"/--> 
-
-
-    <!-- 2D Particles, W view -->
-    <algorithm type = "LArListChanging">
-        <ClusterListName>ProtoClustersW</ClusterListName>
-        <CaloHitListName>CaloHitListW</CaloHitListName>
-    </algorithm>
-    <algorithm type = "LArLengthSeedFinding">
-        <SeedClusterListName>SeedClustersW</SeedClusterListName>
-        <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
-    </algorithm>
-    <algorithm type = "LArParallelClusterMerging">
-        <SeedClusterListName>SeedClustersW</SeedClusterListName>
-        <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
-    </algorithm>
-    <algorithm type = "LArBoundedClusterMerging">
-        <SeedClusterListName>SeedClustersW</SeedClusterListName>
-        <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
-    </algorithm>
-
-
-    <!-- 2D Particles, U view  -->
-    <algorithm type = "LArListChanging">
-        <ClusterListName>ProtoClustersU</ClusterListName>
-        <CaloHitListName>CaloHitListU</CaloHitListName>
-    </algorithm>
-    <algorithm type = "LArLengthSeedFinding">
-        <SeedClusterListName>SeedClustersU</SeedClusterListName>
-        <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
-    </algorithm>
-    <algorithm type = "LArParallelClusterMerging">
-        <SeedClusterListName>SeedClustersU</SeedClusterListName>
-        <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
-    </algorithm>
-    <algorithm type = "LArBoundedClusterMerging">
-        <SeedClusterListName>SeedClustersU</SeedClusterListName>
-        <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
-    </algorithm>
-
-
-    <!-- 2D Particles, V view -->
-    <algorithm type = "LArListChanging">
-        <ClusterListName>ProtoClustersV</ClusterListName>
-        <CaloHitListName>CaloHitListV</CaloHitListName>
-    </algorithm>
+    <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArLengthSeedFinding">
         <SeedClusterListName>SeedClustersV</SeedClusterListName>
-        <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
-    </algorithm>
-    <algorithm type = "LArParallelClusterMerging">
-        <SeedClusterListName>SeedClustersV</SeedClusterListName>
-        <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
-    </algorithm>
-    <algorithm type = "LArBoundedClusterMerging">
-        <SeedClusterListName>SeedClustersV</SeedClusterListName>
-        <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
+        <NonSeedClusterListName>ProtoClustersV</NonSeedClusterListName>
     </algorithm>
 
-
-    <!--algorithm type = "LArVisualMonitoring" instance = "DefaultDisplayW">
-        <ShowMCParticles>true</ShowMCParticles>
-        <SuppressMCParticles>22:0.01 2212:0.96 +16:1.e6 +14:1.e6 +12:1.e6 -12:1.e6 -14:1.e6 -16:1.e6</SuppressMCParticles> 
-        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
-        <ShowCurrentTracks>false</ShowCurrentTracks>
-        <ShowCurrentClusters>false</ShowCurrentClusters> 
-        <MCParticleListNames>MCParticleListW</MCParticleListNames>
-        <ClusterListNames>SeedClustersW NonSeedClustersW</ClusterListNames>
-        <ShowCurrentPfos>false</ShowCurrentPfos>
-        <ShowDetector>false</ShowDetector>
-        <BlackBackground>false</BlackBackground>
-        <HitColors>Energy</HitColors>
-        <EnergyScaleThresholdE>0.0005</EnergyScaleThresholdE>
-        <ThresholdEnergy>0.</ThresholdEnergy>
-    </algorithm>
-
-    <algorithm type = "LArVisualMonitoring" instance = "DefaultDisplayU">
-        <ShowMCParticles>true</ShowMCParticles>
-        <SuppressMCParticles>22:0.01 2212:0.96 +16:1.e6 +14:1.e6 +12:1.e6 -12:1.e6 -14:1.e6 -16:1.e6</SuppressMCParticles> 
-        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
-        <ShowCurrentTracks>false</ShowCurrentTracks>
-        <ShowCurrentClusters>false</ShowCurrentClusters>
-        <MCParticleListNames>MCParticleListU</MCParticleListNames>
-        <ClusterListNames>SeedClustersU NonSeedClustersU</ClusterListNames>
-        <ShowCurrentPfos>false</ShowCurrentPfos>
-        <ShowDetector>false</ShowDetector>
-        <BlackBackground>false</BlackBackground>
-        <HitColors>Energy</HitColors>
-        <EnergyScaleThresholdE>0.0005</EnergyScaleThresholdE>
-        <ThresholdEnergy>0.</ThresholdEnergy>
-    </algorithm>
-
-    <algorithm type = "LArVisualMonitoring" instance = "DefaultDisplayV">
-        <ShowMCParticles>true</ShowMCParticles>
-        <SuppressMCParticles>22:0.01 2212:0.96 +16:1.e6 +14:1.e6 +12:1.e6 -12:1.e6 -14:1.e6 -16:1.e6</SuppressMCParticles> 
-        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
-        <ShowCurrentTracks>false</ShowCurrentTracks>
-        <ShowCurrentClusters>false</ShowCurrentClusters>
-        <MCParticleListNames>MCParticleListV</MCParticleListNames>
-        <ClusterListNames>SeedClustersV NonSeedClustersV</ClusterListNames>
-        <ShowCurrentPfos>false</ShowCurrentPfos>
-        <ShowDetector>false</ShowDetector>
-        <BlackBackground>false</BlackBackground>
-        <HitColors>Energy</HitColors>
-        <EnergyScaleThresholdE>0.0005</EnergyScaleThresholdE>
-        <ThresholdEnergy>0.</ThresholdEnergy>
-    </algorithm-->
-
-
-    <!-- 3D Reconstruction: split clusters to find best seeds for 3D matching -->
-    <algorithm type = "LArLowEnergyTrackSplitting">
-        <InputSeedClusterListName>SeedClustersW</InputSeedClusterListName>
-        <ShowerSeedClusterListName>ParticleSeedClustersW</ShowerSeedClusterListName>
-        <TrackSeedClusterListName>TrackSeedClustersW</TrackSeedClusterListName>
-        <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
-        <OutputTree>TrackTreeW</OutputTree>
-        <OutputFile>TrackTree.root</OutputFile>
-    </algorithm>
-
-    <algorithm type = "LArLowEnergyTrackSplitting">
-        <InputSeedClusterListName>SeedClustersU</InputSeedClusterListName>
-        <ShowerSeedClusterListName>ParticleSeedClustersU</ShowerSeedClusterListName>
-        <TrackSeedClusterListName>TrackSeedClustersU</TrackSeedClusterListName>
-        <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
-        <OutputTree>TrackTreeU</OutputTree>
-        <OutputFile>TrackTree.root</OutputFile>
-    </algorithm>
-
-    <algorithm type = "LArLowEnergyTrackSplitting">
-        <InputSeedClusterListName>SeedClustersV</InputSeedClusterListName>
-        <ShowerSeedClusterListName>ParticleSeedClustersV</ShowerSeedClusterListName>
-        <TrackSeedClusterListName>TrackSeedClustersV</TrackSeedClusterListName>
-        <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
-        <OutputTree>TrackTreeV</OutputTree>
-        <OutputFile>TrackTree.root</OutputFile>
-    </algorithm>
-
-    <!-- Match track-like seeds with other track-like seeds -->
+    <!-- 3D cosmic ray reconstruction -->
     <algorithm type = "LArThreeDTransverseTracks">
-        <InputClusterListNameU>TrackSeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>TrackSeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>TrackSeedClustersW</InputClusterListNameW>
+        <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <MinMatchedFraction>0.33</MinMatchedFraction>
     </algorithm>
 
     <algorithm type = "LArThreeDLongitudinalTracks">
-        <InputClusterListNameU>TrackSeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>TrackSeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>TrackSeedClustersW</InputClusterListNameW>
+        <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
-    </algorithm>
-
-    <!-- Try to match any/all remaining seeds -->
-    <algorithm type = "LArListMerging">
-        <SourceClusterListNames>TrackSeedClustersU TrackSeedClustersV TrackSeedClustersW</SourceClusterListNames>
-        <TargetClusterListNames>ParticleSeedClustersU ParticleSeedClustersV ParticleSeedClustersW</TargetClusterListNames>
-    </algorithm>
-
-    <algorithm type = "LArThreeDTransverseTracks">
-        <InputClusterListNameU>ParticleSeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>ParticleSeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>ParticleSeedClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
-        <MinMatchedFraction>0.5</MinMatchedFraction>
-    </algorithm>
-
-    <algorithm type = "LArThreeDLongitudinalTracks">
-        <InputClusterListNameU>ParticleSeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>ParticleSeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>ParticleSeedClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
-        <MinMatchedFraction>0.5</MinMatchedFraction>
+        <MinMatchedFraction>0.33</MinMatchedFraction>
     </algorithm>
 
     <algorithm type = "LArThreeDPairedTracks">
-        <InputClusterListNameU>ParticleSeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>ParticleSeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>ParticleSeedClustersW</InputClusterListNameW>
+        <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
     </algorithm>
 
-
-    <!-- Tidy up -->
-    <algorithm type = "LArIsolatedHitMerging">
-        <SeedClusterListName>ParticleSeedClustersW</SeedClusterListName>
-        <NonSeedClusterListName>NonSeedClustersW</NonSeedClusterListName>
+    <!-- Cosmic removal -->
+    <algorithm type = "LArCosmicRayIdentification">
+        <InputPfoListName>ThreeDParticles</InputPfoListName>
+        <OutputPfoListName>ThreeDCosmicRays</OutputPfoListName>
     </algorithm>
-    <algorithm type = "LArIsolatedHitMerging">
-        <SeedClusterListName>ParticleSeedClustersU</SeedClusterListName>
-        <NonSeedClusterListName>NonSeedClustersU</NonSeedClusterListName>
+    <algorithm type = "LArCosmicRayShowerMatching">
+        <InputPfoListName>ThreeDCosmicRays</InputPfoListName>
+        <InputClusterListNamesU>SeedClustersU ProtoClustersU</InputClusterListNamesU>
+        <InputClusterListNamesV>SeedClustersV ProtoClustersV</InputClusterListNamesV>
+        <InputClusterListNamesW>SeedClustersW ProtoClustersW</InputClusterListNamesW>
     </algorithm>
-    <algorithm type = "LArIsolatedHitMerging">
-        <SeedClusterListName>ParticleSeedClustersV</SeedClusterListName>
-        <NonSeedClusterListName>NonSeedClustersV</NonSeedClusterListName>
-    </algorithm>
-
-
-    <algorithm type = "LArParticleMonitoring">
-        <CaloHitListName>CaloHitListFiltered</CaloHitListName>
-        <MCParticleListName>MCParticleList3D</MCParticleListName>
-        <PfoListName>ThreeDParticles</PfoListName>
-        <OutputTree>PfoTree3D</OutputTree>
-        <OutputFile>PfoTree3D.root</OutputFile>
-    </algorithm>
-
-
-    <!--algorithm type = "LArVisualMonitoring">
-        <ShowMCParticles>false</ShowMCParticles>
-        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
-        <ShowCurrentTracks>false</ShowCurrentTracks>
-        <ShowCurrentClusters>false</ShowCurrentClusters>
-        <ShowCurrentPfos>false</ShowCurrentPfos>
-        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
+    <algorithm type = "LArListDissolution">
         <PfoListNames>ThreeDParticles</PfoListNames>
-        <!--MCParticleListNames>MCParticleList3D</MCParticleListNames-->
-        <!--ShowOnlyAvailable>false</ShowOnlyAvailable>
-        <ShowDetector>false</ShowDetector>
-        <BlackBackground>false</BlackBackground>
-        <HitColors>Iterate</HitColors>
+    </algorithm>
+    <algorithm type = "LArListDissolution">
+        <WarnIfClustersUnavailable>false</WarnIfClustersUnavailable>
+        <ClusterListNames>SeedClustersU SeedClustersV SeedClustersW ProtoClustersU ProtoClustersV ProtoClustersW</ClusterListNames>
+    </algorithm>
+    <algorithm type = "LArListMerging">
+        <SourceClusterListNames>SeedClustersU ProtoClustersU SeedClustersV ProtoClustersV SeedClustersW ProtoClustersW</SourceClusterListNames>
+        <TargetClusterListNames>CosmicRayClustersU CosmicRayClustersU CosmicRayClustersV CosmicRayClustersV CosmicRayClustersW CosmicRayClustersW</TargetClusterListNames>
     </algorithm>
 
-    <!--algorithm type = "LArVisualMonitoring">
+    <algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
-        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
-        <ClusterListNames>NonSeedClustersW NonSeedClustersU NonSeedClustersV ParticleSeedClustersW ParticleSeedClustersU ParticleSeedClustersV</ClusterListNames>
-        <ShowOnlyAvailable>true</ShowOnlyAvailable>
+        <PfoListNames>ThreeDCosmicRays</PfoListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
-    </algorithm-->
+    </algorithm>
+
+    <!-- NEUTRINO RECONSTRUCTION -->
+    <algorithm type = "LArListPreparation">
+        <OutputCaloHitListNameW>NoCosmicCaloHitListW</OutputCaloHitListNameW>
+        <OutputCaloHitListNameU>NoCosmicCaloHitListU</OutputCaloHitListNameU>
+        <OutputCaloHitListNameV>NoCosmicCaloHitListV</OutputCaloHitListNameV>
+        <FilteredCaloHitListName>NoCosmicCaloHitListFiltered</FilteredCaloHitListName>
+        <CurrentCaloHitListReplacement>NoCosmicCaloHitListW</CurrentCaloHitListReplacement>
+        <OutputMCParticleListNameU>NoCosmicMCParticleListU</OutputMCParticleListNameU>
+        <OutputMCParticleListNameV>NoCosmicMCParticleListV</OutputMCParticleListNameV>
+        <OutputMCParticleListNameW>NoCosmicMCParticleListW</OutputMCParticleListNameW>
+        <OutputMCParticleListName3D>NoCosmicMCParticleList3D</OutputMCParticleListName3D>
+        <CurrentMCParticleListReplacement>NoCosmicMCParticleList3D</CurrentMCParticleListReplacement>
+    </algorithm>
+
+    <!-- 2D cosmic ray reconstruction, W View -->
+    <algorithm type = "LArClusteringParent">
+        <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
+        <InputCaloHitListName>NoCosmicCaloHitListW</InputCaloHitListName>
+        <ClusterListName> ProtoClustersW </ClusterListName>
+        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+    </algorithm>
+    <algorithm type = "LArLayerSplitting"/>
+    <algorithm type = "LArTransverseAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseExtension"/>
+    <algorithm type = "LArLongitudinalExtension"/>
+    <algorithm type = "LArBranchSplitting"/>
+    <algorithm type = "LArDeltaRaySplitting"/>
+    <algorithm type = "LArCosmicRayExtension"/>
+    <algorithm type = "LArKinkSplitting"/>
+    <algorithm type = "LArLengthSeedFinding">
+        <SeedClusterListName>SeedClustersW</SeedClusterListName>
+        <NonSeedClusterListName>ProtoClustersW</NonSeedClusterListName>
+    </algorithm>
+
+    <!-- 2D cosmic ray reconstruction, U View -->
+    <algorithm type = "LArClusteringParent">
+        <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
+        <InputCaloHitListName>NoCosmicCaloHitListU</InputCaloHitListName>
+        <ClusterListName> ProtoClustersU </ClusterListName>
+        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+    </algorithm>
+    <algorithm type = "LArLayerSplitting"/>
+    <algorithm type = "LArTransverseAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseExtension"/>
+    <algorithm type = "LArLongitudinalExtension"/>
+    <algorithm type = "LArBranchSplitting"/>
+    <algorithm type = "LArDeltaRaySplitting"/>
+    <algorithm type = "LArCosmicRayExtension"/>
+    <algorithm type = "LArKinkSplitting"/>
+    <algorithm type = "LArLengthSeedFinding">
+        <SeedClusterListName>SeedClustersU</SeedClusterListName>
+        <NonSeedClusterListName>ProtoClustersU</NonSeedClusterListName>
+    </algorithm>
+
+    <!-- 2D cosmic ray reconstruction, V View -->
+    <algorithm type = "LArClusteringParent">
+        <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
+        <InputCaloHitListName>NoCosmicCaloHitListV</InputCaloHitListName>
+        <ClusterListName> ProtoClustersV </ClusterListName>
+        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+    </algorithm>
+    <algorithm type = "LArLayerSplitting"/>
+    <algorithm type = "LArTransverseAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseExtension"/>
+    <algorithm type = "LArLongitudinalExtension"/>
+    <algorithm type = "LArBranchSplitting"/>
+    <algorithm type = "LArDeltaRaySplitting"/>
+    <algorithm type = "LArCosmicRayExtension"/>
+    <algorithm type = "LArKinkSplitting"/>
+    <algorithm type = "LArLengthSeedFinding">
+        <SeedClusterListName>SeedClustersV</SeedClusterListName>
+        <NonSeedClusterListName>ProtoClustersV</NonSeedClusterListName>
+    </algorithm>
+
+    <!-- 3D particle reconstruction -->
+    <algorithm type = "LArThreeDTransverseTracks">
+        <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <MinMatchedFraction>0.33</MinMatchedFraction>
+    </algorithm>
+
+    <algorithm type = "LArThreeDLongitudinalTracks">
+        <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <MinMatchedFraction>0.33</MinMatchedFraction>
+    </algorithm>
+
+    <algorithm type = "LArThreeDPairedTracks">
+        <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
+        <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
+        <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+    </algorithm>
+
+    <algorithm type = "LArVisualMonitoring">
+        <ShowMCParticles>false</ShowMCParticles>
+        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
+        <ShowCurrentTracks>false</ShowCurrentTracks>
+        <ShowCurrentClusters>false</ShowCurrentClusters>
+        <ShowCurrentPfos>false</ShowCurrentPfos>
+        <PfoListNames>ThreeDParticles</PfoListNames>
+        <ShowDetector>false</ShowDetector>
+        <BlackBackground>false</BlackBackground>
+        <HitColors>Iterate</HitColors>
+    </algorithm>
 </pandora>
