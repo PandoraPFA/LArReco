@@ -27,11 +27,13 @@
 
     <!-- COSMIC RAY RECONSTRUCTION -->
     <algorithm type = "LArListPreparation">
+      <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
       <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
       <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
       <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
       <FilteredCaloHitListName>CaloHitListFiltered</FilteredCaloHitListName>
       <CurrentCaloHitListReplacement>CaloHitListW</CurrentCaloHitListReplacement>
+      <MCNeutrinoSelection>false</MCNeutrinoSelection>
       <OutputMCParticleListNameU>MCParticleListU</OutputMCParticleListNameU>
       <OutputMCParticleListNameV>MCParticleListV</OutputMCParticleListNameV>
       <OutputMCParticleListNameW>MCParticleListW</OutputMCParticleListNameW>
@@ -184,11 +186,13 @@
 
     <!-- NEUTRINO RECONSTRUCTION -->
     <algorithm type = "LArListPreparation">
+        <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
         <OutputCaloHitListNameW>NoCosmicCaloHitListW</OutputCaloHitListNameW>
         <OutputCaloHitListNameU>NoCosmicCaloHitListU</OutputCaloHitListNameU>
         <OutputCaloHitListNameV>NoCosmicCaloHitListV</OutputCaloHitListNameV>
         <FilteredCaloHitListName>NoCosmicCaloHitListFiltered</FilteredCaloHitListName>
         <CurrentCaloHitListReplacement>NoCosmicCaloHitListW</CurrentCaloHitListReplacement>
+        <MCNeutrinoSelection>true</MCNeutrinoSelection>
         <OutputMCParticleListNameU>NoCosmicMCParticleListU</OutputMCParticleListNameU>
         <OutputMCParticleListNameV>NoCosmicMCParticleListV</OutputMCParticleListNameV>
         <OutputMCParticleListNameW>NoCosmicMCParticleListW</OutputMCParticleListNameW>
