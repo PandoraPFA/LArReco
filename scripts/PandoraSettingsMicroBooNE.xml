@@ -200,6 +200,18 @@
         <CurrentMCParticleListReplacement>NoCosmicMCParticleList3D</CurrentMCParticleListReplacement>
     </algorithm>
 
+    <algorithm type = "LArVisualMonitoring">
+        <ShowMCParticles>false</ShowMCParticles>
+        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
+        <ShowCurrentTracks>false</ShowCurrentTracks>
+        <ShowCurrentClusters>false</ShowCurrentClusters>
+        <ShowCurrentPfos>false</ShowCurrentPfos>
+        <CaloHitListNames>NoCosmicCaloHitListW NoCosmicCaloHitListU NoCosmicCaloHitListV</CaloHitListNames>
+        <ShowDetector>false</ShowDetector>
+        <BlackBackground>false</BlackBackground>
+        <HitColors>Iterate</HitColors>
+    </algorithm>
+
     <!-- 2D cosmic ray reconstruction, W View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
