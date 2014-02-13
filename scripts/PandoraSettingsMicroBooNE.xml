@@ -76,6 +76,10 @@
         <SeedClusterListName>SeedClustersW</SeedClusterListName>
         <NonSeedClusterListName>ProtoClustersW</NonSeedClusterListName>
     </algorithm>
+    <algorithm type = "LArSeedCharacterisation">
+        <SeedClusterListName>SeedClustersW</SeedClusterListName>
+        <NonSeedClusterListName>ProtoClustersW</NonSeedClusterListName>
+    </algorithm>
 
     <!-- 2D cosmic ray reconstruction, U View -->
     <algorithm type = "LArClusteringParent">
@@ -100,6 +104,10 @@
         <SeedClusterListName>SeedClustersU</SeedClusterListName>
         <NonSeedClusterListName>ProtoClustersU</NonSeedClusterListName>
     </algorithm>
+    <algorithm type = "LArSeedCharacterisation">
+        <SeedClusterListName>SeedClustersU</SeedClusterListName>
+        <NonSeedClusterListName>ProtoClustersU</NonSeedClusterListName>
+    </algorithm>
 
     <!-- 2D cosmic ray reconstruction, V View -->
     <algorithm type = "LArClusteringParent">
@@ -121,6 +129,10 @@
     </algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArLengthSeedFinding">
+        <SeedClusterListName>SeedClustersV</SeedClusterListName>
+        <NonSeedClusterListName>ProtoClustersV</NonSeedClusterListName>
+    </algorithm>
+    <algorithm type = "LArSeedCharacterisation">
         <SeedClusterListName>SeedClustersV</SeedClusterListName>
         <NonSeedClusterListName>ProtoClustersV</NonSeedClusterListName>
     </algorithm>
