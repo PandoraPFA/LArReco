@@ -144,6 +144,12 @@
         <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
         <MinMatchedFraction>0.33</MinMatchedFraction>
+        <TrackTools>
+            <tool type = "LArClearTracks"/>
+            <tool type = "LArUndershootTracks"/>
+            <tool type = "LArOvershootTracks"/>
+            <tool type = "LArMissingTracks"/>
+        </TrackTools>
     </algorithm>
 
     <algorithm type = "LArThreeDLongitudinalTracks">
