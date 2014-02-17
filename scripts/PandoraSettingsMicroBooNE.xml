@@ -160,13 +160,6 @@
         <MinMatchedFraction>0.33</MinMatchedFraction>
     </algorithm>
 
-    <algorithm type = "LArThreeDPairedTracks">
-        <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
-    </algorithm>
-
     <!-- Cosmic removal -->
     <algorithm type = "LArCosmicRayIdentification">
         <InputPfoListName>ThreeDParticles</InputPfoListName>
@@ -202,7 +195,7 @@
         <HitColors>Iterate</HitColors>
     </algorithm>
 
-    <!-- NEUTRINO RECONSTRUCTION -->
+    <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION -->
     <algorithm type = "LArListPreparation">
         <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
         <OutputCaloHitListNameW>NoCosmicCaloHitListW</OutputCaloHitListNameW>
@@ -230,7 +223,7 @@
         <HitColors>Iterate</HitColors>
     </algorithm>
 
-    <!-- 2D cosmic ray reconstruction, W View -->
+    <!-- 2D neutrino-induced event reconstruction, W View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>NoCosmicCaloHitListW</InputCaloHitListName>
@@ -251,7 +244,7 @@
         <NonSeedClusterListName>ProtoClustersW</NonSeedClusterListName>
     </algorithm>
 
-    <!-- 2D cosmic ray reconstruction, U View -->
+    <!-- 2D neutrino-induced event reconstruction, U View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>NoCosmicCaloHitListU</InputCaloHitListName>
@@ -272,7 +265,7 @@
         <NonSeedClusterListName>ProtoClustersU</NonSeedClusterListName>
     </algorithm>
 
-    <!-- 2D cosmic ray reconstruction, V View -->
+    <!-- 2D neutrino-induced event reconstruction, V View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>NoCosmicCaloHitListV</InputCaloHitListName>
@@ -293,13 +286,19 @@
         <NonSeedClusterListName>ProtoClustersV</NonSeedClusterListName>
     </algorithm>
 
-    <!-- 3D particle reconstruction -->
+    <!-- 3D -induced particle reconstruction -->
     <algorithm type = "LArThreeDTransverseTracks">
         <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
         <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
         <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
         <MinMatchedFraction>0.33</MinMatchedFraction>
+        <TrackTools>
+            <tool type = "LArClearTracks"/>
+            <tool type = "LArUndershootTracks"/>
+            <tool type = "LArOvershootTracks"/>
+            <tool type = "LArMissingTracks"/>
+        </TrackTools>
     </algorithm>
 
     <algorithm type = "LArThreeDLongitudinalTracks">
@@ -308,13 +307,6 @@
         <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
         <MinMatchedFraction>0.33</MinMatchedFraction>
-    </algorithm>
-
-    <algorithm type = "LArThreeDPairedTracks">
-        <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
