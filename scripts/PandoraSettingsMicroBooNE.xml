@@ -16,6 +16,7 @@
         <ShouldCalculateSurroundingEnergy>false</ShouldCalculateSurroundingEnergy>
     </CaloHitHelper>
 
+
     <!-- PANDORA ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
          <EventFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Events_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_1.pndr</EventFileName>
@@ -24,6 +25,7 @@
          <ShouldReadGeometry>true</ShouldReadGeometry>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
+
 
     <!-- COSMIC RAY RECONSTRUCTION -->
     <algorithm type = "LArListPreparation">
@@ -72,6 +74,7 @@
         <CosmicMode>true</CosmicMode>
     </algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
+    <algorithm type = "LArDeltaRayExtension"/>
     <algorithm type = "LArLengthSeedFinding">
         <SeedClusterListName>SeedClustersW</SeedClusterListName>
         <NonSeedClusterListName>ProtoClustersW</NonSeedClusterListName>
@@ -100,6 +103,7 @@
         <CosmicMode>true</CosmicMode>
     </algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
+    <algorithm type = "LArDeltaRayExtension"/>
     <algorithm type = "LArLengthSeedFinding">
         <SeedClusterListName>SeedClustersU</SeedClusterListName>
         <NonSeedClusterListName>ProtoClustersU</NonSeedClusterListName>
@@ -128,6 +132,7 @@
         <CosmicMode>true</CosmicMode>
     </algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
+    <algorithm type = "LArDeltaRayExtension"/>
     <algorithm type = "LArLengthSeedFinding">
         <SeedClusterListName>SeedClustersV</SeedClusterListName>
         <NonSeedClusterListName>ProtoClustersV</NonSeedClusterListName>
@@ -160,27 +165,57 @@
         <MinMatchedFraction>0.33</MinMatchedFraction>
     </algorithm>
 
-    <!-- Cosmic removal -->
+    <algorithm type = "LArListMerging">
+        <SourceClusterListNames>SeedClustersU SeedClustersV SeedClustersW</SourceClusterListNames>
+        <TargetClusterListNames>ProtoClustersU ProtoClustersV ProtoClustersW</TargetClusterListNames>
+    </algorithm>
+
+    <!-- 2D cosmic tidy-up, W view -->
+    <algorithm type = "LArListChanging">
+        <ClusterListName>ProtoClustersW</ClusterListName>
+    </algorithm>
+
+    <algorithm type = "LArCosmicRayShowerMerging"/>
+
+    <!-- 2D cosmic tidy-up, U view -->
+    <algorithm type = "LArListChanging">
+        <ClusterListName>ProtoClustersU</ClusterListName>
+    </algorithm>
+
+    <algorithm type = "LArCosmicRayShowerMerging"/>
+
+    <!-- 2D cosmic tidy-up, V view -->
+    <algorithm type = "LArListChanging">
+        <ClusterListName>ProtoClustersV</ClusterListName>
+    </algorithm>
+
+    <algorithm type = "LArCosmicRayShowerMerging"/>
+
+    <!-- 3D cosmic tidy-up -->
+    <algorithm type = "LArCosmicRayShowerMatching">
+        <InputPfoListName>ThreeDParticles</InputPfoListName>
+        <InputClusterListNamesU>ProtoClustersU</InputClusterListNamesU>
+        <InputClusterListNamesV>ProtoClustersV</InputClusterListNamesV>
+        <InputClusterListNamesW>ProtoClustersW</InputClusterListNamesW>
+    </algorithm>
+
+    <!-- 3D cosmic identification -->
     <algorithm type = "LArCosmicRayIdentification">
         <InputPfoListName>ThreeDParticles</InputPfoListName>
         <OutputPfoListName>ThreeDCosmicRays</OutputPfoListName>
     </algorithm>
-    <algorithm type = "LArCosmicRayShowerMatching">
-        <InputPfoListName>ThreeDCosmicRays</InputPfoListName>
-        <InputClusterListNamesU>SeedClustersU ProtoClustersU</InputClusterListNamesU>
-        <InputClusterListNamesV>SeedClustersV ProtoClustersV</InputClusterListNamesV>
-        <InputClusterListNamesW>SeedClustersW ProtoClustersW</InputClusterListNamesW>
-    </algorithm>
+
+    <!-- Cosmic removal -->
     <algorithm type = "LArListDissolution">
         <PfoListNames>ThreeDParticles</PfoListNames>
     </algorithm>
     <algorithm type = "LArListDissolution">
         <WarnIfClustersUnavailable>false</WarnIfClustersUnavailable>
-        <ClusterListNames>SeedClustersU SeedClustersV SeedClustersW ProtoClustersU ProtoClustersV ProtoClustersW</ClusterListNames>
+        <ClusterListNames>ProtoClustersU ProtoClustersV ProtoClustersW</ClusterListNames>
     </algorithm>
     <algorithm type = "LArListMerging">
-        <SourceClusterListNames>SeedClustersU ProtoClustersU SeedClustersV ProtoClustersV SeedClustersW ProtoClustersW</SourceClusterListNames>
-        <TargetClusterListNames>CosmicRayClustersU CosmicRayClustersU CosmicRayClustersV CosmicRayClustersV CosmicRayClustersW CosmicRayClustersW</TargetClusterListNames>
+        <SourceClusterListNames>ProtoClustersU ProtoClustersV ProtoClustersW</SourceClusterListNames>
+        <TargetClusterListNames>CosmicRayClustersU CosmicRayClustersV CosmicRayClustersW</TargetClusterListNames>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
@@ -194,6 +229,7 @@
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
     </algorithm>
+
 
     <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION -->
     <algorithm type = "LArListPreparation">
