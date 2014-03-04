@@ -170,26 +170,16 @@
         <TargetClusterListNames>ProtoClustersU ProtoClustersV ProtoClustersW</TargetClusterListNames>
     </algorithm>
 
-    <!-- 2D cosmic tidy-up, W view -->
-    <algorithm type = "LArListChanging">
-        <ClusterListName>ProtoClustersW</ClusterListName>
+    <!-- 2D cosmic tidy-up -->
+    <algorithm type = "LArCosmicRayShowerMerging">
+        <InputClusterListName>ProtoClustersW</InputClusterListName>
     </algorithm>
-
-    <algorithm type = "LArCosmicRayShowerMerging"/>
-
-    <!-- 2D cosmic tidy-up, U view -->
-    <algorithm type = "LArListChanging">
-        <ClusterListName>ProtoClustersU</ClusterListName>
+    <algorithm type = "LArCosmicRayShowerMerging">
+        <InputClusterListName>ProtoClustersU</InputClusterListName>
     </algorithm>
-
-    <algorithm type = "LArCosmicRayShowerMerging"/>
-
-    <!-- 2D cosmic tidy-up, V view -->
-    <algorithm type = "LArListChanging">
-        <ClusterListName>ProtoClustersV</ClusterListName>
+    <algorithm type = "LArCosmicRayShowerMerging">
+        <InputClusterListName>ProtoClustersV</InputClusterListName>
     </algorithm>
-
-    <algorithm type = "LArCosmicRayShowerMerging"/>
 
     <!-- 3D cosmic tidy-up -->
     <algorithm type = "LArCosmicRayShowerMatching">
