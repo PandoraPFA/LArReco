@@ -2,14 +2,14 @@
 
 <pandora>
     <!-- HELPER CLASS SETTINGS -->
-    <IsMonitoringEnabled> true </IsMonitoringEnabled>
-    <ShouldDisplayAlgorithmInfo> true </ShouldDisplayAlgorithmInfo>
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
+    <ShouldDisplayAlgorithmInfo>true</ShouldDisplayAlgorithmInfo>
     <ShouldCollapseMCParticlesToPfoTarget>false</ShouldCollapseMCParticlesToPfoTarget>
 
-    <EmShowerFastFunction> LArEmShowerId </EmShowerFastFunction>
-    <PhotonFastFunction> LArPhotonId </PhotonFastFunction>
-    <ElectronFastFunction> LArElectronId </ElectronFastFunction>
-    <MuonFastFunction> LArMuonId </MuonFastFunction>
+    <EmShowerFastFunction>LArEmShowerId</EmShowerFastFunction>
+    <PhotonFastFunction>LArPhotonId</PhotonFastFunction>
+    <ElectronFastFunction>LArElectronId</ElectronFastFunction>
+    <MuonFastFunction>LArMuonId</MuonFastFunction>
 
     <CaloHitHelper>
         <ShouldCalculateDensityWeight>false</ShouldCalculateDensityWeight>
@@ -59,7 +59,7 @@
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListW</InputCaloHitListName>
-        <ClusterListName> ProtoClustersW </ClusterListName>
+        <ClusterListName>ClustersW</ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
@@ -75,20 +75,13 @@
     </algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <algorithm type = "LArLengthSeedFinding">
-        <SeedClusterListName>SeedClustersW</SeedClusterListName>
-        <NonSeedClusterListName>ProtoClustersW</NonSeedClusterListName>
-    </algorithm>
-    <algorithm type = "LArSeedCharacterisation">
-        <SeedClusterListName>SeedClustersW</SeedClusterListName>
-        <NonSeedClusterListName>ProtoClustersW</NonSeedClusterListName>
-    </algorithm>
+    <algorithm type = "LArClusterCharacterisation"/>
 
     <!-- 2D cosmic ray reconstruction, U View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListU</InputCaloHitListName>
-        <ClusterListName> ProtoClustersU </ClusterListName>
+        <ClusterListName>ClustersU </ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
@@ -104,20 +97,13 @@
     </algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <algorithm type = "LArLengthSeedFinding">
-        <SeedClusterListName>SeedClustersU</SeedClusterListName>
-        <NonSeedClusterListName>ProtoClustersU</NonSeedClusterListName>
-    </algorithm>
-    <algorithm type = "LArSeedCharacterisation">
-        <SeedClusterListName>SeedClustersU</SeedClusterListName>
-        <NonSeedClusterListName>ProtoClustersU</NonSeedClusterListName>
-    </algorithm>
+    <algorithm type = "LArClusterCharacterisation"/>
 
     <!-- 2D cosmic ray reconstruction, V View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListV</InputCaloHitListName>
-        <ClusterListName> ProtoClustersV </ClusterListName>
+        <ClusterListName>ClustersV</ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
@@ -133,20 +119,13 @@
     </algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <algorithm type = "LArLengthSeedFinding">
-        <SeedClusterListName>SeedClustersV</SeedClusterListName>
-        <NonSeedClusterListName>ProtoClustersV</NonSeedClusterListName>
-    </algorithm>
-    <algorithm type = "LArSeedCharacterisation">
-        <SeedClusterListName>SeedClustersV</SeedClusterListName>
-        <NonSeedClusterListName>ProtoClustersV</NonSeedClusterListName>
-    </algorithm>
+    <algorithm type = "LArClusterCharacterisation"/>
 
     <!-- 3D cosmic ray reconstruction -->
     <algorithm type = "LArThreeDTransverseTracks">
-        <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
         <MinMatchedFraction>0.33</MinMatchedFraction>
         <TrackTools>
@@ -158,35 +137,30 @@
     </algorithm>
 
     <algorithm type = "LArThreeDLongitudinalTracks">
-        <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
         <MinMatchedFraction>0.33</MinMatchedFraction>
     </algorithm>
 
-    <algorithm type = "LArListMerging">
-        <SourceClusterListNames>SeedClustersU SeedClustersV SeedClustersW</SourceClusterListNames>
-        <TargetClusterListNames>ProtoClustersU ProtoClustersV ProtoClustersW</TargetClusterListNames>
-    </algorithm>
-
     <!-- 2D cosmic tidy-up -->
     <algorithm type = "LArCosmicRayShowerMerging">
-        <InputClusterListName>ProtoClustersW</InputClusterListName>
+        <InputClusterListName>ClustersW</InputClusterListName>
     </algorithm>
     <algorithm type = "LArCosmicRayShowerMerging">
-        <InputClusterListName>ProtoClustersU</InputClusterListName>
+        <InputClusterListName>ClustersU</InputClusterListName>
     </algorithm>
     <algorithm type = "LArCosmicRayShowerMerging">
-        <InputClusterListName>ProtoClustersV</InputClusterListName>
+        <InputClusterListName>ClustersV</InputClusterListName>
     </algorithm>
 
     <!-- 3D cosmic tidy-up -->
     <algorithm type = "LArCosmicRayShowerMatching">
         <InputPfoListName>ThreeDParticles</InputPfoListName>
-        <InputClusterListNamesU>ProtoClustersU</InputClusterListNamesU>
-        <InputClusterListNamesV>ProtoClustersV</InputClusterListNamesV>
-        <InputClusterListNamesW>ProtoClustersW</InputClusterListNamesW>
+        <InputClusterListNamesU>ClustersU</InputClusterListNamesU>
+        <InputClusterListNamesV>ClustersV</InputClusterListNamesV>
+        <InputClusterListNamesW>ClustersW</InputClusterListNamesW>
     </algorithm>
 
     <!-- 3D cosmic identification -->
@@ -201,10 +175,10 @@
     </algorithm>
     <algorithm type = "LArListDissolution">
         <WarnIfClustersUnavailable>false</WarnIfClustersUnavailable>
-        <ClusterListNames>ProtoClustersU ProtoClustersV ProtoClustersW</ClusterListNames>
+        <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
     </algorithm>
     <algorithm type = "LArListMerging">
-        <SourceClusterListNames>ProtoClustersU ProtoClustersV ProtoClustersW</SourceClusterListNames>
+        <SourceClusterListNames>ClustersU ClustersV ClustersW</SourceClusterListNames>
         <TargetClusterListNames>CosmicRayClustersU CosmicRayClustersV CosmicRayClustersW</TargetClusterListNames>
     </algorithm>
 
@@ -253,7 +227,7 @@
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>NoCosmicCaloHitListW</InputCaloHitListName>
-        <ClusterListName> ProtoClustersW </ClusterListName>
+        <ClusterListName>ClustersW</ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
@@ -265,16 +239,13 @@
     <algorithm type = "LArDeltaRaySplitting"/>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArKinkSplitting"/>
-    <algorithm type = "LArLengthSeedFinding">
-        <SeedClusterListName>SeedClustersW</SeedClusterListName>
-        <NonSeedClusterListName>ProtoClustersW</NonSeedClusterListName>
-    </algorithm>
+    <algorithm type = "LArClusterCharacterisation"/>
 
     <!-- 2D neutrino-induced event reconstruction, U View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>NoCosmicCaloHitListU</InputCaloHitListName>
-        <ClusterListName> ProtoClustersU </ClusterListName>
+        <ClusterListName>ClustersU</ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
@@ -286,16 +257,13 @@
     <algorithm type = "LArDeltaRaySplitting"/>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArKinkSplitting"/>
-    <algorithm type = "LArLengthSeedFinding">
-        <SeedClusterListName>SeedClustersU</SeedClusterListName>
-        <NonSeedClusterListName>ProtoClustersU</NonSeedClusterListName>
-    </algorithm>
+    <algorithm type = "LArClusterCharacterisation"/>
 
     <!-- 2D neutrino-induced event reconstruction, V View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>NoCosmicCaloHitListV</InputCaloHitListName>
-        <ClusterListName> ProtoClustersV </ClusterListName>
+        <ClusterListName>ClustersV</ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
@@ -307,16 +275,13 @@
     <algorithm type = "LArDeltaRaySplitting"/>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArKinkSplitting"/>
-    <algorithm type = "LArLengthSeedFinding">
-        <SeedClusterListName>SeedClustersV</SeedClusterListName>
-        <NonSeedClusterListName>ProtoClustersV</NonSeedClusterListName>
-    </algorithm>
+    <algorithm type = "LArClusterCharacterisation"/>
 
     <!-- 3D -induced particle reconstruction -->
     <algorithm type = "LArThreeDTransverseTracks">
-        <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
         <MinMatchedFraction>0.33</MinMatchedFraction>
         <TrackTools>
@@ -328,9 +293,9 @@
     </algorithm>
 
     <algorithm type = "LArThreeDLongitudinalTracks">
-        <InputClusterListNameU>SeedClustersU</InputClusterListNameU>
-        <InputClusterListNameV>SeedClustersV</InputClusterListNameV>
-        <InputClusterListNameW>SeedClustersW</InputClusterListNameW>
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
         <MinMatchedFraction>0.33</MinMatchedFraction>
     </algorithm>
