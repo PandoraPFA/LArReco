@@ -236,8 +236,6 @@
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArBranchSplitting"/>
-    <algorithm type = "LArDeltaRaySplitting"/>
-    <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArKinkSplitting"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
@@ -254,8 +252,6 @@
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArBranchSplitting"/>
-    <algorithm type = "LArDeltaRaySplitting"/>
-    <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArKinkSplitting"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
@@ -272,8 +268,6 @@
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArBranchSplitting"/>
-    <algorithm type = "LArDeltaRaySplitting"/>
-    <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArKinkSplitting"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
