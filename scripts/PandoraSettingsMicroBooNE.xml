@@ -155,18 +155,19 @@
         <InputClusterListName>ClustersV</InputClusterListName>
     </algorithm>
 
-    <!-- 3D cosmic tidy-up -->
-    <algorithm type = "LArCosmicRayShowerMatching">
-        <InputPfoListName>ThreeDParticles</InputPfoListName>
-        <InputClusterListNamesU>ClustersU</InputClusterListNamesU>
-        <InputClusterListNamesV>ClustersV</InputClusterListNamesV>
-        <InputClusterListNamesW>ClustersW</InputClusterListNamesW>
-    </algorithm>
-
     <!-- 3D cosmic identification -->
     <algorithm type = "LArCosmicRayIdentification">
         <InputPfoListName>ThreeDParticles</InputPfoListName>
         <OutputPfoListName>ThreeDCosmicRays</OutputPfoListName>
+    </algorithm>
+
+    <!-- 3D cosmic tidy-up -->
+    <algorithm type = "LArCosmicRayShowerMatching">
+        <InputCosmicRayPfoListName>ThreeDCosmicRays</InputCosmicRayPfoListName>
+        <InputPfoListName>ThreeDParticles</InputPfoListName>
+        <InputClusterListNamesU>ClustersU</InputClusterListNamesU>
+        <InputClusterListNamesV>ClustersV</InputClusterListNamesV>
+        <InputClusterListNamesW>ClustersW</InputClusterListNamesW>
     </algorithm>
 
     <!-- Cosmic removal -->
