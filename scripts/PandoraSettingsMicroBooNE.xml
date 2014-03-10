@@ -127,7 +127,6 @@
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
-        <MinMatchedFraction>0.33</MinMatchedFraction>
         <TrackTools>
             <tool type = "LArClearTracks"/>
             <tool type = "LArUndershootTracks"/>
@@ -136,13 +135,12 @@
         </TrackTools>
     </algorithm>
 
-    <algorithm type = "LArThreeDLongitudinalTracks">
+    <!--algorithm type = "LArThreeDLongitudinalTracks">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
-        <MinMatchedFraction>0.33</MinMatchedFraction>
-    </algorithm>
+    </algorithm-->
 
     <!-- 2D cosmic tidy-up -->
     <algorithm type = "LArCosmicRayShowerMerging">
@@ -278,7 +276,6 @@
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
-        <MinMatchedFraction>0.33</MinMatchedFraction>
         <TrackTools>
             <tool type = "LArClearTracks"/>
             <tool type = "LArUndershootTracks"/>
@@ -287,13 +284,12 @@
         </TrackTools>
     </algorithm>
 
-    <algorithm type = "LArThreeDLongitudinalTracks">
+    <!--algorithm type = "LArThreeDLongitudinalTracks">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
-        <MinMatchedFraction>0.33</MinMatchedFraction>
-    </algorithm>
+    </algorithm-->
 
     <algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
