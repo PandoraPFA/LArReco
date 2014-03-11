@@ -157,7 +157,7 @@
     </algorithm>
 
     <!-- 3D cosmic identification -->
-    <algorithm type = "LArCosmicRayIdentification">
+    <algorithm type = "LArCheatingCosmicRayIdentification">
         <InputPfoListName>ThreeDParticles</InputPfoListName>
         <OutputPfoListName>ThreeDCosmicRays</OutputPfoListName>
     </algorithm>
