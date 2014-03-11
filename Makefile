@@ -1,5 +1,5 @@
 #Path to project directory
-ifndef 
+ifndef PROJECT_DIR
     PROJECT_DIR = YOUR_PATH_HERE
 endif
 
