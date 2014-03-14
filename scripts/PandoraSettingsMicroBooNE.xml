@@ -135,7 +135,7 @@
             <tool type = "LArUndershootTracks"/>
             <tool type = "LArOvershootTracks"/>
             <tool type = "LArMissingTracks"/>
-            <tool type = "LArTensorVisualization"/>
+            <!--tool type = "LArTensorVisualization"/-->
         </TrackTools>
     </algorithm>
 
@@ -285,7 +285,7 @@
             <tool type = "LArUndershootTracks"/>
             <tool type = "LArOvershootTracks"/>
             <tool type = "LArMissingTracks"/>
-            <tool type = "LArTensorVisualization"/>
+            <!--tool type = "LArTensorVisualization"/-->
         </TrackTools>
     </algorithm>
 
