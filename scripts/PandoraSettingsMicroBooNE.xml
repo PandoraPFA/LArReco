@@ -1,0 +1,310 @@
+<!-- Pandora settings xml file -->
+
+<pandora>
+    <!-- HELPER CLASS SETTINGS -->
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
+    <ShouldDisplayAlgorithmInfo>true</ShouldDisplayAlgorithmInfo>
+    <ShouldCollapseMCParticlesToPfoTarget>false</ShouldCollapseMCParticlesToPfoTarget>
+
+    <EmShowerFastFunction>LArEmShowerId</EmShowerFastFunction>
+    <PhotonFastFunction>LArPhotonId</PhotonFastFunction>
+    <ElectronFastFunction>LArElectronId</ElectronFastFunction>
+    <MuonFastFunction>LArMuonId</MuonFastFunction>
+
+    <CaloHitHelper>
+        <ShouldCalculateDensityWeight>false</ShouldCalculateDensityWeight>
+        <ShouldCalculateSurroundingEnergy>false</ShouldCalculateSurroundingEnergy>
+    </CaloHitHelper>
+
+
+    <!-- PANDORA ALGORITHM SETTINGS -->
+    <algorithm type = "EventReading">
+         <EventFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Events_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_1.pndr</EventFileName>
+         <GeometryFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Geometry_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_1.pndr</GeometryFileName>
+         <ShouldReadEvents>true</ShouldReadEvents>
+         <ShouldReadGeometry>true</ShouldReadGeometry>
+         <SkipToEvent>0</SkipToEvent>
+    </algorithm>
+
+
+    <!-- COSMIC RAY RECONSTRUCTION -->
+    <algorithm type = "LArListPreparation">
+      <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
+      <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
+      <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
+      <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
+      <FilteredCaloHitListName>CaloHitListFiltered</FilteredCaloHitListName>
+      <CurrentCaloHitListReplacement>CaloHitListW</CurrentCaloHitListReplacement>
+      <MCNeutrinoSelection>false</MCNeutrinoSelection>
+      <OutputMCParticleListNameU>MCParticleListU</OutputMCParticleListNameU>
+      <OutputMCParticleListNameV>MCParticleListV</OutputMCParticleListNameV>
+      <OutputMCParticleListNameW>MCParticleListW</OutputMCParticleListNameW>
+      <OutputMCParticleListName3D>MCParticleList3D</OutputMCParticleListName3D>
+      <CurrentMCParticleListReplacement>MCParticleList3D</CurrentMCParticleListReplacement>
+    </algorithm>
+
+    <algorithm type = "LArVisualMonitoring">
+        <ShowMCParticles>false</ShowMCParticles>
+        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
+        <ShowCurrentTracks>false</ShowCurrentTracks>
+        <ShowCurrentClusters>false</ShowCurrentClusters>
+        <ShowCurrentPfos>false</ShowCurrentPfos>
+        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
+        <ShowDetector>false</ShowDetector>
+        <BlackBackground>false</BlackBackground>
+        <HitColors>Iterate</HitColors>
+    </algorithm>
+
+    <!-- 2D cosmic ray reconstruction, W View -->
+    <algorithm type = "LArClusteringParent">
+        <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
+        <InputCaloHitListName>CaloHitListW</InputCaloHitListName>
+        <ClusterListName>ClustersW</ClusterListName>
+        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+    </algorithm>
+    <algorithm type = "LArLayerSplitting"/>
+    <algorithm type = "LArTransverseAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseExtension"/>
+    <algorithm type = "LArLongitudinalExtension"/>
+    <algorithm type = "LArBranchSplitting">
+        <CosmicMode>true</CosmicMode>
+    </algorithm>
+    <algorithm type = "LArDeltaRaySplitting">
+        <CosmicMode>true</CosmicMode>
+    </algorithm>
+    <algorithm type = "LArCosmicRayExtension"/>
+    <algorithm type = "LArDeltaRayExtension"/>
+    <algorithm type = "LArCosmicRayTrackConsolidation"/>
+    <algorithm type = "LArClusterCharacterisation"/>
+
+    <!-- 2D cosmic ray reconstruction, U View -->
+    <algorithm type = "LArClusteringParent">
+        <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
+        <InputCaloHitListName>CaloHitListU</InputCaloHitListName>
+        <ClusterListName>ClustersU </ClusterListName>
+        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+    </algorithm>
+    <algorithm type = "LArLayerSplitting"/>
+    <algorithm type = "LArTransverseAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseExtension"/>
+    <algorithm type = "LArLongitudinalExtension"/>
+    <algorithm type = "LArBranchSplitting">
+        <CosmicMode>true</CosmicMode>
+    </algorithm>
+    <algorithm type = "LArDeltaRaySplitting">
+        <CosmicMode>true</CosmicMode>
+    </algorithm>
+    <algorithm type = "LArCosmicRayExtension"/>
+    <algorithm type = "LArDeltaRayExtension"/>
+    <algorithm type = "LArCosmicRayTrackConsolidation"/>
+    <algorithm type = "LArClusterCharacterisation"/>
+
+    <!-- 2D cosmic ray reconstruction, V View -->
+    <algorithm type = "LArClusteringParent">
+        <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
+        <InputCaloHitListName>CaloHitListV</InputCaloHitListName>
+        <ClusterListName>ClustersV</ClusterListName>
+        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+    </algorithm>
+    <algorithm type = "LArLayerSplitting"/>
+    <algorithm type = "LArTransverseAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseExtension"/>
+    <algorithm type = "LArLongitudinalExtension"/>
+    <algorithm type = "LArBranchSplitting">
+        <CosmicMode>true</CosmicMode>
+    </algorithm>
+    <algorithm type = "LArDeltaRaySplitting">
+        <CosmicMode>true</CosmicMode>
+    </algorithm>
+    <algorithm type = "LArCosmicRayExtension"/>
+    <algorithm type = "LArDeltaRayExtension"/>
+    <algorithm type = "LArCosmicRayTrackConsolidation"/>
+    <algorithm type = "LArClusterCharacterisation"/>
+
+    <!-- 3D cosmic ray reconstruction -->
+    <algorithm type = "LArThreeDTransverseTracks">
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <TrackTools>
+            <tool type = "LArClearTracks"/>
+            <tool type = "LArUndershootTracks"/>
+            <tool type = "LArOvershootTracks"/>
+            <tool type = "LArMissingTracks"/>
+            <!--tool type = "LArTensorVisualization"/-->
+        </TrackTools>
+    </algorithm>
+
+    <!--algorithm type = "LArThreeDLongitudinalTracks">
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+    </algorithm-->
+
+    <!-- 2D cosmic tidy-up -->
+    <algorithm type = "LArCosmicRayShowerMerging">
+        <InputClusterListName>ClustersW</InputClusterListName>
+    </algorithm>
+    <algorithm type = "LArCosmicRayShowerMerging">
+        <InputClusterListName>ClustersU</InputClusterListName>
+    </algorithm>
+    <algorithm type = "LArCosmicRayShowerMerging">
+        <InputClusterListName>ClustersV</InputClusterListName>
+    </algorithm>
+
+    <!-- 3D cosmic identification -->
+    <algorithm type = "LArCheatingCosmicRayIdentification">
+        <InputPfoListName>ThreeDParticles</InputPfoListName>
+        <OutputPfoListName>ThreeDCosmicRays</OutputPfoListName>
+    </algorithm>
+
+    <!-- 3D cosmic tidy-up -->
+    <algorithm type = "LArCosmicRayShowerMatching">
+        <InputCosmicRayPfoListName>ThreeDCosmicRays</InputCosmicRayPfoListName>
+        <InputPfoListName>ThreeDParticles</InputPfoListName>
+        <InputClusterListNamesU>ClustersU</InputClusterListNamesU>
+        <InputClusterListNamesV>ClustersV</InputClusterListNamesV>
+        <InputClusterListNamesW>ClustersW</InputClusterListNamesW>
+    </algorithm>
+
+    <!-- Cosmic removal -->
+    <algorithm type = "LArListDissolution">
+        <PfoListNames>ThreeDParticles</PfoListNames>
+    </algorithm>
+    <algorithm type = "LArListDissolution">
+        <WarnIfClustersUnavailable>false</WarnIfClustersUnavailable>
+        <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+    </algorithm>
+    <algorithm type = "LArListMerging">
+        <SourceClusterListNames>ClustersU ClustersV ClustersW</SourceClusterListNames>
+        <TargetClusterListNames>CosmicRayClustersU CosmicRayClustersV CosmicRayClustersW</TargetClusterListNames>
+    </algorithm>
+
+    <algorithm type = "LArVisualMonitoring">
+        <ShowMCParticles>false</ShowMCParticles>
+        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
+        <ShowCurrentTracks>false</ShowCurrentTracks>
+        <ShowCurrentClusters>false</ShowCurrentClusters>
+        <ShowCurrentPfos>false</ShowCurrentPfos>
+        <PfoListNames>ThreeDCosmicRays</PfoListNames>
+        <ShowDetector>false</ShowDetector>
+        <BlackBackground>false</BlackBackground>
+        <HitColors>Iterate</HitColors>
+    </algorithm>
+
+
+    <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION -->
+    <algorithm type = "LArListPreparation">
+        <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
+        <OutputCaloHitListNameW>NoCosmicCaloHitListW</OutputCaloHitListNameW>
+        <OutputCaloHitListNameU>NoCosmicCaloHitListU</OutputCaloHitListNameU>
+        <OutputCaloHitListNameV>NoCosmicCaloHitListV</OutputCaloHitListNameV>
+        <FilteredCaloHitListName>NoCosmicCaloHitListFiltered</FilteredCaloHitListName>
+        <CurrentCaloHitListReplacement>NoCosmicCaloHitListW</CurrentCaloHitListReplacement>
+        <MCNeutrinoSelection>true</MCNeutrinoSelection>
+        <OutputMCParticleListNameU>NoCosmicMCParticleListU</OutputMCParticleListNameU>
+        <OutputMCParticleListNameV>NoCosmicMCParticleListV</OutputMCParticleListNameV>
+        <OutputMCParticleListNameW>NoCosmicMCParticleListW</OutputMCParticleListNameW>
+        <OutputMCParticleListName3D>NoCosmicMCParticleList3D</OutputMCParticleListName3D>
+        <CurrentMCParticleListReplacement>NoCosmicMCParticleList3D</CurrentMCParticleListReplacement>
+    </algorithm>
+
+    <algorithm type = "LArVisualMonitoring">
+        <ShowMCParticles>false</ShowMCParticles>
+        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
+        <ShowCurrentTracks>false</ShowCurrentTracks>
+        <ShowCurrentClusters>false</ShowCurrentClusters>
+        <ShowCurrentPfos>false</ShowCurrentPfos>
+        <CaloHitListNames>NoCosmicCaloHitListW NoCosmicCaloHitListU NoCosmicCaloHitListV</CaloHitListNames>
+        <ShowDetector>false</ShowDetector>
+        <BlackBackground>false</BlackBackground>
+        <HitColors>Iterate</HitColors>
+    </algorithm>
+
+    <!-- 2D neutrino-induced event reconstruction, W View -->
+    <algorithm type = "LArClusteringParent">
+        <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
+        <InputCaloHitListName>NoCosmicCaloHitListW</InputCaloHitListName>
+        <ClusterListName>ClustersW</ClusterListName>
+        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+    </algorithm>
+    <algorithm type = "LArLayerSplitting"/>
+    <algorithm type = "LArTransverseAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseExtension"/>
+    <algorithm type = "LArLongitudinalExtension"/>
+    <algorithm type = "LArBranchSplitting"/>
+    <algorithm type = "LArKinkSplitting"/>
+    <algorithm type = "LArClusterCharacterisation"/>
+
+    <!-- 2D neutrino-induced event reconstruction, U View -->
+    <algorithm type = "LArClusteringParent">
+        <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
+        <InputCaloHitListName>NoCosmicCaloHitListU</InputCaloHitListName>
+        <ClusterListName>ClustersU</ClusterListName>
+        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+    </algorithm>
+    <algorithm type = "LArLayerSplitting"/>
+    <algorithm type = "LArTransverseAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseExtension"/>
+    <algorithm type = "LArLongitudinalExtension"/>
+    <algorithm type = "LArBranchSplitting"/>
+    <algorithm type = "LArKinkSplitting"/>
+    <algorithm type = "LArClusterCharacterisation"/>
+
+    <!-- 2D neutrino-induced event reconstruction, V View -->
+    <algorithm type = "LArClusteringParent">
+        <algorithm type = "LArClusterCreation" description = "ClusterFormation"/>
+        <InputCaloHitListName>NoCosmicCaloHitListV</InputCaloHitListName>
+        <ClusterListName>ClustersV</ClusterListName>
+        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+    </algorithm>
+    <algorithm type = "LArLayerSplitting"/>
+    <algorithm type = "LArTransverseAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseExtension"/>
+    <algorithm type = "LArLongitudinalExtension"/>
+    <algorithm type = "LArBranchSplitting"/>
+    <algorithm type = "LArKinkSplitting"/>
+    <algorithm type = "LArClusterCharacterisation"/>
+
+    <!-- 3D -induced particle reconstruction -->
+    <algorithm type = "LArThreeDTransverseTracks">
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <TrackTools>
+            <tool type = "LArClearTracks"/>
+            <tool type = "LArUndershootTracks"/>
+            <tool type = "LArOvershootTracks"/>
+            <tool type = "LArMissingTracks"/>
+            <!--tool type = "LArTensorVisualization"/-->
+        </TrackTools>
+    </algorithm>
+
+    <!--algorithm type = "LArThreeDLongitudinalTracks">
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
+        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+    </algorithm-->
+
+    <algorithm type = "LArVisualMonitoring">
+        <ShowMCParticles>false</ShowMCParticles>
+        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
+        <ShowCurrentTracks>false</ShowCurrentTracks>
+        <ShowCurrentClusters>false</ShowCurrentClusters>
+        <ShowCurrentPfos>false</ShowCurrentPfos>
+        <PfoListNames>ThreeDParticles</PfoListNames>
+        <ShowDetector>false</ShowDetector>
+        <BlackBackground>false</BlackBackground>
+        <HitColors>Iterate</HitColors>
+    </algorithm>
+</pandora>
