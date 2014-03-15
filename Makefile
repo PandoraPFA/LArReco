@@ -23,8 +23,8 @@ PROJECT_BINARY_DIR  = $(PROJECT_DIR)/bin/
 INCLUDES  = -I $(PROJECT_SOURCE_DIR)
 INCLUDES += -I $(PANDORA_DIR)/PandoraSDK/include/
 INCLUDES += -I $(PANDORA_LARCONTENT_DIR)/include/
-INCLUDES += -I $(shell root-config --incdir)
 ifdef MONITORING
+    INCLUDES += -I $(shell root-config --incdir)
     INCLUDES += -I $(PANDORA_DIR)/PandoraMonitoring/include/
 endif
 
@@ -42,16 +42,16 @@ DEPENDS = $(OBJECTS:.o=.d)
 
 LIBS  = -L$(PANDORA_LARCONTENT_DIR)/lib -lLArContent
 LIBS += -L$(PANDORA_DIR)/lib -lPandoraSDK
-LIBS += $(shell root-config --glibs)
-LIBS += $(shell root-config --evelibs)
 ifdef MONITORING
+    LIBS += $(shell root-config --glibs --evelibs)
     LIBS += -lPandoraMonitoring
 endif
 ifdef BUILD_32BIT_COMPATIBLE
     LIBS += -m32
 endif
 
-LDFLAGS = $(LIBS) -Wl,-rpath
+LDFLAGS  = $(shell root-config --auxcflags)
+LDFLAGS += $(LIBS) -Wl,-rpath
 
 all: $(OBJECTS) PandoraInterface
 

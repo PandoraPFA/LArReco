@@ -17,7 +17,9 @@
 #include "MicroBooNEPseudoLayerCalculator.h"
 #include "MicroBooNETransformationCalculator.h"
 
+#ifdef MONITORING
 #include "TApplication.h"
+#endif
 
 #include <cstdlib>
 #include <iostream>
@@ -66,10 +68,10 @@ int main(int argc, char *argv[])
 
         if (!ParseCommandLine(argc, argv, parameters))
             return 1;
-
-        TApplication *pTApplication = new TApplication("MyTest", &argc, argv); 
+#ifdef MONITORING
+        TApplication *pTApplication = new TApplication("MyTest", &argc, argv);
         pTApplication->SetReturnFromRun(kTRUE);
-
+#endif
         // Construct pandora instance
         pandora::Pandora *pPandora = new pandora::Pandora();
 
