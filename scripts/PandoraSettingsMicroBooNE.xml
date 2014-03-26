@@ -127,6 +127,7 @@
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
         <TrackTools>
             <tool type = "LArClearTracks"/>
+            <tool type = "LArLongTracks"/>
             <tool type = "LArUndershootTracks"/>
             <tool type = "LArOvershootTracks"/>
             <tool type = "LArMissingTracks"/>
@@ -277,6 +278,7 @@
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
         <TrackTools>
             <tool type = "LArClearTracks"/>
+            <tool type = "LArLongTracks"/>
             <tool type = "LArUndershootTracks"/>
             <tool type = "LArOvershootTracks"/>
             <tool type = "LArMissingTracks"/>
