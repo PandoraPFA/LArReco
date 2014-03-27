@@ -128,8 +128,8 @@
         <TrackTools>
             <tool type = "LArClearTracks"/>
             <tool type = "LArLongTracks"/>
-            <tool type = "LArUndershootTracks"/>
             <tool type = "LArOvershootTracks"/>
+            <tool type = "LArUndershootTracks"/>
             <tool type = "LArMissingTracks"/>
             <!--tool type = "LArTensorVisualization"/-->
         </TrackTools>
@@ -279,8 +279,8 @@
         <TrackTools>
             <tool type = "LArClearTracks"/>
             <tool type = "LArLongTracks"/>
-            <tool type = "LArUndershootTracks"/>
             <tool type = "LArOvershootTracks"/>
+            <tool type = "LArUndershootTracks"/>
             <tool type = "LArMissingTracks"/>
             <!--tool type = "LArTensorVisualization"/-->
         </TrackTools>

@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
 
             if (parameters.m_shouldDisplayEventNumber)
             {
-                std::cout << std::endl << "   PROCESSING EVENT: " << nEvents << std::endl << std::endl;
+                std::cout << std::endl << "   PROCESSING EVENT: " << (nEvents - 1) << std::endl << std::endl;
             }
 
             if (parameters.m_shouldDisplayEventTime)
