@@ -70,7 +70,7 @@
     </algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <algorithm type = "LArTwoDTrackConsolidation"/>
+    <algorithm type = "LArTrackConsolidation"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
     <!-- 2D cosmic ray reconstruction, U View -->
@@ -93,7 +93,7 @@
     </algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <algorithm type = "LArTwoDTrackConsolidation"/>
+    <algorithm type = "LArTrackConsolidation"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
     <!-- 2D cosmic ray reconstruction, V View -->
@@ -116,7 +116,7 @@
     </algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <algorithm type = "LArTwoDTrackConsolidation"/>
+    <algorithm type = "LArTrackConsolidation"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
     <!-- 3D cosmic ray reconstruction -->
