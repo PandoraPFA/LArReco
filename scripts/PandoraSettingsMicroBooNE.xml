@@ -70,6 +70,7 @@
     </algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
+    <algorithm type = "LArTrackCleaning"/>
     <algorithm type = "LArTrackConsolidation"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
@@ -93,6 +94,7 @@
     </algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
+    <algorithm type = "LArTrackCleaning"/>
     <algorithm type = "LArTrackConsolidation"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
@@ -116,6 +118,7 @@
     </algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
+    <algorithm type = "LArTrackCleaning"/>
     <algorithm type = "LArTrackConsolidation"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
