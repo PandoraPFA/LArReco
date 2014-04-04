@@ -77,7 +77,6 @@ int main(int argc, char *argv[])
         // Create Pandora Instance
         pPandora = new pandora::Pandora();
 
-        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArBFieldCalculator(*pPandora, new lar::LArBFieldCalculator));
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerCalculator(*pPandora, new lar_pandora::MicroBooNEPseudoLayerCalculator));
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationCalculator(*pPandora, new lar_pandora::MicroBooNETransformationCalculator));
 

@@ -16,9 +16,7 @@
     <!-- PANDORA ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
          <EventFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Events_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_1.pndr</EventFileName>
-         <GeometryFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Geometry_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_1.pndr</GeometryFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
-         <ShouldReadGeometry>true</ShouldReadGeometry>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
