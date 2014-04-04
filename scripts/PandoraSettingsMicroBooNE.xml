@@ -4,6 +4,7 @@
     <!-- HELPER CLASS SETTINGS -->
     <IsMonitoringEnabled>true</IsMonitoringEnabled>
     <ShouldDisplayAlgorithmInfo>true</ShouldDisplayAlgorithmInfo>
+    <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
     <ShouldCollapseMCParticlesToPfoTarget>false</ShouldCollapseMCParticlesToPfoTarget>
 
     <EmShowerFastFunction>LArEmShowerId</EmShowerFastFunction>
