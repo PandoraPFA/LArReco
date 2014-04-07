@@ -4,6 +4,7 @@
     <!-- HELPER CLASS SETTINGS -->
     <IsMonitoringEnabled>true</IsMonitoringEnabled>
     <ShouldDisplayAlgorithmInfo>true</ShouldDisplayAlgorithmInfo>
+    <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
     <ShouldCollapseMCParticlesToPfoTarget>false</ShouldCollapseMCParticlesToPfoTarget>
 
     <EmShowerFastFunction>LArEmShowerId</EmShowerFastFunction>
@@ -15,9 +16,7 @@
     <!-- PANDORA ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
          <EventFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Events_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_1.pndr</EventFileName>
-         <GeometryFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Geometry_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_1.pndr</GeometryFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
-         <ShouldReadGeometry>true</ShouldReadGeometry>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
@@ -70,7 +69,8 @@
     </algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <algorithm type = "LArCosmicRayTrackConsolidation"/>
+    <algorithm type = "LArTrackCleaning"/>
+    <algorithm type = "LArTrackConsolidation"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
     <!-- 2D cosmic ray reconstruction, U View -->
@@ -93,7 +93,8 @@
     </algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <algorithm type = "LArCosmicRayTrackConsolidation"/>
+    <algorithm type = "LArTrackCleaning"/>
+    <algorithm type = "LArTrackConsolidation"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
     <!-- 2D cosmic ray reconstruction, V View -->
@@ -116,7 +117,8 @@
     </algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <algorithm type = "LArCosmicRayTrackConsolidation"/>
+    <algorithm type = "LArTrackCleaning"/>
+    <algorithm type = "LArTrackConsolidation"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
     <!-- 3D cosmic ray reconstruction -->
@@ -127,8 +129,11 @@
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
         <TrackTools>
             <tool type = "LArClearTracks"/>
-            <tool type = "LArUndershootTracks"/>
-            <tool type = "LArOvershootTracks"/>
+            <tool type = "LArLongTracks"/>
+            <tool type = "LArOvershootTracks"><SplitMode>true</SplitMode></tool>
+            <tool type = "LArUndershootTracks"><SplitMode>true</SplitMode></tool>
+            <tool type = "LArOvershootTracks"><SplitMode>false</SplitMode></tool>
+            <tool type = "LArUndershootTracks"><SplitMode>false</SplitMode></tool>
             <tool type = "LArMissingTracks"/>
             <!--tool type = "LArTensorVisualization"/-->
         </TrackTools>
@@ -277,8 +282,11 @@
         <OutputPfoListName>ThreeDParticles</OutputPfoListName>
         <TrackTools>
             <tool type = "LArClearTracks"/>
-            <tool type = "LArUndershootTracks"/>
-            <tool type = "LArOvershootTracks"/>
+            <tool type = "LArLongTracks"/>
+            <tool type = "LArOvershootTracks"><SplitMode>true</SplitMode></tool>
+            <tool type = "LArUndershootTracks"><SplitMode>true</SplitMode></tool>
+            <tool type = "LArOvershootTracks"><SplitMode>false</SplitMode></tool>
+            <tool type = "LArUndershootTracks"><SplitMode>false</SplitMode></tool>
             <tool type = "LArMissingTracks"/>
             <!--tool type = "LArTensorVisualization"/-->
         </TrackTools>

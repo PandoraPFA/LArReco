@@ -12,7 +12,6 @@
 #include "LArContent.h"
 
 #include "LArHelpers/LArThreeDHelper.h"
-#include "LArHelpers/LArVertexHelper.h"
 
 #include "MicroBooNEPseudoLayerCalculator.h"
 #include "MicroBooNETransformationCalculator.h"
@@ -75,10 +74,6 @@ int main(int argc, char *argv[])
         // Construct pandora instance
         pandora::Pandora *pPandora = new pandora::Pandora();
 
-        // Create Pandora Instance
-        pPandora = new pandora::Pandora();
-
-        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArBFieldCalculator(*pPandora, new lar::LArBFieldCalculator));
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerCalculator(*pPandora, new lar_pandora::MicroBooNEPseudoLayerCalculator));
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationCalculator(*pPandora, new lar_pandora::MicroBooNETransformationCalculator));
 
@@ -98,7 +93,7 @@ int main(int argc, char *argv[])
 
             if (parameters.m_shouldDisplayEventNumber)
             {
-                std::cout << std::endl << "   PROCESSING EVENT: " << nEvents << std::endl << std::endl;
+                std::cout << std::endl << "   PROCESSING EVENT: " << (nEvents - 1) << std::endl << std::endl;
             }
 
             if (parameters.m_shouldDisplayEventTime)
