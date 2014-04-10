@@ -134,7 +134,8 @@
             <tool type = "LArUndershootTracks"><SplitMode>true</SplitMode></tool>
             <tool type = "LArOvershootTracks"><SplitMode>false</SplitMode></tool>
             <tool type = "LArUndershootTracks"><SplitMode>false</SplitMode></tool>
-            <tool type = "LArMissingTracks"/>
+            <tool type = "LArMissingTrackSegment"/>
+            <tool type = "LArMissingTrack"/>
             <!--tool type = "LArTensorVisualization"/-->
         </TrackTools>
     </algorithm>
@@ -287,7 +288,8 @@
             <tool type = "LArUndershootTracks"><SplitMode>true</SplitMode></tool>
             <tool type = "LArOvershootTracks"><SplitMode>false</SplitMode></tool>
             <tool type = "LArUndershootTracks"><SplitMode>false</SplitMode></tool>
-            <tool type = "LArMissingTracks"/>
+            <tool type = "LArMissingTrackSegment"/>
+            <tool type = "LArMissingTrack"/>
             <!--tool type = "LArTensorVisualization"/-->
         </TrackTools>
     </algorithm>
