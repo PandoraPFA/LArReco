@@ -49,7 +49,7 @@
         <HitColors>Iterate</HitColors>
     </algorithm>
 
-    <!-- 2D reconstruction, W View -->
+    <!-- 2D cosmic ray reconstruction, W View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListW</InputCaloHitListName>
@@ -58,16 +58,16 @@
     </algorithm>
     <algorithm type = "LArCheatingClusterCharacterisation"/>
 
-    <!-- 2D reconstruction, U View -->
+    <!-- 2D cosmic ray reconstruction, U View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListU</InputCaloHitListName>
-        <ClusterListName>ClustersU</ClusterListName>
+        <ClusterListName>ClustersU </ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
     <algorithm type = "LArCheatingClusterCharacterisation"/>
 
-    <!-- 2D reconstruction, V View -->
+    <!-- 2D cosmic ray reconstruction, V View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListV</InputCaloHitListName>
@@ -76,7 +76,7 @@
     </algorithm>
     <algorithm type = "LArCheatingClusterCharacterisation"/>
 
-    <!-- 3D reconstruction -->
+    <!-- 3D cosmic-ray reconstruction -->
     <algorithm type = "LArCheatingPfoCreation">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
@@ -96,7 +96,7 @@
 
     <!-- 3D cosmic tidy-up -->
     <algorithm type = "LArCheatingCosmicRayShowerMatching">
-        <InputCosmicRayPfoListName>ThreeDParticles</InputCosmicRayPfoListName>
+        <InputCosmicRayPfoListName>ThreeDCosmicRays</InputCosmicRayPfoListName>
         <InputPfoListName>ThreeDParticles</InputPfoListName>
         <InputClusterListNamesU>ClustersU</InputClusterListNamesU>
         <InputClusterListNamesV>ClustersV</InputClusterListNamesV>
@@ -179,7 +179,7 @@
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>NoCosmicCaloHitListV</InputCaloHitListName>
-        <ClusterListName>ClustersU</ClusterListName>
+        <ClusterListName>ClustersV</ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
     <algorithm type = "LArCheatingClusterCharacterisation"/>
