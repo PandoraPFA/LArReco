@@ -135,7 +135,7 @@
             <tool type = "LArOvershootTracks"><SplitMode>false</SplitMode></tool>
             <tool type = "LArUndershootTracks"><SplitMode>false</SplitMode></tool>
             <tool type = "LArMissingTrackSegment"/>
-            <tool type = "LArMissingTrack"/>
+            <tool type = "LArLongTracks"><MinMatchedFraction>0.75</MinMatchedFraction><MinXOverlapFraction>0.75</MinXOverlapFraction></tool>
             <!--tool type = "LArTensorVisualization"/-->
         </TrackTools>
     </algorithm>
@@ -275,7 +275,7 @@
     <algorithm type = "LArKinkSplitting"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
-    <!-- 3D -induced particle reconstruction -->
+    <!-- 3D neutrino-induced particle reconstruction -->
     <algorithm type = "LArThreeDTransverseTracks">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
@@ -289,7 +289,7 @@
             <tool type = "LArOvershootTracks"><SplitMode>false</SplitMode></tool>
             <tool type = "LArUndershootTracks"><SplitMode>false</SplitMode></tool>
             <tool type = "LArMissingTrackSegment"/>
-            <tool type = "LArMissingTrack"/>
+            <tool type = "LArLongTracks"><MinMatchedFraction>0.75</MinMatchedFraction><MinXOverlapFraction>0.75</MinXOverlapFraction></tool>
             <!--tool type = "LArTensorVisualization"/-->
         </TrackTools>
     </algorithm>
