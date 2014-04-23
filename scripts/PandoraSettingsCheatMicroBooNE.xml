@@ -81,23 +81,30 @@
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <OutputPfoListName>Particles3D</OutputPfoListName>
         <IdOffsetU>0</IdOffsetU>
         <IdOffsetV>0</IdOffsetV>
         <IdOffsetW>0</IdOffsetW>
         <MCParticle3DListName>MCParticleList3D</MCParticle3DListName>
     </algorithm>
 
+    <!-- 3D hit creation -->
+    <algorithm type = "LArThreeDHitCreation">
+        <InputPfoListName>Particles3D</InputPfoListName>
+        <OutputCaloHitListName>CaloHitList3D</OutputCaloHitListName>
+        <OutputClusterListName>Clusters3D</OutputClusterListName>
+    </algorithm>
+
     <!-- 3D cosmic identification -->
     <algorithm type = "LArCheatingCosmicRayIdentification">
-        <InputPfoListName>ThreeDParticles</InputPfoListName>
-        <OutputPfoListName>ThreeDCosmicRays</OutputPfoListName>
+        <InputPfoListName>Particles3D</InputPfoListName>
+        <OutputPfoListName>CosmicRays3D</OutputPfoListName>
     </algorithm>
 
     <!-- 3D cosmic tidy-up -->
     <algorithm type = "LArCheatingCosmicRayShowerMatching">
-        <InputCosmicRayPfoListName>ThreeDCosmicRays</InputCosmicRayPfoListName>
-        <InputPfoListName>ThreeDParticles</InputPfoListName>
+        <InputCosmicRayPfoListName>CosmicRays3D</InputCosmicRayPfoListName>
+        <InputPfoListName>Particles3D</InputPfoListName>
         <InputClusterListNamesU>ClustersU</InputClusterListNamesU>
         <InputClusterListNamesV>ClustersV</InputClusterListNamesV>
         <InputClusterListNamesW>ClustersW</InputClusterListNamesW>
@@ -105,11 +112,11 @@
 
     <!-- Cosmic removal -->
     <algorithm type = "LArListDissolution">
-        <PfoListNames>ThreeDParticles</PfoListNames>
+        <PfoListNames>Particles3D</PfoListNames>
     </algorithm>
     <algorithm type = "LArListDissolution">
         <WarnIfClustersUnavailable>false</WarnIfClustersUnavailable>
-        <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+        <ClusterListNames>ClustersU ClustersV ClustersW Clusters3D</ClusterListNames>
     </algorithm>
     <algorithm type = "LArListMerging">
         <SourceClusterListNames>ClustersU ClustersV ClustersW</SourceClusterListNames>
@@ -122,7 +129,7 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
-        <PfoListNames>ThreeDCosmicRays</PfoListNames>
+        <PfoListNames>CosmicRays3D</PfoListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
@@ -189,11 +196,18 @@
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <OutputPfoListName>Particles3D</OutputPfoListName>
         <IdOffsetU>0</IdOffsetU>
         <IdOffsetV>0</IdOffsetV>
         <IdOffsetW>0</IdOffsetW>
         <MCParticle3DListName>MCParticleList3D</MCParticle3DListName>
+    </algorithm>
+
+    <!-- 3D hit creation -->
+    <algorithm type = "LArThreeDHitCreation">
+        <InputPfoListName>Particles3D</InputPfoListName>
+        <OutputCaloHitListName>CaloHitList3D</OutputCaloHitListName>
+        <OutputClusterListName>Clusters3D</OutputClusterListName>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
@@ -202,7 +216,7 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
-        <PfoListNames>ThreeDParticles</PfoListNames>
+        <PfoListNames>Particles3D</PfoListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>

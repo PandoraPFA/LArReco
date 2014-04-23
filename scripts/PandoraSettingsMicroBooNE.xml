@@ -126,7 +126,7 @@
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <OutputPfoListName>Particles3D</OutputPfoListName>
         <TrackTools>
             <tool type = "LArClearTracks"/>
             <tool type = "LArLongTracks"/>
@@ -135,16 +135,24 @@
             <tool type = "LArOvershootTracks"><SplitMode>false</SplitMode></tool>
             <tool type = "LArUndershootTracks"><SplitMode>false</SplitMode></tool>
             <tool type = "LArMissingTrackSegment"/>
+            <tool type = "LArTrackSplitting"/>
             <tool type = "LArLongTracks"><MinMatchedFraction>0.75</MinMatchedFraction><MinXOverlapFraction>0.75</MinXOverlapFraction></tool>
             <!--tool type = "LArTensorVisualization"/-->
         </TrackTools>
+    </algorithm>
+
+    <!-- 3D hit creation -->
+    <algorithm type = "LArThreeDHitCreation">
+        <InputPfoListName>Particles3D</InputPfoListName>
+        <OutputCaloHitListName>CaloHitList3D</OutputCaloHitListName>
+        <OutputClusterListName>Clusters3D</OutputClusterListName>
     </algorithm>
 
     <!--algorithm type = "LArThreeDLongitudinalTracks">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <OutputPfoListName>Particles3D</OutputPfoListName>
     </algorithm-->
 
     <!-- 2D cosmic tidy-up -->
@@ -160,14 +168,14 @@
 
     <!-- 3D cosmic identification -->
     <algorithm type = "LArCheatingCosmicRayIdentification">
-        <InputPfoListName>ThreeDParticles</InputPfoListName>
-        <OutputPfoListName>ThreeDCosmicRays</OutputPfoListName>
+        <InputPfoListName>Particles3D</InputPfoListName>
+        <OutputPfoListName>CosmicRays3D</OutputPfoListName>
     </algorithm>
 
     <!-- 3D cosmic tidy-up -->
     <algorithm type = "LArCosmicRayShowerMatching">
-        <InputCosmicRayPfoListName>ThreeDCosmicRays</InputCosmicRayPfoListName>
-        <InputPfoListName>ThreeDParticles</InputPfoListName>
+        <InputCosmicRayPfoListName>CosmicRays3D</InputCosmicRayPfoListName>
+        <InputPfoListName>Particles3D</InputPfoListName>
         <InputClusterListNamesU>ClustersU</InputClusterListNamesU>
         <InputClusterListNamesV>ClustersV</InputClusterListNamesV>
         <InputClusterListNamesW>ClustersW</InputClusterListNamesW>
@@ -175,15 +183,15 @@
 
     <!-- Cosmic removal -->
     <algorithm type = "LArListDissolution">
-        <PfoListNames>ThreeDParticles</PfoListNames>
+        <PfoListNames>Particles3D</PfoListNames>
     </algorithm>
     <algorithm type = "LArListDissolution">
         <WarnIfClustersUnavailable>false</WarnIfClustersUnavailable>
-        <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+        <ClusterListNames>ClustersU ClustersV ClustersW Clusters3D</ClusterListNames>
     </algorithm>
     <algorithm type = "LArListMerging">
-        <SourceClusterListNames>ClustersU ClustersV ClustersW</SourceClusterListNames>
-        <TargetClusterListNames>CosmicRayClustersU CosmicRayClustersV CosmicRayClustersW</TargetClusterListNames>
+        <SourceClusterListNames>ClustersU ClustersV ClustersW Clusters3D</SourceClusterListNames>
+        <TargetClusterListNames>CosmicRayClustersU CosmicRayClustersV CosmicRayClustersW CosmicRayClusters3D</TargetClusterListNames>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
@@ -192,7 +200,7 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
-        <PfoListNames>ThreeDCosmicRays</PfoListNames>
+        <PfoListNames>CosmicRays3D</PfoListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
@@ -280,7 +288,7 @@
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <OutputPfoListName>Particles3D</OutputPfoListName>
         <TrackTools>
             <tool type = "LArClearTracks"/>
             <tool type = "LArLongTracks"/>
@@ -289,16 +297,24 @@
             <tool type = "LArOvershootTracks"><SplitMode>false</SplitMode></tool>
             <tool type = "LArUndershootTracks"><SplitMode>false</SplitMode></tool>
             <tool type = "LArMissingTrackSegment"/>
+            <tool type = "LArTrackSplitting"/>
             <tool type = "LArLongTracks"><MinMatchedFraction>0.75</MinMatchedFraction><MinXOverlapFraction>0.75</MinXOverlapFraction></tool>
             <!--tool type = "LArTensorVisualization"/-->
         </TrackTools>
+    </algorithm>
+
+    <!-- 3D hit creation -->
+    <algorithm type = "LArThreeDHitCreation">
+        <InputPfoListName>Particles3D</InputPfoListName>
+        <OutputCaloHitListName>CaloHitList3D</OutputCaloHitListName>
+        <OutputClusterListName>Clusters3D</OutputClusterListName>
     </algorithm>
 
     <!--algorithm type = "LArThreeDLongitudinalTracks">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
-        <OutputPfoListName>ThreeDParticles</OutputPfoListName>
+        <OutputPfoListName>Particles3D</OutputPfoListName>
     </algorithm-->
 
     <algorithm type = "LArVisualMonitoring">
@@ -307,7 +323,7 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
-        <PfoListNames>ThreeDParticles</PfoListNames>
+        <PfoListNames>Particles3D</PfoListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
