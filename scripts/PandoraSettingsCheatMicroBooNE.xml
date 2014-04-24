@@ -119,8 +119,8 @@
         <ClusterListNames>ClustersU ClustersV ClustersW Clusters3D</ClusterListNames>
     </algorithm>
     <algorithm type = "LArListMerging">
-        <SourceClusterListNames>ClustersU ClustersV ClustersW</SourceClusterListNames>
-        <TargetClusterListNames>CosmicRayClustersU CosmicRayClustersV CosmicRayClustersW</TargetClusterListNames>
+        <SourceClusterListNames>ClustersU ClustersV ClustersW Clusters3D</SourceClusterListNames>
+        <TargetClusterListNames>CosmicRayClustersU CosmicRayClustersV CosmicRayClustersW CosmicRayClusters3D</TargetClusterListNames>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
@@ -130,6 +130,7 @@
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
         <PfoListNames>CosmicRays3D</PfoListNames>
+        <ClusterListNames>CosmicRayClusters3D</ClusterListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
@@ -217,6 +218,7 @@
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
         <PfoListNames>Particles3D</PfoListNames>
+        <ClusterListNames>Clusters3D</ClusterListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>

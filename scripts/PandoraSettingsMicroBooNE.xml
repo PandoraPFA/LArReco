@@ -201,6 +201,7 @@
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
         <PfoListNames>CosmicRays3D</PfoListNames>
+        <ClusterListNames>CosmicRayClusters3D</ClusterListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
@@ -324,6 +325,7 @@
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
         <PfoListNames>Particles3D</PfoListNames>
+        <ClusterListNames>Clusters3D</ClusterListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>Iterate</HitColors>
