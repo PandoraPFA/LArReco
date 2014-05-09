@@ -15,7 +15,7 @@
 
     <!-- PANDORA ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
-         <EventFileName>/r01/lbne/argon/uboone/S2013.10.21/prodcosmics_3window_uboone/pndr/uBooNE_Events_prodcosmics_3window_uboone_12002736_0.pndr</EventFileName>
+         <EventFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Events_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_1.pndr</EventFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
@@ -46,7 +46,8 @@
         <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
-        <HitColors>Iterate</HitColors>
+        <HitColors>iterate</HitColors>
+        <DetectorView>xz</DetectorView>
     </algorithm>
 
     <!-- 2D cosmic ray reconstruction, W View -->
@@ -61,12 +62,8 @@
     <algorithm type = "LArLongitudinalAssociation"/>
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
-    <algorithm type = "LArBranchSplitting">
-        <CosmicMode>true</CosmicMode>
-    </algorithm>
-    <algorithm type = "LArDeltaRaySplitting">
-        <CosmicMode>true</CosmicMode>
-    </algorithm>
+    <algorithm type = "LArBranchSplitting"><CosmicMode>true</CosmicMode></algorithm>
+    <algorithm type = "LArDeltaRaySplitting"><CosmicMode>true</CosmicMode></algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
     <algorithm type = "LArTrackCleaning"/>
@@ -85,12 +82,8 @@
     <algorithm type = "LArLongitudinalAssociation"/>
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
-    <algorithm type = "LArBranchSplitting">
-        <CosmicMode>true</CosmicMode>
-    </algorithm>
-    <algorithm type = "LArDeltaRaySplitting">
-        <CosmicMode>true</CosmicMode>
-    </algorithm>
+    <algorithm type = "LArBranchSplitting"><CosmicMode>true</CosmicMode></algorithm>
+    <algorithm type = "LArDeltaRaySplitting"><CosmicMode>true</CosmicMode></algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
     <algorithm type = "LArTrackCleaning"/>
@@ -109,12 +102,8 @@
     <algorithm type = "LArLongitudinalAssociation"/>
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
-    <algorithm type = "LArBranchSplitting">
-        <CosmicMode>true</CosmicMode>
-    </algorithm>
-    <algorithm type = "LArDeltaRaySplitting">
-        <CosmicMode>true</CosmicMode>
-    </algorithm>
+    <algorithm type = "LArBranchSplitting"><CosmicMode>true</CosmicMode></algorithm>
+    <algorithm type = "LArDeltaRaySplitting"><CosmicMode>true</CosmicMode></algorithm>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
     <algorithm type = "LArTrackCleaning"/>
@@ -175,21 +164,19 @@
     <algorithm type = "LArCosmicRayShowerMerging">
         <InputClusterListName>ClustersV</InputClusterListName>
     </algorithm>
-    <algorithm type = "LArCosmicRayShowerMatching"> <!--TODO fix up Mark's code -->
-        <InputCosmicRayPfoListName>CosmicRayParticles3D</InputCosmicRayPfoListName>
+    <algorithm type = "LArCosmicRayShowerMatching">
         <InputPfoListName>Particles3D</InputPfoListName>
         <InputClusterListNamesU>ClustersU</InputClusterListNamesU>
         <InputClusterListNamesV>ClustersV</InputClusterListNamesV>
         <InputClusterListNamesW>ClustersW</InputClusterListNamesW>
     </algorithm>
-
-    <!--algorithm type = "LArThreeDHitCreation">
+    <algorithm type = "LArThreeDHitCreation">
         <InputPfoListName>Particles3D</InputPfoListName>
         <OutputCaloHitListName>CaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>Clusters3D</OutputClusterListName>
         <HitCreationTools>
         </HitCreationTools>
-    </algorithm-->
+    </algorithm>
 
     <!-- 3D cosmic ray identification and removal -->
     <algorithm type = "LArCheatingCosmicRayIdentification">
@@ -216,8 +203,8 @@
         <ClusterListNames>CosmicRayClusters3D</ClusterListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
-        <HitColors>Iterate</HitColors>
-        <DetectorView>default</DetectorView>
+        <HitColors>iterate</HitColors>
+        <DetectorView>xz</DetectorView>
     </algorithm>
 
     <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: TRACKS -->
@@ -245,7 +232,8 @@
         <CaloHitListNames>NeutrinoCaloHitListW NeutrinoCaloHitListU NeutrinoCaloHitListV</CaloHitListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
-        <HitColors>Iterate</HitColors>
+        <HitColors>iterate</HitColors>
+        <DetectorView>xz</DetectorView>
     </algorithm>
 
     <!-- 2D neutrino-induced event reconstruction, W View -->
@@ -362,8 +350,8 @@
         <ClusterListNames>NeutrinoTrackClusters3D</ClusterListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
-        <HitColors>Iterate</HitColors>
-        <DetectorView>default</DetectorView>
+        <HitColors>iterate</HitColors>
+        <DetectorView>xz</DetectorView>
     </algorithm>
 
     <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: SHOWERS -->
@@ -385,7 +373,8 @@
         <CaloHitListNames>ShowerCaloHitListW ShowerCaloHitListU ShowerCaloHitListV</CaloHitListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
-        <HitColors>Iterate</HitColors>
+        <HitColors>iterate</HitColors>
+        <DetectorView>xz</DetectorView>
     </algorithm>
 
     <!-- TODO Use neutrino tracks to get candidate vertices -->
@@ -449,22 +438,9 @@
         <ShowCurrentPfos>false</ShowCurrentPfos>
         <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
         <ShowDetector>false</ShowDetector>
+        <ShowOnlyAvailable>true</ShowOnlyAvailable>
         <BlackBackground>false</BlackBackground>
-        <HitColors>Iterate</HitColors>
-        <DetectorView>default</DetectorView>
-    </algorithm>
-
-    <algorithm type = "LArVisualMonitoring">
-        <ShowMCParticles>false</ShowMCParticles>
-        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
-        <ShowCurrentTracks>false</ShowCurrentTracks>
-        <ShowCurrentClusters>false</ShowCurrentClusters>
-        <ShowCurrentPfos>false</ShowCurrentPfos>
-        <PfoListNames>CosmicRayParticles3D NeutrinoTrackParticles3D</PfoListNames>
-        <ClusterListNames>CosmicRayClusters3D NeutrinoTrackClusters3D</ClusterListNames>
-        <ShowDetector>false</ShowDetector>
-        <BlackBackground>false</BlackBackground>
-        <HitColors>Iterate</HitColors>
-        <DetectorView>default</DetectorView>
+        <HitColors>iterate</HitColors>
+        <DetectorView>xz</DetectorView>
     </algorithm>
 </pandora>

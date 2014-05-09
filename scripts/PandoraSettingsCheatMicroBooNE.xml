@@ -46,7 +46,8 @@
         <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
-        <HitColors>Iterate</HitColors>
+        <HitColors>iterate</HitColors>
+        <DetectorView>xz</DetectorView>
     </algorithm>
 
     <!-- 2D cosmic ray reconstruction, W View -->
@@ -76,7 +77,7 @@
     </algorithm>
     <algorithm type = "LArCheatingClusterCharacterisation"/>
 
-    <!-- 3D cosmic-ray reconstruction -->
+    <!-- 3D cosmic ray reconstruction -->
     <algorithm type = "LArCheatingPfoCreation">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
@@ -87,34 +88,30 @@
         <IdOffsetW>0</IdOffsetW>
         <MCParticle3DListName>MCParticleList3D</MCParticle3DListName>
     </algorithm>
-
-    <!-- 3D hit creation -->
     <algorithm type = "LArThreeDHitCreation">
         <InputPfoListName>Particles3D</InputPfoListName>
         <OutputCaloHitListName>CaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>Clusters3D</OutputClusterListName>
+        <HitCreationTools>
+            <tool type = "LArTransverseTrackHitCreation"/>
+        </HitCreationTools>
     </algorithm>
 
-    <!-- 3D cosmic identification -->
-    <algorithm type = "LArCheatingCosmicRayIdentification">
-        <InputPfoListName>Particles3D</InputPfoListName>
-        <OutputPfoListName>CosmicRays3D</OutputPfoListName>
-    </algorithm>
-
-    <!-- 3D cosmic tidy-up -->
+    <!-- Cosmic ray tidy-up -->
     <algorithm type = "LArCheatingCosmicRayShowerMatching">
-        <InputCosmicRayPfoListName>CosmicRays3D</InputCosmicRayPfoListName>
         <InputPfoListName>Particles3D</InputPfoListName>
         <InputClusterListNamesU>ClustersU</InputClusterListNamesU>
         <InputClusterListNamesV>ClustersV</InputClusterListNamesV>
         <InputClusterListNamesW>ClustersW</InputClusterListNamesW>
     </algorithm>
-
-    <!-- Cosmic removal -->
-    <algorithm type = "LArListDissolution">
-        <PfoListNames>Particles3D</PfoListNames>
+    
+    <!-- 3D cosmic ray identification and removal -->
+    <algorithm type = "LArCheatingCosmicRayIdentification">
+        <InputPfoListName>Particles3D</InputPfoListName>
+        <OutputPfoListName>CosmicRayParticles3D</OutputPfoListName>
     </algorithm>
     <algorithm type = "LArListDissolution">
+        <PfoListNames>Particles3D</PfoListNames>
         <WarnIfClustersUnavailable>false</WarnIfClustersUnavailable>
         <ClusterListNames>ClustersU ClustersV ClustersW Clusters3D</ClusterListNames>
     </algorithm>
@@ -129,28 +126,28 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
-        <PfoListNames>CosmicRays3D</PfoListNames>
+        <PfoListNames>CosmicRayParticles3D</PfoListNames>
         <ClusterListNames>CosmicRayClusters3D</ClusterListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
-        <HitColors>Iterate</HitColors>
+        <HitColors>iterate</HitColors>
+        <DetectorView>xz</DetectorView>
     </algorithm>
-
 
     <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION -->
     <algorithm type = "LArListPreparation">
         <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
-        <OutputCaloHitListNameW>NoCosmicCaloHitListW</OutputCaloHitListNameW>
-        <OutputCaloHitListNameU>NoCosmicCaloHitListU</OutputCaloHitListNameU>
-        <OutputCaloHitListNameV>NoCosmicCaloHitListV</OutputCaloHitListNameV>
-        <FilteredCaloHitListName>NoCosmicCaloHitListFiltered</FilteredCaloHitListName>
-        <CurrentCaloHitListReplacement>NoCosmicCaloHitListW</CurrentCaloHitListReplacement>
+        <OutputCaloHitListNameW>NeutrinoCaloHitListW</OutputCaloHitListNameW>
+        <OutputCaloHitListNameU>NeutrinoCaloHitListU</OutputCaloHitListNameU>
+        <OutputCaloHitListNameV>NeutrinoCaloHitListV</OutputCaloHitListNameV>
+        <FilteredCaloHitListName>NeutrinoCaloHitListFiltered</FilteredCaloHitListName>
+        <CurrentCaloHitListReplacement>NeutrinoCaloHitListW</CurrentCaloHitListReplacement>
         <MCNeutrinoSelection>true</MCNeutrinoSelection>
-        <OutputMCParticleListNameU>NoCosmicMCParticleListU</OutputMCParticleListNameU>
-        <OutputMCParticleListNameV>NoCosmicMCParticleListV</OutputMCParticleListNameV>
-        <OutputMCParticleListNameW>NoCosmicMCParticleListW</OutputMCParticleListNameW>
-        <OutputMCParticleListName3D>NoCosmicMCParticleList3D</OutputMCParticleListName3D>
-        <CurrentMCParticleListReplacement>NoCosmicMCParticleList3D</CurrentMCParticleListReplacement>
+        <OutputMCParticleListNameU>NeutrinoMCParticleListU</OutputMCParticleListNameU>
+        <OutputMCParticleListNameV>NeutrinoMCParticleListV</OutputMCParticleListNameV>
+        <OutputMCParticleListNameW>NeutrinoMCParticleListW</OutputMCParticleListNameW>
+        <OutputMCParticleListName3D>NeutrinoMCParticleList3D</OutputMCParticleListName3D>
+        <CurrentMCParticleListReplacement>NeutrinoMCParticleList3D</CurrentMCParticleListReplacement>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
@@ -159,16 +156,17 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
-        <CaloHitListNames>NoCosmicCaloHitListW NoCosmicCaloHitListU NoCosmicCaloHitListV</CaloHitListNames>
+        <CaloHitListNames>NeutrinoCaloHitListW NeutrinoCaloHitListU NeutrinoCaloHitListV</CaloHitListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
-        <HitColors>Iterate</HitColors>
+        <HitColors>iterate</HitColors>
+        <DetectorView>xz</DetectorView>
     </algorithm>
 
     <!-- 2D neutrino-induced event reconstruction, W View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation"/>
-        <InputCaloHitListName>NoCosmicCaloHitListW</InputCaloHitListName>
+        <InputCaloHitListName>NeutrinoCaloHitListW</InputCaloHitListName>
         <ClusterListName>ClustersW</ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
@@ -177,7 +175,7 @@
     <!-- 2D neutrino-induced event reconstruction, U View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation"/>
-        <InputCaloHitListName>NoCosmicCaloHitListU</InputCaloHitListName>
+        <InputCaloHitListName>NeutrinoCaloHitListU</InputCaloHitListName>
         <ClusterListName>ClustersU</ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
@@ -186,13 +184,13 @@
     <!-- 2D neutrino-induced event reconstruction, V View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation"/>
-        <InputCaloHitListName>NoCosmicCaloHitListV</InputCaloHitListName>
+        <InputCaloHitListName>NeutrinoCaloHitListV</InputCaloHitListName>
         <ClusterListName>ClustersV</ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
     <algorithm type = "LArCheatingClusterCharacterisation"/>
 
-    <!-- 3D neutrino-induced particle reconstruction -->
+    <!-- 3D neutrino-induced event reconstruction -->
     <algorithm type = "LArCheatingPfoCreation">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
@@ -203,12 +201,13 @@
         <IdOffsetW>0</IdOffsetW>
         <MCParticle3DListName>MCParticleList3D</MCParticle3DListName>
     </algorithm>
-
-    <!-- 3D hit creation -->
     <algorithm type = "LArThreeDHitCreation">
         <InputPfoListName>Particles3D</InputPfoListName>
         <OutputCaloHitListName>CaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>Clusters3D</OutputClusterListName>
+        <HitCreationTools>
+            <tool type = "LArTransverseTrackHitCreation"/>
+        </HitCreationTools>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
@@ -221,6 +220,21 @@
         <ClusterListNames>Clusters3D</ClusterListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
-        <HitColors>Iterate</HitColors>
+        <HitColors>iterate</HitColors>
+        <DetectorView>xz</DetectorView>
+    </algorithm>
+
+    <algorithm type = "LArVisualMonitoring">
+        <ShowMCParticles>false</ShowMCParticles>
+        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
+        <ShowCurrentTracks>false</ShowCurrentTracks>
+        <ShowCurrentClusters>false</ShowCurrentClusters>
+        <ShowCurrentPfos>false</ShowCurrentPfos>
+        <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+        <ShowDetector>false</ShowDetector>
+        <ShowOnlyAvailable>true</ShowOnlyAvailable>
+        <BlackBackground>false</BlackBackground>
+        <HitColors>iterate</HitColors>
+        <DetectorView>xz</DetectorView>
     </algorithm>
 </pandora>
