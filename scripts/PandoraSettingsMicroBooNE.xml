@@ -135,6 +135,8 @@
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>Particles3D</OutputPfoListName>
         <TrackTools>
+            <tool type = "LArClearLongitudinalTracks"/>
+            <tool type = "LArMatchedEndPoints"/>
         </TrackTools>
     </algorithm>
     <algorithm type = "LArThreeDRemnantTracks">
@@ -309,6 +311,8 @@
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>Particles3D</OutputPfoListName>
         <TrackTools>
+            <tool type = "LArClearLongitudinalTracks"/>
+            <tool type = "LArMatchedEndPoints"/>
         </TrackTools>
     </algorithm>
     <algorithm type = "LArThreeDRemnantTracks">
