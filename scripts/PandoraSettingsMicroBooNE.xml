@@ -145,6 +145,13 @@
             <tool type = "LArMatchedEndPoints"/>
         </TrackTools>
     </algorithm>
+
+    <algorithm type = "LArCosmicRayTrackMatching">
+        <InputClusterListNamesU>ClustersU</InputClusterListNamesU>
+        <InputClusterListNamesV>ClustersV</InputClusterListNamesV>
+        <InputClusterListNamesW>ClustersW</InputClusterListNamesW>
+    </algorithm>
+
     <algorithm type = "LArThreeDRemnantTracks">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
