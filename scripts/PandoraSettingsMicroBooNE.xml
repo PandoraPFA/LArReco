@@ -147,9 +147,9 @@
     </algorithm>
 
     <algorithm type = "LArCosmicRayTrackMatching">
-        <InputClusterListNamesU>ClustersU</InputClusterListNamesU>
-        <InputClusterListNamesV>ClustersV</InputClusterListNamesV>
-        <InputClusterListNamesW>ClustersW</InputClusterListNamesW>
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
     </algorithm>
 
     <algorithm type = "LArThreeDRemnantTracks">
