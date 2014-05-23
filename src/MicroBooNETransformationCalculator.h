@@ -128,6 +128,37 @@ public:
      */
     float GetSigmaUVW() const;
 
+    /** 
+     *  @brief  Get the y, z position that yields the minimum chi squared value with respect to specified u, v and w coordinates
+     * 
+     *  @param  u the u coordinate
+     *  @param  v the v coordinate
+     *  @param  w the w coordinate
+     *  @param  sigmaU the uncertainty in the u coordinate
+     *  @param  sigmaV the uncertainty in the v coordinate
+     *  @param  sigmaW the uncertainty in the w coordinate
+     *  @param  y to receive the y coordinate
+     *  @param  z to receive the z coordinate
+     *  @param  chiSquared to receive the chi squared value
+     */
+    void GetMinChiSquaredYZ(const float u, const float v, const float w, const float sigmaU, const float sigmaV, const float sigmaW,
+        float &y, float &z, float &chiSquared) const;
+
+    /** 
+     *  @brief  Get the y, z position that corresponds to a projection of two fit positions onto the specific wire associated with a hit
+     * 
+     *  @param  hitPositionAndType the hit position and hit type
+     *  @param  fitPositionAndType1 the first fit position and hit type
+     *  @param  fitPositionAndType2 the second fit position and hit type
+     *  @param  sigmaHit the uncertainty in the hit coordinate
+     *  @param  sigmaFit the uncertainty in the fit coordinates
+     *  @param  y to receive the y coordinate
+     *  @param  z to receive the z coordinate
+     *  @param  chiSquared to receive the chi squared value
+     */
+    void GetProjectedYZ(const PositionAndType &hitPositionAndType, const PositionAndType &fitPositionAndType1,
+        const PositionAndType &fitPositionAndType2, const float sigmaHit, const float sigmaFit, float &y, float &z, float &chiSquared) const;
+
 private:
     static const float  m_thetaU;            // inclination of U wires (radians)
     static const float  m_thetaV;            // inclination of V wires (radians)
