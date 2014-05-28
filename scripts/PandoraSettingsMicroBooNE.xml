@@ -150,6 +150,8 @@
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
+        <TransverseMode>true</TransverseMode>
+        <LongitudinalMode>true</LongitudinalMode>
     </algorithm>
 
     <algorithm type = "LArThreeDRemnantTracks">
