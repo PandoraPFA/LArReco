@@ -20,7 +20,6 @@
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
-
     <!-- COSMIC RAY RECONSTRUCTION -->
     <algorithm type = "LArListPreparation">
       <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
@@ -68,7 +67,7 @@
     <algorithm type = "LArCosmicRaySplitting"/>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <algorithm type = "LArTrackCleaning"/>
+    <!--algorithm type = "LArTrackCleaning"/-->
     <algorithm type = "LArTrackConsolidation"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
@@ -90,7 +89,7 @@
     <algorithm type = "LArCosmicRaySplitting"/>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <algorithm type = "LArTrackCleaning"/>
+    <!--algorithm type = "LArTrackCleaning"/-->
     <algorithm type = "LArTrackConsolidation"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
@@ -112,7 +111,7 @@
     <algorithm type = "LArCosmicRaySplitting"/>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <algorithm type = "LArTrackCleaning"/>
+    <!--algorithm type = "LArTrackCleaning"/-->
     <algorithm type = "LArTrackConsolidation"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
@@ -145,15 +144,24 @@
             <tool type = "LArMatchedEndPoints"/>
         </TrackTools>
     </algorithm>
-
-    <algorithm type = "LArCosmicRayTrackMatching">
+    <algorithm type = "LArThreeDTransverseTrackFragments">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
-        <TransverseMode>true</TransverseMode>
-        <LongitudinalMode>true</LongitudinalMode>
+        <OutputPfoListName>Particles3D</OutputPfoListName>
+        <TrackTools>
+            <tool type = "LArClearTrackFragments"/>
+        </TrackTools>
     </algorithm>
-
+    <algorithm type = "LArThreeDLongitudinalTrackFragments">
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
+        <OutputPfoListName>Particles3D</OutputPfoListName>
+        <TrackTools>
+            <tool type = "LArClearTrackFragments"/>
+        </TrackTools>
+    </algorithm>
     <algorithm type = "LArThreeDRemnantTracks">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
@@ -329,6 +337,24 @@
         <TrackTools>
             <tool type = "LArClearLongitudinalTracks"/>
             <tool type = "LArMatchedEndPoints"/>
+        </TrackTools>
+    </algorithm>
+    <algorithm type = "LArThreeDTransverseTrackFragments">
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
+        <OutputPfoListName>Particles3D</OutputPfoListName>
+        <TrackTools>
+            <tool type = "LArClearTrackFragments"/>
+        </TrackTools>
+    </algorithm>
+    <algorithm type = "LArThreeDLongitudinalTrackFragments">
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
+        <OutputPfoListName>Particles3D</OutputPfoListName>
+        <TrackTools>
+            <tool type = "LArClearTrackFragments"/>
         </TrackTools>
     </algorithm>
     <algorithm type = "LArThreeDRemnantTracks">
