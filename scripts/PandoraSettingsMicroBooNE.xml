@@ -57,6 +57,7 @@
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
+    <algorithm type = "LArKinkSplitting"/>
     <algorithm type = "LArTransverseAssociation"/>
     <algorithm type = "LArLongitudinalAssociation"/>
     <algorithm type = "LArTransverseExtension"/>
@@ -79,6 +80,7 @@
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
+    <algorithm type = "LArKinkSplitting"/>
     <algorithm type = "LArTransverseAssociation"/>
     <algorithm type = "LArLongitudinalAssociation"/>
     <algorithm type = "LArTransverseExtension"/>
@@ -101,6 +103,7 @@
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
+    <algorithm type = "LArKinkSplitting"/>
     <algorithm type = "LArTransverseAssociation"/>
     <algorithm type = "LArLongitudinalAssociation"/>
     <algorithm type = "LArTransverseExtension"/>
