@@ -195,6 +195,7 @@
     </algorithm>
     <algorithm type = "LArCosmicRayShowerMatching">
         <InputPfoListName>Particles3D</InputPfoListName>
+        <OutputPfoListName>DaughterCosmicRayParticles3D</OutputPfoListName>
         <InputClusterListNamesU>ClustersU</InputClusterListNamesU>
         <InputClusterListNamesV>ClustersV</InputClusterListNamesV>
         <InputClusterListNamesW>ClustersW</InputClusterListNamesW>
