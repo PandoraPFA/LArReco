@@ -68,7 +68,6 @@
     <algorithm type = "LArCosmicRaySplitting"/>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <!--algorithm type = "LArTrackCleaning"/-->
     <algorithm type = "LArTrackConsolidation"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
@@ -91,7 +90,6 @@
     <algorithm type = "LArCosmicRaySplitting"/>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <!--algorithm type = "LArTrackCleaning"/-->
     <algorithm type = "LArTrackConsolidation"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
@@ -114,7 +112,6 @@
     <algorithm type = "LArCosmicRaySplitting"/>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <!--algorithm type = "LArTrackCleaning"/-->
     <algorithm type = "LArTrackConsolidation"/>
     <algorithm type = "LArClusterCharacterisation"/>
 
@@ -147,16 +144,7 @@
             <tool type = "LArMatchedEndPoints"/>
         </TrackTools>
     </algorithm>
-    <algorithm type = "LArThreeDTransverseTrackFragments">
-        <InputClusterListNameU>ClustersU</InputClusterListNameU>
-        <InputClusterListNameV>ClustersV</InputClusterListNameV>
-        <InputClusterListNameW>ClustersW</InputClusterListNameW>
-        <OutputPfoListName>Particles3D</OutputPfoListName>
-        <TrackTools>
-            <tool type = "LArClearTrackFragments"/>
-        </TrackTools>
-    </algorithm>
-    <algorithm type = "LArThreeDLongitudinalTrackFragments">
+    <algorithm type = "LArThreeDTrackFragments">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
@@ -229,7 +217,7 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
-        <PfoListNames>CosmicRayParticles3D</PfoListNames>
+        <PfoListNames>CosmicRayParticles3D DaughterCosmicRayParticles3D</PfoListNames>
         <ClusterListNames>CosmicRayClusters3D</ClusterListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
@@ -343,16 +331,7 @@
             <tool type = "LArMatchedEndPoints"/>
         </TrackTools>
     </algorithm>
-    <algorithm type = "LArThreeDTransverseTrackFragments">
-        <InputClusterListNameU>ClustersU</InputClusterListNameU>
-        <InputClusterListNameV>ClustersV</InputClusterListNameV>
-        <InputClusterListNameW>ClustersW</InputClusterListNameW>
-        <OutputPfoListName>Particles3D</OutputPfoListName>
-        <TrackTools>
-            <tool type = "LArClearTrackFragments"/>
-        </TrackTools>
-    </algorithm>
-    <algorithm type = "LArThreeDLongitudinalTrackFragments">
+    <algorithm type = "LArThreeDTrackFragments">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
