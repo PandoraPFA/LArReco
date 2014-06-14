@@ -153,14 +153,11 @@
             <tool type = "LArClearTrackFragments"/>
         </TrackTools>
     </algorithm>
-    <algorithm type = "LArThreeDRemnantTracks">
+    <algorithm type = "LArCosmicRayTrackMatching">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>Particles3D</OutputPfoListName>
-        <TrackTools>
-            <tool type = "LArClearRemnantTracks"/>
-        </TrackTools>
     </algorithm>
     <algorithm type = "LArThreeDHitCreation">
         <InputPfoListName>Particles3D</InputPfoListName>
