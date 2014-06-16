@@ -151,6 +151,7 @@
         </TrackTools>
     </algorithm>
     <algorithm type = "LArThreeDTrackFragments">
+        <MinClusterLength>10.0</MinClusterLength>
         <InputCaloHitListNameU>CaloHitListU</InputCaloHitListNameU>
         <InputCaloHitListNameV>CaloHitListV</InputCaloHitListNameV>
         <InputCaloHitListNameW>CaloHitListW</InputCaloHitListNameW>
@@ -336,6 +337,7 @@
         </TrackTools>
     </algorithm>
     <algorithm type = "LArThreeDTrackFragments">
+        <MinClusterLength>5.0</MinClusterLength>
         <InputCaloHitListNameU>NeutrinoCaloHitListU</InputCaloHitListNameU>
         <InputCaloHitListNameV>NeutrinoCaloHitListV</InputCaloHitListNameV>
         <InputCaloHitListNameW>NeutrinoCaloHitListW</InputCaloHitListNameW>
