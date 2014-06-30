@@ -170,6 +170,79 @@
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>Particles3D</OutputPfoListName>
     </algorithm>
+
+
+    <!-- 2D cosmic ray shower clusters --> 
+    <algorithm type = "LArListDissolution">
+        <WarnIfClustersUnavailable>false</WarnIfClustersUnavailable>
+        <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+    </algorithm>
+    <algorithm type = "LArClusteringParent">
+        <algorithm type = "LArSimpleClusterCreation" description = "ClusterFormation"/>
+        <InputCaloHitListName>CaloHitListW</InputCaloHitListName>
+        <ClusterListName>ClustersW</ClusterListName>
+        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+    </algorithm>
+    <algorithm type = "LArClusteringParent">
+        <algorithm type = "LArSimpleClusterCreation" description = "ClusterFormation"/>
+        <InputCaloHitListName>CaloHitListU</InputCaloHitListName>
+        <ClusterListName>ClustersU</ClusterListName>
+        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+    </algorithm>  
+    <algorithm type = "LArClusteringParent">
+        <algorithm type = "LArSimpleClusterCreation" description = "ClusterFormation"/>
+        <InputCaloHitListName>CaloHitListV</InputCaloHitListName>
+        <ClusterListName>ClustersV</ClusterListName>
+        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+    </algorithm> 
+
+    <!-- cosmic ray shower reconstruction -->  
+    <algorithm type = "LArCosmicRayShowerGrowing">
+        <InputClusterListName>ClustersW</InputClusterListName>
+        <InputPfoListName>Particles3D</InputPfoListName>
+    </algorithm>
+    <algorithm type = "LArCosmicRayShowerGrowing">
+        <InputClusterListName>ClustersU</InputClusterListName>
+        <InputPfoListName>Particles3D</InputPfoListName>
+    </algorithm> 
+    <algorithm type = "LArCosmicRayShowerGrowing">       
+        <InputClusterListName>ClustersV</InputClusterListName>
+        <InputPfoListName>Particles3D</InputPfoListName>
+    </algorithm>      
+    <algorithm type = "LArCosmicRayShowerMatching">
+        <InputPfoListName>Particles3D</InputPfoListName>
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
+    </algorithm>  
+
+
+   <!-- delta ray reconstruction -->  
+    <algorithm type = "LArDeltaRayIdentification">
+        <InputPfoListName>Particles3D</InputPfoListName>
+        <OutputPfoListName>DaughterCosmicRayParticles3D</OutputPfoListName>
+    </algorithm> 
+    <algorithm type = "LArDeltaRayGrowing">
+        <InputClusterListName>ClustersW</InputClusterListName>
+        <InputPfoListName>Particles3D</InputPfoListName>
+    </algorithm>   
+    <algorithm type = "LArDeltaRayGrowing">
+        <InputClusterListName>ClustersU</InputClusterListName>
+        <InputPfoListName>Particles3D</InputPfoListName>
+    </algorithm>
+    <algorithm type = "LArDeltaRayGrowing">       
+        <InputClusterListName>ClustersV</InputClusterListName>
+        <InputPfoListName>Particles3D</InputPfoListName>
+    </algorithm>  
+    <algorithm type = "LArDeltaRayMatching">
+        <InputPfoListName>Particles3D</InputPfoListName>
+        <OutputPfoListName>DaughterCosmicRayParticles3D</OutputPfoListName>
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
+    </algorithm>
+
+    <!-- cosmic-ray hit creation -->  
     <algorithm type = "LArThreeDHitCreation">
         <InputPfoListName>Particles3D</InputPfoListName>
         <OutputCaloHitListName>CaloHitList3D</OutputCaloHitListName>
@@ -178,26 +251,8 @@
             <tool type = "LArTransverseTrackHitCreation"/>
         </HitCreationTools>
     </algorithm>
-
-    <!-- Cosmic ray tidy-up -->
-    <algorithm type = "LArCosmicRayShowerMerging">
-        <InputClusterListName>ClustersW</InputClusterListName>
-    </algorithm>
-    <algorithm type = "LArCosmicRayShowerMerging">
-        <InputClusterListName>ClustersU</InputClusterListName>
-    </algorithm>
-    <algorithm type = "LArCosmicRayShowerMerging">
-        <InputClusterListName>ClustersV</InputClusterListName>
-    </algorithm>
-    <algorithm type = "LArDeltaRayMatching">
-        <InputPfoListName>Particles3D</InputPfoListName>
-        <OutputPfoListName>DaughterCosmicRayParticles3D</OutputPfoListName>
-        <InputClusterListNameU>ClustersU</InputClusterListNameU>
-        <InputClusterListNameV>ClustersV</InputClusterListNameV>
-        <InputClusterListNameW>ClustersW</InputClusterListNameW>
-    </algorithm>
     <algorithm type = "LArThreeDHitCreation">
-        <InputPfoListName>Particles3D</InputPfoListName>
+        <InputPfoListName>DaughterCosmicRayParticles3D</InputPfoListName>
         <OutputCaloHitListName>CaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>Clusters3D</OutputClusterListName>
         <HitCreationTools>
