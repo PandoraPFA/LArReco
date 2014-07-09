@@ -41,7 +41,7 @@ pandora::PseudoLayer MicroBooNEPseudoLayerCalculator::GetPseudoLayer(const float
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void MicroBooNEPseudoLayerCalculator::Initialize(const pandora::GeometryHelper *const pGeometryHelper)
+void MicroBooNEPseudoLayerCalculator::Initialize(const pandora::GeometryHelper *const /*pGeometryHelper*/)
 {
     // No initialization required
 }

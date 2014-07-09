@@ -11,8 +11,6 @@
 
 #include "LArContent.h"
 
-#include "LArHelpers/LArThreeDHelper.h"
-
 #include "MicroBooNEPseudoLayerCalculator.h"
 #include "MicroBooNETransformationCalculator.h"
 
