@@ -20,7 +20,6 @@
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
-
     <!-- COSMIC RAY RECONSTRUCTION -->
     <algorithm type = "LArListPreparation">
       <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
@@ -88,14 +87,6 @@
         <IdOffsetW>0</IdOffsetW>
         <MCParticle3DListName>MCParticleList3D</MCParticle3DListName>
     </algorithm>
-    <algorithm type = "LArThreeDHitCreation">
-        <InputPfoListName>Particles3D</InputPfoListName>
-        <OutputCaloHitListName>CaloHitList3D</OutputCaloHitListName>
-        <OutputClusterListName>Clusters3D</OutputClusterListName>
-        <HitCreationTools>
-            <tool type = "LArTransverseTrackHitCreation"/>
-        </HitCreationTools>
-    </algorithm>
 
     <!-- Cosmic ray tidy-up -->
     <algorithm type = "LArCheatingCosmicRayShowerMatching">
@@ -104,20 +95,39 @@
         <InputClusterListNamesV>ClustersV</InputClusterListNamesV>
         <InputClusterListNamesW>ClustersW</InputClusterListNamesW>
     </algorithm>
-    
+
     <!-- 3D cosmic ray identification and removal -->
     <algorithm type = "LArCheatingCosmicRayIdentification">
         <InputPfoListName>Particles3D</InputPfoListName>
         <OutputPfoListName>CosmicRayParticles3D</OutputPfoListName>
+        <InputDaughterPfoListName>DaughterParticles3D</InputDaughterPfoListName>
+        <OutputDaughterPfoListName>DaughterCosmicRayParticles3D</OutputDaughterPfoListName>
     </algorithm>
     <algorithm type = "LArListDissolution">
-        <PfoListNames>Particles3D</PfoListNames>
+        <PfoListNames>Particles3D DaughterParticles3D</PfoListNames>
         <WarnIfClustersUnavailable>false</WarnIfClustersUnavailable>
-        <ClusterListNames>ClustersU ClustersV ClustersW Clusters3D</ClusterListNames>
+        <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
     </algorithm>
     <algorithm type = "LArListMerging">
-        <SourceClusterListNames>ClustersU ClustersV ClustersW Clusters3D</SourceClusterListNames>
-        <TargetClusterListNames>CosmicRayClustersU CosmicRayClustersV CosmicRayClustersW CosmicRayClusters3D</TargetClusterListNames>
+        <SourceClusterListNames>ClustersU ClustersV ClustersW</SourceClusterListNames>
+        <TargetClusterListNames>CosmicRayClustersU CosmicRayClustersV CosmicRayClustersW</TargetClusterListNames>
+    </algorithm>
+
+    <!-- 3D cosmic-ray hit creation -->
+    <algorithm type = "LArThreeDHitCreation">
+        <InputPfoListName>CosmicRayParticles3D</InputPfoListName>
+        <OutputCaloHitListName>CosmicRayCaloHitList3D</OutputCaloHitListName>
+        <OutputClusterListName>CosmicRayClusters3D</OutputClusterListName>
+        <HitCreationTools>
+            <tool type = "LArTransverseTrackHitCreation"/>
+        </HitCreationTools>
+    </algorithm>
+    <algorithm type = "LArThreeDHitCreation">
+        <InputPfoListName>DaughterParticles3D</InputPfoListName>
+        <OutputCaloHitListName>CosmicRayCaloHitList3D</OutputCaloHitListName>
+        <OutputClusterListName>CosmicRayClusters3D</OutputClusterListName>
+        <HitCreationTools>
+        </HitCreationTools>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
@@ -219,20 +229,6 @@
         <PfoListNames>Particles3D</PfoListNames>
         <ClusterListNames>Clusters3D</ClusterListNames>
         <ShowDetector>false</ShowDetector>
-        <BlackBackground>false</BlackBackground>
-        <HitColors>iterate</HitColors>
-        <DetectorView>xz</DetectorView>
-    </algorithm>
-
-    <algorithm type = "LArVisualMonitoring">
-        <ShowMCParticles>false</ShowMCParticles>
-        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
-        <ShowCurrentTracks>false</ShowCurrentTracks>
-        <ShowCurrentClusters>false</ShowCurrentClusters>
-        <ShowCurrentPfos>false</ShowCurrentPfos>
-        <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
-        <ShowDetector>false</ShowDetector>
-        <ShowOnlyAvailable>true</ShowOnlyAvailable>
         <BlackBackground>false</BlackBackground>
         <HitColors>iterate</HitColors>
         <DetectorView>xz</DetectorView>
