@@ -425,22 +425,8 @@
         <DetectorView>xz</DetectorView>
     </algorithm>
 
-    <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: SHOWERS, experimental -->
-    <algorithm type = "LArVisualMonitoring">
-        <ShowMCParticles>false</ShowMCParticles>
-        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
-        <ShowCurrentTracks>false</ShowCurrentTracks>
-        <ShowCurrentClusters>false</ShowCurrentClusters>
-        <ShowCurrentPfos>false</ShowCurrentPfos>
-        <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
-        <ShowDetector>false</ShowDetector>
-        <ShowOnlyAvailable>false</ShowOnlyAvailable>
-        <BlackBackground>false</BlackBackground>
-        <HitColors>iterate</HitColors>
-        <DetectorView>xz</DetectorView>
-    </algorithm>
-
-    <algorithm type = "LArClusterCharacterisation">
+    <!-- TODO - NEUTRINO-INDUCED EVENT RECONSTRUCTION: SHOWERS -->
+    <!--algorithm type = "LArClusterCharacterisation">
         <InputClusterListName>ClustersU</InputClusterListName>
     </algorithm>
     <algorithm type = "LArClusterCharacterisation">
@@ -448,9 +434,9 @@
     </algorithm>
     <algorithm type = "LArClusterCharacterisation">
         <InputClusterListName>ClustersW</InputClusterListName>
-    </algorithm>
+    </algorithm-->
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
         <ShowCurrentTracks>false</ShowCurrentTracks>
@@ -462,5 +448,5 @@
         <BlackBackground>false</BlackBackground>
         <HitColors>iterate</HitColors>
         <DetectorView>xz</DetectorView>
-    </algorithm>
+    </algorithm-->
 </pandora>
