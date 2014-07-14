@@ -456,7 +456,22 @@
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
         <ShowerTools>
-            <!--tool type = "LArShowerTensorVisualization"/-->
+            <!--tool type = "LArShowerTensorVisualization"/>
+            <tool type = "LArClearShowers"/>
+            <tool type = "LArSplitShowers"/-->
         </ShowerTools>
+    </algorithm>
+
+    <algorithm type = "LArVisualMonitoring">
+        <ShowMCParticles>false</ShowMCParticles>
+        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
+        <ShowCurrentTracks>false</ShowCurrentTracks>
+        <ShowCurrentClusters>false</ShowCurrentClusters>
+        <ShowCurrentPfos>false</ShowCurrentPfos>
+        <PfoListNames>Particles3D ShowerParticles3D</PfoListNames>
+        <ShowDetector>false</ShowDetector>
+        <BlackBackground>false</BlackBackground>
+        <HitColors>iterate</HitColors>
+        <DetectorView>xz</DetectorView>
     </algorithm>
 </pandora>
