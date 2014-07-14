@@ -402,14 +402,6 @@
         </TrackTools>
         <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
     </algorithm>
-    <algorithm type = "LArThreeDHitCreation">
-        <InputPfoListName>Particles3D</InputPfoListName>
-        <OutputCaloHitListName>CaloHitList3D</OutputCaloHitListName>
-        <OutputClusterListName>Clusters3D</OutputClusterListName>
-        <HitCreationTools>
-            <tool type = "LArTransverseTrackHitCreation"/>
-        </HitCreationTools>
-    </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
@@ -418,14 +410,13 @@
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
         <PfoListNames>Particles3D</PfoListNames>
-        <ClusterListNames>Clusters3D</ClusterListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>iterate</HitColors>
         <DetectorView>xz</DetectorView>
     </algorithm>
 
-    <!-- TODO - NEUTRINO-INDUCED EVENT RECONSTRUCTION: SHOWERS -->
+    <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: SHOWERS -->
     <algorithm type = "LArClusterCharacterisation">
         <InputClusterListName>ClustersU</InputClusterListName>
         <ShouldRemoveShowerPfos>true</ShouldRemoveShowerPfos>
@@ -441,12 +432,8 @@
         <ShouldRemoveShowerPfos>true</ShouldRemoveShowerPfos>
         <InputPfoListNames>Particles3D</InputPfoListNames>
     </algorithm>
-    <algorithm type = "LArListDissolution">
-        <WarnIfClustersUnavailable>false</WarnIfClustersUnavailable>
-        <ClusterListNames>Clusters3D</ClusterListNames>
-    </algorithm>
 
-    <!--algorithm type = "LArVisualMonitoring">
+    <algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
         <ShowCurrentTracks>false</ShowCurrentTracks>
@@ -458,7 +445,7 @@
         <BlackBackground>false</BlackBackground>
         <HitColors>iterate</HitColors>
         <DetectorView>xz</DetectorView>
-    </algorithm-->
+    </algorithm>
 
     <algorithm type = "LArThreeDShowers">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
@@ -466,10 +453,30 @@
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
         <ShowerTools>
-            <!--tool type = "LArShowerTensorVisualization"/>
+            <!--tool type = "LArShowerTensorVisualization"/-->
             <tool type = "LArClearShowers"/>
-            <tool type = "LArSplitShowers"/-->
+            <tool type = "LArSplitShowers"><NCommonClusters>1</NCommonClusters></tool>
+            <tool type = "LArSplitShowers"><NCommonClusters>2</NCommonClusters></tool>
+            <tool type = "LArSimpleShowers"/>
         </ShowerTools>
+    </algorithm>
+
+    <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: 3D HITS -->
+    <algorithm type = "LArThreeDHitCreation">
+        <InputPfoListName>Particles3D</InputPfoListName>
+        <OutputCaloHitListName>TrackCaloHitList3D</OutputCaloHitListName>
+        <OutputClusterListName>TrackClusters3D</OutputClusterListName>
+        <HitCreationTools>
+            <tool type = "LArTransverseTrackHitCreation"/>
+        </HitCreationTools>
+    </algorithm>
+
+    <algorithm type = "LArThreeDHitCreation">
+        <InputPfoListName>ShowerParticles3D</InputPfoListName>
+        <OutputCaloHitListName>ShowerCaloHitList3D</OutputCaloHitListName>
+        <OutputClusterListName>ShowerClusters3D</OutputClusterListName>
+        <HitCreationTools>
+        </HitCreationTools>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
@@ -479,6 +486,7 @@
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
         <PfoListNames>Particles3D ShowerParticles3D</PfoListNames>
+        <ClusterListNames>TrackClusters3D ShowerClusters3D</ClusterListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>iterate</HitColors>
