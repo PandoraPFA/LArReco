@@ -428,12 +428,22 @@
     <!-- TODO - NEUTRINO-INDUCED EVENT RECONSTRUCTION: SHOWERS -->
     <algorithm type = "LArClusterCharacterisation">
         <InputClusterListName>ClustersU</InputClusterListName>
+        <ShouldRemoveShowerPfos>true</ShouldRemoveShowerPfos>
+        <InputPfoListNames>Particles3D</InputPfoListNames>
     </algorithm>
     <algorithm type = "LArClusterCharacterisation">
         <InputClusterListName>ClustersV</InputClusterListName>
+        <ShouldRemoveShowerPfos>true</ShouldRemoveShowerPfos>
+        <InputPfoListNames>Particles3D</InputPfoListNames>
     </algorithm>
     <algorithm type = "LArClusterCharacterisation">
         <InputClusterListName>ClustersW</InputClusterListName>
+        <ShouldRemoveShowerPfos>true</ShouldRemoveShowerPfos>
+        <InputPfoListNames>Particles3D</InputPfoListNames>
+    </algorithm>
+    <algorithm type = "LArListDissolution">
+        <WarnIfClustersUnavailable>false</WarnIfClustersUnavailable>
+        <ClusterListNames>Clusters3D</ClusterListNames>
     </algorithm>
 
     <!--algorithm type = "LArVisualMonitoring">
