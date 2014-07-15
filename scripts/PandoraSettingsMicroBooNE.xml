@@ -364,7 +364,7 @@
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
-        <OutputPfoListName>Particles3D</OutputPfoListName>
+        <OutputPfoListName>TrackParticles3D</OutputPfoListName>
         <TrackTools>
             <tool type = "LArClearTracks"/>
             <tool type = "LArLongTracks"/>
@@ -382,7 +382,7 @@
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
-        <OutputPfoListName>Particles3D</OutputPfoListName>
+        <OutputPfoListName>TrackParticles3D</OutputPfoListName>
         <TrackTools>
             <tool type = "LArClearLongitudinalTracks"/>
             <tool type = "LArMatchedEndPoints"/>
@@ -396,7 +396,7 @@
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
-        <OutputPfoListName>Particles3D</OutputPfoListName>
+        <OutputPfoListName>TrackParticles3D</OutputPfoListName>
         <TrackTools>
             <tool type = "LArClearTrackFragments"/>
         </TrackTools>
@@ -409,7 +409,7 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
-        <PfoListNames>Particles3D</PfoListNames>
+        <PfoListNames>TrackParticles3D</PfoListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>iterate</HitColors>
@@ -420,31 +420,17 @@
     <algorithm type = "LArClusterCharacterisation">
         <InputClusterListName>ClustersU</InputClusterListName>
         <ShouldRemoveShowerPfos>true</ShouldRemoveShowerPfos>
-        <InputPfoListNames>Particles3D</InputPfoListNames>
+        <InputPfoListNames>TrackParticles3D</InputPfoListNames>
     </algorithm>
     <algorithm type = "LArClusterCharacterisation">
         <InputClusterListName>ClustersV</InputClusterListName>
         <ShouldRemoveShowerPfos>true</ShouldRemoveShowerPfos>
-        <InputPfoListNames>Particles3D</InputPfoListNames>
+        <InputPfoListNames>TrackParticles3D</InputPfoListNames>
     </algorithm>
     <algorithm type = "LArClusterCharacterisation">
         <InputClusterListName>ClustersW</InputClusterListName>
         <ShouldRemoveShowerPfos>true</ShouldRemoveShowerPfos>
-        <InputPfoListNames>Particles3D</InputPfoListNames>
-    </algorithm>
-
-    <algorithm type = "LArVisualMonitoring">
-        <ShowMCParticles>false</ShowMCParticles>
-        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
-        <ShowCurrentTracks>false</ShowCurrentTracks>
-        <ShowCurrentClusters>false</ShowCurrentClusters>
-        <ShowCurrentPfos>false</ShowCurrentPfos>
-        <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
-        <ShowDetector>false</ShowDetector>
-        <ShowOnlyAvailable>false</ShowOnlyAvailable>
-        <BlackBackground>false</BlackBackground>
-        <HitColors>iterate</HitColors>
-        <DetectorView>xz</DetectorView>
+        <InputPfoListNames>TrackParticles3D</InputPfoListNames>
     </algorithm>
 
     <algorithm type = "LArThreeDShowers">
@@ -463,7 +449,7 @@
 
     <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: 3D HITS -->
     <algorithm type = "LArThreeDHitCreation">
-        <InputPfoListName>Particles3D</InputPfoListName>
+        <InputPfoListName>TrackParticles3D</InputPfoListName>
         <OutputCaloHitListName>TrackCaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>TrackClusters3D</OutputClusterListName>
         <HitCreationTools>
@@ -485,7 +471,7 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
-        <PfoListNames>Particles3D ShowerParticles3D</PfoListNames>
+        <PfoListNames>TrackParticles3D ShowerParticles3D</PfoListNames>
         <ClusterListNames>TrackClusters3D ShowerClusters3D</ClusterListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
