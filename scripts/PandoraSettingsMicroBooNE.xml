@@ -267,10 +267,11 @@
         </HitCreationTools>
     </algorithm>
     <algorithm type = "LArThreeDHitCreation">
-        <InputPfoListName>DaughterParticles3D</InputPfoListName>
-        <OutputCaloHitListName>CosmicRayCaloHitList3D</OutputCaloHitListName>
-        <OutputClusterListName>CosmicRayClusters3D</OutputClusterListName>
+        <InputPfoListName>DaughterCosmicRayParticles3D</InputPfoListName>
+        <OutputCaloHitListName>DaughterCosmicRayCaloHitList3D</OutputCaloHitListName>
+        <OutputClusterListName>DaughterCosmicRayClusters3D</OutputClusterListName>
         <HitCreationTools>
+            <tool type = "LArShowerHitCreation"/>
         </HitCreationTools>
     </algorithm>
 
@@ -281,7 +282,7 @@
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
         <PfoListNames>CosmicRayParticles3D</PfoListNames>
-        <ClusterListNames>CosmicRayClusters3D</ClusterListNames>
+        <ClusterListNames>CosmicRayClusters3D DaughterCosmicRayClusters3D</ClusterListNames>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>iterate</HitColors>
@@ -455,7 +456,6 @@
             <tool type = "LArTransverseTrackHitCreation"/>
         </HitCreationTools>
     </algorithm>
-
     <algorithm type = "LArThreeDHitCreation">
         <InputPfoListName>ShowerParticles3D</InputPfoListName>
         <OutputCaloHitListName>ShowerCaloHitList3D</OutputCaloHitListName>
