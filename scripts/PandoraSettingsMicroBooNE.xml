@@ -452,6 +452,10 @@
         <PfoListName>ShowerParticles3D</PfoListName>
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
     </algorithm>
+    <algorithm type = "LArIsolatedHitMerging">
+        <PfoListName>ShowerParticles3D</PfoListName>
+        <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
+    </algorithm>
 
     <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: 3D HITS -->
     <algorithm type = "LArThreeDHitCreation">
@@ -493,6 +497,7 @@
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
         <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+        <CaloHitListNames>NeutrinoCaloHitListU NeutrinoCaloHitListV NeutrinoCaloHitListW</CaloHitListNames>
         <ShowDetector>false</ShowDetector>
         <ShowOnlyAvailable>true</ShowOnlyAvailable>
         <BlackBackground>false</BlackBackground>
