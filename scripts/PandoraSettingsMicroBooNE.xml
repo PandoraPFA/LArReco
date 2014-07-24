@@ -452,6 +452,10 @@
         <PfoListName>ShowerParticles3D</PfoListName>
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
     </algorithm>
+    <algorithm type = "LArConeBasedMerging">
+        <PfoListName>ShowerParticles3D</PfoListName>
+        <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
+    </algorithm>
     <algorithm type = "LArIsolatedHitMerging">
         <PfoListName>ShowerParticles3D</PfoListName>
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
