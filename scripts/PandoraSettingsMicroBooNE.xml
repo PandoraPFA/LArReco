@@ -263,7 +263,9 @@
         <OutputCaloHitListName>CosmicRayCaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>CosmicRayClusters3D</OutputClusterListName>
         <HitCreationTools>
-            <tool type = "LArTransverseTrackHitCreation"/>
+            <tool type = "LArClearTransverseTrackHits"/>
+            <tool type = "LArClearLongitudinalTrackHits"/>
+            <tool type = "LArMultiValuedTransverseTrackHits"/>
         </HitCreationTools>
     </algorithm>
     <algorithm type = "LArThreeDHitCreation">
@@ -466,8 +468,10 @@
         <InputPfoListName>TrackParticles3D</InputPfoListName>
         <OutputCaloHitListName>TrackCaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>TrackClusters3D</OutputClusterListName>
-        <HitCreationTools>
-            <tool type = "LArTransverseTrackHitCreation"/>
+        <HitCreationTools>            
+            <tool type = "LArClearTransverseTrackHits"/>
+            <tool type = "LArClearLongitudinalTrackHits"/>
+            <tool type = "LArMultiValuedTransverseTrackHits"/>
         </HitCreationTools>
     </algorithm>
     <algorithm type = "LArThreeDHitCreation">
