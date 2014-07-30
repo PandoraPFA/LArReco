@@ -498,6 +498,25 @@
         <DetectorView>xz</DetectorView>
     </algorithm>
 
+    <algorithm type = "LArNeutrinoBuilding">
+        <DaughterPfoListNames>TrackParticles3D ShowerParticles3D</DaughterPfoListNames>
+        <OutputPfoListName>NeutrinoParticles3D</OutputPfoListName>
+    </algorithm>
+
+    <algorithm type = "LArVisualMonitoring">
+        <ShowMCParticles>false</ShowMCParticles>
+        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
+        <ShowCurrentTracks>false</ShowCurrentTracks>
+        <ShowCurrentClusters>false</ShowCurrentClusters>
+        <ShowCurrentPfos>false</ShowCurrentPfos>
+        <PfoListNames>NeutrinoParticles3D</PfoListNames>
+        <ShowDetector>false</ShowDetector>
+        <ShowOnlyAvailable>false</ShowOnlyAvailable>
+        <BlackBackground>false</BlackBackground>
+        <HitColors>iterate</HitColors>
+        <DetectorView>xz</DetectorView>
+    </algorithm>
+
     <algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
