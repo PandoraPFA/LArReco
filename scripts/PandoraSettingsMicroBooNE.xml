@@ -91,7 +91,7 @@
     <algorithm type = "LArCosmicRaySplitting"/>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <algorithm type = "LArTrackConsolidation"> 
+    <algorithm type = "LArTrackConsolidation">
         <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
     </algorithm>
 
@@ -114,7 +114,7 @@
     <algorithm type = "LArCosmicRaySplitting"/>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
-    <algorithm type = "LArTrackConsolidation"> 
+    <algorithm type = "LArTrackConsolidation">
         <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
     </algorithm>
 
@@ -168,7 +168,7 @@
         <OutputPfoListName>Particles3D</OutputPfoListName>
     </algorithm>
 
-    <!-- 2D cosmic ray shower clusters --> 
+    <!-- 2D cosmic ray shower clusters -->
     <algorithm type = "LArListDissolution">
         <WarnIfClustersUnavailable>false</WarnIfClustersUnavailable>
         <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
@@ -184,13 +184,13 @@
         <InputCaloHitListName>CaloHitListU</InputCaloHitListName>
         <ClusterListName>ClustersU</ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
-    </algorithm>  
+    </algorithm>
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArSimpleClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListV</InputCaloHitListName>
         <ClusterListName>ClustersV</ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
-    </algorithm> 
+    </algorithm>
 
     <!-- 2D/3D cosmic ray shower reconstruction -->
     <algorithm type = "LArDeltaRayIdentification">
@@ -265,6 +265,7 @@
         <HitCreationTools>
             <tool type = "LArClearTransverseTrackHits"/>
             <tool type = "LArClearLongitudinalTrackHits"/>
+            <tool type = "LArMultiValuedLongitudinalTrackHits"/>
             <tool type = "LArMultiValuedTransverseTrackHits"/>
         </HitCreationTools>
     </algorithm>
@@ -468,9 +469,10 @@
         <InputPfoListName>TrackParticles3D</InputPfoListName>
         <OutputCaloHitListName>TrackCaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>TrackClusters3D</OutputClusterListName>
-        <HitCreationTools>            
+        <HitCreationTools>
             <tool type = "LArClearTransverseTrackHits"/>
             <tool type = "LArClearLongitudinalTrackHits"/>
+            <tool type = "LArMultiValuedLongitudinalTrackHits"/>
             <tool type = "LArMultiValuedTransverseTrackHits"/>
         </HitCreationTools>
     </algorithm>
@@ -531,4 +533,14 @@
         <HitColors>iterate</HitColors>
         <DetectorView>xz</DetectorView>
     </algorithm>
+
+    <algorithm type = "LArListMerging">
+        <SourcePfoListNames>CosmicRayParticles3D DaughterCosmicRayParticles3D TrackParticles3D ShowerParticles3D NeutrinoParticles3D</SourcePfoListNames>
+        <TargetPfoListNames>OutputParticles3D OutputParticles3D OutputParticles3D OutputParticles3D OutputParticles3D</TargetPfoListNames>
+    </algorithm>
+
+    <algorithm type = "LArListChanging">
+        <PfoListName>OutputParticles3D</PfoListName>
+    </algorithm>
+
 </pandora>
