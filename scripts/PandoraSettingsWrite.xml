@@ -2,58 +2,29 @@
 
 <pandora>
     <!-- HELPER CLASS SETTINGS -->
-    <IsMonitoringEnabled> true </IsMonitoringEnabled>
-    <ShouldDisplayAlgorithmInfo> true </ShouldDisplayAlgorithmInfo>
-    <ShouldCollapseMCParticlesToPfoTarget> false </ShouldCollapseMCParticlesToPfoTarget>
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
+    <ShouldDisplayAlgorithmInfo>true</ShouldDisplayAlgorithmInfo>
+    <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
+    <ShouldCollapseMCParticlesToPfoTarget>false</ShouldCollapseMCParticlesToPfoTarget>
 
-    <!-- Plugin helper functions -->
+    <EmShowerFastFunction>LArEmShowerId</EmShowerFastFunction>
+    <PhotonFastFunction>LArPhotonId</PhotonFastFunction>
+    <ElectronFastFunction>LArElectronId</ElectronFastFunction>
+    <MuonFastFunction>LArMuonId</MuonFastFunction>
 
-    <!-- CaloHit helper settings -->
-    <CaloHitHelper>
-        <ShouldCalculateDensityWeight>false</ShouldCalculateDensityWeight>
-        <ShouldCalculateSurroundingEnergy>false</ShouldCalculateSurroundingEnergy>
-    </CaloHitHelper>
 
     <!-- PANDORA ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
-        <EventFileName>/usera/marshall/LAr/test/LArReco/TestEvents.xml</EventFileName>
-        <GeometryFileName>/usera/marshall/LAr/test/LArReco/Geometry.xml</GeometryFileName>
+        <EventFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Events_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_1.pndr</EventFileName>
         <ShouldReadEvents>true</ShouldReadEvents>
-        <ShouldReadGeometry>true</ShouldReadGeometry>
         <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
      <algorithm type = "EventWriting">
-        <EventFileName>/usera/marshall/LAr/test/LArReco/TestEvents2.xml</EventFileName>
-        <GeometryFileName>/usera/marshall/LAr/test/LArReco/Geometry2.xml</GeometryFileName>
+        <EventFileName>uBooNE_Events_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_1.xml</EventFileName>
         <ShouldWriteEvents>true</ShouldWriteEvents>
-        <ShouldWriteGeometry>true</ShouldWriteGeometry>
         <ShouldOverwriteEventFile>true</ShouldOverwriteEventFile>
-        <ShouldOverwriteGeometryFile>true</ShouldOverwriteGeometryFile>
         <ShouldWriteMCRelationships>true</ShouldWriteMCRelationships>
         <ShouldWriteTrackRelationships>true</ShouldWriteTrackRelationships>
-    </algorithm>
-
-    <algorithm type = "LArEventPreparation">
-      <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
-      <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
-      <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
-      <CurrentCaloHitListReplacement>CaloHitListW</CurrentCaloHitListReplacement>
-    </algorithm>
-
-    <algorithm type = "LArVisualMonitoring">
-        <ShowMCParticles>true</ShowMCParticles>
-        <SuppressMCParticles>22:0.01 2212:0.96 +16:1.e6 +14:1.e6 +12:1.e6 -12:1.e6 -14:1.e6 -16:1.e6</SuppressMCParticles> 
-        <ShowCurrentVertex>false</ShowCurrentVertex>
-        <ShowCurrentCaloHits>true</ShowCurrentCaloHits>
-        <ShowCurrentTracks>false</ShowCurrentTracks>
-        <ShowCurrentClusters>false</ShowCurrentClusters>
-        <MCParticleListNames>MCParticleListW</MCParticleListNames>
-        <ShowCurrentPfos>false</ShowCurrentPfos>
-        <ShowDetector>false</ShowDetector>
-        <BlackBackground>false</BlackBackground>
-        <HitColors>Energy</HitColors>
-        <EnergyScaleThresholdE>0.0005</EnergyScaleThresholdE>
-        <ThresholdEnergy>0.</ThresholdEnergy>
     </algorithm>
 </pandora>
