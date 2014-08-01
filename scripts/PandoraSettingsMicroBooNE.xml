@@ -262,11 +262,14 @@
         <InputPfoListName>CosmicRayParticles3D</InputPfoListName>
         <OutputCaloHitListName>CosmicRayCaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>CosmicRayClusters3D</OutputClusterListName>
-        <HitCreationTools>
-            <tool type = "LArClearTransverseTrackHits"/>
-            <tool type = "LArClearLongitudinalTrackHits"/>
-            <tool type = "LArMultiValuedLongitudinalTrackHits"/>
-            <tool type = "LArMultiValuedTransverseTrackHits"/>
+        <HitCreationTools>  
+            <tool type = "LArClearTransverseTrackHits"><MinViews>3</MinViews></tool>
+            <tool type = "LArClearLongitudinalTrackHits"><MinViews>3</MinViews></tool>
+            <tool type = "LArMultiValuedLongitudinalTrackHits"><MinViews>3</MinViews></tool>
+            <tool type = "LArMultiValuedTransverseTrackHits"><MinViews>3</MinViews></tool>
+            <tool type = "LArClearTransverseTrackHits"><MinViews>2</MinViews></tool>
+            <tool type = "LArClearLongitudinalTrackHits"><MinViews>2</MinViews></tool>
+            <tool type = "LArMultiValuedLongitudinalTrackHits"><MinViews>2</MinViews></tool>
         </HitCreationTools>
     </algorithm>
     <algorithm type = "LArThreeDHitCreation">
@@ -432,11 +435,14 @@
         <InputPfoListName>TrackParticles3D</InputPfoListName>
         <OutputCaloHitListName>TrackCaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>TrackClusters3D</OutputClusterListName>
-        <HitCreationTools>
-            <tool type = "LArClearTransverseTrackHits"/>
-            <tool type = "LArClearLongitudinalTrackHits"/>
-            <tool type = "LArMultiValuedLongitudinalTrackHits"/>
-            <tool type = "LArMultiValuedTransverseTrackHits"/>
+        <HitCreationTools>   
+            <tool type = "LArClearTransverseTrackHits"><MinViews>3</MinViews></tool>
+            <tool type = "LArClearLongitudinalTrackHits"><MinViews>3</MinViews></tool>
+            <tool type = "LArMultiValuedLongitudinalTrackHits"><MinViews>3</MinViews></tool>
+            <tool type = "LArMultiValuedTransverseTrackHits"><MinViews>3</MinViews></tool>
+            <tool type = "LArClearTransverseTrackHits"><MinViews>2</MinViews></tool>
+            <tool type = "LArClearLongitudinalTrackHits"><MinViews>2</MinViews></tool>
+            <tool type = "LArMultiValuedLongitudinalTrackHits"><MinViews>2</MinViews></tool>
         </HitCreationTools>
     </algorithm>
     <algorithm type = "LArThreeDHitCreation">
