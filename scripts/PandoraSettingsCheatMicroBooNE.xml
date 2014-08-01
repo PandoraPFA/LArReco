@@ -118,7 +118,9 @@
             <tool type = "LArClearLongitudinalTrackHits"/>
             <tool type = "LArMultiValuedLongitudinalTrackHits"/>
             <tool type = "LArMultiValuedTransverseTrackHits"/>
-            <tool type = "LArShowerHitCreation"/>
+            <tool type = "LArThreeViewShowerHits"/>
+            <tool type = "LArTwoViewShowerHits"/>
+            <tool type = "LArDeltaRayShowerHits"/>
         </HitCreationTools>
     </algorithm>
 
@@ -183,7 +185,9 @@
             <tool type = "LArClearLongitudinalTrackHits"/>
             <tool type = "LArMultiValuedLongitudinalTrackHits"/>
             <tool type = "LArMultiValuedTransverseTrackHits"/>
-            <tool type = "LArShowerHitCreation"/>
+            <tool type = "LArThreeViewShowerHits"/>
+            <tool type = "LArTwoViewShowerHits"/>
+            <tool type = "LArDeltaRayShowerHits"/>
         </HitCreationTools>
     </algorithm>
 
