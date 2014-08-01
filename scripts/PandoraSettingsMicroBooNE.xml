@@ -274,7 +274,9 @@
         <OutputCaloHitListName>DaughterCosmicRayCaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>DaughterCosmicRayClusters3D</OutputClusterListName>
         <HitCreationTools>
-            <tool type = "LArShowerHitCreation"/>
+            <tool type = "LArThreeViewShowerHits"/>
+            <tool type = "LArTwoViewShowerHits"/>
+            <tool type = "LArDeltaRayShowerHits"/>
         </HitCreationTools>
     </algorithm>
 
@@ -442,7 +444,9 @@
         <OutputCaloHitListName>ShowerCaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>ShowerClusters3D</OutputClusterListName>
         <HitCreationTools>
-            <tool type = "LArShowerHitCreation"/>
+            <tool type = "LArThreeViewShowerHits"/>
+            <tool type = "LArTwoViewShowerHits"/>
+            <tool type = "LArDeltaRayShowerHits"/>
         </HitCreationTools>
     </algorithm>
 
