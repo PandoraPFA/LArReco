@@ -114,10 +114,13 @@
         <OutputCaloHitListName>CosmicRayCaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>CosmicRayClusters3D</OutputClusterListName>
         <HitCreationTools>
-            <tool type = "LArClearTransverseTrackHits"/>
-            <tool type = "LArClearLongitudinalTrackHits"/>
-            <tool type = "LArMultiValuedLongitudinalTrackHits"/>
-            <tool type = "LArMultiValuedTransverseTrackHits"/>
+            <tool type = "LArClearTransverseTrackHits"><MinViews>3</MinViews></tool>
+            <tool type = "LArClearLongitudinalTrackHits"><MinViews>3</MinViews></tool>
+            <tool type = "LArMultiValuedLongitudinalTrackHits"><MinViews>3</MinViews></tool>
+            <tool type = "LArMultiValuedTransverseTrackHits"><MinViews>3</MinViews></tool>
+            <tool type = "LArClearTransverseTrackHits"><MinViews>2</MinViews></tool>
+            <tool type = "LArClearLongitudinalTrackHits"><MinViews>2</MinViews></tool>
+            <tool type = "LArMultiValuedLongitudinalTrackHits"><MinViews>2</MinViews></tool>
             <tool type = "LArThreeViewShowerHits"/>
             <tool type = "LArTwoViewShowerHits"/>
             <tool type = "LArDeltaRayShowerHits"/>
@@ -181,10 +184,13 @@
         <OutputCaloHitListName>CaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>Clusters3D</OutputClusterListName>
         <HitCreationTools>
-            <tool type = "LArClearTransverseTrackHits"/>
-            <tool type = "LArClearLongitudinalTrackHits"/>
-            <tool type = "LArMultiValuedLongitudinalTrackHits"/>
-            <tool type = "LArMultiValuedTransverseTrackHits"/>
+            <tool type = "LArClearTransverseTrackHits"><MinViews>3</MinViews></tool>
+            <tool type = "LArClearLongitudinalTrackHits"><MinViews>3</MinViews></tool>
+            <tool type = "LArMultiValuedLongitudinalTrackHits"><MinViews>3</MinViews></tool>
+            <tool type = "LArMultiValuedTransverseTrackHits"><MinViews>3</MinViews></tool>
+            <tool type = "LArClearTransverseTrackHits"><MinViews>2</MinViews></tool>
+            <tool type = "LArClearLongitudinalTrackHits"><MinViews>2</MinViews></tool>
+            <tool type = "LArMultiValuedLongitudinalTrackHits"><MinViews>2</MinViews></tool>
             <tool type = "LArThreeViewShowerHits"/>
             <tool type = "LArTwoViewShowerHits"/>
             <tool type = "LArDeltaRayShowerHits"/>
