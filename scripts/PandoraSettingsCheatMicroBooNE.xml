@@ -22,18 +22,19 @@
 
     <!-- COSMIC RAY RECONSTRUCTION -->
     <algorithm type = "LArListPreparation">
-      <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
-      <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
-      <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
-      <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
-      <FilteredCaloHitListName>CaloHitListFiltered</FilteredCaloHitListName>
-      <CurrentCaloHitListReplacement>CaloHitListW</CurrentCaloHitListReplacement>
-      <MCNeutrinoSelection>false</MCNeutrinoSelection>
-      <OutputMCParticleListNameU>MCParticleListU</OutputMCParticleListNameU>
-      <OutputMCParticleListNameV>MCParticleListV</OutputMCParticleListNameV>
-      <OutputMCParticleListNameW>MCParticleListW</OutputMCParticleListNameW>
-      <OutputMCParticleListName3D>MCParticleList3D</OutputMCParticleListName3D>
-      <CurrentMCParticleListReplacement>MCParticleList3D</CurrentMCParticleListReplacement>
+        <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
+        <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
+        <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
+        <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
+        <FilteredCaloHitListName>CaloHitListFiltered</FilteredCaloHitListName>
+        <CurrentCaloHitListReplacement>CaloHitListW</CurrentCaloHitListReplacement>
+        <MCNeutrinoSelection>false</MCNeutrinoSelection>
+        <OutputMCParticleListNameU>MCParticleListU</OutputMCParticleListNameU>
+        <OutputMCParticleListNameV>MCParticleListV</OutputMCParticleListNameV>
+        <OutputMCParticleListNameW>MCParticleListW</OutputMCParticleListNameW>
+        <OutputMCParticleListName3D>MCParticleList3D</OutputMCParticleListName3D>
+        <CurrentMCParticleListReplacement>MCParticleList3D</CurrentMCParticleListReplacement>
+        <MipEquivalentCut>0.</MipEquivalentCut>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
@@ -142,6 +143,7 @@
         <OutputMCParticleListNameW>NeutrinoMCParticleListW</OutputMCParticleListNameW>
         <OutputMCParticleListName3D>NeutrinoMCParticleList3D</OutputMCParticleListName3D>
         <CurrentMCParticleListReplacement>NeutrinoMCParticleList3D</CurrentMCParticleListReplacement>
+        <MipEquivalentCut>0.</MipEquivalentCut>
     </algorithm>
 
     <!-- 2D neutrino-induced event reconstruction, W View -->
