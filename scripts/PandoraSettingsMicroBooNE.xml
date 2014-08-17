@@ -150,9 +150,6 @@
     </algorithm>
     <algorithm type = "LArThreeDTrackFragments">
         <MinClusterLength>10.0</MinClusterLength>
-        <InputCaloHitListNameU>CaloHitListU</InputCaloHitListNameU>
-        <InputCaloHitListNameV>CaloHitListV</InputCaloHitListNameV>
-        <InputCaloHitListNameW>CaloHitListW</InputCaloHitListNameW>
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
@@ -375,9 +372,6 @@
     </algorithm>
     <algorithm type = "LArThreeDTrackFragments">
         <MinClusterLength>5.0</MinClusterLength>
-        <InputCaloHitListNameU>NeutrinoCaloHitListU</InputCaloHitListNameU>
-        <InputCaloHitListNameV>NeutrinoCaloHitListV</InputCaloHitListNameV>
-        <InputCaloHitListNameW>NeutrinoCaloHitListW</InputCaloHitListNameW>
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
@@ -424,9 +418,6 @@
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
     </algorithm>
     <algorithm type = "LArThreeDTrackFragments">
-        <InputCaloHitListNameU>NeutrinoCaloHitListU</InputCaloHitListNameU>
-        <InputCaloHitListNameV>NeutrinoCaloHitListV</InputCaloHitListNameV>
-        <InputCaloHitListNameW>NeutrinoCaloHitListW</InputCaloHitListNameW>
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
