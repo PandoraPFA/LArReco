@@ -6,51 +6,66 @@
  *  $Log: $
  */
 
+#include "Helpers/XmlHelper.h"
+
+#include "Pandora/PandoraInputTypes.h"
+
 #include "MicroBooNEPseudoLayerCalculator.h"
+
+#include <limits>
 
 namespace lar_pandora
 {
 
-// TODO read in from config
-const float MicroBooNEPseudoLayerCalculator::Z_PITCH = 0.3f;
-const float MicroBooNEPseudoLayerCalculator::Z_OFFSET = 0.01f;
-const unsigned int MicroBooNEPseudoLayerCalculator::ZERO_LAYER = 1000;
+MicroBooNEPseudoLayerCalculator::MicroBooNEPseudoLayerCalculator() :
+    m_zPitch(0.3f),
+    m_zOffset(0.01f),
+    m_zerothLayer(1000)
+{
+}
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-float MicroBooNEPseudoLayerCalculator::GetZCoordinate(const pandora::PseudoLayer pseudoLayer) const
+float MicroBooNEPseudoLayerCalculator::GetZCoordinate(const unsigned int pseudoLayer) const
 {
-    const float zCoordinate((static_cast<float>(pseudoLayer) - static_cast<float>(ZERO_LAYER)) * Z_PITCH);
+    const float zCoordinate((static_cast<float>(pseudoLayer) - static_cast<float>(m_zerothLayer)) * m_zPitch);
 
     return zCoordinate;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-pandora::PseudoLayer MicroBooNEPseudoLayerCalculator::GetPseudoLayer(const float zCoordinate) const
+unsigned int MicroBooNEPseudoLayerCalculator::GetPseudoLayer(const float zCoordinate) const
 {
-    const float zLayer((zCoordinate + Z_OFFSET) / Z_PITCH + static_cast<float>(ZERO_LAYER));
+    const float zLayer((zCoordinate + m_zOffset) / m_zPitch + static_cast<float>(m_zerothLayer));
 
     if (zLayer < std::numeric_limits<float>::epsilon())
         throw pandora::StatusCodeException(pandora::STATUS_CODE_FAILURE);
 
-    const pandora::PseudoLayer pseudoLayer(static_cast<unsigned int>(zLayer));
-
-    return pseudoLayer;
+    return static_cast<unsigned int>(zLayer);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void MicroBooNEPseudoLayerCalculator::Initialize(const pandora::GeometryHelper *const /*pGeometryHelper*/)
+unsigned int MicroBooNEPseudoLayerCalculator::GetPseudoLayer(const pandora::CartesianVector &positionVector) const
 {
-    // No initialization required
+    return this->GetPseudoLayer(positionVector.GetZ());
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-pandora::PseudoLayer MicroBooNEPseudoLayerCalculator::GetPseudoLayer(const pandora::CartesianVector &positionVector) const
+pandora::StatusCode MicroBooNEPseudoLayerCalculator::ReadSettings(const pandora::TiXmlHandle xmlHandle)
 {
-    return MicroBooNEPseudoLayerCalculator::GetPseudoLayer(positionVector.GetZ());
+    PANDORA_RETURN_RESULT_IF_AND_IF(pandora::STATUS_CODE_SUCCESS, pandora::STATUS_CODE_NOT_FOUND, !=, pandora::XmlHelper::ReadValue(xmlHandle,
+        "ZPitch", m_zPitch));
+
+    PANDORA_RETURN_RESULT_IF_AND_IF(pandora::STATUS_CODE_SUCCESS, pandora::STATUS_CODE_NOT_FOUND, !=, pandora::XmlHelper::ReadValue(xmlHandle,
+        "ZOffset", m_zOffset));
+
+    PANDORA_RETURN_RESULT_IF_AND_IF(pandora::STATUS_CODE_SUCCESS, pandora::STATUS_CODE_NOT_FOUND, !=, pandora::XmlHelper::ReadValue(xmlHandle,
+        "ZerothLayer", m_zerothLayer));
+
+    return pandora::STATUS_CODE_SUCCESS;
 }
 
 } // namespace lar_pandora

@@ -19,6 +19,16 @@ namespace lar_pandora
 class MicroBooNETransformationCalculator : public lar::LArTransformationCalculator
 {
 public:
+    /**
+     *  @brief  Default constructor
+     */
+    MicroBooNETransformationCalculator();
+
+    /**
+     *  @brief  Destructor
+     */
+    ~MicroBooNETransformationCalculator();
+
     /** 
      *  @brief  Transform from (U,V) to W position 
      *
@@ -160,16 +170,16 @@ public:
         const PositionAndType &fitPositionAndType2, const float sigmaHit, const float sigmaFit, float &y, float &z, float &chiSquared) const;
 
 private:
-    static const float  m_thetaU;            // inclination of U wires (radians)
-    static const float  m_thetaV;            // inclination of V wires (radians)
-    static const float  m_sinUminusV;        // sin(thetaU-thetaV)
-    static const float  m_sinUplusV;         // sin(thetaU+thetaV)
-    static const float  m_sinU;              // sin(thetaU)
-    static const float  m_sinV;              // sin(thetaV)
-    static const float  m_cosU;              // cos(thetaU)
-    static const float  m_cosV;              // cos(thetaV)
-    static const float  m_H;                 // height (cm)
-    static const float  m_sigmaUVW;          // resolution (cm), for calculation of chi2
+    const float  m_thetaU;            // inclination of U wires (radians)
+    const float  m_thetaV;            // inclination of V wires (radians)
+    const float  m_sinUminusV;        // sin(thetaU-thetaV)
+    const float  m_sinUplusV;         // sin(thetaU+thetaV)
+    const float  m_sinU;              // sin(thetaU)
+    const float  m_sinV;              // sin(thetaV)
+    const float  m_cosU;              // cos(thetaU)
+    const float  m_cosV;              // cos(thetaV)
+    const float  m_H;                 // height (cm)
+    const float  m_sigmaUVW;          // resolution (cm), for calculation of chi2
 };
 
 } // namespace lar_pandora
