@@ -20,13 +20,18 @@ class MicroBooNEPseudoLayerCalculator : public lar::LArPseudoLayerCalculator
 {
 public:
     /**
+     *  @brief  Default constructor
+     */
+    MicroBooNEPseudoLayerCalculator();
+
+    /**
      *  @brief  Get z coordinate corresponding to a specified pseudolayer
      * 
      *  @param  pseudolayer the pseudolayer
      *
      *  @return the z coordinate
      */
-    float GetZCoordinate(const pandora::PseudoLayer pseudoLayer) const;
+    float GetZCoordinate(const unsigned int pseudoLayer) const;
 
     /**
      *  @brief  Get pseudolayer corresponding to a specified z coordinate
@@ -35,7 +40,7 @@ public:
      *
      *  @return the pseudolayer
      */
-    pandora::PseudoLayer GetPseudoLayer(const float zCoordinate) const;
+    unsigned int GetPseudoLayer(const float zCoordinate) const;
 
     /**
      *  @brief  Get the z pitch
@@ -45,25 +50,25 @@ public:
     float GetZPitch() const;
 
 private:
-    void Initialize(const pandora::GeometryHelper *const pGeometryHelper);
-    pandora::PseudoLayer GetPseudoLayer(const pandora::CartesianVector &positionVector) const;
-    pandora::PseudoLayer GetPseudoLayerAtIp() const;
+    unsigned int GetPseudoLayer(const pandora::CartesianVector &positionVector) const;
+    unsigned int GetPseudoLayerAtIp() const;
+    pandora::StatusCode ReadSettings(const pandora::TiXmlHandle xmlHandle);
 
-    static const float        Z_PITCH;      ///< The z pitch
-    static const float        Z_OFFSET;     ///< The z offset
-    static const unsigned int ZERO_LAYER;   ///< The zeroth layer
+    float           m_zPitch;       ///< The z pitch
+    float           m_zOffset;      ///< The z offset
+    unsigned int    m_zerothLayer;  ///< The zeroth layer
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 inline float MicroBooNEPseudoLayerCalculator::GetZPitch() const
 {
-    return Z_PITCH;
+    return m_zPitch;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-inline pandora::PseudoLayer MicroBooNEPseudoLayerCalculator::GetPseudoLayerAtIp() const
+inline unsigned int MicroBooNEPseudoLayerCalculator::GetPseudoLayerAtIp() const
 {
     return 0;
 }

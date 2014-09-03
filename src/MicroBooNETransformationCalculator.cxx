@@ -15,17 +15,25 @@
 namespace lar_pandora
 {
 
-// TODO read in from config
-const float MicroBooNETransformationCalculator::m_thetaU = M_PI / 3.f;
-const float MicroBooNETransformationCalculator::m_thetaV = M_PI / 3.f;
-const float MicroBooNETransformationCalculator::m_sinUplusV = std::sin(MicroBooNETransformationCalculator::m_thetaU + MicroBooNETransformationCalculator::m_thetaV);
-const float MicroBooNETransformationCalculator::m_sinUminusV = std::sin(MicroBooNETransformationCalculator::m_thetaU - MicroBooNETransformationCalculator::m_thetaV);
-const float MicroBooNETransformationCalculator::m_sinU = std::sin(MicroBooNETransformationCalculator::m_thetaU);
-const float MicroBooNETransformationCalculator::m_sinV = std::sin(MicroBooNETransformationCalculator::m_thetaV);
-const float MicroBooNETransformationCalculator::m_cosU = std::cos(MicroBooNETransformationCalculator::m_thetaU);
-const float MicroBooNETransformationCalculator::m_cosV = std::cos(MicroBooNETransformationCalculator::m_thetaV);
-const float MicroBooNETransformationCalculator::m_H = 233.f;
-const float MicroBooNETransformationCalculator::m_sigmaUVW = 1.f;
+MicroBooNETransformationCalculator::MicroBooNETransformationCalculator() :
+    m_thetaU(M_PI / 3.f),
+    m_thetaV(M_PI / 3.f),
+    m_sinUminusV(std::sin(m_thetaU - m_thetaV)),
+    m_sinUplusV(std::sin(m_thetaU + m_thetaV)),
+    m_sinU(std::sin(m_thetaU)),
+    m_sinV(std::sin(m_thetaV)),
+    m_cosU(std::cos(m_thetaU)),
+    m_cosV(std::cos(m_thetaV)),
+    m_H(233.f),
+    m_sigmaUVW(1.f)
+{
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+MicroBooNETransformationCalculator::~MicroBooNETransformationCalculator()
+{
+}
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
