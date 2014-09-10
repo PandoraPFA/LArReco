@@ -1,33 +1,33 @@
 /**
- *  @file   LArPandora/MicroBooNETransformationCalculator.h
+ *  @file   LArPandora/MicroBooNETransformationPlugin.h
  * 
- *  @brief  Header file for the MicroBooNE transformation calculator class.
+ *  @brief  Header file for the MicroBooNE transformation plugin class.
  * 
  *  $Log: $
  */
-#ifndef MICRO_BOONE_TRANSFORMATION_CALCULATOR_H
-#define MICRO_BOONE_TRANSFORMATION_CALCULATOR_H 1
+#ifndef MICRO_BOONE_TRANSFORMATION_PLUGIN_H
+#define MICRO_BOONE_TRANSFORMATION_PLUGIN_H 1
 
-#include "LArCalculators/LArTransformationCalculator.h"
+#include "LArPlugins/LArTransformationPlugin.h"
 
 namespace lar_pandora
 {
 
 /**
- *  @brief  MicroBooNETransformationCalculator class
+ *  @brief  MicroBooNETransformationPlugin class
  */
-class MicroBooNETransformationCalculator : public lar::LArTransformationCalculator
+class MicroBooNETransformationPlugin : public lar::LArTransformationPlugin
 {
 public:
     /**
      *  @brief  Default constructor
      */
-    MicroBooNETransformationCalculator();
+    MicroBooNETransformationPlugin();
 
     /**
      *  @brief  Destructor
      */
-    ~MicroBooNETransformationCalculator();
+    ~MicroBooNETransformationPlugin();
 
     /** 
      *  @brief  Transform from (U,V) to W position 
@@ -184,4 +184,4 @@ private:
 
 } // namespace lar_pandora
 
-#endif // #ifndef MICRO_BOONE_TRANSFORMATION_CALCULATOR_H
+#endif // #ifndef MICRO_BOONE_TRANSFORMATION_PLUGIN_H

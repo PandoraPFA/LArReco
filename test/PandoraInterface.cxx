@@ -11,8 +11,8 @@
 
 #include "LArContent.h"
 
-#include "MicroBooNEPseudoLayerCalculator.h"
-#include "MicroBooNETransformationCalculator.h"
+#include "MicroBooNEPseudoLayerPlugin.h"
+#include "MicroBooNETransformationPlugin.h"
 
 #ifdef MONITORING
 #include "TApplication.h"
@@ -72,11 +72,11 @@ int main(int argc, char *argv[])
         // Construct pandora instance
         pandora::Pandora *pPandora = new pandora::Pandora();
 
-        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerCalculator(*pPandora, new lar_pandora::MicroBooNEPseudoLayerCalculator));
-        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationCalculator(*pPandora, new lar_pandora::MicroBooNETransformationCalculator));
-
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::RegisterAlgorithms(*pPandora));
-        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::RegisterPlugins(*pPandora));
+        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::RegisterBasicPlugins(*pPandora));
+
+        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora, new lar_pandora::MicroBooNEPseudoLayerPlugin));
+        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora, new lar_pandora::MicroBooNETransformationPlugin));
 
         // Read in pandora settings from config file
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPandora, parameters.m_pandoraSettingsFile));

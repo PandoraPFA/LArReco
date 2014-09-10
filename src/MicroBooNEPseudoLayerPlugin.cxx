@@ -1,7 +1,7 @@
 /**
- *  @file   LArContent/MicroBooNEPseudoLayerCalculator.cxx
+ *  @file   LArContent/MicroBooNEPseudoLayerPlugin.cxx
  * 
- *  @brief  Implementation of the MicroBooNE pseudo layer calculator class.
+ *  @brief  Implementation of the MicroBooNE pseudo layer Plugin class.
  * 
  *  $Log: $
  */
@@ -10,14 +10,14 @@
 
 #include "Pandora/PandoraInputTypes.h"
 
-#include "MicroBooNEPseudoLayerCalculator.h"
+#include "MicroBooNEPseudoLayerPlugin.h"
 
 #include <limits>
 
 namespace lar_pandora
 {
 
-MicroBooNEPseudoLayerCalculator::MicroBooNEPseudoLayerCalculator() :
+MicroBooNEPseudoLayerPlugin::MicroBooNEPseudoLayerPlugin() :
     m_zPitch(0.3f),
     m_zOffset(0.01f),
     m_zerothLayer(1000)
@@ -26,7 +26,7 @@ MicroBooNEPseudoLayerCalculator::MicroBooNEPseudoLayerCalculator() :
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-float MicroBooNEPseudoLayerCalculator::GetZCoordinate(const unsigned int pseudoLayer) const
+float MicroBooNEPseudoLayerPlugin::GetZCoordinate(const unsigned int pseudoLayer) const
 {
     const float zCoordinate((static_cast<float>(pseudoLayer) - static_cast<float>(m_zerothLayer)) * m_zPitch);
 
@@ -35,7 +35,7 @@ float MicroBooNEPseudoLayerCalculator::GetZCoordinate(const unsigned int pseudoL
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-unsigned int MicroBooNEPseudoLayerCalculator::GetPseudoLayer(const float zCoordinate) const
+unsigned int MicroBooNEPseudoLayerPlugin::GetPseudoLayer(const float zCoordinate) const
 {
     const float zLayer((zCoordinate + m_zOffset) / m_zPitch + static_cast<float>(m_zerothLayer));
 
@@ -47,14 +47,14 @@ unsigned int MicroBooNEPseudoLayerCalculator::GetPseudoLayer(const float zCoordi
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-unsigned int MicroBooNEPseudoLayerCalculator::GetPseudoLayer(const pandora::CartesianVector &positionVector) const
+unsigned int MicroBooNEPseudoLayerPlugin::GetPseudoLayer(const pandora::CartesianVector &positionVector) const
 {
     return this->GetPseudoLayer(positionVector.GetZ());
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-pandora::StatusCode MicroBooNEPseudoLayerCalculator::ReadSettings(const pandora::TiXmlHandle xmlHandle)
+pandora::StatusCode MicroBooNEPseudoLayerPlugin::ReadSettings(const pandora::TiXmlHandle xmlHandle)
 {
     PANDORA_RETURN_RESULT_IF_AND_IF(pandora::STATUS_CODE_SUCCESS, pandora::STATUS_CODE_NOT_FOUND, !=, pandora::XmlHelper::ReadValue(xmlHandle,
         "ZPitch", m_zPitch));
