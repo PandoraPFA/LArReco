@@ -26,15 +26,6 @@ MicroBooNEPseudoLayerPlugin::MicroBooNEPseudoLayerPlugin() :
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-float MicroBooNEPseudoLayerPlugin::GetZCoordinate(const unsigned int pseudoLayer) const
-{
-    const float zCoordinate((static_cast<float>(pseudoLayer) - static_cast<float>(m_zerothLayer)) * m_zPitch);
-
-    return zCoordinate;
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
 unsigned int MicroBooNEPseudoLayerPlugin::GetPseudoLayer(const float zCoordinate) const
 {
     const float zLayer((zCoordinate + m_zOffset) / m_zPitch + static_cast<float>(m_zerothLayer));

@@ -25,7 +25,8 @@ MicroBooNETransformationPlugin::MicroBooNETransformationPlugin() :
     m_cosU(std::cos(m_thetaU)),
     m_cosV(std::cos(m_thetaV)),
     m_H(233.f),
-    m_sigmaUVW(1.f)
+    m_sigmaUVW(1.f),
+    m_wireZPitch(0.3f)
 {
 }
 
@@ -92,7 +93,7 @@ float MicroBooNETransformationPlugin::PUPVtoPW(const float pu, const float pv) c
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
-   
+
 float MicroBooNETransformationPlugin::PVPWtoPU(const float pv, const float pw) const
 {
     return (pw * m_sinUplusV - pv * m_sinU) / m_sinV;
@@ -124,6 +125,13 @@ float MicroBooNETransformationPlugin::PYPZtoPV(const float py, const float pz) c
 float MicroBooNETransformationPlugin::GetSigmaUVW() const
 {
     return m_sigmaUVW;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+float MicroBooNETransformationPlugin::GetWireZPitch() const
+{
+    return m_wireZPitch;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
