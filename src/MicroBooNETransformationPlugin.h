@@ -16,7 +16,7 @@ namespace lar_pandora
 /**
  *  @brief  MicroBooNETransformationPlugin class
  */
-class MicroBooNETransformationPlugin : public lar::LArTransformationPlugin
+class MicroBooNETransformationPlugin : public lar_content::LArTransformationPlugin
 {
 public:
     /**
