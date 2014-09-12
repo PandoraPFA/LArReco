@@ -1,21 +1,17 @@
 <!-- Pandora settings xml file -->
 
 <pandora>
-    <!-- HELPER CLASS SETTINGS -->
+    <!-- GLOBAL SETTINGS -->
     <IsMonitoringEnabled>true</IsMonitoringEnabled>
     <ShouldDisplayAlgorithmInfo>true</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
-    <ShouldCollapseMCParticlesToPfoTarget>false</ShouldCollapseMCParticlesToPfoTarget>
 
-    <EmShowerFastFunction>LArEmShowerId</EmShowerFastFunction>
-    <PhotonFastFunction>LArPhotonId</PhotonFastFunction>
-    <ElectronFastFunction>LArElectronId</ElectronFastFunction>
-    <MuonFastFunction>LArMuonId</MuonFastFunction>
+    <!-- PLUGIN SETTINGS -->
+    <MuonPlugin>LArMuonId</MuonPlugin>
 
-
-    <!-- PANDORA ALGORITHM SETTINGS -->
+    <!-- ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
-         <EventFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Events_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_1.pndr</EventFileName>
+         <EventFileName>/r01/lbne/mcproduction/prodgenie_bnb_nu_cosmic_uboone/uBooNE_Events_100_0.pndr</EventFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
