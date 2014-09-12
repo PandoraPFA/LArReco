@@ -1,39 +1,36 @@
 <!-- Pandora settings xml file -->
 
 <pandora>
-    <!-- HELPER CLASS SETTINGS -->
+    <!-- GLOBAL SETTINGS -->
     <IsMonitoringEnabled>true</IsMonitoringEnabled>
     <ShouldDisplayAlgorithmInfo>true</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
-    <ShouldCollapseMCParticlesToPfoTarget>false</ShouldCollapseMCParticlesToPfoTarget>
 
-    <EmShowerFastFunction>LArEmShowerId</EmShowerFastFunction>
-    <PhotonFastFunction>LArPhotonId</PhotonFastFunction>
-    <ElectronFastFunction>LArElectronId</ElectronFastFunction>
-    <MuonFastFunction>LArMuonId</MuonFastFunction>
+    <!-- PLUGIN SETTINGS -->
+    <MuonPlugin>LArMuonId</MuonPlugin>
 
-
-    <!-- PANDORA ALGORITHM SETTINGS -->
+    <!-- ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
-         <EventFileName>/r01/lbne/argon/uboone/S2013.10.21/prodgenie_bnb_nu_t0_cosmic_3window_uboone/pndr/uBooNE_Events_prodgenie_bnb_nu_t0_cosmic_3window_uboone_11828891_1.pndr</EventFileName>
+         <EventFileName>/r01/lbne/mcproduction/prodgenie_bnb_nu_cosmic_uboone/uBooNE_Events_100_0.pndr</EventFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
     <!-- COSMIC RAY RECONSTRUCTION -->
     <algorithm type = "LArListPreparation">
-      <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
-      <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
-      <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
-      <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
-      <FilteredCaloHitListName>CaloHitListFiltered</FilteredCaloHitListName>
-      <CurrentCaloHitListReplacement>CaloHitListW</CurrentCaloHitListReplacement>
-      <MCNeutrinoSelection>false</MCNeutrinoSelection>
-      <OutputMCParticleListNameU>MCParticleListU</OutputMCParticleListNameU>
-      <OutputMCParticleListNameV>MCParticleListV</OutputMCParticleListNameV>
-      <OutputMCParticleListNameW>MCParticleListW</OutputMCParticleListNameW>
-      <OutputMCParticleListName3D>MCParticleList3D</OutputMCParticleListName3D>
-      <CurrentMCParticleListReplacement>MCParticleList3D</CurrentMCParticleListReplacement>
+        <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
+        <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
+        <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
+        <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
+        <FilteredCaloHitListName>CaloHitListFiltered</FilteredCaloHitListName>
+        <CurrentCaloHitListReplacement>CaloHitListW</CurrentCaloHitListReplacement>
+        <MCNeutrinoSelection>false</MCNeutrinoSelection>
+        <OutputMCParticleListNameU>MCParticleListU</OutputMCParticleListNameU>
+        <OutputMCParticleListNameV>MCParticleListV</OutputMCParticleListNameV>
+        <OutputMCParticleListNameW>MCParticleListW</OutputMCParticleListNameW>
+        <OutputMCParticleListName3D>MCParticleList3D</OutputMCParticleListName3D>
+        <CurrentMCParticleListReplacement>MCParticleList3D</CurrentMCParticleListReplacement>
+        <MipEquivalentCut>0.</MipEquivalentCut>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
@@ -142,6 +139,7 @@
         <OutputMCParticleListNameW>NeutrinoMCParticleListW</OutputMCParticleListNameW>
         <OutputMCParticleListName3D>NeutrinoMCParticleList3D</OutputMCParticleListName3D>
         <CurrentMCParticleListReplacement>NeutrinoMCParticleList3D</CurrentMCParticleListReplacement>
+        <MipEquivalentCut>0.</MipEquivalentCut>
     </algorithm>
 
     <!-- 2D neutrino-induced event reconstruction, W View -->

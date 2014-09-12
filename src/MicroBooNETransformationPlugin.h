@@ -1,33 +1,33 @@
 /**
- *  @file   LArPandora/MicroBooNETransformationCalculator.h
+ *  @file   LArPandora/MicroBooNETransformationPlugin.h
  * 
- *  @brief  Header file for the MicroBooNE transformation calculator class.
+ *  @brief  Header file for the MicroBooNE transformation plugin class.
  * 
  *  $Log: $
  */
-#ifndef MICRO_BOONE_TRANSFORMATION_CALCULATOR_H
-#define MICRO_BOONE_TRANSFORMATION_CALCULATOR_H 1
+#ifndef MICRO_BOONE_TRANSFORMATION_PLUGIN_H
+#define MICRO_BOONE_TRANSFORMATION_PLUGIN_H 1
 
-#include "LArCalculators/LArTransformationCalculator.h"
+#include "LArPlugins/LArTransformationPlugin.h"
 
 namespace lar_pandora
 {
 
 /**
- *  @brief  MicroBooNETransformationCalculator class
+ *  @brief  MicroBooNETransformationPlugin class
  */
-class MicroBooNETransformationCalculator : public lar::LArTransformationCalculator
+class MicroBooNETransformationPlugin : public lar_content::LArTransformationPlugin
 {
 public:
     /**
      *  @brief  Default constructor
      */
-    MicroBooNETransformationCalculator();
+    MicroBooNETransformationPlugin();
 
     /**
      *  @brief  Destructor
      */
-    ~MicroBooNETransformationCalculator();
+    ~MicroBooNETransformationPlugin();
 
     /** 
      *  @brief  Transform from (U,V) to W position 
@@ -139,6 +139,13 @@ public:
     float GetSigmaUVW() const;
 
     /** 
+     *  @brief  Get wire z pitch, in cm
+     * 
+     *  @return wire z pitch, in cm
+     */
+    float GetWireZPitch() const;
+
+    /** 
      *  @brief  Get the y, z position that yields the minimum chi squared value with respect to specified u, v and w coordinates
      * 
      *  @param  u the u coordinate
@@ -170,18 +177,19 @@ public:
         const PositionAndType &fitPositionAndType2, const float sigmaHit, const float sigmaFit, float &y, float &z, float &chiSquared) const;
 
 private:
-    const float  m_thetaU;            // inclination of U wires (radians)
-    const float  m_thetaV;            // inclination of V wires (radians)
-    const float  m_sinUminusV;        // sin(thetaU-thetaV)
-    const float  m_sinUplusV;         // sin(thetaU+thetaV)
-    const float  m_sinU;              // sin(thetaU)
-    const float  m_sinV;              // sin(thetaV)
-    const float  m_cosU;              // cos(thetaU)
-    const float  m_cosV;              // cos(thetaV)
-    const float  m_H;                 // height (cm)
-    const float  m_sigmaUVW;          // resolution (cm), for calculation of chi2
+    const float     m_thetaU;          ///< inclination of U wires (radians)
+    const float     m_thetaV;          ///< inclination of V wires (radians)
+    const float     m_sinUminusV;      ///< sin(thetaU-thetaV)
+    const float     m_sinUplusV;       ///< sin(thetaU+thetaV)
+    const float     m_sinU;            ///< sin(thetaU)
+    const float     m_sinV;            ///< sin(thetaV)
+    const float     m_cosU;            ///< cos(thetaU)
+    const float     m_cosV;            ///< cos(thetaV)
+    const float     m_H;               ///< height (cm)
+    const float     m_sigmaUVW;        ///< resolution (cm), for calculation of chi2
+    const float     m_wireZPitch;      ///< wire z pitch (cm)
 };
 
 } // namespace lar_pandora
 
-#endif // #ifndef MICRO_BOONE_TRANSFORMATION_CALCULATOR_H
+#endif // #ifndef MICRO_BOONE_TRANSFORMATION_PLUGIN_H
