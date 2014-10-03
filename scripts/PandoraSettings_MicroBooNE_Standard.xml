@@ -337,6 +337,24 @@
     <algorithm type = "LArBranchSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
 
+    <!-- 3D vertex reconstruction -->
+    <algorithm type = "LArCheatingVertexCreation">
+        <OutputVertexListName>SelectedVertices</OutputVertexListName>
+        <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
+    </algorithm>
+    <algorithm type = "LArVertexSplitting">
+        <InputClusterList>ClustersU</InputClusterList>
+        <MinClusterLength>5.</MinClusterLength>
+    </algorithm>
+    <algorithm type = "LArVertexSplitting">
+        <InputClusterList>ClustersV</InputClusterList>
+        <MinClusterLength>5.</MinClusterLength>
+    </algorithm>
+    <algorithm type = "LArVertexSplitting">
+        <InputClusterList>ClustersW</InputClusterList>
+        <MinClusterLength>5.</MinClusterLength>
+    </algorithm>
+
     <!-- 3D neutrino-induced event track reconstruction -->
     <algorithm type = "LArThreeDTransverseTracks">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
@@ -494,6 +512,20 @@
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
         <PfoListNames>OutputParticles3D</PfoListNames>
+        <ShowDetector>false</ShowDetector>
+        <ShowOnlyAvailable>false</ShowOnlyAvailable>
+        <BlackBackground>false</BlackBackground>
+        <HitColors>iterate</HitColors>
+        <DetectorView>xz</DetectorView>
+    </algorithm>
+
+    <algorithm type = "LArVisualMonitoring">
+        <ShowMCParticles>false</ShowMCParticles>
+        <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
+        <ShowCurrentTracks>false</ShowCurrentTracks>
+        <ShowCurrentClusters>false</ShowCurrentClusters>
+        <ShowCurrentPfos>false</ShowCurrentPfos>
+        <ClusterListNames>TrackClusters3D ShowerClusters3D</ClusterListNames>
         <ShowDetector>false</ShowDetector>
         <ShowOnlyAvailable>false</ShowOnlyAvailable>
         <BlackBackground>false</BlackBackground>
