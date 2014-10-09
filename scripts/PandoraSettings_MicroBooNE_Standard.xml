@@ -452,6 +452,11 @@
             <tool type = "LArClearRemnants"/>
         </TrackTools>
     </algorithm>
+    <algorithm type = "LArVertexBasedPfoMerging">
+        <TrackPfoListName>TrackParticles3D</TrackPfoListName>
+        <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+        <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+    </algorithm>
     <algorithm type = "LArConeBasedMerging">
         <PfoListName>ShowerParticles3D</PfoListName>
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
