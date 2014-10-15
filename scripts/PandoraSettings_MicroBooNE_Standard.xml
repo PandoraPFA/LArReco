@@ -530,7 +530,7 @@
         <ShowCurrentTracks>false</ShowCurrentTracks>
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
-        <ClusterListNames>TrackClusters3D ShowerClusters3D</ClusterListNames>
+        <ClusterListNames>CosmicRayClusters3D DaughterCosmicRayClusters3D TrackClusters3D ShowerClusters3D</ClusterListNames>
         <ShowDetector>false</ShowDetector>
         <ShowOnlyAvailable>false</ShowOnlyAvailable>
         <BlackBackground>false</BlackBackground>
