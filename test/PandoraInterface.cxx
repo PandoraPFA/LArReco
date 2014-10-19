@@ -1,8 +1,8 @@
 /**
  *  @file   TestPandora/src/PandoraInterface.cc
- * 
+ *
  *  @brief  Implementation for the pandora interface binary
- * 
+ *
  *  $Log: $
  */
 
@@ -49,11 +49,11 @@ public:
 
 /**
  *  @brief  Parse the command line arguments, setting the application parameters
- * 
+ *
  *  @param  argc argument count
  *  @param  argv argument vector
  *  @param  parameters to receive the application parameters
- * 
+ *
  *  @return success
  */
 bool ParseCommandLine(int argc, char *argv[], Parameters &parameters);
@@ -82,17 +82,17 @@ int main(int argc, char *argv[])
         if ("MicroBooNE" == parameters.m_whichDetector || "uboone" == parameters.m_whichDetector)
         {
             std::cout << " Loading plugins for MicroBooNE detector " << std::endl;
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora, 
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
                 new lar_pandora::MicroBooNEPseudoLayerPlugin));
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora, 
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
                 new lar_pandora::MicroBooNETransformationPlugin));
         }
         else if ("LBNE35t" == parameters.m_whichDetector || "lbne35t" == parameters.m_whichDetector)
         {
             std::cout << " Loading plugins for LBNE35t detector" << std::endl;
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora, 
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
                 new lar_pandora::LBNE35tPseudoLayerPlugin));
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora, 
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
                 new lar_pandora::LBNE35tTransformationPlugin));
         }
         else

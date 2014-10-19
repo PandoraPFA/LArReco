@@ -1,8 +1,8 @@
 /**
  *  @file   larpandora/LArPandoraInterface/LBNE35tTransformationPlugin.h
- * 
+ *
  *  @brief  Header file for the LBNE35t transformation plugin class.
- * 
+ *
  *  $Log: $
  */
 #ifndef LBNE_35T_TRANSFORMATION_PLUGIN_H
@@ -22,7 +22,7 @@ public:
     /**
      *  @brief  Default constructor
      */
-    LBNE35tTransformationPlugin(); 
+    LBNE35tTransformationPlugin();
 };
 
 } // namespace lar_pandora

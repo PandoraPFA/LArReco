@@ -1,8 +1,8 @@
 /**
  *  @file   larpandora/LArPandoraInterface/MicroBooNEPseudoLayerPlugin.h
- * 
+ *
  *  @brief  Header file for the MicroBooNE pseudo layer plugin class.
- * 
+ *
  *  $Log: $
  */
 #ifndef MICRO_BOONE_PSEUDO_LAYER_PLUGIN_H
@@ -22,7 +22,7 @@ public:
     /**
      *  @brief  Default constructor
      */
-    MicroBooNEPseudoLayerPlugin();  
+    MicroBooNEPseudoLayerPlugin();
 };
 
 } // namespace lar

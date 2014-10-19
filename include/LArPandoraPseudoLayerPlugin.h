@@ -1,8 +1,8 @@
 /**
  *  @file   larpandora/LArPandoraInterface/LarPandoraPseudoLayerPlugin.h
- * 
+ *
  *  @brief  Header file for the LarPandora pseudo layer plugin class.
- * 
+ *
  *  $Log: $
  */
 #ifndef LAR_PANDORA_PSEUDO_LAYER_PLUGIN_H
@@ -22,7 +22,7 @@ public:
     /**
      *  @brief  Constructor
      *
-     *  @param  zPitch the wire pitch 
+     *  @param  zPitch the wire pitch
      */
     LArPandoraPseudoLayerPlugin(const float zPitch);
 

@@ -1,8 +1,8 @@
 /**
  *  @file   larpandora/LArPandoraInterface/LBNE35tPseudoLayerPlugin.h
- * 
+ *
  *  @brief  Header file for the LBNE35t pseudo layer plugin class.
- * 
+ *
  *  $Log: $
  */
 #ifndef LBNE_35T_PSEUDO_LAYER_PLUGIN_H
@@ -22,7 +22,7 @@ public:
     /**
      *  @brief  Default constructor
      */
-    LBNE35tPseudoLayerPlugin();  
+    LBNE35tPseudoLayerPlugin();
 };
 
 } // namespace lar

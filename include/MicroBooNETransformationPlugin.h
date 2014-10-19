@@ -1,8 +1,8 @@
 /**
  *  @file   larpandora/LArPandoraInterface/MicroBooNETransformationPlugin.h
- * 
+ *
  *  @brief  Header file for the MicroBooNE transformation plugin class.
- * 
+ *
  *  $Log: $
  */
 #ifndef MICRO_BOONE_TRANSFORMATION_PLUGIN_H
@@ -22,7 +22,7 @@ public:
     /**
      *  @brief  Default constructor
      */
-    MicroBooNETransformationPlugin(); 
+    MicroBooNETransformationPlugin();
 };
 
 } // namespace lar_pandora
