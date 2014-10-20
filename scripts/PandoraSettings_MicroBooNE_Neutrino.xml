@@ -92,17 +92,13 @@
     <algorithm type = "LArKinkSplitting"/>
 
     <!-- 3D vertex reconstruction -->
-    <algorithm type = "LArCheatingVertexCreation">
-        <OutputVertexListName>CandidateVertices</OutputVertexListName>
-        <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-    </algorithm>
-    <!--algorithm type = "LArCandidateVertexCreation">
+    <algorithm type = "LArCandidateVertexCreation">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputVertexListName>CandidateVertices</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-    </algorithm-->
+    </algorithm>
     <algorithm type = "LArVertexSelection">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
