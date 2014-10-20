@@ -15,7 +15,7 @@
 namespace lar_pandora
 {
 
-// TODO: Remove detector height from these methods (they should still work)
+// TODO: Remove detector height from these methods
 
 LArPandoraTransformationPlugin::LArPandoraTransformationPlugin(const float thetaU, const float thetaV, const float H, const float sigmaUVW,
     const float wireZPitch) :
