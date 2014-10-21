@@ -22,7 +22,7 @@ public:
     /**
      *  @brief  Default constructor
      */
-    LBNE35tTransformationPlugin();
+    LBNE35tTransformationPlugin(const bool isForward);
 };
 
 } // namespace lar_pandora

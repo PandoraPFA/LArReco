@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::RegisterAlgorithms(*pPandora));
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::RegisterBasicPlugins(*pPandora));
 
-        if ("MicroBooNE" == parameters.m_whichDetector || "uboone" == parameters.m_whichDetector)
+        if ("uboone" == parameters.m_whichDetector)
         {
             std::cout << " Loading plugins for MicroBooNE detector " << std::endl;
             PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
@@ -87,17 +87,25 @@ int main(int argc, char *argv[])
             PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
                 new lar_pandora::MicroBooNETransformationPlugin));
         }
-        else if ("LBNE35t" == parameters.m_whichDetector || "lbne35t" == parameters.m_whichDetector)
+        else if ("lbne35tLong" == parameters.m_whichDetector)
         {
-            std::cout << " Loading plugins for LBNE35t detector" << std::endl;
+            std::cout << " Loading plugins for LBNE35t detector (long drift volume)" << std::endl;
             PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
                 new lar_pandora::LBNE35tPseudoLayerPlugin));
             PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
-                new lar_pandora::LBNE35tTransformationPlugin));
+                new lar_pandora::LBNE35tTransformationPlugin(true)));
+        }
+        else if ("lbne35tShort" == parameters.m_whichDetector)
+        {
+            std::cout << " Loading plugins for LBNE35t detector (short drift volume)" << std::endl;
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
+                new lar_pandora::LBNE35tPseudoLayerPlugin));
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
+                new lar_pandora::LBNE35tTransformationPlugin(false)));
         }
         else
         {
-            std::cout << " Not a valid detector (options: uboone, lbne35t)" << std::endl << " Exiting" << std::endl;
+            std::cout << " Not a valid detector (options: uboone, lbne35tLong, lbne35tShort)" << std::endl << " Exiting" << std::endl;
             return 1;
         }
 
