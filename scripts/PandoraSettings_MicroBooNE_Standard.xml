@@ -354,6 +354,7 @@
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputVertexListName>SelectedVertices</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
+        <BeamMode>true</BeamMode>
     </algorithm>
     <algorithm type = "LArVertexSplitting">
         <InputClusterList>ClustersU</InputClusterList>
