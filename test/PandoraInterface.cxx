@@ -1,8 +1,8 @@
 /**
  *  @file   TestPandora/src/PandoraInterface.cc
- * 
+ *
  *  @brief  Implementation for the pandora interface binary
- * 
+ *
  *  $Log: $
  */
 
@@ -13,6 +13,9 @@
 
 #include "MicroBooNEPseudoLayerPlugin.h"
 #include "MicroBooNETransformationPlugin.h"
+
+#include "LBNE35tPseudoLayerPlugin.h"
+#include "LBNE35tTransformationPlugin.h"
 
 #ifdef MONITORING
 #include "TApplication.h"
@@ -36,6 +39,7 @@ public:
     Parameters();
 
     std::string     m_pandoraSettingsFile;          ///< The path to the pandora settings file (mandatory parameter)
+    std::string     m_whichDetector;                ///< The detector name (default is MicroBooNE)
     int             m_nEventsToProcess;             ///< The number of events to process (default all events in file)
     bool            m_shouldDisplayEventTime;       ///< Whether event times should be calculated and displayed (default false)
     bool            m_shouldDisplayEventNumber;     ///< Whether event numbers should be displayed (default false)
@@ -45,11 +49,11 @@ public:
 
 /**
  *  @brief  Parse the command line arguments, setting the application parameters
- * 
+ *
  *  @param  argc argument count
  *  @param  argv argument vector
  *  @param  parameters to receive the application parameters
- * 
+ *
  *  @return success
  */
 bool ParseCommandLine(int argc, char *argv[], Parameters &parameters);
@@ -75,8 +79,35 @@ int main(int argc, char *argv[])
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::RegisterAlgorithms(*pPandora));
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::RegisterBasicPlugins(*pPandora));
 
-        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora, new lar_pandora::MicroBooNEPseudoLayerPlugin));
-        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora, new lar_pandora::MicroBooNETransformationPlugin));
+        if ("uboone" == parameters.m_whichDetector)
+        {
+            std::cout << " Loading plugins for MicroBooNE detector " << std::endl;
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
+                new lar_pandora::MicroBooNEPseudoLayerPlugin));
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
+                new lar_pandora::MicroBooNETransformationPlugin));
+        }
+        else if ("lbne35tLong" == parameters.m_whichDetector)
+        {
+            std::cout << " Loading plugins for LBNE35t detector (long drift volume)" << std::endl;
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
+                new lar_pandora::LBNE35tPseudoLayerPlugin));
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
+                new lar_pandora::LBNE35tTransformationPlugin(true)));
+        }
+        else if ("lbne35tShort" == parameters.m_whichDetector)
+        {
+            std::cout << " Loading plugins for LBNE35t detector (short drift volume)" << std::endl;
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
+                new lar_pandora::LBNE35tPseudoLayerPlugin));
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
+                new lar_pandora::LBNE35tTransformationPlugin(false)));
+        }
+        else
+        {
+            std::cout << " Not a valid detector (options: uboone, lbne35tLong, lbne35tShort)" << std::endl << " Exiting" << std::endl;
+            return 1;
+        }
 
         // Read in pandora settings from config file
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPandora, parameters.m_pandoraSettingsFile));
@@ -126,12 +157,15 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
 {
     int c(0);
 
-    while ((c = getopt(argc, argv, "i:n:t::N::h")) != -1)
+    while ((c = getopt(argc, argv, "i:d:n:t::N::h")) != -1)
     {
         switch (c)
         {
         case 'i':
             parameters.m_pandoraSettingsFile = optarg;
+            break;
+        case 'd':
+            parameters.m_whichDetector = optarg;
             break;
         case 'n':
             parameters.m_nEventsToProcess = atoi(optarg);
@@ -146,6 +180,7 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
         default:
             std::cout << std::endl << "./bin/PandoraInterface " << std::endl
                       << "    -i PandoraSettings.xml  (mandatory)" << std::endl
+                      << "    -d WhichDetector        (optional)" << std::endl
                       << "    -n NEventsToProcess     (optional)" << std::endl
                       << "    -N                      (optional, display event numbers)" << std::endl
                       << "    -t                      (optional, display event times)" << std::endl << std::endl;
@@ -160,6 +195,7 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 Parameters::Parameters() :
+    m_whichDetector("uboone"),
     m_nEventsToProcess(-1),
     m_shouldDisplayEventTime(false),
     m_shouldDisplayEventNumber(false)

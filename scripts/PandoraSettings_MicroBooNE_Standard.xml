@@ -256,7 +256,7 @@
         <InputPfoListName>CosmicRayParticles3D</InputPfoListName>
         <OutputCaloHitListName>CosmicRayCaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>CosmicRayClusters3D</OutputClusterListName>
-        <HitCreationTools>  
+        <HitCreationTools>
             <tool type = "LArClearTransverseTrackHits"><MinViews>3</MinViews></tool>
             <tool type = "LArClearLongitudinalTrackHits"><MinViews>3</MinViews></tool>
             <tool type = "LArMultiValuedLongitudinalTrackHits"><MinViews>3</MinViews></tool>
@@ -341,18 +341,21 @@
     <algorithm type = "LArKinkSplitting"/>
 
     <!-- 3D vertex reconstruction -->
-    <algorithm type = "LArCheatingVertexCreation">
-        <OutputVertexListName>SelectedVertices</OutputVertexListName>
-        <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-    </algorithm>
-    <!--algorithm type = "LArCandidateVertexCreation">
+    <algorithm type = "LArCandidateVertexCreation">
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputVertexListName>CandidateVertices</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
     </algorithm>
     <algorithm type = "LArVertexSelection">
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputVertexListName>SelectedVertices</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-    </algorithm-->
+        <BeamMode>true</BeamMode>
+    </algorithm>
     <algorithm type = "LArVertexSplitting">
         <InputClusterList>ClustersU</InputClusterList>
         <MinClusterLength>5.</MinClusterLength>
@@ -411,6 +414,7 @@
     <algorithm type = "LArClusterCharacterisation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <ShouldRemoveShowerPfos>true</ShouldRemoveShowerPfos>
+        <UseExistingPfosAsBranches>false</UseExistingPfosAsBranches>
         <InputPfoListNames>TrackParticles3D</InputPfoListNames>
     </algorithm>
     <algorithm type = "LArThreeDShowers">
