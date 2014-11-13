@@ -186,35 +186,11 @@
         <PfoListName>ShowerParticles3D</PfoListName>
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
     </algorithm>
-    <algorithm type = "LArThreeDTrackFragments">
-        <InputClusterListNameU>ClustersU</InputClusterListNameU>
-        <InputClusterListNameV>ClustersV</InputClusterListNameV>
-        <InputClusterListNameW>ClustersW</InputClusterListNameW>
-        <OutputPfoListName>TrackParticles3D</OutputPfoListName>
-        <MinXOverlap>1.</MinXOverlap>
-        <MinClusterLength>1.</MinClusterLength>
-        <MinXOverlapFraction>0.5</MinXOverlapFraction>
-        <MinMatchedSamplingPointFraction>0.5</MinMatchedSamplingPointFraction>
-        <MaxPointDisplacement>2.5</MaxPointDisplacement>
-        <TrackTools>
-            <tool type = "LArClearTrackFragments"/>
-        </TrackTools>
-        <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
-    </algorithm>
     <algorithm type = "LArTrackRecovery">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>TrackParticles3D</OutputPfoListName>
-    </algorithm>
-    <algorithm type = "LArThreeDRemnants">
-        <InputClusterListNameU>ClustersU</InputClusterListNameU>
-        <InputClusterListNameV>ClustersV</InputClusterListNameV>
-        <InputClusterListNameW>ClustersW</InputClusterListNameW>
-        <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
-        <TrackTools>
-            <tool type = "LArClearRemnants"/>
-        </TrackTools>
     </algorithm>
     <algorithm type = "LArVertexBasedPfoMerging">
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
