@@ -413,8 +413,10 @@
     <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: SHOWERS -->
     <algorithm type = "LArClusterCharacterisation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+    </algorithm>
+    <algorithm type = "LArShowerGrowing">
+        <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <ShouldRemoveShowerPfos>true</ShouldRemoveShowerPfos>
-        <UseExistingPfosAsBranches>false</UseExistingPfosAsBranches>
         <InputPfoListNames>TrackParticles3D</InputPfoListNames>
     </algorithm>
     <algorithm type = "LArThreeDShowers">
