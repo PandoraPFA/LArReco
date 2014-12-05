@@ -183,21 +183,39 @@
         </ShowerTools>
     </algorithm>
 
-    <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: MOP UP -->
-    <algorithm type = "LArBoundedClusterMerging">
-        <PfoListName>ShowerParticles3D</PfoListName>
-        <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
-    </algorithm>
-    <algorithm type = "LArTrackRecovery">
-        <InputClusterListNameU>ClustersU</InputClusterListNameU>
-        <InputClusterListNameV>ClustersV</InputClusterListNameV>
-        <InputClusterListNameW>ClustersW</InputClusterListNameW>
+    <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: OBSCURED PARTICLE RECOVERY -->
+    <algorithm type = "LArParticleRecovery">
+        <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <OutputPfoListName>TrackParticles3D</OutputPfoListName>
+        <IncludeShowers>false</IncludeShowers>
     </algorithm>
+    <algorithm type = "LArParticleRecovery">
+        <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+        <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
+        <IncludeTracks>false</IncludeTracks>
+    </algorithm>
+    <algorithm type = "LArParticleRecovery">
+        <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+        <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
+    </algorithm>
+    <algorithm type = "LArParticleRecovery">
+        <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+        <OutputPfoListName>TrackParticles3D</OutputPfoListName>
+        <VertexClusterMode>true</VertexClusterMode>
+        <MinXOverlapFraction>0.5</MinXOverlapFraction>
+        <MinClusterCaloHits>5</MinClusterCaloHits>
+        <MinClusterLength>1.</MinClusterLength>
+    </algorithm>
+
+    <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: MOP UP -->
     <algorithm type = "LArVertexBasedPfoMerging">
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
         <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+    </algorithm>
+    <algorithm type = "LArBoundedClusterMerging">
+        <PfoListName>ShowerParticles3D</PfoListName>
+        <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
     </algorithm>
     <algorithm type = "LArConeBasedMerging">
         <PfoListName>ShowerParticles3D</PfoListName>
