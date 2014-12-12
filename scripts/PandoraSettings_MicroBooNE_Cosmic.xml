@@ -260,6 +260,12 @@
         </HitCreationTools>
     </algorithm>
 
+    <!-- 3D cosmic-ray vertex reconstruction -->
+    <algorithm type = "LArCosmicRayBuilding">
+        <InputPfoListNames>Particles3D DaughterParticles3D</InputPfoListNames>
+        <OutputVertexListName>Vertices3D</OutputVertexListName>
+    </algorithm>
+
     <algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>
