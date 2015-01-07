@@ -30,8 +30,6 @@
         <OutputMCParticleListName3D>MCParticleList3D</OutputMCParticleListName3D>
         <CurrentMCParticleListReplacement>MCParticleList3D</CurrentMCParticleListReplacement>
         <MipEquivalentCut>0.</MipEquivalentCut>
-        <SelectNeutrinos>true</SelectNeutrinos>
-        <SelectCosmics>false</SelectCosmics>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
