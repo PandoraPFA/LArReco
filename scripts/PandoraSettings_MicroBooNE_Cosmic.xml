@@ -24,7 +24,6 @@
         <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
         <FilteredCaloHitListName>CaloHitListFiltered</FilteredCaloHitListName>
         <CurrentCaloHitListReplacement>CaloHitListW</CurrentCaloHitListReplacement>
-        <MCNeutrinoSelection>false</MCNeutrinoSelection>
         <OutputMCParticleListNameU>MCParticleListU</OutputMCParticleListNameU>
         <OutputMCParticleListNameV>MCParticleListV</OutputMCParticleListNameV>
         <OutputMCParticleListNameW>MCParticleListW</OutputMCParticleListNameW>
