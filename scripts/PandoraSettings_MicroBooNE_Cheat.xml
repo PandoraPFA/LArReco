@@ -199,9 +199,14 @@
         </HitCreationTools>
     </algorithm>
 
-    <algorithm type = "LArNeutrinoBuilding">
+    <algorithm type = "LArNeutrinoCreation">
+       <InputVertexListName>Vertices</InputVertexListName>
+       <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
+    </algorithm>
+
+    <algorithm type = "LArNeutrinoEventBuilding">
         <DaughterPfoListNames>Particles3D</DaughterPfoListNames>
-        <OutputPfoListName>NeutrinoParticles3D</OutputPfoListName>
+        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
     </algorithm>
 
     <!-- FINAL PARTICLE OUTPUT -->
