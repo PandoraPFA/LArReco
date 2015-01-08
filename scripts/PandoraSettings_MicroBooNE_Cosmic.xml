@@ -260,8 +260,8 @@
     </algorithm>
 
     <!-- 3D cosmic-ray vertex reconstruction -->
-    <algorithm type = "LArCosmicRayBuilding">
-        <InputPfoListNames>Particles3D DaughterParticles3D</InputPfoListNames>
+    <algorithm type = "LArCosmicRayVertexBuilding">
+        <InputPfoListName>Particles3D</InputPfoListName>
         <OutputVertexListName>Vertices3D</OutputVertexListName>
     </algorithm>
 

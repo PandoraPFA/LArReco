@@ -256,9 +256,19 @@
     </algorithm>
 
     <!-- FINAL PARTICLE OUTPUT -->
-    <algorithm type = "LArNeutrinoBuilding">
+    <algorithm type = "LArNeutrinoCreation">
+       <InputVertexListName>SelectedVertices</InputVertexListName>
+       <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
+    </algorithm>
+
+    <algorithm type = "LArNeutrinoEventBuilding">
         <DaughterPfoListNames>TrackParticles3D ShowerParticles3D</DaughterPfoListNames>
-        <OutputPfoListName>NeutrinoParticles3D</OutputPfoListName>
+        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
+    </algorithm>
+
+    <algorithm type = "LArNeutrinoVertexBuilding">
+        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
+        <OutputVertexListName>Vertices3D</OutputVertexListName>
     </algorithm>
 
     <algorithm type = "LArListChanging">
