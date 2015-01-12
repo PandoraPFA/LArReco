@@ -199,7 +199,7 @@
         </HitCreationTools>
     </algorithm>
 
-    <algorithm type = "LArNeutrinoCreation">
+    <algorithm type = "LArNeutrinoEventCreation">
        <InputVertexListName>Vertices</InputVertexListName>
        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
     </algorithm>

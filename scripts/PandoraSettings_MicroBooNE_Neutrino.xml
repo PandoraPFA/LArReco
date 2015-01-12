@@ -256,7 +256,7 @@
     </algorithm>
 
     <!-- FINAL PARTICLE OUTPUT -->
-    <algorithm type = "LArNeutrinoCreation">
+    <algorithm type = "LArNeutrinoEventCreation">
        <InputVertexListName>SelectedVertices</InputVertexListName>
        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
     </algorithm>
