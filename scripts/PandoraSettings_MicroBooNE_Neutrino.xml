@@ -255,7 +255,7 @@
         </HitCreationTools>
     </algorithm>
 
-    <!-- FINAL PARTICLE OUTPUT -->
+    <!-- 3D neutrino event reconstruction -->
     <algorithm type = "LArNeutrinoVertexCreation">
        <InputVertexListName>SelectedVertices</InputVertexListName>
        <DaughterPfoListNames>TrackParticles3D ShowerParticles3D</DaughterPfoListNames>
@@ -277,6 +277,7 @@
         <OutputVertexListName>DaughterVertices3D</OutputVertexListName>
     </algorithm>
 
+    <!-- FINAL PARTICLE OUTPUT -->
     <algorithm type = "LArListChanging">
         <PfoListName>NeutrinoParticles3D</PfoListName>
     </algorithm>

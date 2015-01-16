@@ -265,6 +265,11 @@
         <OutputVertexListName>Vertices3D</OutputVertexListName>
     </algorithm>
 
+    <!-- FINAL PARTICLE OUTPUT -->
+    <algorithm type = "LArListChanging">
+        <PfoListName>Particles3D</PfoListName>
+    </algorithm>
+
     <algorithm type = "LArVisualMonitoring">
         <ShowMCParticles>false</ShowMCParticles>
         <ShowCurrentCaloHits>false</ShowCurrentCaloHits>

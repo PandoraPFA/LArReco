@@ -24,7 +24,6 @@
         <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
         <FilteredCaloHitListName>CaloHitListFiltered</FilteredCaloHitListName>
         <CurrentCaloHitListReplacement>CaloHitListW</CurrentCaloHitListReplacement>
-        <MCNeutrinoSelection>false</MCNeutrinoSelection>
         <OutputMCParticleListNameU>MCParticleListU</OutputMCParticleListNameU>
         <OutputMCParticleListNameV>MCParticleListV</OutputMCParticleListNameV>
         <OutputMCParticleListNameW>MCParticleListW</OutputMCParticleListNameW>
@@ -258,6 +257,17 @@
             <tool type = "LArTwoViewShowerHits"/>
             <tool type = "LArDeltaRayShowerHits"/>
         </HitCreationTools>
+    </algorithm>
+
+    <!-- 3D cosmic-ray vertex reconstruction -->
+    <algorithm type = "LArCosmicRayVertexBuilding">
+        <InputPfoListName>Particles3D</InputPfoListName>
+        <OutputVertexListName>Vertices3D</OutputVertexListName>
+    </algorithm>
+
+    <!-- FINAL PARTICLE OUTPUT -->
+    <algorithm type = "LArListChanging">
+        <PfoListName>Particles3D</PfoListName>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
