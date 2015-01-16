@@ -20,7 +20,7 @@ namespace lar_pandora
 LArPandoraPseudoLayerPlugin::LArPandoraPseudoLayerPlugin(const float zPitch) :
     m_zPitch(zPitch),
     m_zOffset(0.01f),
-    m_zerothLayer(3000)
+    m_zerothLayer(5000)
 {
 }
 

@@ -15,15 +15,12 @@
 namespace lar_pandora
 {
 
-// TODO: Remove detector height from these methods
-
-LArPandoraTransformationPlugin::LArPandoraTransformationPlugin(const float thetaU, const float thetaV, const float H, const float sigmaUVW,
-    const float wireZPitch) :
+LArPandoraTransformationPlugin::LArPandoraTransformationPlugin(const float thetaU, const float thetaV, const float sigmaUVW,
+    const float wireZPitch) : 
+    LArTransformationPlugin(wireZPitch),
     m_thetaU(thetaU),
     m_thetaV(thetaV),
-    m_H(H),
     m_sigmaUVW(sigmaUVW),
-    m_wireZPitch(wireZPitch),
     m_sinUminusV(std::sin(m_thetaU - m_thetaV)),
     m_sinUplusV(std::sin(m_thetaU + m_thetaV)),
     m_sinU(std::sin(m_thetaU)),
@@ -51,77 +48,42 @@ float LArPandoraTransformationPlugin::UVtoW(const float u, const float v) const
 
 float LArPandoraTransformationPlugin::VWtoU(const float v, const float w) const
 {
-    return (w * m_sinUplusV - v * m_sinU + m_H * m_sinU * m_sinV) / m_sinV;
+    return (w * m_sinUplusV - v * m_sinU) / m_sinV;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 float LArPandoraTransformationPlugin::WUtoV(const float w, const float u) const
 {
-    return (w * m_sinUplusV - u * m_sinV + m_H * m_sinU * m_sinV) / m_sinU;
+    return (w * m_sinUplusV - u * m_sinV) / m_sinU;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 float LArPandoraTransformationPlugin::UVtoY(const float u, const float v) const
 {
-    return (v * m_cosU - u * m_cosV + 0.5f * m_H * m_sinUminusV) / m_sinUplusV;
+    return (v * m_cosU - u * m_cosV) / m_sinUplusV;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 float LArPandoraTransformationPlugin::UVtoZ(const float u, const float v) const
 {
-    return (v * m_sinU + u * m_sinV - m_H * m_sinU * m_sinV) / m_sinUplusV;
+    return (v * m_sinU + u * m_sinV) / m_sinUplusV;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 float LArPandoraTransformationPlugin::YZtoU(const float y, const float z) const
 {
-    return z * m_cosU - (y - 0.5 * m_H) * m_sinU;
+    return z * m_cosU - y * m_sinU;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 float LArPandoraTransformationPlugin::YZtoV(const float y, const float z) const
 {
-    return z * m_cosV + (y + 0.5 * m_H) * m_sinV;
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-float LArPandoraTransformationPlugin::PUPVtoPW(const float pu, const float pv) const
-{
-    return (pu * m_sinV + pv * m_sinU) / m_sinUplusV;
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-float LArPandoraTransformationPlugin::PVPWtoPU(const float pv, const float pw) const
-{
-    return (pw * m_sinUplusV - pv * m_sinU) / m_sinV;
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-float LArPandoraTransformationPlugin::PWPUtoPV(const float pw, const float pu) const
-{
-    return (pw * m_sinUplusV - pu * m_sinV) / m_sinU;
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-float LArPandoraTransformationPlugin::PYPZtoPU(const float py, const float pz) const
-{
-    return pz * m_cosU - py * m_sinU;
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-float LArPandoraTransformationPlugin::PYPZtoPV(const float py, const float pz) const
-{
-    return pz * m_cosV + py * m_sinV;
+    return z * m_cosV + y * m_sinV;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -133,32 +95,20 @@ float LArPandoraTransformationPlugin::GetSigmaUVW() const
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-float LArPandoraTransformationPlugin::GetWireZPitch() const
-{
-    return m_wireZPitch;
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
 void LArPandoraTransformationPlugin::GetMinChiSquaredYZ(const float u, const float v, const float w, const float sigmaU, const float sigmaV,
     const float sigmaW, float &y, float &z, float &chiSquared) const
 {
-    // Obtain expression for chi2, differentiate wrt y and z, set both results to zero and solve simultaneously. Using Mathematica output:
-    const double offsetY(0.5 * m_H * m_sinU);
+    // Obtain expression for chi2, differentiate wrt y and z, set both results to zero and solve simultaneously.
 
-    y = -((-offsetY * sigmaV * m_sinU) + (sigmaV * u * m_sinU) - (sigmaV * w * m_cosU * m_sinU) + (offsetY * sigmaW * m_cosU * m_cosV * m_sinU) -
-          (sigmaW * v * m_cosU * m_cosV * m_sinU) - (offsetY * sigmaW * m_cosV * m_cosV * m_sinU) + (sigmaW * u * m_cosV * m_cosV * m_sinU) +
-          (offsetY * sigmaU * m_sinV) - (sigmaU * v * m_sinV) + (offsetY * sigmaW * m_cosU * m_cosU * m_sinV) - (sigmaW * v * m_cosU * m_cosU * m_sinV) +
-          (sigmaU * w * m_cosV * m_sinV) - (offsetY * sigmaW * m_cosU * m_cosV * m_sinV) + (sigmaW * u * m_cosU * m_cosV * m_sinV)) /
-         ((sigmaV * m_sinU * m_sinU) + (sigmaW * m_cosV * m_cosV * m_sinU * m_sinU) + (2. * sigmaW * m_cosU * m_cosV * m_sinU * m_sinV) +
-          (sigmaU * m_sinV * m_sinV) + (sigmaW * m_cosU * m_cosU * m_sinV * m_sinV));
+    y = ((sigmaU * v * m_sinV) - (sigmaU * w * m_cosV * m_sinV) - (sigmaV * u * m_sinU) + (sigmaV * w * m_cosU * m_sinU) -
+         (sigmaW * u * m_cosV * m_sinUplusV) + (sigmaW * v * m_cosU * m_sinUplusV)) /
+        ((sigmaV * m_sinU * m_sinU) + (sigmaW * m_cosV * m_cosV * m_sinU * m_sinU) + (2. * sigmaW * m_cosU * m_cosV * m_sinU * m_sinV) +
+         (sigmaU * m_sinV * m_sinV) + (sigmaW * m_cosU * m_cosU * m_sinV * m_sinV));
 
-    z = -((-sigmaV * w * m_sinU * m_sinU) + (offsetY * sigmaW * m_cosV * m_sinU * m_sinU) - (sigmaW * v * m_cosV * m_sinU * m_sinU) +
-          (offsetY * sigmaW * m_cosU * m_sinU * m_sinV) - (sigmaW * v * m_cosU * m_sinU * m_sinV) + (offsetY * sigmaW * m_cosV * m_sinU * m_sinV) -
-          (sigmaW * u * m_cosV * m_sinU * m_sinV) - (sigmaU * w * m_sinV * m_sinV) + (offsetY * sigmaW * m_cosU * m_sinV * m_sinV) -
-          (sigmaW * u * m_cosU *m_sinV * m_sinV)) /
-         ((sigmaV * m_sinU * m_sinU) + (sigmaW * m_cosV * m_cosV * m_sinU * m_sinU) + (2. * sigmaW * m_cosU * m_cosV * m_sinU * m_sinV) +
-          (sigmaU * m_sinV * m_sinV) + (sigmaW * m_cosU * m_cosU * m_sinV * m_sinV));
+    z = ((sigmaU * w * m_sinV * m_sinV) + (sigmaV * w * m_sinU * m_sinU) +
+         (sigmaW * u * m_sinV * m_sinUplusV) + (sigmaW * v * m_sinU * m_sinUplusV)) /
+        ((sigmaV * m_sinU * m_sinU) + (sigmaW * m_cosV * m_cosV * m_sinU * m_sinU) + (2. * sigmaW * m_cosU * m_cosV * m_sinU * m_sinV) +
+         (sigmaU * m_sinV * m_sinV) + (sigmaW * m_cosU * m_cosU * m_sinV * m_sinV));
 
     const float deltaU(u - LArPandoraTransformationPlugin::YZtoU(y, z));
     const float deltaV(v - LArPandoraTransformationPlugin::YZtoV(y, z));

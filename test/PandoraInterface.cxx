@@ -13,6 +13,7 @@
 
 #include "MicroBooNEPseudoLayerPlugin.h"
 #include "MicroBooNETransformationPlugin.h"
+#include "MicroBooNELegacyTransformationPlugin.h"
 
 #include "LBNE35tPseudoLayerPlugin.h"
 #include "LBNE35tTransformationPlugin.h"
@@ -85,7 +86,8 @@ int main(int argc, char *argv[])
             PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
                 new lar_pandora::MicroBooNEPseudoLayerPlugin));
             PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
-                new lar_pandora::MicroBooNETransformationPlugin));
+                new lar_pandora::MicroBooNELegacyTransformationPlugin));
+              //new lar_pandora::MicroBooNETransformationPlugin));
         }
         else if ("lbne35tLong" == parameters.m_whichDetector)
         {
