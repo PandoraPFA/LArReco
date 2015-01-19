@@ -11,7 +11,7 @@
 namespace lar_pandora
 {
 
-MicroBooNEPseudoLayerPlugin::MicroBooNEPseudoLayerPlugin() : LArPandoraPseudoLayerPlugin(0.3f)
+MicroBooNEPseudoLayerPlugin::MicroBooNEPseudoLayerPlugin() : LArPseudoLayerPlugin(0.3f)
 {
 }
 

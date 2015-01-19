@@ -16,7 +16,6 @@ namespace lar_pandora
 {
 
 MicroBooNELegacyTransformationPlugin::MicroBooNELegacyTransformationPlugin() : 
-    LArTransformationPlugin(0.3f),
     m_thetaU(M_PI / 3.f),
     m_thetaV(M_PI / 3.f),
     m_H(233.f),
@@ -32,9 +31,7 @@ MicroBooNELegacyTransformationPlugin::MicroBooNELegacyTransformationPlugin() :
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-MicroBooNELegacyTransformationPlugin::MicroBooNELegacyTransformationPlugin(const float thetaU, const float thetaV, const float H, 
-    const float sigmaUVW, const float wireZPitch) : 
-    LArTransformationPlugin(wireZPitch),
+MicroBooNELegacyTransformationPlugin::MicroBooNELegacyTransformationPlugin(const float thetaU, const float thetaV, const float H, const float sigmaUVW) : 
     m_thetaU(thetaU),
     m_thetaV(thetaV),
     m_H(H),
@@ -127,28 +124,28 @@ float MicroBooNELegacyTransformationPlugin::PWPUtoPV(const float pw, const float
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 float MicroBooNELegacyTransformationPlugin::PUPVtoPY(const float pu, const float pv) const
-{std::cout << " --- MicroBooNELegacyTransformationPlugin::PUPVtoPY --- " << std::endl;
+{
     return (pv * m_cosU - pu * m_cosV) / m_sinUplusV;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 float MicroBooNELegacyTransformationPlugin::PUPVtoPZ(const float pu, const float pv) const
-{std::cout << " --- MicroBooNELegacyTransformationPlugin::PUPVtoPZ --- " << std::endl;
+{
     return (pv * m_sinU + pu * m_sinV) / m_sinUplusV;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 float MicroBooNELegacyTransformationPlugin::PYPZtoPU(const float py, const float pz) const
-{std::cout << " --- MicroBooNELegacyTransformationPlugin::PYPZtoPU --- " << std::endl;
+{
     return pz * m_cosU - py * m_sinU;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 float MicroBooNELegacyTransformationPlugin::PYPZtoPV(const float py, const float pz) const
-{std::cout << " --- MicroBooNELegacyTransformationPlugin::PYPZtoPV --- " << std::endl;
+{
     return pz * m_cosV + py * m_sinV;
 }
 

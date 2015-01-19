@@ -8,7 +8,7 @@
 #ifndef LBNE_4APA_TRANSFORMATION_PLUGIN_H
 #define LBNE_4APA_TRANSFORMATION_PLUGIN_H 1
 
-#include "LArPandoraTransformationPlugin.h"
+#include "LArPlugins/LArRotationalTransformationPlugin.h"
 
 namespace lar_pandora
 {
@@ -16,7 +16,7 @@ namespace lar_pandora
 /**
  *  @brief  LBNE4APATransformationPlugin class
  */
-class LBNE4APATransformationPlugin : public LArPandoraTransformationPlugin
+class LBNE4APATransformationPlugin : public lar_content::LArRotationalTransformationPlugin
 {
 public:
     /**

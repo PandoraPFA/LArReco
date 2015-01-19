@@ -8,7 +8,7 @@
 #ifndef LBNE_4APA_PSEUDO_LAYER_PLUGIN_H
 #define LBNE_4APA_PSEUDO_LAYER_PLUGIN_H 1
 
-#include "LArPandoraPseudoLayerPlugin.h"
+#include "LArPlugins/LArPseudoLayerPlugin.h"
 
 namespace lar_pandora
 {
@@ -16,7 +16,7 @@ namespace lar_pandora
 /**
  *  @brief  LBNE4APAPseudoLayerPlugin class
  */
-class LBNE4APAPseudoLayerPlugin : public LArPandoraPseudoLayerPlugin
+class LBNE4APAPseudoLayerPlugin : public lar_content::LArPseudoLayerPlugin
 {
 public:
     /**

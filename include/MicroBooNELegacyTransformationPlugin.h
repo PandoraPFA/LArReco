@@ -32,9 +32,8 @@ public:
      *  @param  thetaV  the angle from the W axis to the V axis (radians)
      *  @param  H  the height of the drift volume (cm)
      *  @param  sigmaUVW  nominal spatial resolution for U, V and W (cm)
-     *  @param  wireZPitch  the wire pitch (cm)
      */
-    MicroBooNELegacyTransformationPlugin(const float thetaU, const float thetaV, const float H, const float sigmaUVW, const float wireZPitch);
+    MicroBooNELegacyTransformationPlugin(const float thetaU, const float thetaV, const float H, const float sigmaUVW);
 
     /**
      *  @brief  Destructor

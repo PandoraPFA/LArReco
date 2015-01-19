@@ -8,7 +8,7 @@
 #ifndef MICRO_BOONE_PSEUDO_LAYER_PLUGIN_H
 #define MICRO_BOONE_PSEUDO_LAYER_PLUGIN_H 1
 
-#include "LArPandoraPseudoLayerPlugin.h"
+#include "LArPlugins/LArPseudoLayerPlugin.h"
 
 namespace lar_pandora
 {
@@ -16,7 +16,7 @@ namespace lar_pandora
 /**
  *  @brief  MicroBooNEPseudoLayerPlugin class
  */
-class MicroBooNEPseudoLayerPlugin : public LArPandoraPseudoLayerPlugin
+class MicroBooNEPseudoLayerPlugin : public lar_content::LArPseudoLayerPlugin
 {
 public:
     /**

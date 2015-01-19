@@ -11,7 +11,7 @@
 namespace lar_pandora
 {
 
-LBNE4APAPseudoLayerPlugin::LBNE4APAPseudoLayerPlugin() : LArPandoraPseudoLayerPlugin(0.45f)
+LBNE4APAPseudoLayerPlugin::LBNE4APAPseudoLayerPlugin() : LArPseudoLayerPlugin(0.45f)
 {
 }
 
