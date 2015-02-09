@@ -14,7 +14,7 @@ namespace lar_pandora
 {
 
 MicroBooNETransformationPlugin::MicroBooNETransformationPlugin() :
-    LArPandoraTransformationPlugin(M_PI / 3.f, M_PI / 3.f, 233.f, 1.f, 0.3f)
+    lar_content::LArRotationalTransformationPlugin(M_PI / 3.f, M_PI / 3.f, 1.f)
 {
 }
 

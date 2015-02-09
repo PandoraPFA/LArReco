@@ -8,7 +8,7 @@
 #ifndef MICRO_BOONE_TRANSFORMATION_PLUGIN_H
 #define MICRO_BOONE_TRANSFORMATION_PLUGIN_H 1
 
-#include "LArPandoraTransformationPlugin.h"
+#include "LArPlugins/LArRotationalTransformationPlugin.h"
 
 namespace lar_pandora
 {
@@ -16,7 +16,7 @@ namespace lar_pandora
 /**
  *  @brief  MicroBooNETransformationPlugin class
  */
-class MicroBooNETransformationPlugin : public LArPandoraTransformationPlugin
+class MicroBooNETransformationPlugin : public lar_content::LArRotationalTransformationPlugin
 {
 public:
     /**

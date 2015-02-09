@@ -9,7 +9,7 @@ ifndef PROJECT_DIR
 endif
 
 CC = g++
-CFLAGS = -c -g -fPIC -O2 -Wall -Wextra -pedantic -Wno-long-long -Wshadow -Werror -ansi
+CFLAGS = -c -g -fPIC -O2 -Wall -Wextra -pedantic -Wno-long-long -Wshadow -Werror -ansi -std=c++0x
 ifdef BUILD_32BIT_COMPATIBLE
     CFLAGS += -m32
 endif

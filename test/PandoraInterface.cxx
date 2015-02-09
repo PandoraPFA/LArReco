@@ -13,9 +13,13 @@
 
 #include "MicroBooNEPseudoLayerPlugin.h"
 #include "MicroBooNETransformationPlugin.h"
+#include "MicroBooNELegacyTransformationPlugin.h"
 
 #include "LBNE35tPseudoLayerPlugin.h"
 #include "LBNE35tTransformationPlugin.h"
+
+#include "LBNE4APAPseudoLayerPlugin.h"
+#include "LBNE4APATransformationPlugin.h"
 
 #ifdef MONITORING
 #include "TApplication.h"
@@ -85,15 +89,8 @@ int main(int argc, char *argv[])
             PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
                 new lar_pandora::MicroBooNEPseudoLayerPlugin));
             PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
-                new lar_pandora::MicroBooNETransformationPlugin));
-        }
-        else if ("lbne35tLong" == parameters.m_whichDetector)
-        {
-            std::cout << " Loading plugins for LBNE35t detector (long drift volume)" << std::endl;
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
-                new lar_pandora::LBNE35tPseudoLayerPlugin));
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
-                new lar_pandora::LBNE35tTransformationPlugin(true)));
+              new lar_pandora::MicroBooNELegacyTransformationPlugin));
+              //new lar_pandora::MicroBooNETransformationPlugin));
         }
         else if ("lbne35tShort" == parameters.m_whichDetector)
         {
@@ -101,11 +98,35 @@ int main(int argc, char *argv[])
             PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
                 new lar_pandora::LBNE35tPseudoLayerPlugin));
             PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
+                new lar_pandora::LBNE35tTransformationPlugin(true)));
+        }
+        else if ("lbne35tLong" == parameters.m_whichDetector)
+        {
+            std::cout << " Loading plugins for LBNE35t detector (long drift volume)" << std::endl;
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
+                new lar_pandora::LBNE35tPseudoLayerPlugin));
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
                 new lar_pandora::LBNE35tTransformationPlugin(false)));
+        }
+        else if ("lbne4apaLeft" == parameters.m_whichDetector)
+        {
+            std::cout << " Loading plugins for LBNE4APA detector (left drift volume)" << std::endl;
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
+                new lar_pandora::LBNE4APAPseudoLayerPlugin));
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
+                new lar_pandora::LBNE4APATransformationPlugin(true)));
+        }
+        else if ("lbne4apaRight" == parameters.m_whichDetector)
+        {
+            std::cout << " Loading plugins for LBNE4APA detector (right drift volume)" << std::endl;
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
+                new lar_pandora::LBNE4APAPseudoLayerPlugin));
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
+                new lar_pandora::LBNE4APATransformationPlugin(false)));
         }
         else
         {
-            std::cout << " Not a valid detector (options: uboone, lbne35tLong, lbne35tShort)" << std::endl << " Exiting" << std::endl;
+            std::cout << " Not a valid detector (options: uboone, lbne35tLong, lbne35tShort, lbne4apaLeft, lbne4apaRight)" << std::endl << " Exiting" << std::endl;
             return 1;
         }
 

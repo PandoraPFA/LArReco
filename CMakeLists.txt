@@ -60,7 +60,12 @@ ENDIF()
 
 #include directories
 INCLUDE_DIRECTORIES( ./include )
-ADD_DEFINITIONS( "-Wall -ansi -pedantic -Wno-long-long -Wno-sign-compare -fno-strict-aliasing" )
+
+# require proper C++
+ADD_DEFINITIONS( "-Wall -ansi -pedantic -std=c++0x" )
+
+# need long long for int64 for now
+ADD_DEFINITIONS( "-Wno-long-long -Wno-sign-compare -fno-strict-aliasing" )
 
 AUX_SOURCE_DIRECTORY( ./src sources )
 ADD_SHARED_LIBRARY( ${PROJECT_NAME} ${sources} )
