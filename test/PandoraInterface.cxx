@@ -74,11 +74,11 @@ int main(int argc, char *argv[])
         if (!ParseCommandLine(argc, argv, parameters))
             return 1;
 #ifdef MONITORING
-        TApplication *pTApplication = new TApplication("MyTest", &argc, argv);
+        TApplication *const pTApplication = new TApplication("MyTest", &argc, argv);
         pTApplication->SetReturnFromRun(kTRUE);
 #endif
         // Construct pandora instance
-        pandora::Pandora *pPandora = new pandora::Pandora();
+        const pandora::Pandora *const pPandora = new pandora::Pandora();
 
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::RegisterAlgorithms(*pPandora));
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::RegisterBasicPlugins(*pPandora));
