@@ -24,7 +24,6 @@
         <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
         <FilteredCaloHitListName>CaloHitListFiltered</FilteredCaloHitListName>
         <CurrentCaloHitListReplacement>CaloHitListW</CurrentCaloHitListReplacement>
-        <MCNeutrinoSelection>true</MCNeutrinoSelection>
         <OutputMCParticleListNameU>MCParticleListU</OutputMCParticleListNameU>
         <OutputMCParticleListNameV>MCParticleListV</OutputMCParticleListNameV>
         <OutputMCParticleListNameW>MCParticleListW</OutputMCParticleListNameW>
@@ -256,12 +255,29 @@
         </HitCreationTools>
     </algorithm>
 
-    <!-- FINAL PARTICLE OUTPUT -->
-    <algorithm type = "LArNeutrinoBuilding">
-        <DaughterPfoListNames>TrackParticles3D ShowerParticles3D</DaughterPfoListNames>
-        <OutputPfoListName>NeutrinoParticles3D</OutputPfoListName>
+    <!-- 3D neutrino event reconstruction -->
+    <algorithm type = "LArNeutrinoVertexCreation">
+       <InputVertexListName>SelectedVertices</InputVertexListName>
+       <DaughterPfoListNames>TrackParticles3D ShowerParticles3D</DaughterPfoListNames>
+       <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
     </algorithm>
 
+    <algorithm type = "LArNeutrinoEventCreation">
+       <InputVertexListName>NeutrinoVertices3D</InputVertexListName>
+       <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
+    </algorithm>
+
+    <algorithm type = "LArNeutrinoEventBuilding">
+        <DaughterPfoListNames>TrackParticles3D ShowerParticles3D</DaughterPfoListNames>
+        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
+    </algorithm>
+
+    <algorithm type = "LArNeutrinoVertexBuilding">
+        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
+        <OutputVertexListName>DaughterVertices3D</OutputVertexListName>
+    </algorithm>
+
+    <!-- FINAL PARTICLE OUTPUT -->
     <algorithm type = "LArListChanging">
         <PfoListName>NeutrinoParticles3D</PfoListName>
     </algorithm>

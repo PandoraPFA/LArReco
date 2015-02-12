@@ -24,7 +24,6 @@
         <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
         <FilteredCaloHitListName>CaloHitListFiltered</FilteredCaloHitListName>
         <CurrentCaloHitListReplacement>CaloHitListW</CurrentCaloHitListReplacement>
-        <MCNeutrinoSelection>false</MCNeutrinoSelection>
         <OutputMCParticleListNameU>MCParticleListU</OutputMCParticleListNameU>
         <OutputMCParticleListNameV>MCParticleListV</OutputMCParticleListNameV>
         <OutputMCParticleListNameW>MCParticleListW</OutputMCParticleListNameW>
@@ -133,7 +132,6 @@
         <OutputCaloHitListNameV>NeutrinoCaloHitListV</OutputCaloHitListNameV>
         <FilteredCaloHitListName>NeutrinoCaloHitListFiltered</FilteredCaloHitListName>
         <CurrentCaloHitListReplacement>NeutrinoCaloHitListW</CurrentCaloHitListReplacement>
-        <MCNeutrinoSelection>true</MCNeutrinoSelection>
         <OutputMCParticleListNameU>NeutrinoMCParticleListU</OutputMCParticleListNameU>
         <OutputMCParticleListNameV>NeutrinoMCParticleListV</OutputMCParticleListNameV>
         <OutputMCParticleListNameW>NeutrinoMCParticleListW</OutputMCParticleListNameW>
@@ -201,9 +199,14 @@
         </HitCreationTools>
     </algorithm>
 
-    <algorithm type = "LArNeutrinoBuilding">
+    <algorithm type = "LArNeutrinoEventCreation">
+        <InputVertexListName>Vertices</InputVertexListName>
+        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
+    </algorithm>
+
+    <algorithm type = "LArNeutrinoEventBuilding">
         <DaughterPfoListNames>Particles3D</DaughterPfoListNames>
-        <OutputPfoListName>NeutrinoParticles3D</OutputPfoListName>
+        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
     </algorithm>
 
     <!-- FINAL PARTICLE OUTPUT -->
