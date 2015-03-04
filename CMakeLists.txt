@@ -15,8 +15,35 @@ SET( LArReco_VERSION_MINOR 6 )
 SET( LArReco_VERSION_PATCH 0 )
 
 
-### DEPENDENCIES ############################################################
+### CMAKE ###################################################################
+
 INCLUDE( Default_settings )
+
+
+### SOURCE ##################################################################
+
+#include directories
+INCLUDE_DIRECTORIES( ./include )
+
+AUX_SOURCE_DIRECTORY( ./src sources )
+
+# require proper C++
+ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
+
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+if(COMPILER_SUPPORTS_CXX11)
+    message( STATUS "The compiler ${CMAKE_CXX_COMPILER} has C++11 support." )
+    ADD_DEFINITIONS( "-std=c++11" )
+else()
+    message( STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Some functionality will be limited." )
+endif()
+
+# need long long for int64 for now
+ADD_DEFINITIONS( "-Wno-long-long -Wno-sign-compare -fno-strict-aliasing" )
+
+
+### DEPENDENCIES ############################################################
 
 FIND_PACKAGE( LArContent 0.17 REQUIRED )
 FIND_PACKAGE( PandoraSDK 0.17 REQUIRED )
@@ -45,7 +72,8 @@ IF( PANDORA_MONITORING )
 ENDIF()
 
 
-### DOCUMENTATION ############################################################
+### DOCUMENTATION ###########################################################
+
 OPTION( INSTALL_DOC "Set to OFF to skip build/install Documentation" OFF )
 
 IF( INSTALL_DOC AND EXISTS "${PROJECT_SOURCE_DIR}/doc/CMakeLists.txt" )
@@ -56,43 +84,26 @@ ELSE()
 ENDIF()
 
 
-### SOURCE ##################################################################
+### OUTPUT ##################################################################
 
-#include directories
-INCLUDE_DIRECTORIES( ./include )
-
-# require proper C++
-ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
-
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-if(COMPILER_SUPPORTS_CXX11)
-    message( STATUS "The compiler ${CMAKE_CXX_COMPILER} has C++11 support." )
-    ADD_DEFINITIONS( "-std=c++11" )
-else()
-    message( STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Some functionality will be limited." )
-endif()
-
-# need long long for int64 for now
-ADD_DEFINITIONS( "-Wno-long-long -Wno-sign-compare -fno-strict-aliasing" )
-
-AUX_SOURCE_DIRECTORY( ./src sources )
+# add library
 ADD_SHARED_LIBRARY( ${PROJECT_NAME} ${sources} )
+
+# make standalone executable
+ADD_EXECUTABLE( PandoraInterface ${PROJECT_SOURCE_DIR}/test/${program}.cxx )
+TARGET_LINK_LIBRARIES( PandoraInterface ${PROJECT_NAME} )
+
+
+### INSTALL #################################################################
+
+# install library
 INSTALL_SHARED_LIBRARY( ${PROJECT_NAME} DESTINATION lib )
 
-# make standalone executables
-SET( PROGRAMS1 PandoraInterface )
-
-FOREACH( program ${PROGRAMS1} )
-    ADD_EXECUTABLE( ${program} ${PROJECT_SOURCE_DIR}/test/${program}.cxx )
-    TARGET_LINK_LIBRARIES( ${program} ${PROJECT_NAME} )
-
-    # install executable
-    INSTALL( TARGETS ${program} DESTINATION bin PERMISSIONS
-        OWNER_READ OWNER_WRITE OWNER_EXECUTE
-        GROUP_READ GROUP_EXECUTE
-        WORLD_READ WORLD_EXECUTE )
-ENDFOREACH( program )
+# install executable
+INSTALL( TARGETS PandoraInterface DESTINATION bin PERMISSIONS
+    OWNER_READ OWNER_WRITE OWNER_EXECUTE
+    GROUP_READ GROUP_EXECUTE
+    WORLD_READ WORLD_EXECUTE )
 
 # display some variables and write them to cache
 DISPLAY_STD_VARIABLES()
