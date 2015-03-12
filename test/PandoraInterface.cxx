@@ -10,6 +10,7 @@
 #include "Api/PandoraApi.h"
 
 #include "LArContent.h"
+#include "LArContentFast.h"
 
 #include "MicroBooNEPseudoLayerPlugin.h"
 #include "MicroBooNETransformationPlugin.h"
@@ -82,6 +83,7 @@ int main(int argc, char *argv[])
 
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::RegisterAlgorithms(*pPandora));
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::RegisterBasicPlugins(*pPandora));
+        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContentFast::RegisterAlgorithms(*pPandora));
 
         if ("uboone" == parameters.m_whichDetector)
         {

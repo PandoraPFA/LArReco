@@ -11,13 +11,13 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
-         <EventFileName>/r01/lbne/mcproduction/prodgenie_bnb_nu_cosmic_uboone/uBooNE_Events_100_0.pndr</EventFileName>
+         <EventFileName>/r05/lbne/mcproduction/prodgenie_bnb_nu_cosmic_uboone/uBooNE_Events_100_0.pndr</EventFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
     <!-- COSMIC RAY RECONSTRUCTION -->
-    <algorithm type = "LArListPreparation">
+    <algorithm type = "LArListPreparationFast">
         <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
         <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
         <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
