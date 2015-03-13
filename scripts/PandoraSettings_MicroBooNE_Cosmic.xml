@@ -55,7 +55,7 @@
     <algorithm type = "LArLayerSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
     <algorithm type = "LArTransverseAssociationFast"/>
-    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArLongitudinalAssociationFast"/>
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArBranchSplitting"><CosmicMode>true</CosmicMode></algorithm>
@@ -78,7 +78,7 @@
     <algorithm type = "LArLayerSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
     <algorithm type = "LArTransverseAssociationFast"/>
-    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArLongitudinalAssociationFast"/>
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArBranchSplitting"><CosmicMode>true</CosmicMode></algorithm>
@@ -101,7 +101,7 @@
     <algorithm type = "LArLayerSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
     <algorithm type = "LArTransverseAssociationFast"/>
-    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArLongitudinalAssociationFast"/>
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArBranchSplitting"><CosmicMode>true</CosmicMode></algorithm>
