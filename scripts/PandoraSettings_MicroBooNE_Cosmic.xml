@@ -17,7 +17,7 @@
     </algorithm>
 
     <!-- COSMIC RAY RECONSTRUCTION -->
-    <algorithm type = "LArListPreparationFast">
+    <algorithm type = "LArListPreparation">
         <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
         <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
         <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
@@ -54,13 +54,13 @@
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
-    <algorithm type = "LArTransverseAssociationFast"/>
-    <algorithm type = "LArLongitudinalAssociationFast"/>
+    <algorithm type = "LArTransverseAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArBranchSplitting"><CosmicMode>true</CosmicMode></algorithm>
     <algorithm type = "LArDeltaRaySplitting"><CosmicMode>true</CosmicMode></algorithm>
-    <algorithm type = "LArCrossedTrackSplittingFast"/>
+    <algorithm type = "LArCrossedTrackSplitting"/>
     <algorithm type = "LArCosmicRaySplitting"/>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
@@ -77,13 +77,13 @@
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
-    <algorithm type = "LArTransverseAssociationFast"/>
-    <algorithm type = "LArLongitudinalAssociationFast"/>
+    <algorithm type = "LArTransverseAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArBranchSplitting"><CosmicMode>true</CosmicMode></algorithm>
     <algorithm type = "LArDeltaRaySplitting"><CosmicMode>true</CosmicMode></algorithm>
-    <algorithm type = "LArCrossedTrackSplittingFast"/>
+    <algorithm type = "LArCrossedTrackSplitting"/>
     <algorithm type = "LArCosmicRaySplitting"/>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
@@ -100,13 +100,13 @@
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
-    <algorithm type = "LArTransverseAssociationFast"/>
-    <algorithm type = "LArLongitudinalAssociationFast"/>
+    <algorithm type = "LArTransverseAssociation"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArBranchSplitting"><CosmicMode>true</CosmicMode></algorithm>
     <algorithm type = "LArDeltaRaySplitting"><CosmicMode>true</CosmicMode></algorithm>
-    <algorithm type = "LArCrossedTrackSplittingFast"/>
+    <algorithm type = "LArCrossedTrackSplitting"/>
     <algorithm type = "LArCosmicRaySplitting"/>
     <algorithm type = "LArCosmicRayExtension"/>
     <algorithm type = "LArDeltaRayExtension"/>
@@ -205,7 +205,7 @@
         <ParentPfoListName>Particles3D</ParentPfoListName>
         <DaughterPfoListName>DaughterParticles3D</DaughterPfoListName>
     </algorithm>
-    <algorithm type = "LArDeltaRayMatchingFast">
+    <algorithm type = "LArDeltaRayMatching">
         <ParentPfoListName>Particles3D</ParentPfoListName>
         <DaughterPfoListName>DaughterParticles3D</DaughterPfoListName>
         <InputClusterListNameU>ClustersU</InputClusterListNameU>

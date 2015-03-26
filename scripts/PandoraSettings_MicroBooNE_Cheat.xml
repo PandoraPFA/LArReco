@@ -17,7 +17,7 @@
     </algorithm>
 
     <!-- COSMIC RAY RECONSTRUCTION -->
-    <algorithm type = "LArListPreparationFast">
+    <algorithm type = "LArListPreparation">
         <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
         <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
         <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>

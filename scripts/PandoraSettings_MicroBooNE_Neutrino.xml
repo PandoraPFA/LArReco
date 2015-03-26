@@ -17,7 +17,7 @@
     </algorithm>
 
     <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION -->
-    <algorithm type = "LArListPreparationFast">
+    <algorithm type = "LArListPreparation">
         <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
         <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
         <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
@@ -53,8 +53,8 @@
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
-    <algorithm type = "LArLongitudinalAssociationFast"/>
-    <algorithm type = "LArTransverseAssociationFast"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseAssociation"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArBranchSplitting"/>
@@ -68,8 +68,8 @@
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
-    <algorithm type = "LArLongitudinalAssociationFast"/>
-    <algorithm type = "LArTransverseAssociationFast"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseAssociation"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArBranchSplitting"/>
@@ -83,8 +83,8 @@
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
-    <algorithm type = "LArLongitudinalAssociationFast"/>
-    <algorithm type = "LArTransverseAssociationFast"/>
+    <algorithm type = "LArLongitudinalAssociation"/>
+    <algorithm type = "LArTransverseAssociation"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArBranchSplitting"/>
@@ -98,7 +98,7 @@
         <OutputVertexListName>CandidateVertices</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
     </algorithm>
-    <algorithm type = "LArVertexSelectionFast">
+    <algorithm type = "LArVertexSelection">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
