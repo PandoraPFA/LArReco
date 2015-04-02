@@ -12,7 +12,7 @@ PROJECT( LArReco )
 # project version
 SET( LArReco_VERSION_MAJOR 01 )
 SET( LArReco_VERSION_MINOR 00 )
-SET( LArReco_VERSION_PATCH 00 )
+SET( LArReco_VERSION_PATCH 01 )
 
 
 ### CMAKE ###################################################################
@@ -30,17 +30,28 @@ AUX_SOURCE_DIRECTORY( ./src sources )
 # require proper C++
 ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
 
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-if(COMPILER_SUPPORTS_CXX11)
-    message( STATUS "The compiler ${CMAKE_CXX_COMPILER} has C++11 support." )
-    ADD_DEFINITIONS( "-std=c++11" )
-else()
-    message( STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Some functionality will be limited." )
-endif()
-
 # need long long for int64 for now
 ADD_DEFINITIONS( "-Wno-long-long -Wno-sign-compare -fno-strict-aliasing" )
+
+INCLUDE( CheckCXXCompilerFlag )
+IF( NOT CMAKE_CXX_FLAGS )
+    SET( CMAKE_CXX_FLAGS "-std=c++11" )
+    SET( PROCEED_WITHOUT_CXX_FLAGS ON )
+ENDIF()
+UNSET( COMPILER_SUPPORTS_FLAGS CACHE )
+CHECK_CXX_COMPILER_FLAG( ${CMAKE_CXX_FLAGS} COMPILER_SUPPORTS_FLAGS )
+IF( COMPILER_SUPPORTS_FLAGS )
+    MESSAGE( STATUS "The compiler ${CMAKE_CXX_COMPILER} supports user-provided flags ${CMAKE_CXX_FLAGS}" )
+    ADD_DEFINITIONS( ${CMAKE_CXX_FLAGS} )
+ELSE()
+    MESSAGE( STATUS "The compiler ${CMAKE_CXX_COMPILER} does not support user-provided flags ${CMAKE_CXX_FLAGS}" )
+    IF( PROCEED_WITHOUT_CXX_FLAGS )
+        MESSAGE( STATUS "Proceed without user-provided flags ${CMAKE_CXX_FLAGS}" )
+        UNSET( CMAKE_CXX_FLAGS )
+    ELSE()
+        MESSAGE( FATAL_ERROR "CMake abort." )
+    ENDIF()
+ENDIF()
 
 
 ### DEPENDENCIES ############################################################
