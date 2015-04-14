@@ -89,8 +89,8 @@ int main(int argc, char *argv[])
             PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
                 new lar_pandora::MicroBooNEPseudoLayerPlugin));
             PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
-              new lar_pandora::MicroBooNELegacyTransformationPlugin));
-              //new lar_pandora::MicroBooNETransformationPlugin));
+              new lar_pandora::MicroBooNETransformationPlugin));
+              //new lar_pandora::MicroBooNELegacyTransformationPlugin));
         }
         else if ("lbne35tShort" == parameters.m_whichDetector)
         {
