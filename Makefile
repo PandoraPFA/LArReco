@@ -3,7 +3,7 @@ ifndef PANDORA_LARCONTENT_DIR
 endif
 
 CC = g++
-CFLAGS = -c -g -fPIC -O2 -Wall -Wextra -pedantic -Wno-long-long -Wshadow -Werror -ansi -std=c++11
+CFLAGS = -c -g -fPIC -O2 -Wall -Wextra -pedantic -Wno-long-long -Wshadow -Werror -std=c++11
 ifdef BUILD_32BIT_COMPATIBLE
     CFLAGS += -m32
 endif
