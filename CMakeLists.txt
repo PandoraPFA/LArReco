@@ -10,9 +10,9 @@ PROJECT( LArReco )
 
 
 # project version
-SET( LArReco_VERSION_MAJOR 02 )
+SET( LArReco_VERSION_MAJOR 01 )
 SET( LArReco_VERSION_MINOR 00 )
-SET( LArReco_VERSION_PATCH 00 )
+SET( LArReco_VERSION_PATCH 02 )
 
 
 ### CMAKE ###################################################################
@@ -48,8 +48,8 @@ endif()
 
 ### DEPENDENCIES ############################################################
 
-FIND_PACKAGE( LArContent 02.00.00 REQUIRED )
-FIND_PACKAGE( PandoraSDK 02.00.00 REQUIRED )
+FIND_PACKAGE( LArContent 01.00.00 REQUIRED )
+FIND_PACKAGE( PandoraSDK 01.00.00 REQUIRED )
 
 FOREACH( pkg LArContent PandoraSDK )
     IF( ${pkg}_FOUND )
@@ -62,7 +62,7 @@ ENDFOREACH()
 IF( PANDORA_MONITORING )
     LIST( APPEND CMAKE_MODULE_PATH "$ENV{ROOTSYS}/etc/cmake/" )
     ADD_DEFINITIONS( "-DMONITORING" )
-    FIND_PACKAGE( PandoraMonitoring 02.00.00 REQUIRED )
+    FIND_PACKAGE( PandoraMonitoring 01.00.00 REQUIRED )
     FIND_PACKAGE( ROOT 5.26.00 REQUIRED COMPONENTS Eve Geom RGL EG ) # minimum required ROOT version
 
     FOREACH( pkg PandoraMonitoring ROOT )
