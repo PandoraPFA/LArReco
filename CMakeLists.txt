@@ -12,7 +12,7 @@ PROJECT( LArReco )
 # project version
 SET( LArReco_VERSION_MAJOR 01 )
 SET( LArReco_VERSION_MINOR 00 )
-SET( LArReco_VERSION_PATCH 01 )
+SET( LArReco_VERSION_PATCH 02 )
 
 
 ### CMAKE ###################################################################
@@ -39,7 +39,11 @@ IF( NOT COMPILER_SUPPORTS_CXX_FLAGS )
     MESSAGE( FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} does not support cxx flags ${CMAKE_CXX_FLAGS}" )
 ENDIF()
 
-SET( CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -ansi -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing ${CMAKE_CXX_FLAGS}" )
+if( APPLE )
+    SET( CMAKE_CXX_FLAGS "-Wall -Werror -pedantic -Wno-long-long -Wno-sign-compare -fno-strict-aliasing ${CMAKE_CXX_FLAGS}" )
+else()
+    SET( CMAKE_CXX_FLAGS "-Wall -Werror -ansi -pedantic -Wno-long-long -Wno-sign-compare -fno-strict-aliasing ${CMAKE_CXX_FLAGS}" )
+endif()
 
 
 ### DEPENDENCIES ############################################################
