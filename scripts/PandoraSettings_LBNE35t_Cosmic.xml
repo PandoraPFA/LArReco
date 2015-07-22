@@ -11,7 +11,7 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
-         <EventFileName>/r01/lbne/mcproduction/prodgenie_bnb_nu_cosmic_uboone/uBooNE_Events_100_0.pndr</EventFileName>
+         <EventFileName>/r05/lbne/mcproduction_v04_06_02/prodgenie_bnb_nu_cosmic_uboone/uBooNE_Events_100_0_reco1.pndr</EventFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
@@ -263,6 +263,17 @@
     <algorithm type = "LArCosmicRayVertexBuilding">
         <InputPfoListName>Particles3D</InputPfoListName>
         <OutputVertexListName>Vertices3D</OutputVertexListName>
+    </algorithm>
+
+    <!-- 3D cosmic-ray track and shower reconstruction -->
+    <algorithm type = "LArTrackParticleBuilding">
+        <PfoListName>Particles3D</PfoListName>
+        <VertexListName>Vertices3D</VertexListName>
+    </algorithm>
+
+    <algorithm type = "LArShowerParticleBuilding">
+        <PfoListName>DaughterParticles3D</PfoListName>
+        <VertexListName>Vertices3D</VertexListName>
     </algorithm>
 
     <!-- FINAL PARTICLE OUTPUT -->
