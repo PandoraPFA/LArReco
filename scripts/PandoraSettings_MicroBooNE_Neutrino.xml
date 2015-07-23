@@ -221,19 +221,19 @@
         <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
     </algorithm>
     <algorithm type = "LArBoundedClusterMerging">
-        <PfoListName>ShowerParticles3D</PfoListName>
+        <PfoListNames>ShowerParticles3D</PfoListNames>
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
     </algorithm>
     <algorithm type = "LArConeBasedMerging">
-        <PfoListName>ShowerParticles3D</PfoListName>
+        <PfoListNames>ShowerParticles3D</PfoListNames>
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
     </algorithm>
     <algorithm type = "LArProximityBasedMerging">
-        <PfoListName>ShowerParticles3D</PfoListName>
+        <PfoListNames>ShowerParticles3D</PfoListNames>
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
     </algorithm>
     <algorithm type = "LArIsolatedHitMerging">
-        <PfoListName>ShowerParticles3D</PfoListName>
+        <PfoListNames>ShowerParticles3D</PfoListNames>
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
     </algorithm>
 

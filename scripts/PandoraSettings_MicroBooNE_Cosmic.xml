@@ -229,8 +229,15 @@
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>Particles3D</OutputPfoListName>
         <TrackTools>
-            <tool type = "LArClearRemnants"/>
+            <tool type = "LArConnectedRemnants"/>
         </TrackTools>
+    </algorithm>
+
+    <!-- 3D cosmic-ray pfo mop-up stage -->
+    <algorithm type = "LArIsolatedHitMerging">
+        <PfoListNames>Particles3D DaughterParticles3D</PfoListNames>
+        <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
+        <ExcludePfosContainingTracks>false</ExcludePfosContainingTracks>
     </algorithm>
 
     <!-- 3D cosmic-ray hit creation -->
