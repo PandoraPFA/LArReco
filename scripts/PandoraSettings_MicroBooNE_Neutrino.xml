@@ -11,7 +11,7 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
-         <EventFileName>/r05/lbne/mcproduction/prodgenie_bnb_nu_uboone/uBooNE_Events_100_0.pndr</EventFileName>
+         <EventFileName>/r05/lbne/mcproduction_v04_06_02/prodgenie_bnb_nu_uboone/uBooNE_Events_100_0_reco2.pndr</EventFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
@@ -57,6 +57,7 @@
     <algorithm type = "LArTransverseAssociation"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArTransverseExtension"/>
+    <algorithm type = "LArOvershootSplitting"/>
     <algorithm type = "LArBranchSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
 
@@ -72,6 +73,7 @@
     <algorithm type = "LArTransverseAssociation"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArTransverseExtension"/>
+    <algorithm type = "LArOvershootSplitting"/>
     <algorithm type = "LArBranchSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
 
@@ -87,6 +89,7 @@
     <algorithm type = "LArTransverseAssociation"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArTransverseExtension"/>
+    <algorithm type = "LArOvershootSplitting"/>
     <algorithm type = "LArBranchSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
 
@@ -183,6 +186,11 @@
     </algorithm>
 
     <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: OBSCURED PARTICLE RECOVERY -->
+    <algorithm type = "LArVertexBasedPfoRecovery">
+        <InputVertexListName>SelectedVertices</InputVertexListName>
+        <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+        <OutputPfoListName>TrackParticles3D</OutputPfoListName>
+    </algorithm>
     <algorithm type = "LArParticleRecovery">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <OutputPfoListName>TrackParticles3D</OutputPfoListName>
@@ -213,19 +221,19 @@
         <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
     </algorithm>
     <algorithm type = "LArBoundedClusterMerging">
-        <PfoListName>ShowerParticles3D</PfoListName>
+        <PfoListNames>ShowerParticles3D</PfoListNames>
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
     </algorithm>
     <algorithm type = "LArConeBasedMerging">
-        <PfoListName>ShowerParticles3D</PfoListName>
+        <PfoListNames>ShowerParticles3D</PfoListNames>
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
     </algorithm>
     <algorithm type = "LArProximityBasedMerging">
-        <PfoListName>ShowerParticles3D</PfoListName>
+        <PfoListNames>ShowerParticles3D</PfoListNames>
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
     </algorithm>
     <algorithm type = "LArIsolatedHitMerging">
-        <PfoListName>ShowerParticles3D</PfoListName>
+        <PfoListNames>ShowerParticles3D</PfoListNames>
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
     </algorithm>
 
@@ -275,6 +283,17 @@
     <algorithm type = "LArNeutrinoVertexBuilding">
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
         <OutputVertexListName>DaughterVertices3D</OutputVertexListName>
+    </algorithm>
+
+    <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: BUILD 3D TRACKS AND SHOWERS -->
+    <algorithm type = "LArTrackParticleBuilding">
+        <PfoListName>TrackParticles3D</PfoListName>
+        <VertexListName>DaughterVertices3D</VertexListName>
+    </algorithm>
+
+    <algorithm type = "LArShowerParticleBuilding">
+        <PfoListName>ShowerParticles3D</PfoListName>
+        <VertexListName>DaughterVertices3D</VertexListName>
     </algorithm>
 
     <!-- FINAL PARTICLE OUTPUT -->
