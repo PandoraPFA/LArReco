@@ -39,6 +39,8 @@
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
         <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
+        <MCParticleListNames>MCParticleList3D</MCParticleListNames>
+        <SuppressMCParticles>22:0.01 2112:1.0</SuppressMCParticles>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>iterate</HitColors>
@@ -47,7 +49,10 @@
 
     <!-- 2D cosmic ray reconstruction, W View -->
     <algorithm type = "LArClusteringParent">
-        <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation"/>
+        <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation">
+            <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+            <MCParticleListName>MCParticleList3D</MCParticleListName>
+        </algorithm>
         <InputCaloHitListName>CaloHitListW</InputCaloHitListName>
         <ClusterListName>ClustersW</ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
@@ -55,7 +60,10 @@
 
     <!-- 2D cosmic ray reconstruction, U View -->
     <algorithm type = "LArClusteringParent">
-        <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation"/>
+        <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation">
+            <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+            <MCParticleListName>MCParticleList3D</MCParticleListName>
+        </algorithm>
         <InputCaloHitListName>CaloHitListU</InputCaloHitListName>
         <ClusterListName>ClustersU </ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
@@ -63,7 +71,10 @@
 
     <!-- 2D cosmic ray reconstruction, V View -->
     <algorithm type = "LArClusteringParent">
-        <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation"/>
+        <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation">
+            <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+            <MCParticleListName>MCParticleList3D</MCParticleListName>
+        </algorithm>
         <InputCaloHitListName>CaloHitListV</InputCaloHitListName>
         <ClusterListName>ClustersV</ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
@@ -79,6 +90,7 @@
         <IdOffsetV>0</IdOffsetV>
         <IdOffsetW>0</IdOffsetW>
         <MCParticle3DListName>MCParticleList3D</MCParticle3DListName>
+        <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
     </algorithm>
 
     <!-- Cosmic ray tidy-up -->
@@ -179,6 +191,7 @@
         <IdOffsetU>0</IdOffsetU>
         <IdOffsetV>0</IdOffsetV>
         <IdOffsetW>0</IdOffsetW>
+        <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
         <MCParticle3DListName>MCParticleList3D</MCParticle3DListName>
     </algorithm>
     <algorithm type = "LArThreeDHitCreation">
