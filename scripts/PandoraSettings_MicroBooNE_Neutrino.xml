@@ -203,7 +203,7 @@
     </algorithm>
     <algorithm type = "LArParticleRecovery">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
-        <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
+        <OutputPfoListName>TrackParticles3D</OutputPfoListName>
     </algorithm>
     <algorithm type = "LArParticleRecovery">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
