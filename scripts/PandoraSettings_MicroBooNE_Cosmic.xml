@@ -213,15 +213,30 @@
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
     </algorithm>
 
-    <!-- 3D cosmic ray shower remnants -->
+    <!-- 2D/3D cosmic ray shower remnants -->  
+    <algorithm type = "LArSimpleClusterGrowing">
+        <InputClusterListName>ClustersW</InputClusterListName>
+        <MinCaloHitsPerCluster>5</MinCaloHitsPerCluster>
+    </algorithm>
+    <algorithm type = "LArSimpleClusterGrowing">
+        <InputClusterListName>ClustersU</InputClusterListName>
+        <MinCaloHitsPerCluster>5</MinCaloHitsPerCluster>
+    </algorithm>
+    <algorithm type = "LArSimpleClusterGrowing">
+        <InputClusterListName>ClustersV</InputClusterListName>
+        <MinCaloHitsPerCluster>5</MinCaloHitsPerCluster>
+    </algorithm>
     <algorithm type = "LArSimpleClusterMerging">
         <InputClusterListName>ClustersW</InputClusterListName>
+        <MinCaloHitsPerCluster>5</MinCaloHitsPerCluster>
     </algorithm>
     <algorithm type = "LArSimpleClusterMerging">
         <InputClusterListName>ClustersU</InputClusterListName>
+        <MinCaloHitsPerCluster>5</MinCaloHitsPerCluster>
     </algorithm>
     <algorithm type = "LArSimpleClusterMerging">
         <InputClusterListName>ClustersV</InputClusterListName>
+        <MinCaloHitsPerCluster>5</MinCaloHitsPerCluster>
     </algorithm>
     <algorithm type = "LArThreeDRemnants">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
@@ -229,11 +244,18 @@
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>Particles3D</OutputPfoListName>
         <TrackTools>
+            <tool type = "LArClearRemnants"/>
             <tool type = "LArConnectedRemnants"/>
+            <tool type = "LArMopUpRemnants"/>
         </TrackTools>
     </algorithm>
-
-    <!-- 3D cosmic-ray pfo mop-up stage -->
+    <algorithm type = "LArCosmicRayShowerMatching">
+        <MinCaloHitsPerCluster>5</MinCaloHitsPerCluster>
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
+        <OutputPfoListName>Particles3D</OutputPfoListName>
+    </algorithm>
     <algorithm type = "LArIsolatedHitMerging">
         <PfoListNames>Particles3D DaughterParticles3D</PfoListNames>
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
