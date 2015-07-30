@@ -69,11 +69,16 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const int
 
     InteractionType interactionType(OTHER_INTERACTION);
 
-    if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (1 == nSignificantPrimaries) && (1 == nMuons) && (0 == nProtons)) interactionType = CCQEL_MU;
+    if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (1 == nSignificantPrimaries) && (1 == nMuons)) interactionType = CCQEL_MU;
+    else if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (2 == nSignificantPrimaries) && (1 == nMuons) && (1 == nNeutrons)) interactionType = CCQEL_MU_N;
     else if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (2 == nSignificantPrimaries) && (1 == nMuons) && (1 == nProtons)) interactionType = CCQEL_MU_P;
+    else if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nSignificantPrimaries) && (1 == nMuons) && (1 == nProtons) && (1 == nNeutrons)) interactionType = CCQEL_MU_P_N;
     else if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nSignificantPrimaries) && (1 == nMuons) && (2 == nProtons)) interactionType = CCQEL_MU_P_P;
+    else if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (4 == nSignificantPrimaries) && (1 == nMuons) && (2 == nProtons) && (1 == nNeutrons)) interactionType = CCQEL_MU_P_P_N;
     else if ((1002 == simpleMCEvent.m_mcNeutrinoNuance) && (2 == nSignificantPrimaries) && (2 == nProtons)) interactionType = NCQEL_P_P;
+    else if ((1002 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nSignificantPrimaries) && (2 == nProtons) && (1 == nNeutrons)) interactionType = NCQEL_P_P_N;
     else if ((1003 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nSignificantPrimaries) && (1 == nMuons) && (1 == nProtons) && (1 == nPiPlus)) interactionType = CCRES_MU_P_PIPLUS;
+    else if ((1003 == simpleMCEvent.m_mcNeutrinoNuance) && (4 == nSignificantPrimaries) && (1 == nMuons) && (1 == nProtons) && (1 == nPiPlus) && (1 == nNeutrons)) interactionType = CCRES_MU_P_PIPLUS_N;
     else if ((1003 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nSignificantPrimaries) && (1 == nMuons) && (1 == nNeutrons) && (1 == nPiPlus)) interactionType = CCRES_MU_N_PIPLUS;
 
     return interactionType;

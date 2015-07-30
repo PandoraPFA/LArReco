@@ -196,10 +196,15 @@ typedef std::map<ExpectedPrimary, CountingDetails> CountingMap;
 enum InteractionType
 {
     CCQEL_MU,
+    CCQEL_MU_N,
     CCQEL_MU_P,
+    CCQEL_MU_P_N,
     CCQEL_MU_P_P,
+    CCQEL_MU_P_P_N,
     NCQEL_P_P,
+    NCQEL_P_P_N,
     CCRES_MU_P_PIPLUS,
+    CCRES_MU_P_PIPLUS_N,
     CCRES_MU_N_PIPLUS,
     OTHER_INTERACTION
 };
@@ -455,10 +460,15 @@ std::string ToString(const InteractionType interactionType)
     switch (interactionType)
     {
     case CCQEL_MU: return "CCQEL_MU";
+    case CCQEL_MU_N: return "CCQEL_MU_N";
     case CCQEL_MU_P: return "CCQEL_MU_P";
+    case CCQEL_MU_P_N: return "CCQEL_MU_P_N";
     case CCQEL_MU_P_P: return "CCQEL_MU_P_P";
+    case CCQEL_MU_P_P_N: return "CCQEL_MU_P_P_N";
     case NCQEL_P_P: return "NCQEL_P_P";
+    case NCQEL_P_P_N: return "NCQEL_P_P_N";
     case CCRES_MU_P_PIPLUS: return "CCRES_MU_P_PIPLUS";
+    case CCRES_MU_P_PIPLUS_N: return "CCRES_MU_P_PIPLUS_N";
     case CCRES_MU_N_PIPLUS: return "CCRES_MU_N_PIPLUS";
     case OTHER_INTERACTION: return "OTHER_INTERACTION";
     default: return "UNKNOWN";
