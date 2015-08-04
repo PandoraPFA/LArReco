@@ -239,6 +239,18 @@
         <MinCaloHitsPerCluster>5</MinCaloHitsPerCluster>
     </algorithm>
     <algorithm type = "LArThreeDRemnants">
+        <MinClusterCaloHits>5</MinClusterCaloHits>
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
+        <OutputPfoListName>Particles3D</OutputPfoListName>
+        <TrackTools>
+            <tool type = "LArClearRemnants"/>
+            <tool type = "LArConnectedRemnants"/>
+        </TrackTools>
+    </algorithm>
+    <algorithm type = "LArThreeDRemnants">
+        <MinClusterCaloHits>2</MinClusterCaloHits>
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
@@ -250,7 +262,7 @@
         </TrackTools>
     </algorithm>
     <algorithm type = "LArCosmicRayShowerMatching">
-        <MinCaloHitsPerCluster>5</MinCaloHitsPerCluster>
+        <MinCaloHitsPerCluster>1</MinCaloHitsPerCluster>
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
