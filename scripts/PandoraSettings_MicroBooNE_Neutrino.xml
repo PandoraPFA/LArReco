@@ -39,6 +39,8 @@
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
         <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
+        <MCParticleListNames>MCParticleList3D</MCParticleListNames>
+        <SuppressMCParticles>22:0.01 2112:1.0</SuppressMCParticles>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>iterate</HitColors>
@@ -269,20 +271,25 @@
        <DaughterPfoListNames>TrackParticles3D ShowerParticles3D</DaughterPfoListNames>
        <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
     </algorithm>
-
     <algorithm type = "LArNeutrinoEventCreation">
        <InputVertexListName>NeutrinoVertices3D</InputVertexListName>
        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
     </algorithm>
-
     <algorithm type = "LArNeutrinoEventBuilding">
         <DaughterPfoListNames>TrackParticles3D ShowerParticles3D</DaughterPfoListNames>
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
     </algorithm>
-
     <algorithm type = "LArNeutrinoVertexBuilding">
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
         <OutputVertexListName>DaughterVertices3D</OutputVertexListName>
+    </algorithm>
+    <algorithm type = "LArPfoHierarchy">
+        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
+        <PfoRelationTools>
+            <tool type = "LArVertexAssociatedPfos"/>
+            <tool type = "LArEndAssociatedPfos"/>
+            <tool type = "LArBranchAssociatedPfos"/>
+        </PfoRelationTools>
     </algorithm>
 
     <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: BUILD 3D TRACKS AND SHOWERS -->
@@ -290,7 +297,6 @@
         <PfoListName>TrackParticles3D</PfoListName>
         <VertexListName>DaughterVertices3D</VertexListName>
     </algorithm>
-
     <algorithm type = "LArShowerParticleBuilding">
         <PfoListName>ShowerParticles3D</PfoListName>
         <VertexListName>DaughterVertices3D</VertexListName>
@@ -299,6 +305,18 @@
     <!-- FINAL PARTICLE OUTPUT -->
     <algorithm type = "LArListChanging">
         <PfoListName>NeutrinoParticles3D</PfoListName>
+    </algorithm>
+
+    <!-- VALIDATION -->
+    <algorithm type = "LArEventValidation">
+        <CaloHitListName>CaloHitListFiltered</CaloHitListName>
+        <MCParticleListName>MCParticleList3D</MCParticleListName>
+        <PfoListName>NeutrinoParticles3D</PfoListName>
+        <PrintToScreen>true</PrintToScreen>
+        <MinHitsToPrintPrimary>0</MinHitsToPrintPrimary>
+        <WriteToTree>false</WriteToTree>
+        <OutputTree>Validation</OutputTree>
+        <OutputFile>Validation.root</OutputFile>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
