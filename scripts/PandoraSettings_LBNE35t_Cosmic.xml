@@ -268,6 +268,8 @@
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>Particles3D</OutputPfoListName>
     </algorithm>
+
+    <!-- 2D cosmic-ray isolated hits -->  
     <algorithm type = "LArIsolatedHitMerging">
         <PfoListNames>Particles3D DaughterParticles3D</PfoListNames>
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
@@ -290,13 +292,35 @@
         </HitCreationTools>
     </algorithm>
     <algorithm type = "LArThreeDHitCreation">
+        <InputPfoListName>Particles3D</InputPfoListName>
+        <OutputCaloHitListName>CaloHitList3D</OutputCaloHitListName>
+        <OutputClusterListName>Clusters3D</OutputClusterListName>
+        <HitCreationTools>
+            <tool type = "LArThreeViewShowerHits">
+                <ChiSquaredCut>5.0</ChiSquaredCut>
+                <ZTolerance>3.0</ZTolerance>
+            </tool>
+            <tool type = "LArTwoViewShowerHits">
+                <ChiSquaredCut>5.0</ChiSquaredCut>
+                <XTolerance>2.0</XTolerance> 
+            </tool>
+        </HitCreationTools>
+    </algorithm>
+    <algorithm type = "LArThreeDHitCreation">
         <InputPfoListName>DaughterParticles3D</InputPfoListName>
         <OutputCaloHitListName>DaughterCaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>DaughterClusters3D</OutputClusterListName>
         <HitCreationTools>
-            <tool type = "LArThreeViewShowerHits"/>
-            <tool type = "LArTwoViewShowerHits"/>
-            <tool type = "LArDeltaRayShowerHits"/>
+            <tool type = "LArThreeViewShowerHits">
+                <ChiSquaredCut>5.0</ChiSquaredCut>
+                <ZTolerance>3.0</ZTolerance>
+            </tool>
+            <tool type = "LArTwoViewShowerHits">
+                <ChiSquaredCut>5.0</ChiSquaredCut>
+                <XTolerance>2.0</XTolerance> 
+            </tool>
+            <tool type = "LArDeltaRayShowerHits">
+            </tool>
         </HitCreationTools>
     </algorithm>
 
