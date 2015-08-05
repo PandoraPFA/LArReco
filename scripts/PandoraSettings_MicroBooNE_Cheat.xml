@@ -154,7 +154,10 @@
 
     <!-- 2D neutrino-induced event reconstruction, W View -->
     <algorithm type = "LArClusteringParent">
-        <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation"/>
+        <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation">
+            <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+            <MCParticleListName>MCParticleList3D</MCParticleListName>
+        </algorithm>
         <InputCaloHitListName>NeutrinoCaloHitListW</InputCaloHitListName>
         <ClusterListName>ClustersW</ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
@@ -162,7 +165,10 @@
 
     <!-- 2D neutrino-induced event reconstruction, U View -->
     <algorithm type = "LArClusteringParent">
-        <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation"/>
+        <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation">
+            <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+            <MCParticleListName>MCParticleList3D</MCParticleListName>
+        </algorithm>
         <InputCaloHitListName>NeutrinoCaloHitListU</InputCaloHitListName>
         <ClusterListName>ClustersU</ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
@@ -170,7 +176,10 @@
 
     <!-- 2D neutrino-induced event reconstruction, V View -->
     <algorithm type = "LArClusteringParent">
-        <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation"/>
+        <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation">
+            <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+            <MCParticleListName>MCParticleList3D</MCParticleListName>
+        </algorithm>
         <InputCaloHitListName>NeutrinoCaloHitListV</InputCaloHitListName>
         <ClusterListName>ClustersV</ClusterListName>
         <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
@@ -230,6 +239,18 @@
 
     <algorithm type = "LArListChanging">
         <PfoListName>OutputParticles3D</PfoListName>
+    </algorithm>
+
+    <!-- VALIDATION -->
+    <algorithm type = "LArEventValidation">
+        <CaloHitListName>CaloHitListFiltered</CaloHitListName>
+        <MCParticleListName>MCParticleList3D</MCParticleListName>
+        <PfoListName>OutputParticles3D</PfoListName>
+        <PrintToScreen>true</PrintToScreen>
+        <MinHitsToPrintPrimary>0</MinHitsToPrintPrimary>
+        <WriteToTree>false</WriteToTree>
+        <OutputTree>Validation</OutputTree>
+        <OutputFile>Validation.root</OutputFile>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">

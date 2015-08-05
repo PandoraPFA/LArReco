@@ -39,6 +39,8 @@
         <ShowCurrentClusters>false</ShowCurrentClusters>
         <ShowCurrentPfos>false</ShowCurrentPfos>
         <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
+        <MCParticleListNames>MCParticleList3D</MCParticleListNames>
+        <SuppressMCParticles>22:0.01 2112:1.0</SuppressMCParticles>
         <ShowDetector>false</ShowDetector>
         <BlackBackground>false</BlackBackground>
         <HitColors>iterate</HitColors>
@@ -311,7 +313,7 @@
         <MCParticleListName>MCParticleList3D</MCParticleListName>
         <PfoListName>NeutrinoParticles3D</PfoListName>
         <PrintToScreen>true</PrintToScreen>
-        <MinHitsToPrintPrimary>5</MinHitsToPrintPrimary>
+        <MinHitsToPrintPrimary>0</MinHitsToPrintPrimary>
         <WriteToTree>false</WriteToTree>
         <OutputTree>Validation</OutputTree>
         <OutputFile>Validation.root</OutputFile>
