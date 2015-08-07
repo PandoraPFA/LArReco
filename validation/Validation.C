@@ -64,7 +64,6 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const int
         else if (211 == simpleMCPrimary.m_pdgCode) ++nPiPlus;
         else if (-211 == simpleMCPrimary.m_pdgCode) ++nPiMinus;
         else if (2112 == simpleMCPrimary.m_pdgCode) ++nNeutrons;
-        else if (22 == simpleMCPrimary.m_pdgCode) ++nPhotons;
     }
 
     InteractionType interactionType(OTHER_INTERACTION);

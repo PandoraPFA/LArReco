@@ -285,6 +285,7 @@
     </algorithm>
     <algorithm type = "LArPfoHierarchy">
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
+        <DisplayPfoInfoMap>false</DisplayPfoInfoMap>
         <PfoRelationTools>
             <tool type = "LArVertexAssociatedPfos"/>
             <tool type = "LArEndAssociatedPfos"/>
