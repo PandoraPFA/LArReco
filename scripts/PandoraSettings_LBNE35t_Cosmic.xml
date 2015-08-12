@@ -332,11 +332,13 @@
 
     <!-- 3D cosmic-ray track and shower reconstruction -->
     <algorithm type = "LArTrackParticleBuilding">
+        <CosmicMode>true</CosmicMode>
         <PfoListName>Particles3D</PfoListName>
         <VertexListName>Vertices3D</VertexListName>
     </algorithm>
 
     <algorithm type = "LArShowerParticleBuilding">
+        <CosmicMode>true</CosmicMode>
         <PfoListName>DaughterParticles3D</PfoListName>
         <VertexListName>Vertices3D</VertexListName>
     </algorithm>
