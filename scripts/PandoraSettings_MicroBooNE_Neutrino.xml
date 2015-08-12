@@ -10,8 +10,8 @@
     <MuonPlugin>LArMuonId</MuonPlugin>
 
     <!-- ALGORITHM SETTINGS -->
-    <algorithm type = "EventReading">
-         <EventFileName>/r05/lbne/mcproduction_v04_06_02/prodgenie_bnb_nu_uboone/uBooNE_Events_100_0_reco2.pndr</EventFileName>
+    <algorithm type = "LArEventReading">
+         <EventFileName>/r05/lbne/mcproduction_v04_16_00/prodgenie_bnb_nu_uboone/uBooNE_Events_100_0_Neutrino.pndr</EventFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
@@ -279,10 +279,6 @@
         <DaughterPfoListNames>TrackParticles3D ShowerParticles3D</DaughterPfoListNames>
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
     </algorithm>
-    <algorithm type = "LArNeutrinoVertexBuilding">
-        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
-        <OutputVertexListName>DaughterVertices3D</OutputVertexListName>
-    </algorithm>
     <algorithm type = "LArPfoHierarchy">
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
         <DisplayPfoInfoMap>false</DisplayPfoInfoMap>
@@ -292,6 +288,11 @@
             <tool type = "LArBranchAssociatedPfos"/>
         </PfoRelationTools>
     </algorithm>
+    <algorithm type = "LArNeutrinoVertexBuilding">
+        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
+        <OutputVertexListName>DaughterVertices3D</OutputVertexListName>
+    </algorithm>
+
 
     <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: BUILD 3D TRACKS AND SHOWERS -->
     <algorithm type = "LArTrackParticleBuilding">
@@ -315,6 +316,9 @@
         <PfoListName>NeutrinoParticles3D</PfoListName>
         <PrintToScreen>true</PrintToScreen>
         <MinHitsToPrintPrimary>0</MinHitsToPrintPrimary>
+        <MinMatchedHitsToPrintPfo>0</MinMatchedHitsToPrintPfo>
+        <PrimaryPfosOnly>true</PrimaryPfosOnly>
+        <CollapseToPrimaryPfos>true</CollapseToPrimaryPfos>
         <WriteToTree>false</WriteToTree>
         <OutputTree>Validation</OutputTree>
         <OutputFile>Validation.root</OutputFile>
