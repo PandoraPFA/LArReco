@@ -54,6 +54,7 @@ public:
     SimpleMatchedPfo();
 
     int                     m_id;                       ///< The unique identifier
+    int                     m_parentId;                 ///< The unique identifier of the parent pfo (-1 if no parent set)
     int                     m_pdgCode;                  ///< The pdg code
     int                     m_nPfoHitsTotal;            ///< The total number of pfo hits
     int                     m_nPfoHitsU;                ///< The number of u pfo hits
@@ -518,7 +519,7 @@ unsigned int ReadNextEvent(TChain *const pTChain, const unsigned int iEntry, Sim
         pTChain->SetBranchAddress("mcPrimaryEndZ", &simpleMCPrimary.m_endpoint.m_z);
         pTChain->SetBranchAddress("mcPrimaryNMatchedPfos", &simpleMCPrimary.m_nMatchedPfos);
 
-        IntVector *pPfoIdVector(NULL), *pPfoPdgVector(NULL), *pPfoNHitsTotalVector(NULL), *pPfoNHitsUVector(NULL),
+        IntVector *pPfoIdVector(NULL), *pPfoParentIdVector(NULL), *pPfoPdgVector(NULL), *pPfoNHitsTotalVector(NULL), *pPfoNHitsUVector(NULL),
             *pPfoNHitsVVector(NULL), *pPfoNHitsWVector(NULL), *pPfoNMatchedHitsTotalVector(NULL), *pPfoNMatchedHitsUVector(NULL),
             *pPfoNMatchedHitsVVector(NULL), *pPfoNMatchedHitsWVector(NULL);
         FloatVector *pPfoVtxXVector(NULL), *pPfoVtxYVector(NULL), *pPfoVtxZVector(NULL), *pPfoEndXVector(NULL), *pPfoEndYVector(NULL),
@@ -526,6 +527,7 @@ unsigned int ReadNextEvent(TChain *const pTChain, const unsigned int iEntry, Sim
             *pPfoEndDirYVector(NULL), *pPfoEndDirZVector(NULL);
 
         pTChain->SetBranchAddress("matchedPfoId", &pPfoIdVector);
+        pTChain->SetBranchAddress("matchedPfoParentId", &pPfoParentIdVector);
         pTChain->SetBranchAddress("matchedPfoPdg", &pPfoPdgVector);
         pTChain->SetBranchAddress("matchedPfoNHitsTotal", &pPfoNHitsTotalVector);
         pTChain->SetBranchAddress("matchedPfoNHitsU", &pPfoNHitsUVector);
@@ -555,6 +557,7 @@ unsigned int ReadNextEvent(TChain *const pTChain, const unsigned int iEntry, Sim
         {
             SimpleMatchedPfo simpleMatchedPfo;
             simpleMatchedPfo.m_id = pPfoIdVector->at(iMatchedPfo);
+            simpleMatchedPfo.m_parentId = pPfoParentIdVector->at(iMatchedPfo);
             simpleMatchedPfo.m_pdgCode = pPfoPdgVector->at(iMatchedPfo);
             simpleMatchedPfo.m_nPfoHitsTotal = pPfoNHitsTotalVector->at(iMatchedPfo);
             simpleMatchedPfo.m_nPfoHitsU = pPfoNHitsUVector->at(iMatchedPfo);
@@ -614,7 +617,12 @@ void DisplaySimpleMCEvent(const SimpleMCEvent &simpleMCEvent, const int primaryM
 
             if ((simpleMCPrimary.m_nMCHitsTotal >= primaryMinHits) && (simpleMatchedPfo.m_nMatchedHitsTotal >= minMatchedHits))
             {
-                std::cout << "-MatchedPfo " << simpleMatchedPfo.m_id << ", PDG " << simpleMatchedPfo.m_pdgCode
+                std::cout << "-MatchedPfo " << simpleMatchedPfo.m_id;
+
+                if (simpleMatchedPfo.m_parentId >= 0)
+                    std::cout << ", ParentPfo " << simpleMatchedPfo.m_parentId;
+
+                std::cout << ", PDG " << simpleMatchedPfo.m_pdgCode
                           << ", nMatchedHits " << simpleMatchedPfo.m_nMatchedHitsTotal << " (" << simpleMatchedPfo.m_nMatchedHitsU
                           << ", " << simpleMatchedPfo.m_nMatchedHitsV << ", " << simpleMatchedPfo.m_nMatchedHitsW << ")"
                           << ", nPfoHits " << simpleMatchedPfo.m_nPfoHitsTotal << " (" << simpleMatchedPfo.m_nPfoHitsU
