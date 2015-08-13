@@ -219,6 +219,41 @@ typedef std::map<InteractionType, CountingMap> InteractionTypeToCountingMap;
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
+ * @brief   PrimaryResult class
+ */
+class PrimaryResult
+{
+public:
+    /**
+     *  @brief  Default constructor  
+     */
+    PrimaryResult();
+
+    unsigned int        m_nPfoMatches;          ///< The total number of pfo matches for a given primary
+    float               m_bestCompleteness;     ///< The best match pfo is determined by the best completeness (most matched hits)
+    float               m_bestMatchPurity;      ///< The purity of the best matched pfo
+};
+
+typedef std::map<ExpectedPrimary, PrimaryResult> PrimaryResultMap;
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+/**
+ * @brief   EventOutcome class
+ */
+class EventOutcome
+{
+public:
+    // ATTN Put items to count on a per-event basis here
+    PrimaryResultMap    m_primaryResultMap;     ///< The primary result map
+};
+
+typedef std::vector<EventOutcome> EventOutcomeList; // ATTN Not terribly efficient, but that's not the main aim here
+typedef std::map<InteractionType, EventOutcomeList> InteractionTypeToEventOutcomeMap;
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+/**
  *  @brief  Get string representing interaction type
  * 
  *  @param  interactionType
@@ -325,9 +360,10 @@ ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryLis
  *  @param  pfoMatchingMap
  *  @param  primaryMinHits
  *  @param  interactionTypeToCountingMap
+ *  @param  interactionTypeToEventOutcomeMap
  */
 void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType interactionType, const PfoMatchingMap &pfoMatchingMap,
-    const int primaryMinHits, InteractionTypeToCountingMap &interactionTypeToCountingMap);
+    const int primaryMinHits, InteractionTypeToCountingMap &interactionTypeToCountingMap, InteractionTypeToEventOutcomeMap &interactionTypeToEventOutcomeMap);
 
 /**
  *  @brief  Validation
@@ -435,6 +471,16 @@ CountingDetails::CountingDetails() :
     m_nMatch1(0),
     m_nMatch2(0),
     m_nMatch3Plus(0)
+{
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+PrimaryResult::PrimaryResult() :
+    m_nPfoMatches(0),
+    m_bestCompleteness(0.f),
+    m_bestMatchPurity(0.f)
 {
 }
 

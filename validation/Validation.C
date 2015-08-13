@@ -10,6 +10,7 @@ void Validation(const std::string &inputFiles, const bool shouldDisplay, const i
 
     // To store final output
     InteractionTypeToCountingMap interactionTypeToCountingMap;
+    InteractionTypeToEventOutcomeMap interactionTypeToEventOutcomeMap;
 
     int nEvents(0), nProcessedEvents(0);
 
@@ -36,12 +37,39 @@ void Validation(const std::string &inputFiles, const bool shouldDisplay, const i
         PfoMatchingMap pfoMatchingMap;
         FinalisePfoMatching(simpleMCEvent, primaryMinHits, minMatchedHits, pfoMatchingMap);
 
-        CountPfoMatches(simpleMCEvent, interactionType, pfoMatchingMap, primaryMinHits, interactionTypeToCountingMap);
+        CountPfoMatches(simpleMCEvent, interactionType, pfoMatchingMap, primaryMinHits, interactionTypeToCountingMap, interactionTypeToEventOutcomeMap);
     }
 
     // Print-out summary of interactionTypeToCountingMap here
     std::cout << "MinPrimaryHits " << primaryMinHits << ", MinMatchedHits " << minMatchedHits << std::endl;
     DisplayInteractionTypeToCountingMap(interactionTypeToCountingMap);
+
+    // Intended for filling histograms
+    std::cout << std::endl << "EVENT INFO " << std::endl;
+
+    for (InteractionTypeToEventOutcomeMap::const_iterator iter = interactionTypeToEventOutcomeMap.begin(), iterEnd = interactionTypeToEventOutcomeMap.end(); iter != iterEnd; ++iter)
+    {
+        const InteractionType interactionType(iter->first);
+        const EventOutcomeList &eventOutcomeList(iter->second);
+        std::cout << ToString(interactionType) << ", nEvents " << eventOutcomeList.size() << std::endl;
+
+        for (EventOutcomeList::const_iterator eIter = eventOutcomeList.begin(), eIterEnd = eventOutcomeList.end(); eIter != eIterEnd; ++eIter)
+        {
+            const EventOutcome &eventOutcome(*eIter);
+            const PrimaryResultMap &primaryResultMap(eventOutcome.m_primaryResultMap);
+
+            for (PrimaryResultMap::const_iterator pIter = primaryResultMap.begin(), pIterEnd = primaryResultMap.end(); pIter != pIterEnd; ++pIter)
+            {
+                const ExpectedPrimary expectedPrimary(pIter->first);
+                const PrimaryResult &primaryResult(pIter->second);
+
+                std::cout << "-" << ToString(expectedPrimary) << ": nMatches: " << primaryResult.m_nPfoMatches << ", bestComp: "
+                          << primaryResult.m_bestCompleteness << ", bestMatchPur: " << primaryResult.m_bestMatchPurity << std::endl;
+            }
+
+            std::cout << std::endl;
+        }
+    }
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -231,8 +259,10 @@ ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryLis
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType interactionType, const PfoMatchingMap &pfoMatchingMap,
-    const int primaryMinHits, InteractionTypeToCountingMap &interactionTypeToCountingMap)
+    const int primaryMinHits, InteractionTypeToCountingMap &interactionTypeToCountingMap, InteractionTypeToEventOutcomeMap &interactionTypeToEventOutcomeMap)
 {
+    EventOutcome eventOutcome;
+
     for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
@@ -242,15 +272,28 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
             continue;
 
         CountingDetails &countingDetails = interactionTypeToCountingMap[interactionType][expectedPrimary];
+        PrimaryResult &primaryResult = eventOutcome.m_primaryResultMap[expectedPrimary];
+
         ++countingDetails.m_nTotal;
         unsigned int nMatches(0);
+        float bestCompleteness(0.f), bestMatchPurity(0.f);
 
         for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
         {
             const SimpleMatchedPfo &simpleMatchedPfo(*mIter);
 
             if (pfoMatchingMap.count(simpleMatchedPfo.m_id) && (simpleMCPrimary.m_id == pfoMatchingMap.at(simpleMatchedPfo.m_id).m_matchedPrimaryId))
+            {
                 ++nMatches;
+                const float completeness((simpleMCPrimary.m_nMCHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMCPrimary.m_nMCHitsTotal) : 0);
+                const float purity((simpleMatchedPfo.m_nPfoHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMatchedPfo.m_nPfoHitsTotal) : 0);
+
+                if (completeness > bestCompleteness)
+                {
+                    bestCompleteness = completeness;
+                    bestMatchPurity = purity;
+                }
+            }
         }
 
         if (0 == nMatches) ++countingDetails.m_nMatch0;
@@ -258,7 +301,10 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
         else if (2 == nMatches) ++countingDetails.m_nMatch2;
         else ++countingDetails.m_nMatch3Plus;
 
-        //if ((interactionType == CCRES_MU_P_PIZERO) && (expectedPrimary == PHOTON1) && (nMatches > 1))
-        //    DisplaySimpleMCEvent(simpleMCEvent, primaryMinHits, 5);
+        primaryResult.m_nPfoMatches = nMatches;
+        primaryResult.m_bestCompleteness = bestCompleteness;
+        primaryResult.m_bestMatchPurity = bestMatchPurity;
     }
+
+    interactionTypeToEventOutcomeMap[interactionType].push_back(eventOutcome);
 }
