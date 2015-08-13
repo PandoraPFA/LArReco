@@ -48,7 +48,7 @@ void Validation(const std::string &inputFiles, const bool shouldDisplay, const i
 
 InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits)
 {
-    unsigned int nSignificantPrimaries(0), nMuons(0), nProtons(0), nPiPlus(0), nPiMinus(0), nNeutrons(0), nPhotons(0);
+    unsigned int nSignificantPrimaries(0), nNonNeutrons(0), nMuons(0), nProtons(0), nPiPlus(0), nPiMinus(0), nNeutrons(0), nPhotons(0);
 
     for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
     {
@@ -58,6 +58,10 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const int
             continue;
 
         ++nSignificantPrimaries;
+
+        if (2112 != simpleMCPrimary.m_pdgCode)
+            ++nNonNeutrons;
+
         if (13 == simpleMCPrimary.m_pdgCode) ++nMuons;
         else if (2212 == simpleMCPrimary.m_pdgCode) ++nProtons;
         else if (22 == simpleMCPrimary.m_pdgCode) ++nPhotons;
@@ -68,17 +72,21 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const int
 
     InteractionType interactionType(OTHER_INTERACTION);
 
-    if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (1 == nSignificantPrimaries) && (1 == nMuons)) interactionType = CCQEL_MU;
-    else if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (2 == nSignificantPrimaries) && (1 == nMuons) && (1 == nNeutrons)) interactionType = CCQEL_MU_N;
-    else if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (2 == nSignificantPrimaries) && (1 == nMuons) && (1 == nProtons)) interactionType = CCQEL_MU_P;
-    else if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nSignificantPrimaries) && (1 == nMuons) && (1 == nProtons) && (1 == nNeutrons)) interactionType = CCQEL_MU_P_N;
-    else if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nSignificantPrimaries) && (1 == nMuons) && (2 == nProtons)) interactionType = CCQEL_MU_P_P;
-    else if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (4 == nSignificantPrimaries) && (1 == nMuons) && (2 == nProtons) && (1 == nNeutrons)) interactionType = CCQEL_MU_P_P_N;
-    else if ((1002 == simpleMCEvent.m_mcNeutrinoNuance) && (2 == nSignificantPrimaries) && (2 == nProtons)) interactionType = NCQEL_P_P;
-    else if ((1002 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nSignificantPrimaries) && (2 == nProtons) && (1 == nNeutrons)) interactionType = NCQEL_P_P_N;
-    else if ((1003 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nSignificantPrimaries) && (1 == nMuons) && (1 == nProtons) && (1 == nPiPlus)) interactionType = CCRES_MU_P_PIPLUS;
-    else if ((1003 == simpleMCEvent.m_mcNeutrinoNuance) && (4 == nSignificantPrimaries) && (1 == nMuons) && (1 == nProtons) && (1 == nPiPlus) && (1 == nNeutrons)) interactionType = CCRES_MU_P_PIPLUS_N;
-    else if ((1003 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nSignificantPrimaries) && (1 == nMuons) && (1 == nNeutrons) && (1 == nPiPlus)) interactionType = CCRES_MU_N_PIPLUS;
+    if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (1 == nNonNeutrons) && (1 == nMuons)) interactionType = CCQEL_MU;
+    else if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (2 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons)) interactionType = CCQEL_MU_P;
+    else if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons)) interactionType = CCQEL_MU_P_P;
+    else if ((1002 == simpleMCEvent.m_mcNeutrinoNuance) && (1 == nNonNeutrons) && (1 == nProtons)) interactionType = NCQEL_P;
+    else if ((1002 == simpleMCEvent.m_mcNeutrinoNuance) && (2 == nNonNeutrons) && (2 == nProtons)) interactionType = NCQEL_P_P;
+    else if ((1003 == simpleMCEvent.m_mcNeutrinoNuance) && (2 == nNonNeutrons) && (1 == nMuons) && (1 == nPiPlus)) interactionType = CCRES_MU_PIPLUS;
+    else if ((1003 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons) && (1 == nPiPlus)) interactionType = CCRES_MU_P_PIPLUS;
+    else if ((1003 == simpleMCEvent.m_mcNeutrinoNuance) && (4 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons) && (1 == nPiPlus)) interactionType = CCRES_MU_P_P_PIPLUS;
+    else if ((1004 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nNonNeutrons) && (1 == nMuons) && (2 == nPhotons)) interactionType = CCRES_MU_PIZERO;
+    else if ((1004 == simpleMCEvent.m_mcNeutrinoNuance) && (4 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons) && (2 == nPhotons)) interactionType = CCRES_MU_P_PIZERO;
+    else if ((1004 == simpleMCEvent.m_mcNeutrinoNuance) && (5 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons) && (2 == nPhotons)) interactionType = CCRES_MU_P_P_PIZERO;
+    else if ((1007 == simpleMCEvent.m_mcNeutrinoNuance) && (2 == nNonNeutrons) && (1 == nProtons) && (1 == nPiPlus)) interactionType = NCRES_P_PIPLUS;
+    else if ((1007 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nNonNeutrons) && (2 == nProtons) && (1 == nPiPlus)) interactionType = NCRES_P_P_PIPLUS;
+    else if ((1006 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nNonNeutrons) && (1 == nProtons) && (2 == nPhotons)) interactionType = NCRES_P_PIZERO;
+    else if ((1006 == simpleMCEvent.m_mcNeutrinoNuance) && (4 == nNonNeutrons) && (2 == nProtons) && (2 == nPhotons)) interactionType = NCRES_P_P_PIZERO;
 
     return interactionType;
 }
@@ -95,7 +103,7 @@ bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const int primaryM
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
 
-        if (usedMCIds.count(simpleMCPrimary.m_id) || (simpleMCPrimary.m_nMCHitsTotal < primaryMinHits))
+        if (usedMCIds.count(simpleMCPrimary.m_id))// || (simpleMCPrimary.m_nMCHitsTotal < primaryMinHits))
             continue;
 
         for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
@@ -135,8 +143,8 @@ void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const int primar
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
 
-        if (simpleMCPrimary.m_nMCHitsTotal < primaryMinHits)
-            continue;
+        //if (simpleMCPrimary.m_nMCHitsTotal < primaryMinHits)
+        //    continue;
 
         for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
         {
@@ -199,8 +207,8 @@ ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryLis
             if ((0 == nPiMinus) && (-211 == simpleMCPrimary.m_pdgCode))
                 return PIMINUS;
 
-            if ((0 == nNeutrons) && (2112 == simpleMCPrimary.m_pdgCode))
-                return NEUTRON;
+ //           if ((0 == nNeutrons) && (2112 == simpleMCPrimary.m_pdgCode))
+ //               return NEUTRON;
 
             if ((0 == nPhotons) && (22 == simpleMCPrimary.m_pdgCode))
                 return PHOTON1;
@@ -249,5 +257,8 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
         else if (1 == nMatches) ++countingDetails.m_nMatch1;
         else if (2 == nMatches) ++countingDetails.m_nMatch2;
         else ++countingDetails.m_nMatch3Plus;
+
+        //if ((interactionType == CCRES_MU_P_PIZERO) && (expectedPrimary == PHOTON1) && (nMatches > 1))
+        //    DisplaySimpleMCEvent(simpleMCEvent, primaryMinHits, 5);
     }
 }

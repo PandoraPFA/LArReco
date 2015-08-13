@@ -197,16 +197,20 @@ typedef std::map<ExpectedPrimary, CountingDetails> CountingMap;
 enum InteractionType
 {
     CCQEL_MU,
-    CCQEL_MU_N,
     CCQEL_MU_P,
-    CCQEL_MU_P_N,
     CCQEL_MU_P_P,
-    CCQEL_MU_P_P_N,
+    NCQEL_P,
     NCQEL_P_P,
-    NCQEL_P_P_N,
+    CCRES_MU_PIPLUS,
     CCRES_MU_P_PIPLUS,
-    CCRES_MU_P_PIPLUS_N,
-    CCRES_MU_N_PIPLUS,
+    CCRES_MU_P_P_PIPLUS,
+    CCRES_MU_PIZERO,
+    CCRES_MU_P_PIZERO,
+    CCRES_MU_P_P_PIZERO,
+    NCRES_P_PIPLUS,
+    NCRES_P_P_PIPLUS,
+    NCRES_P_PIZERO,
+    NCRES_P_P_PIZERO,
     OTHER_INTERACTION
 };
 
@@ -461,16 +465,20 @@ std::string ToString(const InteractionType interactionType)
     switch (interactionType)
     {
     case CCQEL_MU: return "CCQEL_MU";
-    case CCQEL_MU_N: return "CCQEL_MU_N";
     case CCQEL_MU_P: return "CCQEL_MU_P";
-    case CCQEL_MU_P_N: return "CCQEL_MU_P_N";
     case CCQEL_MU_P_P: return "CCQEL_MU_P_P";
-    case CCQEL_MU_P_P_N: return "CCQEL_MU_P_P_N";
+    case NCQEL_P: return "NCQEL_P";
     case NCQEL_P_P: return "NCQEL_P_P";
-    case NCQEL_P_P_N: return "NCQEL_P_P_N";
+    case CCRES_MU_PIPLUS: return "CCRES_MU_PIPLUS";
     case CCRES_MU_P_PIPLUS: return "CCRES_MU_P_PIPLUS";
-    case CCRES_MU_P_PIPLUS_N: return "CCRES_MU_P_PIPLUS_N";
-    case CCRES_MU_N_PIPLUS: return "CCRES_MU_N_PIPLUS";
+    case CCRES_MU_P_P_PIPLUS: return "CCRES_MU_P_P_PIPLUS";
+    case CCRES_MU_PIZERO: return "CCRES_MU_PIZERO";
+    case CCRES_MU_P_PIZERO: return "CCRES_MU_P_PIZERO";
+    case CCRES_MU_P_P_PIZERO: return "CCRES_MU_P_P_PIZERO";
+    case NCRES_P_PIPLUS: return "NCRES_P_PIPLUS";
+    case NCRES_P_P_PIPLUS: return "NCRES_P_P_PIPLUS";
+    case NCRES_P_PIZERO: return "NCRES_P_PIZERO";
+    case NCRES_P_P_PIZERO: return "NCRES_P_P_PIZERO";
     case OTHER_INTERACTION: return "OTHER_INTERACTION";
     default: return "UNKNOWN";
     }
