@@ -1,4 +1,5 @@
 #include "TChain.h"
+                        #include "TH2F.h"
 
 #include "Validation.h"
 
@@ -9,8 +10,8 @@ void Validation(const std::string &inputFiles, const bool shouldDisplay, const i
     pTChain->Add(inputFiles.c_str());
 
     // To store final output
-    InteractionTypeToCountingMap interactionTypeToCountingMap;
-    InteractionTypeToEventOutcomeMap interactionTypeToEventOutcomeMap;
+    InteractionCountingMap interactionCountingMap;
+    InteractionEventResultMap interactionEventResultMap;
 
     int nEvents(0), nProcessedEvents(0);
 
@@ -35,39 +36,48 @@ void Validation(const std::string &inputFiles, const bool shouldDisplay, const i
             continue;
 
         PfoMatchingMap pfoMatchingMap;
-        FinalisePfoMatching(simpleMCEvent, primaryMinHits, minMatchedHits, pfoMatchingMap);
+        FinalisePfoMatching(simpleMCEvent, minMatchedHits, pfoMatchingMap);
 
-        CountPfoMatches(simpleMCEvent, interactionType, pfoMatchingMap, primaryMinHits, interactionTypeToCountingMap, interactionTypeToEventOutcomeMap);
+        CountPfoMatches(simpleMCEvent, interactionType, pfoMatchingMap, primaryMinHits, interactionCountingMap, interactionEventResultMap);
     }
 
-    // Print-out summary of interactionTypeToCountingMap here
-    std::cout << "MinPrimaryHits " << primaryMinHits << ", MinMatchedHits " << minMatchedHits << std::endl;
-    DisplayInteractionTypeToCountingMap(interactionTypeToCountingMap);
+    // Processing of final output
+    DisplayInteractionCountingMap(primaryMinHits, minMatchedHits, interactionCountingMap);
+    AnalyseInteractionEventResultMap(interactionEventResultMap);
+}
 
-    // Intended for filling histograms
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap)
+{
+    // Intended for filling histograms, post-processing of information collected in main loop over ntuple, etc.
     std::cout << std::endl << "EVENT INFO " << std::endl;
+TH2F *pHist = new TH2F("nPfosVsOpeningAngle", "nPfosVsOpeningAngle", 80, 0, 3.2, 7, -0.5, 6.5);
 
-    for (InteractionTypeToEventOutcomeMap::const_iterator iter = interactionTypeToEventOutcomeMap.begin(), iterEnd = interactionTypeToEventOutcomeMap.end(); iter != iterEnd; ++iter)
+    for (InteractionEventResultMap::const_iterator iter = interactionEventResultMap.begin(), iterEnd = interactionEventResultMap.end(); iter != iterEnd; ++iter)
     {
         const InteractionType interactionType(iter->first);
-        const EventOutcomeList &eventOutcomeList(iter->second);
-        std::cout << ToString(interactionType) << ", nEvents " << eventOutcomeList.size() << std::endl;
+        const EventResultList &eventResultList(iter->second);
+        std::cout << ToString(interactionType) << ", nEvents " << eventResultList.size() << std::endl;
 
-        for (EventOutcomeList::const_iterator eIter = eventOutcomeList.begin(), eIterEnd = eventOutcomeList.end(); eIter != eIterEnd; ++eIter)
+        for (EventResultList::const_iterator eIter = eventResultList.begin(), eIterEnd = eventResultList.end(); eIter != eIterEnd; ++eIter)
         {
-            const EventOutcome &eventOutcome(*eIter);
-            const PrimaryResultMap &primaryResultMap(eventOutcome.m_primaryResultMap);
+            const EventResult &eventResult(*eIter);
+            const PrimaryResultMap &primaryResultMap(eventResult.m_primaryResultMap);
 
             for (PrimaryResultMap::const_iterator pIter = primaryResultMap.begin(), pIterEnd = primaryResultMap.end(); pIter != pIterEnd; ++pIter)
             {
                 const ExpectedPrimary expectedPrimary(pIter->first);
                 const PrimaryResult &primaryResult(pIter->second);
 
-                std::cout << "-" << ToString(expectedPrimary) << ": nMatches: " << primaryResult.m_nPfoMatches << ", bestComp: "
-                          << primaryResult.m_bestCompleteness << ", bestMatchPur: " << primaryResult.m_bestMatchPurity << std::endl;
+                //std::cout << "-" << ToString(expectedPrimary) << ": nMatches: " << primaryResult.m_nPfoMatches << ", bestComp: "
+                //          << primaryResult.m_bestCompleteness << ", bestMatchPur: " << primaryResult.m_bestMatchPurity << std::endl;
+                
+if ((CCRES_MU_P_PIZERO == interactionType) && (PHOTON1 == expectedPrimary))
+    pHist->Fill(eventResult.m_openingAngle, primaryResult.m_nPfoMatches);
             }
 
-            std::cout << std::endl;
+            //std::cout << std::endl;
         }
     }
 }
@@ -121,8 +131,7 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const int
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits, const int minMatchedHits, IntSet &usedMCIds,
-    IntSet &usedPfoIds, PfoMatchingMap &pfoMatchingMap)
+bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const int minMatchedHits, IntSet &usedMCIds, IntSet &usedPfoIds, PfoMatchingMap &pfoMatchingMap)
 {
     int bestPfoMatchId(-1);
     MatchingDetails bestMatchingDetails;
@@ -131,7 +140,7 @@ bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const int primaryM
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
 
-        if (usedMCIds.count(simpleMCPrimary.m_id))// || (simpleMCPrimary.m_nMCHitsTotal < primaryMinHits))
+        if (usedMCIds.count(simpleMCPrimary.m_id))
             continue;
 
         for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
@@ -164,15 +173,12 @@ bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const int primaryM
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits, const int minMatchedHits, const IntSet &usedPfoIds,
+void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const int minMatchedHits, const IntSet &usedPfoIds,
     PfoMatchingMap &pfoMatchingMap)
 {
     for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
-
-        //if (simpleMCPrimary.m_nMCHitsTotal < primaryMinHits)
-        //    continue;
 
         for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
         {
@@ -195,20 +201,21 @@ void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const int primar
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void FinalisePfoMatching(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits, const int minMatchedHits, PfoMatchingMap &pfoMatchingMap)
+void FinalisePfoMatching(const SimpleMCEvent &simpleMCEvent, const int minMatchedHits, PfoMatchingMap &pfoMatchingMap)
 {
     // Get best matches, one-by-one, until no more strong matches possible
     IntSet usedMCIds, usedPfoIds;
-    while (GetStrongestPfoMatch(simpleMCEvent, primaryMinHits, minMatchedHits, usedMCIds, usedPfoIds, pfoMatchingMap)) {}
+    while (GetStrongestPfoMatch(simpleMCEvent, minMatchedHits, usedMCIds, usedPfoIds, pfoMatchingMap)) {}
 
     // Assign any remaining pfos to primaries, based on number of matched hits
-    GetRemainingPfoMatches(simpleMCEvent, primaryMinHits, minMatchedHits, usedPfoIds, pfoMatchingMap);
+    GetRemainingPfoMatches(simpleMCEvent, minMatchedHits, usedPfoIds, pfoMatchingMap);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryList &simpleMCPrimaryList, const int primaryMinHits)
 {
+    // ATTN: Relies on fact that primary list is sorted by number of true hits
     unsigned int nMuons(0), nProtons(0), nPiPlus(0), nPiMinus(0), nNeutrons(0), nPhotons(0);
 
     for (SimpleMCPrimaryList::const_iterator iter = simpleMCPrimaryList.begin(); iter != simpleMCPrimaryList.end(); ++iter)
@@ -220,29 +227,14 @@ ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryLis
 
         if (primaryId == simpleMCPrimary.m_id)
         {
-            if ((0 == nMuons) && (13 == simpleMCPrimary.m_pdgCode))
-                return MUON;
-
-            if ((0 == nProtons) && (2212 == simpleMCPrimary.m_pdgCode))
-                return PROTON1;
-
-            if ((1 == nProtons) && (2212 == simpleMCPrimary.m_pdgCode))
-                return PROTON2;
-
-            if ((0 == nPiPlus) && (211 == simpleMCPrimary.m_pdgCode))
-                return PIPLUS;
-
-            if ((0 == nPiMinus) && (-211 == simpleMCPrimary.m_pdgCode))
-                return PIMINUS;
-
- //           if ((0 == nNeutrons) && (2112 == simpleMCPrimary.m_pdgCode))
- //               return NEUTRON;
-
-            if ((0 == nPhotons) && (22 == simpleMCPrimary.m_pdgCode))
-                return PHOTON1;
-
-            if ((1 == nPhotons) && (22 == simpleMCPrimary.m_pdgCode))
-                return PHOTON2;
+            if ((0 == nMuons) && (13 == simpleMCPrimary.m_pdgCode)) return MUON;
+            if ((0 == nProtons) && (2212 == simpleMCPrimary.m_pdgCode)) return PROTON1;
+            if ((1 == nProtons) && (2212 == simpleMCPrimary.m_pdgCode)) return PROTON2;
+            if ((0 == nPiPlus) && (211 == simpleMCPrimary.m_pdgCode)) return PIPLUS;
+            if ((0 == nPiMinus) && (-211 == simpleMCPrimary.m_pdgCode)) return PIMINUS;
+            if ((0 == nPhotons) && (22 == simpleMCPrimary.m_pdgCode)) return PHOTON1;
+            if ((1 == nPhotons) && (22 == simpleMCPrimary.m_pdgCode)) return PHOTON2;
+            //if ((0 == nNeutrons) && (2112 == simpleMCPrimary.m_pdgCode)) return NEUTRON; 
         }
 
         if (13 == simpleMCPrimary.m_pdgCode) ++nMuons;
@@ -259,9 +251,35 @@ ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryLis
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType interactionType, const PfoMatchingMap &pfoMatchingMap,
-    const int primaryMinHits, InteractionTypeToCountingMap &interactionTypeToCountingMap, InteractionTypeToEventOutcomeMap &interactionTypeToEventOutcomeMap)
+    const int primaryMinHits, InteractionCountingMap &interactionCountingMap, InteractionEventResultMap &interactionEventResultMap)
 {
-    EventOutcome eventOutcome;
+    EventResult eventResult;
+
+if (CCRES_MU_P_PIZERO == interactionType)
+{
+unsigned int nPhotons(0);
+SimpleThreeVector p1, p2;
+
+for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
+{
+if (22 == pIter->m_pdgCode)
+{
+if (nPhotons++ == 0)
+{
+p1 = pIter->m_momentum;
+}
+else
+{
+p2 = pIter->m_momentum;
+break;
+}
+}
+}
+
+eventResult.m_openingAngle = std::acos((p1.m_x * p2.m_x + p1.m_y * p2.m_y + p1.m_z * p2.m_z) /
+(std::sqrt(p1.m_x * p1.m_x + p1.m_y * p1.m_y + p1.m_z * p1.m_z) *
+std::sqrt(p2.m_x * p2.m_x + p2.m_y * p2.m_y + p2.m_z * p2.m_z)));
+}
 
     for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
     {
@@ -271,8 +289,8 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
         if (OTHER_PRIMARY == expectedPrimary)
             continue;
 
-        CountingDetails &countingDetails = interactionTypeToCountingMap[interactionType][expectedPrimary];
-        PrimaryResult &primaryResult = eventOutcome.m_primaryResultMap[expectedPrimary];
+        CountingDetails &countingDetails = interactionCountingMap[interactionType][expectedPrimary];
+        PrimaryResult &primaryResult = eventResult.m_primaryResultMap[expectedPrimary];
 
         ++countingDetails.m_nTotal;
         unsigned int nMatches(0);
@@ -306,5 +324,5 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
         primaryResult.m_bestMatchPurity = bestMatchPurity;
     }
 
-    interactionTypeToEventOutcomeMap[interactionType].push_back(eventOutcome);
+    interactionEventResultMap[interactionType].push_back(eventResult);
 }

@@ -214,7 +214,7 @@ enum InteractionType
     OTHER_INTERACTION
 };
 
-typedef std::map<InteractionType, CountingMap> InteractionTypeToCountingMap;
+typedef std::map<InteractionType, CountingMap> InteractionCountingMap;
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -239,17 +239,23 @@ typedef std::map<ExpectedPrimary, PrimaryResult> PrimaryResultMap;
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
- * @brief   EventOutcome class
+ * @brief   EventResult class
  */
-class EventOutcome
+class EventResult
 {
 public:
+    /**
+     *  @brief  Default constructor  
+     */
+    EventResult();
+
     // ATTN Put items to count on a per-event basis here
+float            m_openingAngle;
     PrimaryResultMap    m_primaryResultMap;     ///< The primary result map
 };
 
-typedef std::vector<EventOutcome> EventOutcomeList; // ATTN Not terribly efficient, but that's not the main aim here
-typedef std::map<InteractionType, EventOutcomeList> InteractionTypeToEventOutcomeMap;
+typedef std::vector<EventResult> EventResultList; // ATTN Not terribly efficient, but that's not the main aim here
+typedef std::map<InteractionType, EventResultList> InteractionEventResultMap;
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -294,59 +300,61 @@ void DisplaySimpleMCEvent(const SimpleMCEvent &simpleMCEvent, const int primaryM
 /**
  *  @brief  Print details to screen for a provided interaction type to counting map
  * 
- *  @param  interactionTypeToCountingMap the interaction type to counting map
+ *  @param  primaryMinHits the min number of hits in order to consider a primary
+ *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
+ *  @param  interactionCountingMap the interaction counting map
  */
-void DisplayInteractionTypeToCountingMap(const InteractionTypeToCountingMap &interactionTypeToCountingMap);
+void DisplayInteractionCountingMap(const int primaryMinHits, const int minMatchedHits, const InteractionCountingMap &interactionCountingMap);
 
 /**
  *  @brief  Get the event interaction type
  * 
- *  @param  simpleMCEvent
- *  @param  primaryMinHits
+ *  @param  simpleMCEvent the simple mc event
+ *  @param  primaryMinHits the min number of hits in order to consider a primary
  * 
  *  @return the interaction type
  */
 InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits);
 
 /**
- *  @brief  GetStrongestPfoMatch
+ *  @brief  Get the strongest pfo match (most matched hits) between an available mc primary and an available pfo
  * 
- *  @param  simpleMCEvent
- *  @param  usedMCIds
- *  @param  usedPfoIds
- *  @param  pfoMatchingMap
+ *  @param  simpleMCEvent the simple mc event
+ *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
+ *  @param  usedMCIds the list of mc primary ids with an existing match
+ *  @param  usedPfoIds the list of pfo ids with an existing match
+ *  @param  pfoMatchingMap the pfo matching map, to be populated
  */
-bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits, const int minMatchedHits, IntSet &usedMCIds,
+bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const int minMatchedHits, IntSet &usedMCIds,
     IntSet &usedPfoIds, PfoMatchingMap &pfoMatchingMap);
 
 /**
- *  @brief  GetRemainingPfoMatches
+ *  @brief  Get the best matches for any pfos left-over after the strong matching procedure
  * 
- *  @param  simpleMCEvent
- *  @param  primaryMinHits
- *  @param  minMatchedHits
- *  @param  usedPfoIds
- *  @param  pfoMatchingMap
+ *  @param  simpleMCEvent the simple mc event
+ *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
+ *  @param  usedPfoIds the list of pfo ids with an existing match
+ *  @param  pfoMatchingMap the pfo matching map, to be populated
  */
-void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits, const int minMatchedHits, const IntSet &usedPfoIds,
+void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const int minMatchedHits, const IntSet &usedPfoIds,
     PfoMatchingMap &pfoMatchingMap);
 
 /**
- *  @brief  FinalisePfoMatching
+ *  @brief  Finalise the mc primary to pfo matching, using a pfo matching map to store the results
  * 
- *  @param  simpleMCPrimary
- *  @param  primaryMinHits
- *  @param  minMatchedHits
- *  @param  pfoMatchingMap
+ *  @param  simpleMCEvent the simple mc event
+ *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
+ *  @param  pfoMatchingMap the pfo matching map, to be populated
  */
-void FinalisePfoMatching(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits, const int minMatchedHits, PfoMatchingMap &pfoMatchingMap);
+void FinalisePfoMatching(const SimpleMCEvent &simpleMCEvent, const int minMatchedHits, PfoMatchingMap &pfoMatchingMap);
 
 /**
- *  @brief  GetExpectedPrimary Relies on fact that primary list is sorted by number of true hits
+ *  @brief  Work out which of the primary particles (expected for a given interaction types) corresponds to the provided priamry id
+ *          ATTN: Relies on fact that primary list is sorted by number of true hits
  * 
- *  @param  primaryId
- *  @param  simpleMCPrimaryList
- *  @param  primaryMinHits
+ *  @param  primaryId the primary id
+ *  @param  simpleMCPrimaryList the simple mc primary list
+ *  @param  primaryMinHits the min number of hits in order to consider a primary
  * 
  *  @return the expected primary
  */
@@ -355,27 +363,34 @@ ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryLis
 /**
  *  @brief  CountPfoMatches Relies on fact that primary list is sorted by number of true hits
  * 
- *  @param  simpleMCEvent
- *  @param  interactionType
- *  @param  pfoMatchingMap
- *  @param  primaryMinHits
- *  @param  interactionTypeToCountingMap
- *  @param  interactionTypeToEventOutcomeMap
+ *  @param  simpleMCEvent the simple mc event
+ *  @param  interactionType the interaction type
+ *  @param  primaryMinHits the min number of hits in order to consider a primary
+ *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
+ *  @param  interactionCountingMap the interaction counting map, to be populated
+ *  @param  interactionEventOutcomeMap the interaction event outcome map, to be populated
  */
 void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType interactionType, const PfoMatchingMap &pfoMatchingMap,
-    const int primaryMinHits, InteractionTypeToCountingMap &interactionTypeToCountingMap, InteractionTypeToEventOutcomeMap &interactionTypeToEventOutcomeMap);
+    const int primaryMinHits, InteractionCountingMap &interactionCountingMap, InteractionEventResultMap &interactionEventResultMap);
 
 /**
- *  @brief  Validation
+ *  @brief  Validation - Main entry point for analysis
  * 
- *  @param  inputFiles
- *  @param  shouldDisplay
- *  @param  maxEvents
- *  @param  primaryMinHits
- *  @param  nuance
+ *  @param  inputFiles the regex identifying the input root files
+ *  @param  shouldDisplay whether to display the reconstruction outcomes for individual events
+ *  @param  maxEvents the maximum number of events to process
+ *  @param  primaryMinHits the min number of hits in order to consider a primary
+ *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
  */
 void Validation(const std::string &inputFiles, const bool shouldDisplay = true, const int skipEvents = 0, const int nEventsToProcess = std::numeric_limits<int>::max(),
     const int primaryMinHits = 0, const int minMatchedHits = 0);
+
+/**
+ *  @brief  Opportunity to fill histograms, perform post-processing of information collected in main loop over ntuple, etc.
+ * 
+ *  @param  interactionEventResultMap the interaction event result map
+ */
+void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap);
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -483,6 +498,14 @@ PrimaryResult::PrimaryResult() :
     m_bestMatchPurity(0.f)
 {
 }
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+EventResult::EventResult() :
+    m_openingAngle(-0.5f)
+{
+};
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -689,9 +712,11 @@ void DisplaySimpleMCEvent(const SimpleMCEvent &simpleMCEvent, const int primaryM
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void DisplayInteractionTypeToCountingMap(const InteractionTypeToCountingMap &interactionTypeToCountingMap)
+void DisplayInteractionCountingMap(const int primaryMinHits, const int minMatchedHits, const InteractionCountingMap &interactionCountingMap)
 {
-    for (InteractionTypeToCountingMap::const_iterator iter = interactionTypeToCountingMap.begin(); iter != interactionTypeToCountingMap.end(); ++iter)
+    std::cout << "MinPrimaryHits " << primaryMinHits << ", MinMatchedHits " << minMatchedHits << std::endl;
+
+    for (InteractionCountingMap::const_iterator iter = interactionCountingMap.begin(); iter != interactionCountingMap.end(); ++iter)
     {
         const InteractionType interactionType(iter->first);
         const CountingMap &countingMap(iter->second);
