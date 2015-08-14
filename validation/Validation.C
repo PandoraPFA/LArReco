@@ -6,7 +6,6 @@
  *  $Log: $
  */
 #include "TChain.h"
-                        #include "TH2F.h"
 
 #include "Validation.h"
 
@@ -189,32 +188,6 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
 {
     EventResult eventResult;
 
-if (CCRES_MU_P_PIZERO == interactionType)
-{
-unsigned int nPhotons(0);
-SimpleThreeVector p1, p2;
-
-for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
-{
-if (22 == pIter->m_pdgCode)
-{
-if (nPhotons++ == 0)
-{
-p1 = pIter->m_momentum;
-}
-else
-{
-p2 = pIter->m_momentum;
-break;
-}
-}
-}
-
-eventResult.m_openingAngle = std::acos((p1.m_x * p2.m_x + p1.m_y * p2.m_y + p1.m_z * p2.m_z) /
-(std::sqrt(p1.m_x * p1.m_x + p1.m_y * p1.m_y + p1.m_z * p1.m_z) *
-std::sqrt(p2.m_x * p2.m_x + p2.m_y * p2.m_y + p2.m_z * p2.m_z)));
-}
-
     for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
@@ -327,32 +300,36 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
 {
     // Intended for filling histograms, post-processing of information collected in main loop over ntuple, etc.
     std::cout << std::endl << "EVENT INFO " << std::endl;
-TH2F *pHist = new TH2F("nPfosVsOpeningAngle", "nPfosVsOpeningAngle", 80, 0, 3.2, 7, -0.5, 6.5);
 
     for (InteractionEventResultMap::const_iterator iter = interactionEventResultMap.begin(), iterEnd = interactionEventResultMap.end(); iter != iterEnd; ++iter)
     {
         const InteractionType interactionType(iter->first);
         const EventResultList &eventResultList(iter->second);
-        std::cout << ToString(interactionType) << ", nEvents " << eventResultList.size() << std::endl;
+
+        unsigned int nCorrectEvents(0);
 
         for (EventResultList::const_iterator eIter = eventResultList.begin(), eIterEnd = eventResultList.end(); eIter != eIterEnd; ++eIter)
         {
-            const EventResult &eventResult(*eIter);
-            const PrimaryResultMap &primaryResultMap(eventResult.m_primaryResultMap);
+            const PrimaryResultMap &primaryResultMap(eIter->m_primaryResultMap);
+            bool isCorrect(!primaryResultMap.empty());
 
             for (PrimaryResultMap::const_iterator pIter = primaryResultMap.begin(), pIterEnd = primaryResultMap.end(); pIter != pIterEnd; ++pIter)
             {
                 const ExpectedPrimary expectedPrimary(pIter->first);
                 const PrimaryResult &primaryResult(pIter->second);
 
+                if (primaryResult.m_nPfoMatches != 1)
+                    isCorrect = false;
+
                 //std::cout << "-" << ToString(expectedPrimary) << ": nMatches: " << primaryResult.m_nPfoMatches << ", bestComp: "
                 //          << primaryResult.m_bestCompleteness << ", bestMatchPur: " << primaryResult.m_bestMatchPurity << std::endl;
-                
-if ((CCRES_MU_P_PIZERO == interactionType) && (PHOTON1 == expectedPrimary))
-    pHist->Fill(eventResult.m_openingAngle, primaryResult.m_nPfoMatches);
             }
 
-            //std::cout << std::endl;
+            if (isCorrect)
+                ++nCorrectEvents;
         }
+
+        std::cout << ToString(interactionType) << std::endl << "-nEvents " << eventResultList.size() << ", nCorrect " << nCorrectEvents
+                  << ", fCorrect " << static_cast<float>(nCorrectEvents) / static_cast<float>(eventResultList.size()) << std::endl;
     }
 }
