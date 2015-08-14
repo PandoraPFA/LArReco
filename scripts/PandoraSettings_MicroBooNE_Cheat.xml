@@ -221,14 +221,16 @@
         </HitCreationTools>
     </algorithm>
 
-    <algorithm type = "LArNeutrinoEventCreation">
-        <InputVertexListName>Vertices</InputVertexListName>
+    <!-- Construct neutrino and daughter pfo hierarchy -->
+    <algorithm type = "LArCheatingNeutrinoCreation">
+        <MCParticleListName>MCParticleList3D</MCParticleListName>
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
-    </algorithm>
-
-    <algorithm type = "LArNeutrinoEventBuilding">
+        <VertexListName>Vertices</VertexListName>
         <DaughterPfoListNames>Particles3D</DaughterPfoListNames>
+    </algorithm>
+    <algorithm type = "LArCheatingNeutrinoDaughterVertices">
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
+        <OutputVertexListName>DaughterVertices3D</OutputVertexListName>
     </algorithm>
 
     <!-- FINAL PARTICLE OUTPUT -->
