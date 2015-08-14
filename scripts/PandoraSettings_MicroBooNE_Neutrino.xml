@@ -47,7 +47,7 @@
         <DetectorView>xz</DetectorView>
     </algorithm>
 
-    <!-- 2D neutrino-induced track reconstruction, W View -->
+    <!-- 2D track reconstruction, W View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArTrackClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListW</InputCaloHitListName>
@@ -63,7 +63,7 @@
     <algorithm type = "LArBranchSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
 
-    <!-- 2D neutrino-induced event track reconstruction, U View -->
+    <!-- 2D track reconstruction, U View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArTrackClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListU</InputCaloHitListName>
@@ -79,7 +79,7 @@
     <algorithm type = "LArBranchSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
 
-    <!-- 2D neutrino-induced event track reconstruction, V View -->
+    <!-- 2D track reconstruction, V View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArTrackClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListV</InputCaloHitListName>
@@ -124,7 +124,7 @@
         <MinClusterLength>5.</MinClusterLength>
     </algorithm>
 
-    <!-- 3D neutrino-induced event track reconstruction -->
+    <!-- 3D track reconstruction -->
     <algorithm type = "LArThreeDTransverseTracks">
         <InputClusterListNameU>ClustersU</InputClusterListNameU>
         <InputClusterListNameV>ClustersV</InputClusterListNameV>
@@ -165,7 +165,7 @@
         <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
     </algorithm>
 
-    <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: SHOWERS -->
+    <!-- Shower reconstruction -->
     <algorithm type = "LArClusterCharacterisation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
     </algorithm>
@@ -187,7 +187,7 @@
         </ShowerTools>
     </algorithm>
 
-    <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: OBSCURED PARTICLE RECOVERY -->
+    <!-- Obscured particle recovery -->
     <algorithm type = "LArVertexBasedPfoRecovery">
         <InputVertexListName>SelectedVertices</InputVertexListName>
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
@@ -216,7 +216,7 @@
         <MinClusterLength>1.</MinClusterLength>
     </algorithm>
 
-    <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: MOP UP -->
+    <!-- Consolidate pfos and mop-up remnants -->
     <algorithm type = "LArVertexBasedPfoMerging">
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
@@ -239,7 +239,7 @@
         <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
     </algorithm>
 
-    <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: 3D HITS -->
+    <!-- 3D hit reconstruction -->
     <algorithm type = "LArThreeDHitCreation">
         <InputPfoListName>TrackParticles3D</InputPfoListName>
         <OutputCaloHitListName>TrackCaloHitList3D</OutputCaloHitListName>
@@ -265,22 +265,14 @@
         </HitCreationTools>
     </algorithm>
 
-    <!-- 3D neutrino event reconstruction -->
-    <algorithm type = "LArNeutrinoVertexCreation">
+    <!-- Construct neutrino and daughter pfo hierarchy -->
+    <algorithm type = "LArNeutrinoCreation">
        <InputVertexListName>SelectedVertices</InputVertexListName>
-       <DaughterPfoListNames>TrackParticles3D ShowerParticles3D</DaughterPfoListNames>
-       <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
-    </algorithm>
-    <algorithm type = "LArNeutrinoEventCreation">
-       <InputVertexListName>NeutrinoVertices3D</InputVertexListName>
        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
     </algorithm>
-    <algorithm type = "LArNeutrinoEventBuilding">
+    <algorithm type = "LArNeutrinoHierarchy">
+        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
         <DaughterPfoListNames>TrackParticles3D ShowerParticles3D</DaughterPfoListNames>
-        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
-    </algorithm>
-    <algorithm type = "LArPfoHierarchy">
-        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
         <DisplayPfoInfoMap>false</DisplayPfoInfoMap>
         <PfoRelationTools>
             <tool type = "LArVertexAssociatedPfos"/>
@@ -288,13 +280,15 @@
             <tool type = "LArBranchAssociatedPfos"/>
         </PfoRelationTools>
     </algorithm>
-    <algorithm type = "LArNeutrinoVertexBuilding">
+    <algorithm type = "LArNeutrinoDaughterVertices">
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
         <OutputVertexListName>DaughterVertices3D</OutputVertexListName>
     </algorithm>
+    <algorithm type = "LArNeutrinoProperties">
+        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
+    </algorithm>
 
-
-    <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION: BUILD 3D TRACKS AND SHOWERS -->
+    <!-- Build 3d tracks and showers -->
     <algorithm type = "LArTrackParticleBuilding">
         <PfoListName>TrackParticles3D</PfoListName>
         <VertexListName>DaughterVertices3D</VertexListName>
@@ -304,12 +298,11 @@
         <VertexListName>DaughterVertices3D</VertexListName>
     </algorithm>
 
-    <!-- FINAL PARTICLE OUTPUT -->
+    <!-- Final output and validation -->
     <algorithm type = "LArListChanging">
         <PfoListName>NeutrinoParticles3D</PfoListName>
     </algorithm>
 
-    <!-- VALIDATION -->
     <algorithm type = "LArEventValidation">
         <CaloHitListName>CaloHitListFiltered</CaloHitListName>
         <MCParticleListName>MCParticleList3D</MCParticleListName>
