@@ -223,20 +223,23 @@
 
     <!-- Construct neutrino and daughter pfo hierarchy -->
     <algorithm type = "LArCheatingNeutrinoCreation">
+        <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
         <MCParticleListName>MCParticleList3D</MCParticleListName>
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
         <VertexListName>Vertices</VertexListName>
         <DaughterPfoListNames>Particles3D</DaughterPfoListNames>
     </algorithm>
     <algorithm type = "LArCheatingNeutrinoDaughterVertices">
+        <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+        <MCParticleListName>MCParticleList3D</MCParticleListName>
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
         <OutputVertexListName>DaughterVertices3D</OutputVertexListName>
     </algorithm>
 
     <!-- FINAL PARTICLE OUTPUT -->
     <algorithm type = "LArListMerging">
-        <SourcePfoListNames>CosmicRayParticles3D NeutrinoParticles3D</SourcePfoListNames>
-        <TargetPfoListNames>OutputParticles3D OutputParticles3D</TargetPfoListNames>
+        <SourcePfoListNames>CosmicRayParticles3D NeutrinoParticles3D Particles3D</SourcePfoListNames>
+        <TargetPfoListNames>OutputParticles3D OutputParticles3D OutputParticles3D</TargetPfoListNames>
     </algorithm>
 
     <algorithm type = "LArListChanging">
