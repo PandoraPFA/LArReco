@@ -114,7 +114,7 @@ typedef std::vector<SimpleMCPrimary> SimpleMCPrimaryList;
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
- *  @brief SimpleMCPrimary class
+ *  @brief SimpleMCEvent class
  */
 class SimpleMCEvent
 {
@@ -130,6 +130,8 @@ public:
     int                     m_mcNeutrinoPdg;            ///< The mc neutrino pdg code
     int                     m_mcNeutrinoNuance;         ///< The mc neutrino nuance code (interaction type details)
     SimpleThreeVector       m_mcNeutrinoVtx;            ///< The mc neutrino vertex
+    SimpleThreeVector       m_mcNeutrinoE;              ///< The mc neutrino energy
+    SimpleThreeVector       m_mcNeutrinoP;              ///< The mc neutrino momentum
     int                     m_nRecoNeutrinos;           ///< The number of reconstructed neutrinos
     int                     m_recoNeutrinoPdg;          ///< The reconstructed neutrino pdg code
     SimpleThreeVector       m_recoNeutrinoVtx;          ///< The reconstructed neutrino vertex
@@ -257,6 +259,10 @@ unsigned int ValidationIO::ReadNextEvent(TChain *const pTChain, const unsigned i
     pTChain->SetBranchAddress("mcNeutrinoVtxX", &simpleMCEvent.m_mcNeutrinoVtx.m_x);
     pTChain->SetBranchAddress("mcNeutrinoVtxY", &simpleMCEvent.m_mcNeutrinoVtx.m_y);
     pTChain->SetBranchAddress("mcNeutrinoVtxZ", &simpleMCEvent.m_mcNeutrinoVtx.m_z);
+    pTChain->SetBranchAddress("mcNeutrinoE", &simpleMCEvent.m_mcNeutrinoE);
+    pTChain->SetBranchAddress("mcNeutrinoPX", &simpleMCEvent.m_mcNeutrinoP.m_x);
+    pTChain->SetBranchAddress("mcNeutrinoPY", &simpleMCEvent.m_mcNeutrinoP.m_y);
+    pTChain->SetBranchAddress("mcNeutrinoPZ", &simpleMCEvent.m_mcNeutrinoP.m_z);
     pTChain->SetBranchAddress("recoNeutrinoPdg", &simpleMCEvent.m_recoNeutrinoPdg);
     pTChain->SetBranchAddress("recoNeutrinoVtxX", &simpleMCEvent.m_recoNeutrinoVtx.m_x);
     pTChain->SetBranchAddress("recoNeutrinoVtxY", &simpleMCEvent.m_recoNeutrinoVtx.m_y);
