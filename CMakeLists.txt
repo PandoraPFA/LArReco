@@ -93,7 +93,7 @@ ENDIF()
 ADD_SHARED_LIBRARY( ${PROJECT_NAME} ${sources} )
 
 # make standalone executable
-ADD_EXECUTABLE( PandoraInterface ${PROJECT_SOURCE_DIR}/test/${program}.cxx )
+ADD_EXECUTABLE( PandoraInterface ${PROJECT_SOURCE_DIR}/test/PandoraInterface.cxx )
 TARGET_LINK_LIBRARIES( PandoraInterface ${PROJECT_NAME} )
 
 
