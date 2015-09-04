@@ -50,7 +50,8 @@
         <algorithm type = "LArTrackClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListW</InputCaloHitListName>
         <ClusterListName>ClustersW</ClusterListName>
-        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+        <ReplaceCurrentCaloHitList>false</ReplaceCurrentCaloHitList>
+        <ReplaceCurrentClusterList>true</ReplaceCurrentClusterList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
@@ -73,7 +74,8 @@
         <algorithm type = "LArTrackClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListU</InputCaloHitListName>
         <ClusterListName>ClustersU </ClusterListName>
-        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+        <ReplaceCurrentCaloHitList>false</ReplaceCurrentCaloHitList>
+        <ReplaceCurrentClusterList>true</ReplaceCurrentClusterList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
@@ -96,7 +98,8 @@
         <algorithm type = "LArTrackClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListV</InputCaloHitListName>
         <ClusterListName>ClustersV</ClusterListName>
-        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+        <ReplaceCurrentCaloHitList>false</ReplaceCurrentCaloHitList>
+        <ReplaceCurrentClusterList>true</ReplaceCurrentClusterList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
@@ -170,19 +173,22 @@
         <algorithm type = "LArSimpleClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListW</InputCaloHitListName>
         <ClusterListName>ClustersW</ClusterListName>
-        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+        <ReplaceCurrentCaloHitList>false</ReplaceCurrentCaloHitList>
+        <ReplaceCurrentClusterList>false</ReplaceCurrentClusterList>
     </algorithm>
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArSimpleClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListU</InputCaloHitListName>
         <ClusterListName>ClustersU</ClusterListName>
-        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+        <ReplaceCurrentCaloHitList>false</ReplaceCurrentCaloHitList>
+        <ReplaceCurrentClusterList>false</ReplaceCurrentClusterList>
     </algorithm>
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArSimpleClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListV</InputCaloHitListName>
         <ClusterListName>ClustersV</ClusterListName>
-        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+        <ReplaceCurrentCaloHitList>false</ReplaceCurrentCaloHitList>
+        <ReplaceCurrentClusterList>false</ReplaceCurrentClusterList>
     </algorithm>
 
     <!-- 2D/3D cosmic ray shower reconstruction -->

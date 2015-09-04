@@ -55,7 +55,8 @@
         </algorithm>
         <InputCaloHitListName>CaloHitListW</InputCaloHitListName>
         <ClusterListName>ClustersW</ClusterListName>
-        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+        <ReplaceCurrentCaloHitList>false</ReplaceCurrentCaloHitList>
+        <ReplaceCurrentClusterList>true</ReplaceCurrentClusterList>
     </algorithm>
 
     <!-- 2D cosmic ray reconstruction, U View -->
@@ -66,7 +67,8 @@
         </algorithm>
         <InputCaloHitListName>CaloHitListU</InputCaloHitListName>
         <ClusterListName>ClustersU </ClusterListName>
-        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+        <ReplaceCurrentCaloHitList>false</ReplaceCurrentCaloHitList>
+        <ReplaceCurrentClusterList>true</ReplaceCurrentClusterList>
     </algorithm>
 
     <!-- 2D cosmic ray reconstruction, V View -->
@@ -77,7 +79,8 @@
         </algorithm>
         <InputCaloHitListName>CaloHitListV</InputCaloHitListName>
         <ClusterListName>ClustersV</ClusterListName>
-        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+        <ReplaceCurrentCaloHitList>false</ReplaceCurrentCaloHitList>
+        <ReplaceCurrentClusterList>true</ReplaceCurrentClusterList>
     </algorithm>
 
     <!-- 3D cosmic ray reconstruction -->
@@ -160,7 +163,8 @@
         </algorithm>
         <InputCaloHitListName>NeutrinoCaloHitListW</InputCaloHitListName>
         <ClusterListName>ClustersW</ClusterListName>
-        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+        <ReplaceCurrentCaloHitList>false</ReplaceCurrentCaloHitList>
+        <ReplaceCurrentClusterList>true</ReplaceCurrentClusterList>
     </algorithm>
 
     <!-- 2D neutrino-induced event reconstruction, U View -->
@@ -171,7 +175,8 @@
         </algorithm>
         <InputCaloHitListName>NeutrinoCaloHitListU</InputCaloHitListName>
         <ClusterListName>ClustersU</ClusterListName>
-        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+        <ReplaceCurrentCaloHitList>false</ReplaceCurrentCaloHitList>
+        <ReplaceCurrentClusterList>true</ReplaceCurrentClusterList>
     </algorithm>
 
     <!-- 2D neutrino-induced event reconstruction, V View -->
@@ -182,7 +187,8 @@
         </algorithm>
         <InputCaloHitListName>NeutrinoCaloHitListV</InputCaloHitListName>
         <ClusterListName>ClustersV</ClusterListName>
-        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+        <ReplaceCurrentCaloHitList>false</ReplaceCurrentCaloHitList>
+        <ReplaceCurrentClusterList>true</ReplaceCurrentClusterList>
     </algorithm>
 
     <!-- 3D vertex reconstruction -->

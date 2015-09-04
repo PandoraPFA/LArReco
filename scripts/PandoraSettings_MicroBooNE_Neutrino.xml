@@ -52,7 +52,8 @@
         <algorithm type = "LArTrackClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListW</InputCaloHitListName>
         <ClusterListName>ClustersW</ClusterListName>
-        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+        <ReplaceCurrentCaloHitList>false</ReplaceCurrentCaloHitList>
+        <ReplaceCurrentClusterList>true</ReplaceCurrentClusterList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
     <algorithm type = "LArLongitudinalAssociation"/>
@@ -68,7 +69,8 @@
         <algorithm type = "LArTrackClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListU</InputCaloHitListName>
         <ClusterListName>ClustersU</ClusterListName>
-        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+        <ReplaceCurrentCaloHitList>false</ReplaceCurrentCaloHitList>
+        <ReplaceCurrentClusterList>true</ReplaceCurrentClusterList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
     <algorithm type = "LArLongitudinalAssociation"/>
@@ -84,7 +86,8 @@
         <algorithm type = "LArTrackClusterCreation" description = "ClusterFormation"/>
         <InputCaloHitListName>CaloHitListV</InputCaloHitListName>
         <ClusterListName>ClustersV</ClusterListName>
-        <RestoreOriginalCaloHitList>false</RestoreOriginalCaloHitList>
+        <ReplaceCurrentCaloHitList>false</ReplaceCurrentCaloHitList>
+        <ReplaceCurrentClusterList>true</ReplaceCurrentClusterList>
     </algorithm>
     <algorithm type = "LArLayerSplitting"/>
     <algorithm type = "LArLongitudinalAssociation"/>
@@ -218,6 +221,7 @@
 
     <!-- Consolidate pfos and mop-up remnants -->
     <algorithm type = "LArVertexBasedPfoMerging">
+        <InputVertexListName>SelectedVertices</InputVertexListName>
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
         <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
