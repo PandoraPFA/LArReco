@@ -262,13 +262,13 @@
             </algorithm>
         </NeutrinoAlgorithms>
 
-        <algorithm type = "LArNeutrinoListDeletion" description = "ListDeletion">
+        <algorithm type = "LArListDeletion" description = "ListDeletion">
             <PfoListNames>NeutrinoParticles3D TrackParticles3D ShowerParticles3D</PfoListNames>
             <VertexListNames>NeutrinoVertices3D DaughterVertices3D</VertexListNames>
             <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
         </algorithm>
 
-        <algorithm type = "LArNeutrinoListManagement" description = "ListMoving">
+        <algorithm type = "LArListMoving" description = "ListMoving">
             <PfoListNames>NeutrinoParticles3D TrackParticles3D ShowerParticles3D</PfoListNames>
             <VertexListNames>NeutrinoVertices3D DaughterVertices3D</VertexListNames>
             <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
