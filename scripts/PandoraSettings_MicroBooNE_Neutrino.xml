@@ -128,7 +128,7 @@
 
             <!-- Obscured particle recovery -->
             <algorithm type = "LArVertexBasedPfoRecovery">
-                <InputVertexListName>SelectedVertices</InputVertexListName>
+                <InputVertexListName>NeutrinoVertices3D</InputVertexListName>
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
                 <OutputPfoListName>TrackParticles3D</OutputPfoListName>
             </algorithm>
@@ -195,7 +195,7 @@
                 <InputClusterListNameU>ClustersU</InputClusterListNameU>
                 <InputClusterListNameV>ClustersV</InputClusterListNameV>
                 <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                <OutputVertexListName>SelectedVertices</OutputVertexListName>
+                <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
                 <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
                 <BeamMode>true</BeamMode>
             </algorithm>
@@ -215,7 +215,7 @@
 
         <MopUpAlgorithms>
             <algorithm type = "LArVertexBasedPfoMerging">
-                <InputVertexListName>SelectedVertices</InputVertexListName>
+                <InputVertexListName>NeutrinoVertices3D</InputVertexListName>
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
                 <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
@@ -240,7 +240,7 @@
 
         <NeutrinoAlgorithms>
             <algorithm type = "LArNeutrinoCreation">
-               <InputVertexListName>SelectedVertices</InputVertexListName>
+               <InputVertexListName>NeutrinoVertices3D</InputVertexListName>
                <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
             </algorithm>
             <algorithm type = "LArNeutrinoHierarchy">
