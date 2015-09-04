@@ -49,7 +49,7 @@
         <ClusterListNameW>ClustersW</ClusterListNameW>
 
         <algorithm type = "LArTrackClusterCreation" description = "TwoDClustering"/>
-        <tool type = "LArSlicing" description = "Slicing"/>
+        <tool type = "LArEventSlicing" description = "Slicing"/>
 
         <TwoDAlgorithms>
             <algorithm type = "LArLayerSplitting"/>
