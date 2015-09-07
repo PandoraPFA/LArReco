@@ -93,7 +93,7 @@
                 </TrackTools>
             </algorithm>
             <algorithm type = "LArThreeDTrackFragments">
-                <MinClusterLength>5.0</MinClusterLength>
+                <MinClusterLength>5.</MinClusterLength>
                 <InputClusterListNameU>ClustersU</InputClusterListNameU>
                 <InputClusterListNameV>ClustersV</InputClusterListNameV>
                 <InputClusterListNameW>ClustersW</InputClusterListNameW>
@@ -265,13 +265,13 @@
         <algorithm type = "LArListDeletion" description = "ListDeletion">
             <PfoListNames>NeutrinoParticles3D TrackParticles3D ShowerParticles3D</PfoListNames>
             <VertexListNames>NeutrinoVertices3D DaughterVertices3D</VertexListNames>
-            <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+            <ClusterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</ClusterListNames>
         </algorithm>
 
         <algorithm type = "LArListMoving" description = "ListMoving">
             <PfoListNames>NeutrinoParticles3D TrackParticles3D ShowerParticles3D</PfoListNames>
             <VertexListNames>NeutrinoVertices3D DaughterVertices3D</VertexListNames>
-            <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+            <ClusterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</ClusterListNames>
             <Prefix>All</Prefix>
         </algorithm>
     </algorithm>
@@ -315,7 +315,7 @@
 
     <algorithm type = "LArVisualMonitoring">
         <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
-        <CaloHitListNames>CaloHitList2D</CaloHitListNames>
+        <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
         <ShowOnlyAvailable>true</ShowOnlyAvailable>
     </algorithm>
 </pandora>
