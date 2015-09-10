@@ -128,7 +128,6 @@
 
             <!-- Obscured particle recovery -->
             <algorithm type = "LArVertexBasedPfoRecovery">
-                <InputVertexListName>NeutrinoVertices3D</InputVertexListName>
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
                 <OutputPfoListName>TrackParticles3D</OutputPfoListName>
             </algorithm>
@@ -215,7 +214,6 @@
 
         <MopUpAlgorithms>
             <algorithm type = "LArVertexBasedPfoMerging">
-                <InputVertexListName>NeutrinoVertices3D</InputVertexListName>
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
                 <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
