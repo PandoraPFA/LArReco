@@ -49,7 +49,11 @@
         <ClusterListNameW>ClustersW</ClusterListNameW>
 
         <algorithm type = "LArTrackClusterCreation" description = "TwoDClustering"/>
-        <tool type = "LArEventSlicing" description = "Slicing"/>
+
+        <tool type = "LArEventSlicing" description = "Slicing">
+            <TrackPfoListName>TrackParticles3D</TrackPfoListName>
+            <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+        </tool>
 
         <TwoDAlgorithms>
             <algorithm type = "LArLayerSplitting"/>
