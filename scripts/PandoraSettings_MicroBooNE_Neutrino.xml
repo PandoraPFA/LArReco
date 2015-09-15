@@ -10,8 +10,8 @@
     <MuonPlugin>LArMuonId</MuonPlugin>
 
     <!-- ALGORITHM SETTINGS -->
-    <algorithm type = "LArEventReading">
-         <EventFileName>/r05/lbne/mcproduction_v04_16_00/prodgenie_bnb_nu_uboone/uBooNE_Events_100_0_Neutrino.pndr</EventFileName>
+    <algorithm type = "EventReading">
+         <EventFileName>/r05/lbne/mcproduction_v04_06_02/prodgenie_bnb_nu_cosmic_uboone/uBooNE_Events_100_0_reco2.pndr</EventFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
