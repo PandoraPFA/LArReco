@@ -10,8 +10,8 @@
     <MuonPlugin>LArMuonId</MuonPlugin>
 
     <!-- ALGORITHM SETTINGS -->
-    <algorithm type = "LArEventReading">
-         <EventFileName>/r05/lbne/mcproduction_v04_16_00/prodgenie_bnb_nu_uboone/uBooNE_Events_100_0_Neutrino.pndr</EventFileName>
+    <algorithm type = "EventReading">
+         <EventFileName>/r05/lbne/mcproduction_v04_06_02/prodgenie_bnb_nu_cosmic_uboone/uBooNE_Events_100_0_reco2.pndr</EventFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
@@ -49,7 +49,11 @@
         <ClusterListNameW>ClustersW</ClusterListNameW>
 
         <algorithm type = "LArTrackClusterCreation" description = "TwoDClustering"/>
-        <tool type = "LArEventSlicing" description = "Slicing"/>
+
+        <tool type = "LArEventSlicing" description = "Slicing">
+            <TrackPfoListName>TrackParticles3D</TrackPfoListName>
+            <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+        </tool>
 
         <TwoDAlgorithms>
             <algorithm type = "LArLayerSplitting"/>
@@ -128,7 +132,6 @@
 
             <!-- Obscured particle recovery -->
             <algorithm type = "LArVertexBasedPfoRecovery">
-                <InputVertexListName>NeutrinoVertices3D</InputVertexListName>
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
                 <OutputPfoListName>TrackParticles3D</OutputPfoListName>
             </algorithm>
@@ -215,7 +218,6 @@
 
         <MopUpAlgorithms>
             <algorithm type = "LArVertexBasedPfoMerging">
-                <InputVertexListName>NeutrinoVertices3D</InputVertexListName>
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
                 <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
