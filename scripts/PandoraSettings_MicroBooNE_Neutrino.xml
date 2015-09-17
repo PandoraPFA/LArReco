@@ -316,7 +316,7 @@
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
-        <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+        <ClusterListNames>AllClustersU AllClustersV AllClustersW</ClusterListNames>
         <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
         <ShowOnlyAvailable>true</ShowOnlyAvailable>
     </algorithm>
