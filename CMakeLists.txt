@@ -11,7 +11,7 @@ PROJECT( LArReco )
 
 # project version
 SET( LArReco_VERSION_MAJOR 02 )
-SET( LArReco_VERSION_MINOR 01 )
+SET( LArReco_VERSION_MINOR 02 )
 SET( LArReco_VERSION_PATCH 00 )
 
 
@@ -48,7 +48,7 @@ endif()
 
 ### DEPENDENCIES ############################################################
 
-FIND_PACKAGE( LArContent 02.01.00 REQUIRED )
+FIND_PACKAGE( LArContent 02.02.00 REQUIRED )
 FIND_PACKAGE( PandoraSDK 02.00.00 REQUIRED )
 
 FOREACH( pkg LArContent PandoraSDK )
