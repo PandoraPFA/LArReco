@@ -1,112 +1,104 @@
-########################################################
 # cmake file for building LArReco
-# @author Jan Engels, DESY
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.2 FATAL_ERROR)
-########################################################
+#-------------------------------------------------------------------------------------------------------------------------------------------
+cmake_minimum_required(VERSION 2.8.2 FATAL_ERROR)
 
-
-# project name
-PROJECT( LArReco )
-
-
-# project version
-SET( LArReco_VERSION_MAJOR 02 )
-SET( LArReco_VERSION_MINOR 02 )
-SET( LArReco_VERSION_PATCH 00 )
-
-
-### CMAKE ###################################################################
-
-INCLUDE( Default_settings )
-
-
-### SOURCE ##################################################################
-
-#include directories
-INCLUDE_DIRECTORIES( ./include )
-
-AUX_SOURCE_DIRECTORY( ./src sources )
-
-IF( NOT CMAKE_CXX_FLAGS )
-    SET( CMAKE_CXX_FLAGS "-std=c++11" )
-ENDIF()
-
-INCLUDE( CheckCXXCompilerFlag )
-
-UNSET( COMPILER_SUPPORTS_CXX_FLAGS CACHE )
-CHECK_CXX_COMPILER_FLAG( ${CMAKE_CXX_FLAGS} COMPILER_SUPPORTS_CXX_FLAGS )
-IF( NOT COMPILER_SUPPORTS_CXX_FLAGS )
-    MESSAGE( FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} does not support cxx flags ${CMAKE_CXX_FLAGS}" )
-ENDIF()
-
-if( APPLE )
-    SET( CMAKE_CXX_FLAGS "-Wall -Werror -pedantic -Wno-long-long -Wno-sign-compare -fno-strict-aliasing ${CMAKE_CXX_FLAGS}" )
-else()
-    SET( CMAKE_CXX_FLAGS "-Wall -Werror -ansi -pedantic -Wno-long-long -Wno-sign-compare -fno-strict-aliasing ${CMAKE_CXX_FLAGS}" )
+if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+    message(FATAL_ERROR "LArReco requires an out-of-source build.")
 endif()
 
+# project name
+project(LArReco)
 
-### DEPENDENCIES ############################################################
+# project version
+set(${PROJECT_NAME}_VERSION_MAJOR 02)
+set(${PROJECT_NAME}_VERSION_MINOR 02)
+set(${PROJECT_NAME}_VERSION_PATCH 02)
+set(${PROJECT_NAME}_VERSION "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}")
 
-FIND_PACKAGE( LArContent 02.02.00 REQUIRED )
-FIND_PACKAGE( PandoraSDK 02.00.00 REQUIRED )
+#-------------------------------------------------------------------------------------------------------------------------------------------
+# Dependencies
+include(PandoraCMakeSettings)
 
-FOREACH( pkg LArContent PandoraSDK )
-    IF( ${pkg}_FOUND )
-        INCLUDE_DIRECTORIES( ${${pkg}_INCLUDE_DIRS} )
-        LINK_LIBRARIES( ${${pkg}_LIBRARIES} )
-        ADD_DEFINITIONS ( ${${pkg}_DEFINITIONS} )
-    ENDIF()
-ENDFOREACH()
+find_package(PandoraSDK 02.00.02 REQUIRED)
+find_package(LArContent 02.02.00 REQUIRED)
 
-IF( PANDORA_MONITORING )
-    LIST( APPEND CMAKE_MODULE_PATH "$ENV{ROOTSYS}/etc/cmake/" )
-    ADD_DEFINITIONS( "-DMONITORING" )
-    FIND_PACKAGE( PandoraMonitoring 02.00.00 REQUIRED )
-    FIND_PACKAGE( ROOT 5.26.00 REQUIRED COMPONENTS Eve Geom RGL EG ) # minimum required ROOT version
+foreach(package PandoraSDK LArContent)
+    if(${package}_FOUND)
+        include_directories(${${package}_INCLUDE_DIRS})
+        link_libraries(${${package}_LIBRARIES})
+        add_definitions (${${package}_DEFINITIONS})
+    endif()
+endforeach()
 
-    FOREACH( pkg PandoraMonitoring ROOT )
-        IF( ${pkg}_FOUND )
-            INCLUDE_DIRECTORIES( ${${pkg}_INCLUDE_DIRS} )
-            LINK_LIBRARIES( ${${pkg}_LIBRARIES} )
-            ADD_DEFINITIONS ( ${${pkg}_DEFINITIONS} )
-        ENDIF()
-    ENDFOREACH()
-ENDIF()
+if(PANDORA_MONITORING)
+    list(APPEND CMAKE_MODULE_PATH "$ENV{ROOTSYS}/etc/cmake/")
+    find_package(PandoraMonitoring 02.00.01 REQUIRED)
+    find_package(ROOT 5.26.00 REQUIRED COMPONENTS Eve Geom RGL EG)
+    add_definitions("-DMONITORING")
+    foreach(package PandoraMonitoring ROOT)
+        if(${package}_FOUND)
+            include_directories(${${package}_INCLUDE_DIRS})
+            link_libraries(${${package}_LIBRARIES})
+            add_definitions (${${package}_DEFINITIONS})
+        endif()
+    endforeach()
+endif()
 
+#-------------------------------------------------------------------------------------------------------------------------------------------
+# Low level settings - compiler etc
+if (NOT CMAKE_CXX_FLAGS)
+    set(CMAKE_CXX_FLAGS "-std=c++11")
+endif()
 
-### DOCUMENTATION ###########################################################
+include(CheckCXXCompilerFlag)
+unset(COMPILER_SUPPORTS_CXX_FLAGS CACHE)
+CHECK_CXX_COMPILER_FLAG(${CMAKE_CXX_FLAGS} COMPILER_SUPPORTS_CXX_FLAGS)
 
-OPTION( INSTALL_DOC "Set to OFF to skip build/install Documentation" OFF )
+if(NOT COMPILER_SUPPORTS_CXX_FLAGS)
+    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} does not support cxx flags ${CMAKE_CXX_FLAGS}")
+endif()
 
-IF( INSTALL_DOC AND EXISTS "${PROJECT_SOURCE_DIR}/doc/CMakeLists.txt" )
-    ADD_SUBDIRECTORY( ./doc )
-ELSE()
-    MESSAGE( STATUS "INSTALL_DOC set to OFF" )
-    SET( INSTALL_DOC OFF )
-ENDIF()
+if(APPLE)
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing ${CMAKE_CXX_FLAGS}")
+else()
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -ansi -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing ${CMAKE_CXX_FLAGS}")
+endif()
 
+#-------------------------------------------------------------------------------------------------------------------------------------------
+# Build products
 
-### OUTPUT ##################################################################
+#- include directories
+include_directories(include)
 
-# add library
-ADD_SHARED_LIBRARY( ${PROJECT_NAME} ${sources} )
+# - Collect sources - not ideal because you have to keep running CMake to pick up changes
+file(GLOB_RECURSE LAR_RECO_SRCS RELATIVE ${PROJECT_SOURCE_DIR} "src/*.cxx")
 
-# make standalone executable
-ADD_EXECUTABLE( PandoraInterface ${PROJECT_SOURCE_DIR}/test/PandoraInterface.cxx )
-TARGET_LINK_LIBRARIES( PandoraInterface ${PROJECT_NAME} )
+# - Add library and properties
+add_library(${PROJECT_NAME} SHARED ${LAR_RECO_SRCS})
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${${PROJECT_NAME}_VERSION} SOVERSION ${${PROJECT_NAME}_SOVERSION})
 
+# - Executable
+add_executable(PandoraInterface ${PROJECT_SOURCE_DIR}/test/PandoraInterface.cxx)
+target_link_libraries(PandoraInterface ${PROJECT_NAME})
 
-### INSTALL #################################################################
+# - Optional documents
+option(LArReco_BUILD_DOCS "Build documentation for ${PROJECT_NAME}" OFF)
+if(LArReco_BUILD_DOCS)
+    add_subdirectory(doc)
+endif()
 
-# install library
-INSTALL_SHARED_LIBRARY( ${PROJECT_NAME} DESTINATION lib )
+#-------------------------------------------------------------------------------------------------------------------------------------------
+# Install products
 
-# install executable
-INSTALL( TARGETS PandoraInterface DESTINATION bin PERMISSIONS
-    OWNER_READ OWNER_WRITE OWNER_EXECUTE
-    GROUP_READ GROUP_EXECUTE
-    WORLD_READ WORLD_EXECUTE )
+# - library
+install(TARGETS ${PROJECT_NAME} DESTINATION lib COMPONENT Runtime)
 
+# - headers
+install(DIRECTORY include/ DESTINATION include COMPONENT Development FILES_MATCHING PATTERN "*.h")
+
+# - executable
+install(TARGETS PandoraInterface DESTINATION bin PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+#-------------------------------------------------------------------------------------------------------------------------------------------
 # display some variables and write them to cache
-DISPLAY_STD_VARIABLES()
+PANDORA_DISPLAY_STD_VARIABLES()
