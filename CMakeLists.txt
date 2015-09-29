@@ -31,17 +31,14 @@ foreach(package PandoraSDK LArContent)
 endforeach()
 
 if(PANDORA_MONITORING)
-    list(APPEND CMAKE_MODULE_PATH "$ENV{ROOTSYS}/etc/cmake/")
     find_package(PandoraMonitoring 02.01.00 REQUIRED)
-    find_package(ROOT 5.26.00 REQUIRED COMPONENTS Eve Geom RGL EG)
+    include_directories(${PandoraMonitoring_INCLUDE_DIRS})
+    link_libraries(${PandoraMonitoring_LIBRARIES})
+    add_definitions(${PandoraMonitoring_DEFINITIONS})
     add_definitions("-DMONITORING")
-    foreach(package PandoraMonitoring ROOT)
-        if(${package}_FOUND)
-            include_directories(${${package}_INCLUDE_DIRS})
-            link_libraries(${${package}_LIBRARIES})
-            add_definitions (${${package}_DEFINITIONS})
-        endif()
-    endforeach()
+
+    list(APPEND CMAKE_MODULE_PATH "$ENV{ROOTSYS}/etc/cmake/")
+    find_package(ROOT 5.26.00 REQUIRED COMPONENTS Eve Geom RGL EG)
 endif()
 
 #-------------------------------------------------------------------------------------------------------------------------------------------
@@ -79,6 +76,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${${PROJECT_NAME}_VERSI
 
 # - Executable
 add_executable(PandoraInterface ${PROJECT_SOURCE_DIR}/test/PandoraInterface.cxx)
+if(PANDORA_MONITORING)
+    target_include_directories(PandoraExample PUBLIC ${ROOT_INCLUDE_DIRS})
+    target_link_libraries(PandoraExample ${ROOT_LIBRARIES})
+endif()
 target_link_libraries(PandoraInterface ${PROJECT_NAME})
 
 # - Optional documents
