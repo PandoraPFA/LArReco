@@ -39,9 +39,6 @@ void Validation(const std::string &inputFiles, const bool shouldDisplayEvents, c
         // Analysis code starts here
         const InteractionType interactionType(GetInteractionType(simpleMCEvent, primaryMinHits));
 
-        if (OTHER_INTERACTION == interactionType)
-            continue;
-
         PfoMatchingMap pfoMatchingMap;
         FinalisePfoMatching(simpleMCEvent, minMatchedHits, pfoMatchingMap);
 
@@ -310,11 +307,6 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
     std::cout << std::endl << "EVENT INFO " << std::endl;
     InteractionHistogramMap interactionHistogramMap;
 
-    const int nHitBins(27);
-    const int nHitBinEdges(nHitBins + 1);
-    float hitsBinning[nHitBinEdges];
-    for (int n = 0; n < nHitBinEdges; ++n) hitsBinning[n] = std::pow(10., 1 + static_cast<float>(n + 2) / 10.);
-
     for (InteractionEventResultMap::const_iterator iter = interactionEventResultMap.begin(), iterEnd = interactionEventResultMap.end(); iter != iterEnd; ++iter)
     {
         const InteractionType interactionType(iter->first);
@@ -338,29 +330,13 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
                 //std::cout << "-" << ToString(expectedPrimary) << ": nMatches: " << primaryResult.m_nPfoMatches << ", bestComp: "
                 //          << primaryResult.m_bestCompleteness << ", bestMatchPur: " << primaryResult.m_bestMatchPurity << std::endl;
 
-                // Fill the histograms
                 const std::string histPrefix(ToString(interactionType) + "_" + ToString(expectedPrimary) + "_");
                 HistogramCollection &histogramCollection(interactionHistogramMap[interactionType][expectedPrimary]);
+                FillHistogramCollection(histPrefix, primaryResult, histogramCollection);
 
-                if (!histogramCollection.m_hHitsAll)
-                    histogramCollection.m_hHitsAll = new TH1F((histPrefix + "HitsAll").c_str(), "", nHitBins, hitsBinning);
-
-                if (!histogramCollection.m_hHitsEfficiency)
-                    histogramCollection.m_hHitsEfficiency = new TH1F((histPrefix + "HitsEfficiency").c_str(), "", nHitBins, hitsBinning);
-
-                if (!histogramCollection.m_hCompleteness)
-                    histogramCollection.m_hCompleteness = new TH1F((histPrefix + "Completeness").c_str(), "", 51, -0.01, 1.01);
-
-                if (!histogramCollection.m_hPurity)
-                    histogramCollection.m_hPurity = new TH1F((histPrefix + "Purity").c_str(), "", 51, -0.01, 1.01);
-
-                histogramCollection.m_hHitsAll->Fill(primaryResult.m_nTrueHits);
-
-                if (primaryResult.m_nPfoMatches > 0)
-                    histogramCollection.m_hHitsEfficiency->Fill(primaryResult.m_nTrueHits);
-
-                histogramCollection.m_hCompleteness->Fill(primaryResult.m_bestCompleteness);
-                histogramCollection.m_hPurity->Fill(primaryResult.m_bestMatchPurity);
+                const std::string histPrefixAll(ToString(ALL_INTERACTIONS) + "_" + ToString(expectedPrimary) + "_");
+                HistogramCollection &histogramCollectionAll(interactionHistogramMap[ALL_INTERACTIONS][expectedPrimary]);
+                FillHistogramCollection(histPrefixAll, primaryResult, histogramCollectionAll);
             }
 
             if (isCorrect)
@@ -371,7 +347,43 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
                   << ", fCorrect " << static_cast<float>(nCorrectEvents) / static_cast<float>(eventResultList.size()) << std::endl;
     }
 
-    // Histogram post-processing
+    ProcessHistogramCollections(interactionHistogramMap);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void FillHistogramCollection(const std::string &histPrefix, const PrimaryResult &primaryResult, HistogramCollection &histogramCollection)
+{
+    const int nHitBins(27); const int nHitBinEdges(nHitBins + 1);
+    float hitsBinning[nHitBinEdges];
+    for (int n = 0; n < nHitBinEdges; ++n) hitsBinning[n] = std::pow(10., 1 + static_cast<float>(n + 2) / 10.);
+
+    if (!histogramCollection.m_hHitsAll)
+        histogramCollection.m_hHitsAll = new TH1F((histPrefix + "HitsAll").c_str(), "", nHitBins, hitsBinning);
+
+    if (!histogramCollection.m_hHitsEfficiency)
+        histogramCollection.m_hHitsEfficiency = new TH1F((histPrefix + "HitsEfficiency").c_str(), "", nHitBins, hitsBinning);
+
+    if (!histogramCollection.m_hCompleteness)
+        histogramCollection.m_hCompleteness = new TH1F((histPrefix + "Completeness").c_str(), "", 51, -0.01, 1.01);
+
+    if (!histogramCollection.m_hPurity)
+        histogramCollection.m_hPurity = new TH1F((histPrefix + "Purity").c_str(), "", 51, -0.01, 1.01);
+
+    histogramCollection.m_hHitsAll->Fill(primaryResult.m_nTrueHits);
+
+    if (primaryResult.m_nPfoMatches > 0)
+    {
+        histogramCollection.m_hHitsEfficiency->Fill(primaryResult.m_nTrueHits);
+        histogramCollection.m_hCompleteness->Fill(primaryResult.m_bestCompleteness);
+        histogramCollection.m_hPurity->Fill(primaryResult.m_bestMatchPurity);
+    }
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void ProcessHistogramCollections(const InteractionHistogramMap &interactionHistogramMap)
+{
     for (InteractionHistogramMap::const_iterator iter = interactionHistogramMap.begin(), iterEnd = interactionHistogramMap.end(); iter != iterEnd; ++iter)
     {
         const InteractionType interactionType(iter->first);

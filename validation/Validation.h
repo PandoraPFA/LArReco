@@ -90,7 +90,8 @@ enum InteractionType
     NCRES_P_P_PIPLUS,
     NCRES_P_PIZERO,
     NCRES_P_P_PIZERO,
-    OTHER_INTERACTION
+    OTHER_INTERACTION,
+    ALL_INTERACTIONS // ATTN use carefully!
 };
 
 typedef std::map<InteractionType, CountingMap> InteractionCountingMap;
@@ -261,6 +262,22 @@ void DisplayInteractionCountingMap(const int primaryMinHits, const int minMatche
  */
 void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap);
 
+/**
+ *  @brief  Fill histograms in the provided histogram collection, using information in the provided primary result
+ * 
+ *  @param  histPrefix the histogram name prefix
+ *  @param  primaryResult the primary result
+ *  @param  histogramCollection the histogram collection
+ */
+void FillHistogramCollection(const std::string &histPrefix, const PrimaryResult &primaryResult, HistogramCollection &histogramCollection);
+
+/**
+ *  @brief  Process histograms stored in the provided map e.g. calculating final efficiencies, normalising, etc.
+ * 
+ *  @param  interactionHistogramMap the interaction histogram map
+ */
+void ProcessHistogramCollections(const InteractionHistogramMap &interactionHistogramMap);
+
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -341,6 +358,7 @@ std::string ToString(const InteractionType interactionType)
     case NCRES_P_PIZERO: return "NCRES_P_PIZERO";
     case NCRES_P_P_PIZERO: return "NCRES_P_P_PIZERO";
     case OTHER_INTERACTION: return "OTHER_INTERACTION";
+    case ALL_INTERACTIONS: return "ALL_INTERACTIONS";
     default: return "UNKNOWN";
     }
 }
