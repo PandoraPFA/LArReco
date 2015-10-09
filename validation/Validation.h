@@ -109,6 +109,9 @@ public:
     PrimaryResult();
 
     unsigned int        m_nPfoMatches;          ///< The total number of pfo matches for a given primary
+    unsigned int        m_nTrueHits;            ///< The number of true hits
+    unsigned int        m_nBestMatchedHits;     ///< The best number of matched hits
+    unsigned int        m_nBestRecoHits;        ///< The number of hits in the best matched pfo
     float               m_bestCompleteness;     ///< The best match pfo is determined by the best completeness (most matched hits)
     float               m_bestMatchPurity;      ///< The purity of the best matched pfo
 };
@@ -137,17 +140,43 @@ typedef std::map<InteractionType, EventResultList> InteractionEventResultMap;
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
+class TH1F;
+
+/**
+ *  @brief  HistogramCollection class
+ */
+class HistogramCollection
+{
+public:
+    /**
+     *  @brief  Default constructor
+     */
+    HistogramCollection();
+
+    TH1F *m_hHitsAll;           ///< 
+    TH1F *m_hHitsEfficiency;    ///< 
+    TH1F *m_hCompleteness;      ///< 
+    TH1F *m_hPurity;            ///< 
+};
+
+typedef std::map<ExpectedPrimary, HistogramCollection> HistogramMap;
+typedef std::map<InteractionType, HistogramMap> InteractionHistogramMap;
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
 /**
  *  @brief  Validation - Main entry point for analysis
  * 
  *  @param  inputFiles the regex identifying the input root files
- *  @param  shouldDisplay whether to display the reconstruction outcomes for individual events
- *  @param  maxEvents the maximum number of events to process
+ *  @param  shouldDisplayEvents whether to display the reconstruction outcomes for individual events
+ *  @param  skipEvents the number of events to skip
+ *  @param  nEventsToProcess the number of events to process
+ *  @param  histogramOutput whether to produce output histograms
  *  @param  primaryMinHits the min number of hits in order to consider a primary
  *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
  */
-void Validation(const std::string &inputFiles, const bool shouldDisplay = true, const int skipEvents = 0,
-    const int nEventsToProcess = std::numeric_limits<int>::max(), const int primaryMinHits = 0, const int minMatchedHits = 0);
+void Validation(const std::string &inputFiles, const bool shouldDisplayEvents = true, const int skipEvents = 0,
+    const int nEventsToProcess = std::numeric_limits<int>::max(), const bool histogramOutput = false, const int primaryMinHits = 0, const int minMatchedHits = 0);
 
 /**
  *  @brief  Get the event interaction type
@@ -268,6 +297,17 @@ PrimaryResult::PrimaryResult() :
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 EventResult::EventResult()
+{
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+HistogramCollection::HistogramCollection() :
+    m_hHitsAll(NULL),
+    m_hHitsEfficiency(NULL),
+    m_hCompleteness(NULL),
+    m_hPurity(NULL)
 {
 }
 
