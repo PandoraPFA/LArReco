@@ -259,8 +259,9 @@ void DisplayInteractionCountingMap(const int primaryMinHits, const int minMatche
  *  @brief  Opportunity to fill histograms, perform post-processing of information collected in main loop over ntuple, etc.
  * 
  *  @param  interactionEventResultMap the interaction event result map
+ *  @param  histogramOutput whether to produce output histograms
  */
-void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap);
+void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap, const bool histogramOutput);
 
 /**
  *  @brief  Fill histograms in the provided histogram collection, using information in the provided primary result

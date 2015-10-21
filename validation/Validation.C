@@ -47,9 +47,7 @@ void Validation(const std::string &inputFiles, const bool shouldDisplayEvents, c
 
     // Processing of final output
     DisplayInteractionCountingMap(primaryMinHits, minMatchedHits, interactionCountingMap);
-
-    if (histogramOutput)
-        AnalyseInteractionEventResultMap(interactionEventResultMap);
+    AnalyseInteractionEventResultMap(interactionEventResultMap, histogramOutput);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -234,6 +232,9 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
         primaryResult.m_nTrueHits = simpleMCPrimary.m_nMCHitsTotal;
         primaryResult.m_nBestMatchedHits = nBestMatchedHits;
         primaryResult.m_nBestRecoHits = nBestRecoHits;
+
+        //if ((MUON == expectedPrimary) && (0 == primaryResult.m_nPfoMatches) && (primaryResult.m_nTrueHits > 100))
+        //    std::cout << "Id " << simpleMCEvent.m_fileIdentifier << ", event " << simpleMCEvent.m_eventNumber << ", nTrueHits " << primaryResult.m_nTrueHits << std::endl;
     }
 
     interactionEventResultMap[interactionType].push_back(eventResult);
@@ -301,7 +302,7 @@ void DisplayInteractionCountingMap(const int primaryMinHits, const int minMatche
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap)
+void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap, const bool histogramOutput)
 {
     // Intended for filling histograms, post-processing of information collected in main loop over ntuple, etc.
     std::cout << std::endl << "EVENT INFO " << std::endl;
@@ -330,13 +331,16 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
                 //std::cout << "-" << ToString(expectedPrimary) << ": nMatches: " << primaryResult.m_nPfoMatches << ", bestComp: "
                 //          << primaryResult.m_bestCompleteness << ", bestMatchPur: " << primaryResult.m_bestMatchPurity << std::endl;
 
-                const std::string histPrefix(ToString(interactionType) + "_" + ToString(expectedPrimary) + "_");
-                HistogramCollection &histogramCollection(interactionHistogramMap[interactionType][expectedPrimary]);
-                FillHistogramCollection(histPrefix, primaryResult, histogramCollection);
+                if (histogramOutput)
+                {
+                    const std::string histPrefix(ToString(interactionType) + "_" + ToString(expectedPrimary) + "_");
+                    HistogramCollection &histogramCollection(interactionHistogramMap[interactionType][expectedPrimary]);
+                    FillHistogramCollection(histPrefix, primaryResult, histogramCollection);
 
-                const std::string histPrefixAll(ToString(ALL_INTERACTIONS) + "_" + ToString(expectedPrimary) + "_");
-                HistogramCollection &histogramCollectionAll(interactionHistogramMap[ALL_INTERACTIONS][expectedPrimary]);
-                FillHistogramCollection(histPrefixAll, primaryResult, histogramCollectionAll);
+                    const std::string histPrefixAll(ToString(ALL_INTERACTIONS) + "_" + ToString(expectedPrimary) + "_");
+                    HistogramCollection &histogramCollectionAll(interactionHistogramMap[ALL_INTERACTIONS][expectedPrimary]);
+                    FillHistogramCollection(histPrefixAll, primaryResult, histogramCollectionAll);
+                }
             }
 
             if (isCorrect)
@@ -347,7 +351,8 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
                   << ", fCorrect " << static_cast<float>(nCorrectEvents) / static_cast<float>(eventResultList.size()) << std::endl;
     }
 
-    ProcessHistogramCollections(interactionHistogramMap);
+    if (histogramOutput)
+        ProcessHistogramCollections(interactionHistogramMap);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -404,7 +409,8 @@ void ProcessHistogramCollections(const InteractionHistogramMap &interactionHisto
                 histogramCollection.m_hHitsEfficiency->SetBinError(n + 1, error);
             }
             
-            //hCompleteness->Scale(1. / static_cast<double>(hCompleteness->GetEntries()));
+            histogramCollection.m_hCompleteness->Scale(1. / static_cast<double>(histogramCollection.m_hCompleteness->GetEntries()));
+            histogramCollection.m_hPurity->Scale(1. / static_cast<double>(histogramCollection.m_hPurity->GetEntries()));
         }
     }
 }
