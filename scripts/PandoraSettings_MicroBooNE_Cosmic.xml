@@ -340,6 +340,20 @@
         <PfoListName>Particles3D</PfoListName>
     </algorithm>
 
+    <algorithm type = "LArEventValidation">
+        <CaloHitListName>CaloHitList2D</CaloHitListName>
+        <MCParticleListName>MCParticleList3D</MCParticleListName>
+        <PfoListName>Particles3D</PfoListName>
+        <PrintToScreen>true</PrintToScreen>
+        <MinHitsToPrintPrimary>0</MinHitsToPrintPrimary>
+        <MinMatchedHitsToPrintPfo>0</MinMatchedHitsToPrintPfo>
+        <PrimaryPfosOnly>true</PrimaryPfosOnly>
+        <CollapseToPrimaryPfos>true</CollapseToPrimaryPfos>
+        <WriteToTree>false</WriteToTree>
+        <OutputTree>Validation</OutputTree>
+        <OutputFile>Validation.root</OutputFile>
+    </algorithm>
+
     <algorithm type = "LArVisualMonitoring">
         <PfoListNames>Particles3D</PfoListNames>
     </algorithm>

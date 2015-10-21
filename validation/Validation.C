@@ -232,6 +232,9 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
         primaryResult.m_nTrueHits = simpleMCPrimary.m_nMCHitsTotal;
         primaryResult.m_nBestMatchedHits = nBestMatchedHits;
         primaryResult.m_nBestRecoHits = nBestRecoHits;
+
+        //if ((MUON == expectedPrimary) && (0 == primaryResult.m_nPfoMatches) && (primaryResult.m_nTrueHits > 100))
+        //    std::cout << "Id " << simpleMCEvent.m_fileIdentifier << ", event " << simpleMCEvent.m_eventNumber << ", nTrueHits " << primaryResult.m_nTrueHits << std::endl;
     }
 
     interactionEventResultMap[interactionType].push_back(eventResult);
