@@ -197,9 +197,9 @@
                 <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
             </algorithm>
             <algorithm type = "LArVertexSelection">
-                <InputClusterListNameU>ClustersU</InputClusterListNameU>
-                <InputClusterListNameV>ClustersV</InputClusterListNameV>
-                <InputClusterListNameW>ClustersW</InputClusterListNameW>
+                <InputCaloHitListNameU>CaloHitListU</InputCaloHitListNameU>
+                <InputCaloHitListNameV>CaloHitListV</InputCaloHitListNameV>
+                <InputCaloHitListNameW>CaloHitListW</InputCaloHitListNameW>
                 <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
                 <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
                 <BeamMode>true</BeamMode>
