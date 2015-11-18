@@ -134,6 +134,7 @@ public:
 
     // ATTN Put items to count on a per-event basis here
     PrimaryResultMap    m_primaryResultMap;     ///< The primary result map
+    SimpleThreeVector   m_vertexOffset;         ///< The vertex offset
 };
 
 typedef std::vector<EventResult> EventResultList; // ATTN Not terribly efficient, but that's not the main aim here
@@ -166,18 +167,41 @@ typedef std::map<InteractionType, HistogramMap> InteractionHistogramMap;
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
+ *  @brief  VertexHistogramCollection class
+ */
+class VertexHistogramCollection
+{
+public:
+    /**
+     *  @brief  Default constructor
+     */
+    VertexHistogramCollection();
+
+    TH1F *m_hVtxDeltaX;         ///< 
+    TH1F *m_hVtxDeltaY;         ///< 
+    TH1F *m_hVtxDeltaZ;         ///< 
+    TH1F *m_hVtxDeltaR;         ///< 
+};
+
+typedef std::map<InteractionType, VertexHistogramCollection> InteractionVertexHistogramMap;
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+/**
  *  @brief  Validation - Main entry point for analysis
  * 
  *  @param  inputFiles the regex identifying the input root files
  *  @param  shouldDisplayEvents whether to display the reconstruction outcomes for individual events
  *  @param  skipEvents the number of events to skip
  *  @param  nEventsToProcess the number of events to process
- *  @param  histogramOutput whether to produce output histograms
  *  @param  primaryMinHits the min number of hits in order to consider a primary
  *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
+ *  @param  histogramOutput whether to produce output histograms
+ *  @param  histPrefix histogram name prefix
  */
 void Validation(const std::string &inputFiles, const bool shouldDisplayEvents = true, const int skipEvents = 0,
-    const int nEventsToProcess = std::numeric_limits<int>::max(), const bool histogramOutput = false, const int primaryMinHits = 0, const int minMatchedHits = 0);
+    const int nEventsToProcess = std::numeric_limits<int>::max(), const int primaryMinHits = 0, const int minMatchedHits = 0,
+    const bool histogramOutput = false, const std::string histPrefix = "");
 
 /**
  *  @brief  Get the event interaction type
@@ -260,8 +284,9 @@ void DisplayInteractionCountingMap(const int primaryMinHits, const int minMatche
  * 
  *  @param  interactionEventResultMap the interaction event result map
  *  @param  histogramOutput whether to produce output histograms
+ *  @param  prefix histogram name prefix
  */
-void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap, const bool histogramOutput);
+void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap, const bool histogramOutput, const std::string &prefix);
 
 /**
  *  @brief  Fill histograms in the provided histogram collection, using information in the provided primary result
@@ -271,6 +296,15 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
  *  @param  histogramCollection the histogram collection
  */
 void FillHistogramCollection(const std::string &histPrefix, const PrimaryResult &primaryResult, HistogramCollection &histogramCollection);
+
+/**
+ *  @brief  Fill histograms in the provided vertex histogram collection, using information in the provided vertex offset
+ * 
+ *  @param  histPrefix the histogram name prefix
+ *  @param  vertexOffset the vertex offset
+ *  @param  histogramCollection the vertex histogram collection
+ */
+void FillVertexHistogramCollection(const std::string &histPrefix, const SimpleThreeVector &vertexOffset, VertexHistogramCollection &histogramCollection);
 
 /**
  *  @brief  Process histograms stored in the provided map e.g. calculating final efficiencies, normalising, etc.
@@ -314,7 +348,8 @@ PrimaryResult::PrimaryResult() :
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-EventResult::EventResult()
+EventResult::EventResult() :
+    m_vertexOffset(-999.f, -999.f, -999.f)
 {
 }
 
@@ -326,6 +361,17 @@ HistogramCollection::HistogramCollection() :
     m_hHitsEfficiency(NULL),
     m_hCompleteness(NULL),
     m_hPurity(NULL)
+{
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+VertexHistogramCollection::VertexHistogramCollection() :
+    m_hVtxDeltaX(NULL),
+    m_hVtxDeltaY(NULL),
+    m_hVtxDeltaZ(NULL),
+    m_hVtxDeltaR(NULL)
 {
 }
 

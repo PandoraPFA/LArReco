@@ -50,6 +50,22 @@ public:
 
 typedef std::vector<SimpleThreeVector> SimpleThreeVectorList;
 
+/**
+ *  @brief  Simple three vector subtraction operator
+ * 
+ *  @param  lhs first vector, from which the second is subtracted
+ *  @param  rhs second vector, which is subtracted from the first
+ */
+SimpleThreeVector operator-(const SimpleThreeVector &lhs, const SimpleThreeVector &rhs);
+
+/**
+ *  @brief  Simple three vector addition operator
+ * 
+ *  @param  lhs first vector, from which the second is added
+ *  @param  rhs second vector, which is added to the first
+ */
+SimpleThreeVector operator+(const SimpleThreeVector &lhs, const SimpleThreeVector &rhs);
+
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
@@ -187,6 +203,20 @@ SimpleThreeVector::SimpleThreeVector(const float x, const float y, const float z
     m_y(y),
     m_z(z)
 {
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+SimpleThreeVector operator-(const SimpleThreeVector &lhs, const SimpleThreeVector &rhs)
+{
+    return SimpleThreeVector(lhs.m_x - rhs.m_x, lhs.m_y - rhs.m_y, lhs.m_z - rhs.m_z);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+SimpleThreeVector operator+(const SimpleThreeVector &lhs, const SimpleThreeVector &rhs)
+{
+    return SimpleThreeVector(lhs.m_x + rhs.m_x, lhs.m_y + rhs.m_y, lhs.m_z + rhs.m_z);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
