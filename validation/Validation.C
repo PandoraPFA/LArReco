@@ -11,7 +11,7 @@
 #include "Validation.h"
 
 void Validation(const std::string &inputFiles, const bool shouldDisplayEvents, const int skipEvents, const int nEventsToProcess, 
-    const bool histogramOutput, const int primaryMinHits, const int minMatchedHits)
+    const int primaryMinHits, const int minMatchedHits, const bool histogramOutput, const std::string histPrefix)
 {
     TChain *pTChain = new TChain("Validation", "pTChain");
     pTChain->Add(inputFiles.c_str());
@@ -47,7 +47,7 @@ void Validation(const std::string &inputFiles, const bool shouldDisplayEvents, c
 
     // Processing of final output
     DisplayInteractionCountingMap(primaryMinHits, minMatchedHits, interactionCountingMap);
-    AnalyseInteractionEventResultMap(interactionEventResultMap, histogramOutput);
+    AnalyseInteractionEventResultMap(interactionEventResultMap, histogramOutput, histPrefix);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -237,6 +237,9 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
         //    std::cout << "Id " << simpleMCEvent.m_fileIdentifier << ", event " << simpleMCEvent.m_eventNumber << ", nTrueHits " << primaryResult.m_nTrueHits << std::endl;
     }
 
+    if ((1 == simpleMCEvent.m_nRecoNeutrinos) && (1 == simpleMCEvent.m_nMCNeutrinos))
+        eventResult.m_vertexOffset = simpleMCEvent.m_recoNeutrinoVtx - simpleMCEvent.m_mcNeutrinoVtx;
+
     interactionEventResultMap[interactionType].push_back(eventResult);
 }
 
@@ -302,11 +305,12 @@ void DisplayInteractionCountingMap(const int primaryMinHits, const int minMatche
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap, const bool histogramOutput)
+void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap, const bool histogramOutput, const std::string &prefix)
 {
     // Intended for filling histograms, post-processing of information collected in main loop over ntuple, etc.
     std::cout << std::endl << "EVENT INFO " << std::endl;
     InteractionHistogramMap interactionHistogramMap;
+    InteractionVertexHistogramMap interactionVertexHistogramMap;
 
     for (InteractionEventResultMap::const_iterator iter = interactionEventResultMap.begin(), iterEnd = interactionEventResultMap.end(); iter != iterEnd; ++iter)
     {
@@ -319,6 +323,17 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
         {
             const PrimaryResultMap &primaryResultMap(eIter->m_primaryResultMap);
             bool isCorrect(!primaryResultMap.empty());
+
+            if (histogramOutput)
+            {
+                const std::string histPrefix(prefix + ToString(interactionType) + "_");
+                VertexHistogramCollection &histogramCollection(interactionVertexHistogramMap[interactionType]);
+                FillVertexHistogramCollection(histPrefix, eIter->m_vertexOffset, histogramCollection);
+
+                const std::string histPrefixAll(prefix + ToString(ALL_INTERACTIONS) + "_");
+                VertexHistogramCollection &histogramCollectionAll(interactionVertexHistogramMap[ALL_INTERACTIONS]);
+                FillVertexHistogramCollection(histPrefixAll, eIter->m_vertexOffset, histogramCollectionAll);
+            }
 
             for (PrimaryResultMap::const_iterator pIter = primaryResultMap.begin(), pIterEnd = primaryResultMap.end(); pIter != pIterEnd; ++pIter)
             {
@@ -333,11 +348,11 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
 
                 if (histogramOutput)
                 {
-                    const std::string histPrefix(ToString(interactionType) + "_" + ToString(expectedPrimary) + "_");
+                    const std::string histPrefix(prefix + ToString(interactionType) + "_" + ToString(expectedPrimary) + "_");
                     HistogramCollection &histogramCollection(interactionHistogramMap[interactionType][expectedPrimary]);
                     FillHistogramCollection(histPrefix, primaryResult, histogramCollection);
 
-                    const std::string histPrefixAll(ToString(ALL_INTERACTIONS) + "_" + ToString(expectedPrimary) + "_");
+                    const std::string histPrefixAll(prefix + ToString(ALL_INTERACTIONS) + "_" + ToString(expectedPrimary) + "_");
                     HistogramCollection &histogramCollectionAll(interactionHistogramMap[ALL_INTERACTIONS][expectedPrimary]);
                     FillHistogramCollection(histPrefixAll, primaryResult, histogramCollectionAll);
                 }
@@ -383,6 +398,28 @@ void FillHistogramCollection(const std::string &histPrefix, const PrimaryResult 
         histogramCollection.m_hCompleteness->Fill(primaryResult.m_bestCompleteness);
         histogramCollection.m_hPurity->Fill(primaryResult.m_bestMatchPurity);
     }
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void FillVertexHistogramCollection(const std::string &histPrefix, const SimpleThreeVector &vertexOffset, VertexHistogramCollection &histogramCollection)
+{
+    if (!histogramCollection.m_hVtxDeltaX)
+        histogramCollection.m_hVtxDeltaX = new TH1F((histPrefix + "VtxDeltaX").c_str(), "", 400, -20., 20.);
+
+    if (!histogramCollection.m_hVtxDeltaY)
+        histogramCollection.m_hVtxDeltaY = new TH1F((histPrefix + "VtxDeltaY").c_str(), "", 400, -20., 20.);
+
+    if (!histogramCollection.m_hVtxDeltaZ)
+        histogramCollection.m_hVtxDeltaZ = new TH1F((histPrefix + "VtxDeltaZ").c_str(), "", 400, -20., 20.);
+
+    if (!histogramCollection.m_hVtxDeltaR)
+        histogramCollection.m_hVtxDeltaR = new TH1F((histPrefix + "VtxDeltaR").c_str(), "", 400, -1., 19.);
+
+    histogramCollection.m_hVtxDeltaX->Fill(vertexOffset.m_x);
+    histogramCollection.m_hVtxDeltaY->Fill(vertexOffset.m_y);
+    histogramCollection.m_hVtxDeltaZ->Fill(vertexOffset.m_z);
+    histogramCollection.m_hVtxDeltaR->Fill(std::sqrt(vertexOffset.m_x * vertexOffset.m_x + vertexOffset.m_y * vertexOffset.m_y + vertexOffset.m_z * vertexOffset.m_z));
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
