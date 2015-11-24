@@ -91,14 +91,10 @@ int main(int argc, char *argv[])
             struct timeval startTime, endTime;
 
             if (parameters.m_shouldDisplayEventNumber)
-            {
                 std::cout << std::endl << "   PROCESSING EVENT: " << (nEvents - 1) << std::endl << std::endl;
-            }
 
             if (parameters.m_shouldDisplayEventTime)
-            {
                 (void) gettimeofday(&startTime, NULL);
-            }
 
             PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::ProcessEvent(*pPandora));
 
