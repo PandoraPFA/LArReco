@@ -13,13 +13,6 @@
 
 #include "MicroBooNEPseudoLayerPlugin.h"
 #include "MicroBooNETransformationPlugin.h"
-#include "MicroBooNELegacyTransformationPlugin.h"
-
-#include "LBNE35tPseudoLayerPlugin.h"
-#include "LBNE35tTransformationPlugin.h"
-
-#include "LBNE4APAPseudoLayerPlugin.h"
-#include "LBNE4APATransformationPlugin.h"
 
 #ifdef MONITORING
 #include "TApplication.h"
@@ -83,52 +76,9 @@ int main(int argc, char *argv[])
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::RegisterAlgorithms(*pPandora));
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::RegisterBasicPlugins(*pPandora));
 
-        if ("uboone" == parameters.m_whichDetector)
-        {
-            std::cout << " Loading plugins for MicroBooNE detector " << std::endl;
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
-                new lar_pandora::MicroBooNEPseudoLayerPlugin));
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
-              new lar_pandora::MicroBooNETransformationPlugin));
-              //new lar_pandora::MicroBooNELegacyTransformationPlugin));
-        }
-        else if ("lbne35tShort" == parameters.m_whichDetector)
-        {
-            std::cout << " Loading plugins for LBNE35t detector (short drift volume)" << std::endl;
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
-                new lar_pandora::LBNE35tPseudoLayerPlugin));
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
-                new lar_pandora::LBNE35tTransformationPlugin(true)));
-        }
-        else if ("lbne35tLong" == parameters.m_whichDetector)
-        {
-            std::cout << " Loading plugins for LBNE35t detector (long drift volume)" << std::endl;
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
-                new lar_pandora::LBNE35tPseudoLayerPlugin));
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
-                new lar_pandora::LBNE35tTransformationPlugin(false)));
-        }
-        else if ("lbne4apaLeft" == parameters.m_whichDetector)
-        {
-            std::cout << " Loading plugins for LBNE4APA detector (left drift volume)" << std::endl;
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
-                new lar_pandora::LBNE4APAPseudoLayerPlugin));
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
-                new lar_pandora::LBNE4APATransformationPlugin(true)));
-        }
-        else if ("lbne4apaRight" == parameters.m_whichDetector)
-        {
-            std::cout << " Loading plugins for LBNE4APA detector (right drift volume)" << std::endl;
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
-                new lar_pandora::LBNE4APAPseudoLayerPlugin));
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
-                new lar_pandora::LBNE4APATransformationPlugin(false)));
-        }
-        else
-        {
-            std::cout << " Not a valid detector (options: uboone, lbne35tLong, lbne35tShort, lbne4apaLeft, lbne4apaRight)" << std::endl << " Exiting" << std::endl;
-            return 1;
-        }
+        std::cout << " Loading plugins for MicroBooNE detector " << std::endl;
+        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora, new lar_pandora::MicroBooNEPseudoLayerPlugin));
+        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora, new lar_pandora::MicroBooNETransformationPlugin));
 
         // Read in pandora settings from config file
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPandora, parameters.m_pandoraSettingsFile));
@@ -141,14 +91,10 @@ int main(int argc, char *argv[])
             struct timeval startTime, endTime;
 
             if (parameters.m_shouldDisplayEventNumber)
-            {
                 std::cout << std::endl << "   PROCESSING EVENT: " << (nEvents - 1) << std::endl << std::endl;
-            }
 
             if (parameters.m_shouldDisplayEventTime)
-            {
                 (void) gettimeofday(&startTime, NULL);
-            }
 
             PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::ProcessEvent(*pPandora));
 
@@ -185,9 +131,6 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
         case 'i':
             parameters.m_pandoraSettingsFile = optarg;
             break;
-        case 'd':
-            parameters.m_whichDetector = optarg;
-            break;
         case 'n':
             parameters.m_nEventsToProcess = atoi(optarg);
             break;
@@ -201,7 +144,6 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
         default:
             std::cout << std::endl << "./bin/PandoraInterface " << std::endl
                       << "    -i PandoraSettings.xml  (mandatory)" << std::endl
-                      << "    -d WhichDetector        (optional)" << std::endl
                       << "    -n NEventsToProcess     (optional)" << std::endl
                       << "    -N                      (optional, display event numbers)" << std::endl
                       << "    -t                      (optional, display event times)" << std::endl << std::endl;
@@ -216,7 +158,6 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 Parameters::Parameters() :
-    m_whichDetector("uboone"),
     m_nEventsToProcess(-1),
     m_shouldDisplayEventTime(false),
     m_shouldDisplayEventNumber(false)
