@@ -111,6 +111,7 @@ public:
 
     unsigned int        m_nPfoMatches;          ///< The total number of pfo matches for a given primary
     unsigned int        m_nTrueHits;            ///< The number of true hits
+    float               m_trueAngle;            ///< The true angle wrt the z axis
     unsigned int        m_nBestMatchedHits;     ///< The best number of matched hits
     unsigned int        m_nBestRecoHits;        ///< The number of hits in the best matched pfo
     float               m_bestCompleteness;     ///< The best match pfo is determined by the best completeness (most matched hits)
@@ -155,10 +156,12 @@ public:
      */
     HistogramCollection();
 
-    TH1F *m_hHitsAll;           ///< 
-    TH1F *m_hHitsEfficiency;    ///< 
-    TH1F *m_hCompleteness;      ///< 
-    TH1F *m_hPurity;            ///< 
+    TH1F *m_hHitsAll;           ///<
+    TH1F *m_hHitsEfficiency;    ///<
+    TH1F *m_hAngleAll;          ///<
+    TH1F *m_hAngleEfficiency;   ///<
+    TH1F *m_hCompleteness;      ///<
+    TH1F *m_hPurity;            ///<
 };
 
 typedef std::map<ExpectedPrimary, HistogramCollection> HistogramMap;
@@ -197,11 +200,13 @@ typedef std::map<InteractionType, VertexHistogramCollection> InteractionVertexHi
  *  @param  primaryMinHits the min number of hits in order to consider a primary
  *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
  *  @param  histogramOutput whether to produce output histograms
+ *  @param  correctId whether to demand that pfos are correctly flagged as tracks or showers
+ *  @param  applyFiducialCut whether to apply fiducial volume cut to true neutrino vertex position
  *  @param  histPrefix histogram name prefix
  */
 void Validation(const std::string &inputFiles, const bool shouldDisplayEvents = true, const int skipEvents = 0,
     const int nEventsToProcess = std::numeric_limits<int>::max(), const int primaryMinHits = 0, const int minMatchedHits = 0,
-    const bool histogramOutput = false, const std::string histPrefix = "");
+    const bool histogramOutput = false, const bool correctId = false, const bool applyFiducialCut = false, const std::string histPrefix = "");
 
 /**
  *  @brief  Get the event interaction type
@@ -252,11 +257,14 @@ void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const int minMat
  *  @param  interactionType the interaction type
  *  @param  primaryMinHits the min number of hits in order to consider a primary
  *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
+ *  @param  correctId whether to demand that pfos are correctly flagged as tracks or showers
+ *  @param  applyFiducialCut whether to apply fiducial volume cut to true neutrino vertex position
  *  @param  interactionCountingMap the interaction counting map, to be populated
  *  @param  interactionEventOutcomeMap the interaction event outcome map, to be populated
  */
 void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType interactionType, const PfoMatchingMap &pfoMatchingMap,
-    const int primaryMinHits, InteractionCountingMap &interactionCountingMap, InteractionEventResultMap &interactionEventResultMap);
+    const int primaryMinHits, const bool correctId, const bool applyFiducialCut, InteractionCountingMap &interactionCountingMap,
+    InteractionEventResultMap &interactionEventResultMap);
 
 /**
  *  @brief  Work out which of the primary particles (expected for a given interaction types) corresponds to the provided priamry id
@@ -359,6 +367,8 @@ EventResult::EventResult() :
 HistogramCollection::HistogramCollection() :
     m_hHitsAll(NULL),
     m_hHitsEfficiency(NULL),
+    m_hAngleAll(NULL),
+    m_hAngleEfficiency(NULL),
     m_hCompleteness(NULL),
     m_hPurity(NULL)
 {
