@@ -6,11 +6,12 @@
  *  $Log: $
  */
 
-// External Pandora includes
 #include "Api/PandoraApi.h"
 
 #include "LArContent.h"
+
 #include "LArHelpers/LArPfoHelper.h"
+#include "LArStitching/MultiPandoraApi.h"
 
 #include "PandoraInterface.h"
 
@@ -35,8 +36,6 @@
 
 using namespace pandora;
 using namespace lar_reco_mp;
-
-MultiPandora MultiPandoraApi::m_multiPandora;
 
 int main(int argc, char *argv[])
 {
@@ -157,6 +156,7 @@ void ConfigureMicroBooNEPandoraInstance(const Parameters &/*parameters*/, const 
     std::cout << " Loading plugins for MicroBooNE detector" << std::endl;
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPrimaryPandora, new lar_pandora::MicroBooNEPseudoLayerPlugin));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPrimaryPandora, new lar_pandora::MicroBooNETransformationPlugin));
+    MultiPandoraApi::SetVolumeInfo(pPrimaryPandora, new VolumeInfo(0, "uboone", CartesianVector(0.f, 0.f, 0.f), true));
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -167,17 +167,18 @@ void ConfigureDune35tPandoraInstances(const Parameters &parameters, const Pandor
 
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPrimaryPandora, new lar_pandora::DUNE35tPseudoLayerPlugin));
     const size_t fileNameEnd(parameters.m_pandoraSettingsFile.empty() ? 0 : parameters.m_pandoraSettingsFile.length() - std::string(".xml").length());
+    int volumeIdNumber(0);
 
     const Pandora *const pPandoraShort = CreateNewPandora();
     MultiPandoraApi::AddDaughterPandoraInstance(pPrimaryPandora, pPandoraShort);
-    MultiPandoraApi::SetVolumeInfo(pPandoraShort, new VolumeInfo("dune35t_short", CartesianVector(0.f, 0.f, 0.f), true));
+    MultiPandoraApi::SetVolumeInfo(pPandoraShort, new VolumeInfo(volumeIdNumber++, "dune35t_short", CartesianVector(0.f, 0.f, 0.f), true));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandoraShort, new lar_pandora::DUNE35tPseudoLayerPlugin));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandoraShort, new lar_pandora::DUNE35tTransformationPlugin(true)));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPandoraShort, std::string(parameters.m_pandoraSettingsFile).insert(fileNameEnd, "_short")));
 
     const Pandora *const pPandoraLong = CreateNewPandora();
     MultiPandoraApi::AddDaughterPandoraInstance(pPrimaryPandora, pPandoraLong);
-    MultiPandoraApi::SetVolumeInfo(pPandoraLong, new VolumeInfo("dune35t_long", CartesianVector(0.f, 0.f, 0.f), false));
+    MultiPandoraApi::SetVolumeInfo(pPandoraLong, new VolumeInfo(volumeIdNumber++, "dune35t_long", CartesianVector(0.f, 0.f, 0.f), false));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandoraLong, new lar_pandora::DUNE35tPseudoLayerPlugin));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandoraLong, new lar_pandora::DUNE35tTransformationPlugin(false)));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPandoraLong, std::string(parameters.m_pandoraSettingsFile).insert(fileNameEnd, "_long")));
@@ -191,17 +192,18 @@ void ConfigureDune4APAPandoraInstances(const Parameters &parameters, const Pando
 
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPrimaryPandora, new lar_pandora::DUNE4APAPseudoLayerPlugin));
     const size_t fileNameEnd(parameters.m_pandoraSettingsFile.empty() ? 0 : parameters.m_pandoraSettingsFile.length() - std::string(".xml").length());
+    int volumeIdNumber(0);
 
     const Pandora *const pPandoraLeft = CreateNewPandora();
     MultiPandoraApi::AddDaughterPandoraInstance(pPrimaryPandora, pPandoraLeft);
-    MultiPandoraApi::SetVolumeInfo(pPandoraLeft, new VolumeInfo("dune4apa_left", CartesianVector(0.f, 0.f, 0.f), true));
+    MultiPandoraApi::SetVolumeInfo(pPandoraLeft, new VolumeInfo(volumeIdNumber++, "dune4apa_left", CartesianVector(0.f, 0.f, 0.f), true));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandoraLeft, new lar_pandora::DUNE4APAPseudoLayerPlugin));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandoraLeft, new lar_pandora::DUNE4APATransformationPlugin(true)));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPandoraLeft, std::string(parameters.m_pandoraSettingsFile).insert(fileNameEnd, "_left")));
 
     const Pandora *const pPandoraRight = CreateNewPandora();
     MultiPandoraApi::AddDaughterPandoraInstance(pPrimaryPandora, pPandoraRight);
-    MultiPandoraApi::SetVolumeInfo(pPandoraRight, new VolumeInfo("dune4apa_right", CartesianVector(0.f, 0.f, 0.f), false));
+    MultiPandoraApi::SetVolumeInfo(pPandoraRight, new VolumeInfo(volumeIdNumber++, "dune4apa_right", CartesianVector(0.f, 0.f, 0.f), false));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandoraRight, new lar_pandora::DUNE4APAPseudoLayerPlugin));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandoraRight, new lar_pandora::DUNE4APATransformationPlugin(false)));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPandoraRight, std::string(parameters.m_pandoraSettingsFile).insert(fileNameEnd, "_right")));
@@ -215,17 +217,18 @@ void ConfigureProtoDunePandoraInstances(const Parameters &parameters, const Pand
 
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPrimaryPandora, new lar_pandora::ProtoDUNEPseudoLayerPlugin));
     const size_t fileNameEnd(parameters.m_pandoraSettingsFile.empty() ? 0 : parameters.m_pandoraSettingsFile.length() - std::string(".xml").length());
+    int volumeIdNumber(0);
 
     const Pandora *const pPandoraLeft = CreateNewPandora();
     MultiPandoraApi::AddDaughterPandoraInstance(pPrimaryPandora, pPandoraLeft);
-    MultiPandoraApi::SetVolumeInfo(pPandoraLeft, new VolumeInfo("protodune_left", CartesianVector(0.f, 0.f, 0.f), true));
+    MultiPandoraApi::SetVolumeInfo(pPandoraLeft, new VolumeInfo(volumeIdNumber++, "protodune_left", CartesianVector(0.f, 0.f, 0.f), true));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandoraLeft, new lar_pandora::ProtoDUNEPseudoLayerPlugin));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandoraLeft, new lar_pandora::ProtoDUNETransformationPlugin(true)));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPandoraLeft, std::string(parameters.m_pandoraSettingsFile).insert(fileNameEnd, "_left")));
 
     const Pandora *const pPandoraRight = CreateNewPandora();
     MultiPandoraApi::AddDaughterPandoraInstance(pPrimaryPandora, pPandoraRight);
-    MultiPandoraApi::SetVolumeInfo(pPandoraRight, new VolumeInfo("protodune_right", CartesianVector(0.f, 0.f, 0.f), false));
+    MultiPandoraApi::SetVolumeInfo(pPandoraRight, new VolumeInfo(volumeIdNumber++, "protodune_right", CartesianVector(0.f, 0.f, 0.f), false));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandoraRight, new lar_pandora::ProtoDUNEPseudoLayerPlugin));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandoraRight, new lar_pandora::ProtoDUNETransformationPlugin(false)));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPandoraRight, std::string(parameters.m_pandoraSettingsFile).insert(fileNameEnd, "_right")));
@@ -236,7 +239,7 @@ void ConfigureProtoDunePandoraInstances(const Parameters &parameters, const Pand
 void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPandora)
 {
     int nEvents(0);
-    const MultiPandora::PandoraInstanceList &pandoraInstances(MultiPandoraApi::GetMultiPandora().GetDaughterPandoraInstances(pPrimaryPandora));
+    const PandoraInstanceList &pandoraInstanceList(MultiPandoraApi::GetDaughterPandoraInstanceList(pPrimaryPandora));
 
     while ((nEvents++ < parameters.m_nEventsToProcess) || (0 > parameters.m_nEventsToProcess))
     {
@@ -248,7 +251,7 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
         if (parameters.m_shouldDisplayEventTime)
             (void) gettimeofday(&startTime, NULL);
 
-        for (const Pandora *const pPandora : pandoraInstances)
+        for (const Pandora *const pPandora : pandoraInstanceList)
         {
             PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ProcessEvent(*pPandora));
             PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, SetParticleX0Values(pPandora));        
@@ -262,7 +265,7 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
             std::cout << "Event time " << (endTime.tv_sec + (endTime.tv_usec / 1.e6) - startTime.tv_sec - (startTime.tv_usec / 1.e6)) << std::endl;
         }
 
-        for (const Pandora *const pPandora : pandoraInstances)
+        for (const Pandora *const pPandora : pandoraInstanceList)
         {
             PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::Reset(*pPandora));
             MultiPandoraApi::ClearParticleX0Map(pPandora);
