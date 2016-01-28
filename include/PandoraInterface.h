@@ -8,7 +8,9 @@
 #ifndef PANDORA_INTERFACE_H
 #define PANDORA_INTERFACE_H 1
 
-#include "LArStitching/MultiPandora.h"
+namespace pandora {class Pandora;}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
 
 namespace lar_reco_mp
 {
