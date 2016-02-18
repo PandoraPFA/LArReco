@@ -11,7 +11,7 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-         <EventFileName>/r05/lbne/mcproduction_v04_16_00/prodgenie_bnb_nu_uboone/uBooNE_Events_100_0_Neutrino.pndr</EventFileName>
+         <EventFileName>/r05/dune/mcproduction_v04_16_00/prodgenie_bnb_nu_uboone/uBooNE_Events_100_0_Neutrino.pndr</EventFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
@@ -220,6 +220,11 @@
 
         <MopUpAlgorithms>
             <algorithm type = "LArVertexBasedPfoMerging">
+                <TrackPfoListName>TrackParticles3D</TrackPfoListName>
+                <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+                <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+            </algorithm>
+            <algorithm type = "LArSplitShowerMerging">
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
                 <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>

@@ -11,7 +11,7 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-         <EventFileName>/usera/marshall/Test/github/LArRecoMP/pndr/35t/singles/35t_dc_short_Events.pndr</EventFileName>
+         <EventFileName>/usera/marshall/Test/github/temp/LArRecoMP/pndr/35t/singles/35t_dc_short_Events.pndr</EventFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>

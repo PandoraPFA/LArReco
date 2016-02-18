@@ -11,7 +11,7 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
-         <EventFileName>/r05/lbne/mcproduction_v04_06_02/prodgenie_bnb_nu_cosmic_uboone/uBooNE_Events_100_0_reco1.pndr</EventFileName>
+         <EventFileName>/r05/dune/mcproduction_v04_06_02/prodgenie_bnb_nu_cosmic_uboone/uBooNE_Events_100_0_reco1.pndr</EventFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>

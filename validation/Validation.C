@@ -187,13 +187,26 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
     const int primaryMinHits, const bool correctId, const bool applyFiducialCut, InteractionCountingMap &interactionCountingMap,
     InteractionEventResultMap &interactionEventResultMap)
 {
+    // MicroBooNE
+    const float eVx(256.35), eVy(233.), eVz(1036.8);
+    const float xBorder(10.), yBorder(20.), zBorder(10.);
+
     if (applyFiducialCut && !(
-        ((simpleMCEvent.m_mcNeutrinoVtx.m_x > -349.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_x < -10.f)) &&
-        ((simpleMCEvent.m_mcNeutrinoVtx.m_y > -290.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_y < 290.f)) &&
-        ((simpleMCEvent.m_mcNeutrinoVtx.m_z > 70.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_z < 414.f))) )
+        (simpleMCEvent.m_mcNeutrinoVtx.m_x < (eVx - xBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_x > xBorder) &&
+        (simpleMCEvent.m_mcNeutrinoVtx.m_y < (eVy / 2. - yBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_y > (-eVy / 2. + yBorder)) &&
+        (simpleMCEvent.m_mcNeutrinoVtx.m_z < (eVz - zBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_z > zBorder)) )
     {
         return;
     }
+
+    // DUNE 4APA
+    // if (applyFiducialCut && !(
+    //     ((simpleMCEvent.m_mcNeutrinoVtx.m_x > -349.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_x < -10.f)) &&
+    //     ((simpleMCEvent.m_mcNeutrinoVtx.m_y > -290.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_y < 290.f)) &&
+    //     ((simpleMCEvent.m_mcNeutrinoVtx.m_z > 70.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_z < 414.f))) )
+    // {
+    //     return;
+    // }
 
     EventResult eventResult;
 
