@@ -10,5 +10,15 @@
     <MuonPlugin>LArMuonId</MuonPlugin>
 
     <!-- ALGORITHM SETTINGS -->
-    <algorithm type = "LArStitching"/>
+    <algorithm type = "LArStitching">
+        <StitchingTools>
+            <tool type = "LArStitchingObjectCreation">
+                <NewPfoListName>RecreatedPfos</NewPfoListName>
+                <NewVertexListName>RecreatedVertices</NewVertexListName>
+                <NewClusterListName>RecreatedClusters</NewClusterListName>
+                <RecreateTwoDContent>true</RecreateTwoDContent>
+            </tool>
+            <tool type = "LArStitchingPfoMerging"/>
+        </StitchingTools>
+    </algorithm>
 </pandora>
