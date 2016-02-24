@@ -11,7 +11,7 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-         <EventFileName>/r05/dune/mcproduction_v04_16_00/prodgenie_bnb_nu_uboone/uBooNE_Events_100_0_Neutrino.pndr</EventFileName>
+         <EventFileName>/r05/dune/mcproduction_v04_26_04_04/prodgenie_bnb_nu_uboone_interaction_type/Pandora_Events_1004.pndr</EventFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
@@ -304,11 +304,13 @@
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>MCParticleList3D</MCParticleListName>
         <PfoListName>AllNeutrinoParticles3D</PfoListName>
-        <PrintToScreen>true</PrintToScreen>
-        <MinHitsToPrintPrimary>0</MinHitsToPrintPrimary>
-        <MinMatchedHitsToPrintPfo>0</MinMatchedHitsToPrintPfo>
         <PrimaryPfosOnly>true</PrimaryPfosOnly>
         <CollapseToPrimaryPfos>true</CollapseToPrimaryPfos>
+        <PrintAllToScreen>true</PrintAllToScreen>
+        <PrintMatchingToScreen>true</PrintMatchingToScreen>
+        <VisualizeMatching>false</VisualizeMatching>
+        <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
+        <MatchingMinSharedHits>5</MatchingMinSharedHits>
         <WriteToTree>false</WriteToTree>
         <OutputTree>Validation</OutputTree>
         <OutputFile>Validation.root</OutputFile>
