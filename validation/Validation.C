@@ -44,7 +44,7 @@ void Validation(const std::string &inputFiles, const bool shouldDisplayEvents, c
         FinalisePfoMatching(simpleMCEvent, primaryMinHits, minMatchedHits, pfoMatchingMap);
 
         if (shouldDisplayMatchedEvents)
-            DisplaySimpleMCEventMatches(simpleMCEvent, pfoMatchingMap);
+            DisplaySimpleMCEventMatches(simpleMCEvent, pfoMatchingMap, primaryMinHits);
 
         CountPfoMatches(simpleMCEvent, interactionType, pfoMatchingMap, primaryMinHits, correctId, applyFiducialCut, interactionCountingMap,
             interactionEventResultMap);
@@ -331,7 +331,7 @@ ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryLis
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &pfoMatchingMap)
+void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &pfoMatchingMap, const int primaryMinHits)
 {
     std::cout << "---PROCESSED-MATCHING-OUTPUT--------------------------------------------------------------------" << std::endl;
     bool isCorrect(true);
@@ -340,7 +340,7 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
 
-        if (!pfoMatchingMap.count(simpleMCPrimary.m_id))
+        if (simpleMCPrimary.m_nMCHitsTotal < primaryMinHits)
             continue;
 
         std::cout << std::endl << "MCPrimary " << simpleMCPrimary.m_id << ", PDG " << simpleMCPrimary.m_pdgCode
