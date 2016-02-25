@@ -287,8 +287,9 @@ ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryLis
  * 
  *  @param  simpleMCEvent the simple mc event
  *  @param  pfoMatchingMap the pfo matching map
+ *  @param  primaryMinHits the min number of hits in order to consider a primary
  */
-void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &pfoMatchingMap);
+void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &pfoMatchingMap, const int primaryMinHits);
 
 /**
  *  @brief  Print details to screen for a provided interaction type to counting map
