@@ -195,6 +195,7 @@ typedef std::map<InteractionType, VertexHistogramCollection> InteractionVertexHi
  * 
  *  @param  inputFiles the regex identifying the input root files
  *  @param  shouldDisplayEvents whether to display the reconstruction outcomes for individual events
+ *  @param  shouldDisplayMatchedEvents whether to display matching results for individual events
  *  @param  skipEvents the number of events to skip
  *  @param  nEventsToProcess the number of events to process
  *  @param  primaryMinHits the min number of hits in order to consider a primary
@@ -204,8 +205,8 @@ typedef std::map<InteractionType, VertexHistogramCollection> InteractionVertexHi
  *  @param  applyFiducialCut whether to apply fiducial volume cut to true neutrino vertex position
  *  @param  histPrefix histogram name prefix
  */
-void Validation(const std::string &inputFiles, const bool shouldDisplayEvents = true, const int skipEvents = 0,
-    const int nEventsToProcess = std::numeric_limits<int>::max(), const int primaryMinHits = 0, const int minMatchedHits = 0,
+void Validation(const std::string &inputFiles, const bool shouldDisplayEvents = true, const bool shouldDisplayMatchedEvents = true,
+    const int skipEvents = 0, const int nEventsToProcess = std::numeric_limits<int>::max(), const int primaryMinHits = 0, const int minMatchedHits = 0,
     const bool histogramOutput = false, const bool correctId = false, const bool applyFiducialCut = false, const std::string histPrefix = "");
 
 /**
@@ -222,32 +223,35 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const int
  *  @brief  Finalise the mc primary to pfo matching, using a pfo matching map to store the results
  * 
  *  @param  simpleMCEvent the simple mc event
+ *  @param  primaryMinHits the min number of hits in order to consider a primary
  *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
  *  @param  pfoMatchingMap the pfo matching map, to be populated
  */
-void FinalisePfoMatching(const SimpleMCEvent &simpleMCEvent, const int minMatchedHits, PfoMatchingMap &pfoMatchingMap);
+void FinalisePfoMatching(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits, const int minMatchedHits, PfoMatchingMap &pfoMatchingMap);
 
 /**
  *  @brief  Get the strongest pfo match (most matched hits) between an available mc primary and an available pfo
  * 
  *  @param  simpleMCEvent the simple mc event
+ *  @param  primaryMinHits the min number of hits in order to consider a primary
  *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
  *  @param  usedMCIds the list of mc primary ids with an existing match
  *  @param  usedPfoIds the list of pfo ids with an existing match
  *  @param  pfoMatchingMap the pfo matching map, to be populated
  */
-bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const int minMatchedHits, IntSet &usedMCIds,
+bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits, const int minMatchedHits, IntSet &usedMCIds,
     IntSet &usedPfoIds, PfoMatchingMap &pfoMatchingMap);
 
 /**
  *  @brief  Get the best matches for any pfos left-over after the strong matching procedure
  * 
  *  @param  simpleMCEvent the simple mc event
+ *  @param  primaryMinHits the min number of hits in order to consider a primary
  *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
  *  @param  usedPfoIds the list of pfo ids with an existing match
  *  @param  pfoMatchingMap the pfo matching map, to be populated
  */
-void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const int minMatchedHits, const IntSet &usedPfoIds,
+void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits, const int minMatchedHits, const IntSet &usedPfoIds,
     PfoMatchingMap &pfoMatchingMap);
 
 /**
@@ -277,6 +281,14 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
  *  @return the expected primary
  */
 ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryList &simpleMCPrimaryList, const int primaryMinHits);
+
+/**
+ *  @brief  Print matching details to screen for a simple mc event
+ * 
+ *  @param  simpleMCEvent the simple mc event
+ *  @param  pfoMatchingMap the pfo matching map
+ */
+void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &pfoMatchingMap);
 
 /**
  *  @brief  Print details to screen for a provided interaction type to counting map
