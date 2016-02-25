@@ -180,10 +180,8 @@ public:
      *  @brief  Print details to screen for a simple mc event
      * 
      *  @param  simpleMCEvent the simple mc event
-     *  @param  primaryMinHits the min number of hits in order to consider a primary
-     *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
      */
-    static void DisplaySimpleMCEvent(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits, const int minMatchedHits);
+    static void DisplaySimpleMCEvent(const SimpleMCEvent &simpleMCEvent);
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -396,9 +394,9 @@ unsigned int ValidationIO::ReadNextEvent(TChain *const pTChain, const unsigned i
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void ValidationIO::DisplaySimpleMCEvent(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits, const int minMatchedHits)
+void ValidationIO::DisplaySimpleMCEvent(const SimpleMCEvent &simpleMCEvent)
 {
-    std::cout << "------------------------------------------------------------------------------------------------" << std::endl;
+    std::cout << "---RAW-MATCHING-OUTPUT--------------------------------------------------------------------------" << std::endl;
     std::cout << "File " << simpleMCEvent.m_fileIdentifier << ", event " << simpleMCEvent.m_eventNumber << std::endl
               << "nuPdg " << simpleMCEvent.m_mcNeutrinoPdg << ", nuance " << simpleMCEvent.m_mcNeutrinoNuance
               << " (" << simpleMCEvent.m_nMCNeutrinos << ") " << std::endl << "recoNuPdg " << simpleMCEvent.m_recoNeutrinoPdg
@@ -408,30 +406,23 @@ void ValidationIO::DisplaySimpleMCEvent(const SimpleMCEvent &simpleMCEvent, cons
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
 
-        if (simpleMCPrimary.m_nMCHitsTotal >= primaryMinHits)
-        {
-            std::cout << std::endl << "MCPrimary " << simpleMCPrimary.m_id << ", PDG " << simpleMCPrimary.m_pdgCode
-                      << ", nMCHits " << simpleMCPrimary.m_nMCHitsTotal << " (" << simpleMCPrimary.m_nMCHitsU
-                      << ", " << simpleMCPrimary.m_nMCHitsV << ", " << simpleMCPrimary.m_nMCHitsW << ")" << std::endl;
-        }
+        std::cout << std::endl << "MCPrimary " << simpleMCPrimary.m_id << ", PDG " << simpleMCPrimary.m_pdgCode
+                  << ", nMCHits " << simpleMCPrimary.m_nMCHitsTotal << " (" << simpleMCPrimary.m_nMCHitsU
+                  << ", " << simpleMCPrimary.m_nMCHitsV << ", " << simpleMCPrimary.m_nMCHitsW << ")" << std::endl;
 
         for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
         {
             const SimpleMatchedPfo &simpleMatchedPfo(*mIter);
+            std::cout << "-MatchedPfo " << simpleMatchedPfo.m_id;
 
-            if ((simpleMCPrimary.m_nMCHitsTotal >= primaryMinHits) && (simpleMatchedPfo.m_nMatchedHitsTotal >= minMatchedHits))
-            {
-                std::cout << "-MatchedPfo " << simpleMatchedPfo.m_id;
+            if (simpleMatchedPfo.m_parentId >= 0)
+                std::cout << ", ParentPfo " << simpleMatchedPfo.m_parentId;
 
-                if (simpleMatchedPfo.m_parentId >= 0)
-                    std::cout << ", ParentPfo " << simpleMatchedPfo.m_parentId;
-
-                std::cout << ", PDG " << simpleMatchedPfo.m_pdgCode
-                          << ", nMatchedHits " << simpleMatchedPfo.m_nMatchedHitsTotal << " (" << simpleMatchedPfo.m_nMatchedHitsU
-                          << ", " << simpleMatchedPfo.m_nMatchedHitsV << ", " << simpleMatchedPfo.m_nMatchedHitsW << ")"
-                          << ", nPfoHits " << simpleMatchedPfo.m_nPfoHitsTotal << " (" << simpleMatchedPfo.m_nPfoHitsU
-                          << ", " << simpleMatchedPfo.m_nPfoHitsV << ", " << simpleMatchedPfo.m_nPfoHitsW << ")" << std::endl;
-            }
+            std::cout << ", PDG " << simpleMatchedPfo.m_pdgCode
+                      << ", nMatchedHits " << simpleMatchedPfo.m_nMatchedHitsTotal << " (" << simpleMatchedPfo.m_nMatchedHitsU
+                      << ", " << simpleMatchedPfo.m_nMatchedHitsV << ", " << simpleMatchedPfo.m_nMatchedHitsW << ")"
+                      << ", nPfoHits " << simpleMatchedPfo.m_nPfoHitsTotal << " (" << simpleMatchedPfo.m_nPfoHitsU
+                      << ", " << simpleMatchedPfo.m_nPfoHitsV << ", " << simpleMatchedPfo.m_nPfoHitsW << ")" << std::endl;
         }
     }
     std::cout << "------------------------------------------------------------------------------------------------" << std::endl;
