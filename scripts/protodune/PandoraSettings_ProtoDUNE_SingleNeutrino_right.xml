@@ -32,11 +32,11 @@
         <MipEquivalentCut>0.</MipEquivalentCut>
     </algorithm>
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
         <MCParticleListNames>MCParticleList3D</MCParticleListNames>
         <SuppressMCParticles>22:0.01 2112:1.0</SuppressMCParticles>
-    </algorithm>
+    </algorithm-->
 
     <!-- Reconstruction of individual neutrino interactions -->
     <algorithm type = "LArNeutrinoParent">
@@ -222,7 +222,12 @@
             <algorithm type = "LArVertexBasedPfoMerging">
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
-                <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+                <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
+            </algorithm>
+            <algorithm type = "LArSplitShowerMerging">
+                <TrackPfoListName>TrackParticles3D</TrackPfoListName>
+                <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+                <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
             </algorithm>
             <algorithm type = "LArBoundedClusterMerging">
                 <PfoListNames>ShowerParticles3D</PfoListNames>
@@ -311,7 +316,7 @@
         <OutputFile>Validation.root</OutputFile>
     </algorithm>
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <PfoListNames>AllNeutrinoParticles3D</PfoListNames>
     </algorithm>
 
@@ -323,5 +328,5 @@
         <ClusterListNames>AllClustersU AllClustersV AllClustersW</ClusterListNames>
         <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
         <ShowOnlyAvailable>true</ShowOnlyAvailable>
-    </algorithm>
+    </algorithm-->
 </pandora>
