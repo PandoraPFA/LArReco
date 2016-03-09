@@ -289,6 +289,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
     if ((1 == simpleMCEvent.m_nRecoNeutrinos) && (1 == simpleMCEvent.m_nMCNeutrinos))
         eventResult.m_vertexOffset = simpleMCEvent.m_recoNeutrinoVtx - simpleMCEvent.m_mcNeutrinoVtx;
 
+    eventResult.m_nRecoNeutrinos = simpleMCEvent.m_nRecoNeutrinos;
     interactionEventResultMap[interactionType].push_back(eventResult);
 }
 
@@ -405,8 +406,8 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
 {
     // Intended for filling histograms, post-processing of information collected in main loop over ntuple, etc.
     std::cout << std::endl << "EVENT INFO " << std::endl;
-    InteractionHistogramMap interactionHistogramMap;
-    InteractionVertexHistogramMap interactionVertexHistogramMap;
+    InteractionPrimaryHistogramMap interactionPrimaryHistogramMap;
+    InteractionEventHistogramMap interactionEventHistogramMap;
 
     for (InteractionEventResultMap::const_iterator iter = interactionEventResultMap.begin(), iterEnd = interactionEventResultMap.end(); iter != iterEnd; ++iter)
     {
@@ -423,12 +424,12 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
             if (histogramOutput)
             {
                 const std::string histPrefix(prefix + ToString(interactionType) + "_");
-                VertexHistogramCollection &histogramCollection(interactionVertexHistogramMap[interactionType]);
-                FillVertexHistogramCollection(histPrefix, eIter->m_vertexOffset, histogramCollection);
+                EventHistogramCollection &histogramCollection(interactionEventHistogramMap[interactionType]);
+                FillEventHistogramCollection(histPrefix, *eIter, histogramCollection);
 
                 const std::string histPrefixAll(prefix + ToString(ALL_INTERACTIONS) + "_");
-                VertexHistogramCollection &histogramCollectionAll(interactionVertexHistogramMap[ALL_INTERACTIONS]);
-                FillVertexHistogramCollection(histPrefixAll, eIter->m_vertexOffset, histogramCollectionAll);
+                EventHistogramCollection &histogramCollectionAll(interactionEventHistogramMap[ALL_INTERACTIONS]);
+                FillEventHistogramCollection(histPrefixAll, *eIter, histogramCollectionAll);
             }
 
             for (PrimaryResultMap::const_iterator pIter = primaryResultMap.begin(), pIterEnd = primaryResultMap.end(); pIter != pIterEnd; ++pIter)
@@ -445,12 +446,12 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
                 if (histogramOutput)
                 {
                     const std::string histPrefix(prefix + ToString(interactionType) + "_" + ToString(expectedPrimary) + "_");
-                    HistogramCollection &histogramCollection(interactionHistogramMap[interactionType][expectedPrimary]);
-                    FillHistogramCollection(histPrefix, primaryResult, histogramCollection);
+                    PrimaryHistogramCollection &histogramCollection(interactionPrimaryHistogramMap[interactionType][expectedPrimary]);
+                    FillPrimaryHistogramCollection(histPrefix, primaryResult, histogramCollection);
 
                     const std::string histPrefixAll(prefix + ToString(ALL_INTERACTIONS) + "_" + ToString(expectedPrimary) + "_");
-                    HistogramCollection &histogramCollectionAll(interactionHistogramMap[ALL_INTERACTIONS][expectedPrimary]);
-                    FillHistogramCollection(histPrefixAll, primaryResult, histogramCollectionAll);
+                    PrimaryHistogramCollection &histogramCollectionAll(interactionPrimaryHistogramMap[ALL_INTERACTIONS][expectedPrimary]);
+                    FillPrimaryHistogramCollection(histPrefixAll, primaryResult, histogramCollectionAll);
                 }
             }
 
@@ -463,105 +464,112 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
     }
 
     if (histogramOutput)
-        ProcessHistogramCollections(interactionHistogramMap);
+        ProcessHistogramCollections(interactionPrimaryHistogramMap);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void FillHistogramCollection(const std::string &histPrefix, const PrimaryResult &primaryResult, HistogramCollection &histogramCollection)
+void FillEventHistogramCollection(const std::string &histPrefix, const EventResult &eventResult, EventHistogramCollection &eventHistogramCollection)
+{
+    if (!eventHistogramCollection.m_hVtxDeltaX)
+        eventHistogramCollection.m_hVtxDeltaX = new TH1F((histPrefix + "VtxDeltaX").c_str(), "", 40000, -2000., 2000.);
+
+    if (!eventHistogramCollection.m_hVtxDeltaY)
+        eventHistogramCollection.m_hVtxDeltaY = new TH1F((histPrefix + "VtxDeltaY").c_str(), "", 40000, -2000., 2000.);
+
+    if (!eventHistogramCollection.m_hVtxDeltaZ)
+        eventHistogramCollection.m_hVtxDeltaZ = new TH1F((histPrefix + "VtxDeltaZ").c_str(), "", 40000, -2000., 2000.);
+
+    if (!eventHistogramCollection.m_hVtxDeltaR)
+        eventHistogramCollection.m_hVtxDeltaR = new TH1F((histPrefix + "VtxDeltaR").c_str(), "", 40000, -100., 1900.);
+
+    if (!eventHistogramCollection.m_hVtxDeltaR)
+        eventHistogramCollection.m_hVtxDeltaR = new TH1F((histPrefix + "VtxDeltaR").c_str(), "", 40000, -100., 1900.);
+
+    if (!eventHistogramCollection.m_nRecoNeutrinos)
+        eventHistogramCollection.m_nRecoNeutrinos = new TH1F((histPrefix + "NRecoNeutrinos").c_str(), "", 11, -0.5, 10.5);
+
+    eventHistogramCollection.m_hVtxDeltaX->Fill(eventResult.m_vertexOffset.m_x);
+    eventHistogramCollection.m_hVtxDeltaY->Fill(eventResult.m_vertexOffset.m_y);
+    eventHistogramCollection.m_hVtxDeltaZ->Fill(eventResult.m_vertexOffset.m_z);
+    eventHistogramCollection.m_hVtxDeltaR->Fill(std::sqrt(eventResult.m_vertexOffset.m_x * eventResult.m_vertexOffset.m_x + eventResult.m_vertexOffset.m_y * eventResult.m_vertexOffset.m_y + eventResult.m_vertexOffset.m_z * eventResult.m_vertexOffset.m_z));
+    eventHistogramCollection.m_nRecoNeutrinos->Fill(eventResult.m_nRecoNeutrinos);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void FillPrimaryHistogramCollection(const std::string &histPrefix, const PrimaryResult &primaryResult, PrimaryHistogramCollection &primaryHistogramCollection)
 {
     const int nHitBins(35); const int nHitBinEdges(nHitBins + 1);
     float hitsBinning[nHitBinEdges];
     for (int n = 0; n < nHitBinEdges; ++n) hitsBinning[n] = std::pow(10., 1 + static_cast<float>(n + 2) / 10.);
 
-    if (!histogramCollection.m_hHitsAll)
-        histogramCollection.m_hHitsAll = new TH1F((histPrefix + "HitsAll").c_str(), "", nHitBins, hitsBinning);
+    if (!primaryHistogramCollection.m_hHitsAll)
+        primaryHistogramCollection.m_hHitsAll = new TH1F((histPrefix + "HitsAll").c_str(), "", nHitBins, hitsBinning);
 
-    if (!histogramCollection.m_hHitsEfficiency)
-        histogramCollection.m_hHitsEfficiency = new TH1F((histPrefix + "HitsEfficiency").c_str(), "", nHitBins, hitsBinning);
+    if (!primaryHistogramCollection.m_hHitsEfficiency)
+        primaryHistogramCollection.m_hHitsEfficiency = new TH1F((histPrefix + "HitsEfficiency").c_str(), "", nHitBins, hitsBinning);
 
-    if (!histogramCollection.m_hAngleAll)
-        histogramCollection.m_hAngleAll = new TH1F((histPrefix + "AngleAll").c_str(), "", 64, -M_PI, M_PI);
+    if (!primaryHistogramCollection.m_hAngleAll)
+        primaryHistogramCollection.m_hAngleAll = new TH1F((histPrefix + "AngleAll").c_str(), "", 64, -M_PI, M_PI);
 
-    if (!histogramCollection.m_hAngleEfficiency)
-        histogramCollection.m_hAngleEfficiency = new TH1F((histPrefix + "AngleEfficiency").c_str(), "", 64, -M_PI, M_PI);
+    if (!primaryHistogramCollection.m_hAngleEfficiency)
+        primaryHistogramCollection.m_hAngleEfficiency = new TH1F((histPrefix + "AngleEfficiency").c_str(), "", 64, -M_PI, M_PI);
 
-    if (!histogramCollection.m_hCompleteness)
-        histogramCollection.m_hCompleteness = new TH1F((histPrefix + "Completeness").c_str(), "", 51, -0.01, 1.01);
+    if (!primaryHistogramCollection.m_hCompleteness)
+        primaryHistogramCollection.m_hCompleteness = new TH1F((histPrefix + "Completeness").c_str(), "", 51, -0.01, 1.01);
 
-    if (!histogramCollection.m_hPurity)
-        histogramCollection.m_hPurity = new TH1F((histPrefix + "Purity").c_str(), "", 51, -0.01, 1.01);
+    if (!primaryHistogramCollection.m_hPurity)
+        primaryHistogramCollection.m_hPurity = new TH1F((histPrefix + "Purity").c_str(), "", 51, -0.01, 1.01);
 
-    histogramCollection.m_hHitsAll->Fill(primaryResult.m_nTrueHits);
-    histogramCollection.m_hAngleAll->Fill(primaryResult.m_trueAngle);
+    primaryHistogramCollection.m_hHitsAll->Fill(primaryResult.m_nTrueHits);
+    primaryHistogramCollection.m_hAngleAll->Fill(primaryResult.m_trueAngle);
 
     if (primaryResult.m_nPfoMatches > 0)
     {
-        histogramCollection.m_hHitsEfficiency->Fill(primaryResult.m_nTrueHits);
-        histogramCollection.m_hAngleEfficiency->Fill(primaryResult.m_trueAngle);
-        histogramCollection.m_hCompleteness->Fill(primaryResult.m_bestCompleteness);
-        histogramCollection.m_hPurity->Fill(primaryResult.m_bestMatchPurity);
+        primaryHistogramCollection.m_hHitsEfficiency->Fill(primaryResult.m_nTrueHits);
+        primaryHistogramCollection.m_hAngleEfficiency->Fill(primaryResult.m_trueAngle);
+        primaryHistogramCollection.m_hCompleteness->Fill(primaryResult.m_bestCompleteness);
+        primaryHistogramCollection.m_hPurity->Fill(primaryResult.m_bestMatchPurity);
     }
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void FillVertexHistogramCollection(const std::string &histPrefix, const SimpleThreeVector &vertexOffset, VertexHistogramCollection &histogramCollection)
+void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interactionPrimaryHistogramMap)
 {
-    if (!histogramCollection.m_hVtxDeltaX)
-        histogramCollection.m_hVtxDeltaX = new TH1F((histPrefix + "VtxDeltaX").c_str(), "", 40000, -2000., 2000.);
-
-    if (!histogramCollection.m_hVtxDeltaY)
-        histogramCollection.m_hVtxDeltaY = new TH1F((histPrefix + "VtxDeltaY").c_str(), "", 40000, -2000., 2000.);
-
-    if (!histogramCollection.m_hVtxDeltaZ)
-        histogramCollection.m_hVtxDeltaZ = new TH1F((histPrefix + "VtxDeltaZ").c_str(), "", 40000, -2000., 2000.);
-
-    if (!histogramCollection.m_hVtxDeltaR)
-        histogramCollection.m_hVtxDeltaR = new TH1F((histPrefix + "VtxDeltaR").c_str(), "", 40000, -100., 1900.);
-
-    histogramCollection.m_hVtxDeltaX->Fill(vertexOffset.m_x);
-    histogramCollection.m_hVtxDeltaY->Fill(vertexOffset.m_y);
-    histogramCollection.m_hVtxDeltaZ->Fill(vertexOffset.m_z);
-    histogramCollection.m_hVtxDeltaR->Fill(std::sqrt(vertexOffset.m_x * vertexOffset.m_x + vertexOffset.m_y * vertexOffset.m_y + vertexOffset.m_z * vertexOffset.m_z));
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-void ProcessHistogramCollections(const InteractionHistogramMap &interactionHistogramMap)
-{
-    for (InteractionHistogramMap::const_iterator iter = interactionHistogramMap.begin(), iterEnd = interactionHistogramMap.end(); iter != iterEnd; ++iter)
+    for (InteractionPrimaryHistogramMap::const_iterator iter = interactionPrimaryHistogramMap.begin(), iterEnd = interactionPrimaryHistogramMap.end(); iter != iterEnd; ++iter)
     {
         const InteractionType interactionType(iter->first);
-        const HistogramMap &histogramMap(iter->second);
+        const PrimaryHistogramMap &primaryHistogramMap(iter->second);
 
-        for (HistogramMap::const_iterator hIter = histogramMap.begin(), hIterEnd = histogramMap.end(); hIter != hIterEnd; ++hIter)
+        for (PrimaryHistogramMap::const_iterator hIter = primaryHistogramMap.begin(), hIterEnd = primaryHistogramMap.end(); hIter != hIterEnd; ++hIter)
         {
             const ExpectedPrimary expectedPrimary(hIter->first);
-            const HistogramCollection &histogramCollection(hIter->second);
+            const PrimaryHistogramCollection &primaryHistogramCollection(hIter->second);
 
-            for (int n = 0; n < histogramCollection.m_hHitsEfficiency->GetXaxis()->GetNbins(); ++n)
+            for (int n = 0; n < primaryHistogramCollection.m_hHitsEfficiency->GetXaxis()->GetNbins(); ++n)
             {
-                const float found = histogramCollection.m_hHitsEfficiency->GetBinContent(n + 1);
-                const float all = histogramCollection.m_hHitsAll->GetBinContent(n + 1);
+                const float found = primaryHistogramCollection.m_hHitsEfficiency->GetBinContent(n + 1);
+                const float all = primaryHistogramCollection.m_hHitsAll->GetBinContent(n + 1);
                 const float efficiency = (all > 0.f) ? found / all : 0.f;
                 const float error = (all > found) ? std::sqrt(efficiency * (1. - efficiency) / all) : 0.f;
-                histogramCollection.m_hHitsEfficiency->SetBinContent(n + 1, efficiency);
-                histogramCollection.m_hHitsEfficiency->SetBinError(n + 1, error);
+                primaryHistogramCollection.m_hHitsEfficiency->SetBinContent(n + 1, efficiency);
+                primaryHistogramCollection.m_hHitsEfficiency->SetBinError(n + 1, error);
             }
 
-            for (int n = 0; n < histogramCollection.m_hAngleEfficiency->GetXaxis()->GetNbins(); ++n)
+            for (int n = 0; n < primaryHistogramCollection.m_hAngleEfficiency->GetXaxis()->GetNbins(); ++n)
             {
-                const float found = histogramCollection.m_hAngleEfficiency->GetBinContent(n + 1);
-                const float all = histogramCollection.m_hAngleAll->GetBinContent(n + 1);
+                const float found = primaryHistogramCollection.m_hAngleEfficiency->GetBinContent(n + 1);
+                const float all = primaryHistogramCollection.m_hAngleAll->GetBinContent(n + 1);
                 const float efficiency = (all > 0.f) ? found / all : 0.f;
                 const float error = (all > found) ? std::sqrt(efficiency * (1. - efficiency) / all) : 0.f;
-                histogramCollection.m_hAngleEfficiency->SetBinContent(n + 1, efficiency);
-                histogramCollection.m_hAngleEfficiency->SetBinError(n + 1, error);
+                primaryHistogramCollection.m_hAngleEfficiency->SetBinContent(n + 1, efficiency);
+                primaryHistogramCollection.m_hAngleEfficiency->SetBinError(n + 1, error);
             }
 
-            histogramCollection.m_hCompleteness->Scale(1. / static_cast<double>(histogramCollection.m_hCompleteness->GetEntries()));
-            histogramCollection.m_hPurity->Scale(1. / static_cast<double>(histogramCollection.m_hPurity->GetEntries()));
+            primaryHistogramCollection.m_hCompleteness->Scale(1. / static_cast<double>(primaryHistogramCollection.m_hCompleteness->GetEntries()));
+            primaryHistogramCollection.m_hPurity->Scale(1. / static_cast<double>(primaryHistogramCollection.m_hPurity->GetEntries()));
         }
     }
 }

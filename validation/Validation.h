@@ -136,6 +136,7 @@ public:
     // ATTN Put items to count on a per-event basis here
     PrimaryResultMap    m_primaryResultMap;     ///< The primary result map
     SimpleThreeVector   m_vertexOffset;         ///< The vertex offset
+    int                 m_nRecoNeutrinos;       ///< The number of reconstructed neutrinos
 };
 
 typedef std::vector<EventResult> EventResultList; // ATTN Not terribly efficient, but that's not the main aim here
@@ -146,15 +147,37 @@ typedef std::map<InteractionType, EventResultList> InteractionEventResultMap;
 class TH1F;
 
 /**
- *  @brief  HistogramCollection class
+ *  @brief  EventHistogramCollection class
  */
-class HistogramCollection
+class EventHistogramCollection
 {
 public:
     /**
      *  @brief  Default constructor
      */
-    HistogramCollection();
+    EventHistogramCollection();
+
+    TH1F *m_hVtxDeltaX;         ///< 
+    TH1F *m_hVtxDeltaY;         ///< 
+    TH1F *m_hVtxDeltaZ;         ///< 
+    TH1F *m_hVtxDeltaR;         ///< 
+    TH1F *m_nRecoNeutrinos;     ///<
+};
+
+typedef std::map<InteractionType, EventHistogramCollection> InteractionEventHistogramMap;
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+/**
+ *  @brief  PrimaryHistogramCollection class
+ */
+class PrimaryHistogramCollection
+{
+public:
+    /**
+     *  @brief  Default constructor
+     */
+    PrimaryHistogramCollection();
 
     TH1F *m_hHitsAll;           ///<
     TH1F *m_hHitsEfficiency;    ///<
@@ -164,29 +187,8 @@ public:
     TH1F *m_hPurity;            ///<
 };
 
-typedef std::map<ExpectedPrimary, HistogramCollection> HistogramMap;
-typedef std::map<InteractionType, HistogramMap> InteractionHistogramMap;
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-/**
- *  @brief  VertexHistogramCollection class
- */
-class VertexHistogramCollection
-{
-public:
-    /**
-     *  @brief  Default constructor
-     */
-    VertexHistogramCollection();
-
-    TH1F *m_hVtxDeltaX;         ///< 
-    TH1F *m_hVtxDeltaY;         ///< 
-    TH1F *m_hVtxDeltaZ;         ///< 
-    TH1F *m_hVtxDeltaR;         ///< 
-};
-
-typedef std::map<InteractionType, VertexHistogramCollection> InteractionVertexHistogramMap;
+typedef std::map<ExpectedPrimary, PrimaryHistogramCollection> PrimaryHistogramMap;
+typedef std::map<InteractionType, PrimaryHistogramMap> InteractionPrimaryHistogramMap;
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -310,29 +312,29 @@ void DisplayInteractionCountingMap(const int primaryMinHits, const int minMatche
 void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap, const bool histogramOutput, const std::string &prefix);
 
 /**
+ *  @brief  Fill histograms in the provided event histogram collection, using information in the provided event offset
+ * 
+ *  @param  histPrefix the histogram name prefix
+ *  @param  eventResult the event result
+ *  @param  eventHistogramCollection the event histogram collection
+ */
+void FillEventHistogramCollection(const std::string &histPrefix, const EventResult &eventResult, EventHistogramCollection &eventHistogramCollection);
+
+/**
  *  @brief  Fill histograms in the provided histogram collection, using information in the provided primary result
  * 
  *  @param  histPrefix the histogram name prefix
  *  @param  primaryResult the primary result
- *  @param  histogramCollection the histogram collection
+ *  @param  primaryHistogramCollection the primary histogram collection
  */
-void FillHistogramCollection(const std::string &histPrefix, const PrimaryResult &primaryResult, HistogramCollection &histogramCollection);
-
-/**
- *  @brief  Fill histograms in the provided vertex histogram collection, using information in the provided vertex offset
- * 
- *  @param  histPrefix the histogram name prefix
- *  @param  vertexOffset the vertex offset
- *  @param  histogramCollection the vertex histogram collection
- */
-void FillVertexHistogramCollection(const std::string &histPrefix, const SimpleThreeVector &vertexOffset, VertexHistogramCollection &histogramCollection);
+void FillPrimaryHistogramCollection(const std::string &histPrefix, const PrimaryResult &primaryResult, PrimaryHistogramCollection &primaryHistogramCollection);
 
 /**
  *  @brief  Process histograms stored in the provided map e.g. calculating final efficiencies, normalising, etc.
  * 
- *  @param  interactionHistogramMap the interaction histogram map
+ *  @param  interactionPrimaryHistogramMap the interaction primary histogram map
  */
-void ProcessHistogramCollections(const InteractionHistogramMap &interactionHistogramMap);
+void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interactionPrimaryHistogramMap);
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -370,14 +372,15 @@ PrimaryResult::PrimaryResult() :
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 EventResult::EventResult() :
-    m_vertexOffset(-999.f, -999.f, -999.f)
+    m_vertexOffset(-999.f, -999.f, -999.f),
+    m_nRecoNeutrinos(0)
 {
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-HistogramCollection::HistogramCollection() :
+PrimaryHistogramCollection::PrimaryHistogramCollection() :
     m_hHitsAll(NULL),
     m_hHitsEfficiency(NULL),
     m_hAngleAll(NULL),
@@ -390,11 +393,12 @@ HistogramCollection::HistogramCollection() :
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-VertexHistogramCollection::VertexHistogramCollection() :
+EventHistogramCollection::EventHistogramCollection() :
     m_hVtxDeltaX(NULL),
     m_hVtxDeltaY(NULL),
     m_hVtxDeltaZ(NULL),
-    m_hVtxDeltaR(NULL)
+    m_hVtxDeltaR(NULL),
+    m_nRecoNeutrinos(NULL)
 {
 }
 
