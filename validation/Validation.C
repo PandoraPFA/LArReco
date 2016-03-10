@@ -12,7 +12,7 @@
 
 void Validation(const std::string &inputFiles, const bool shouldDisplayEvents, const bool shouldDisplayMatchedEvents, const int skipEvents,
     const int nEventsToProcess, const int primaryMinHits, const int minMatchedHits, const bool histogramOutput, const bool correctId,
-    const bool applyFiducialCut, const std::string histPrefix)
+    const bool applyFiducialCut, const std::string histPrefix, const std::string outputFileName, const std::string correctEventFileName)
 {
     TChain *pTChain = new TChain("Validation", "pTChain");
     pTChain->Add(inputFiles.c_str());
@@ -51,8 +51,8 @@ void Validation(const std::string &inputFiles, const bool shouldDisplayEvents, c
     }
 
     // Processing of final output
-    DisplayInteractionCountingMap(primaryMinHits, minMatchedHits, interactionCountingMap);
-    AnalyseInteractionEventResultMap(interactionEventResultMap, histogramOutput, histPrefix);
+    DisplayInteractionCountingMap(primaryMinHits, minMatchedHits, interactionCountingMap, outputFileName);
+    AnalyseInteractionEventResultMap(interactionEventResultMap, outputFileName, correctEventFileName, histogramOutput, histPrefix);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -197,28 +197,13 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
     const int primaryMinHits, const bool correctId, const bool applyFiducialCut, InteractionCountingMap &interactionCountingMap,
     InteractionEventResultMap &interactionEventResultMap)
 {
-    // MicroBooNE
-    const float eVx(256.35), eVy(233.), eVz(1036.8);
-    const float xBorder(10.), yBorder(20.), zBorder(10.);
-
-    if (applyFiducialCut && !(
-        (simpleMCEvent.m_mcNeutrinoVtx.m_x < (eVx - xBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_x > xBorder) &&
-        (simpleMCEvent.m_mcNeutrinoVtx.m_y < (eVy / 2. - yBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_y > (-eVy / 2. + yBorder)) &&
-        (simpleMCEvent.m_mcNeutrinoVtx.m_z < (eVz - zBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_z > zBorder)) )
-    {
+    if (applyFiducialCut && !PassFiducialCut(simpleMCEvent))
         return;
-    }
-
-    // DUNE 4APA
-    // if (applyFiducialCut && !(
-    //     ((simpleMCEvent.m_mcNeutrinoVtx.m_x > -349.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_x < -10.f)) &&
-    //     ((simpleMCEvent.m_mcNeutrinoVtx.m_y > -290.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_y < 290.f)) &&
-    //     ((simpleMCEvent.m_mcNeutrinoVtx.m_z > 70.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_z < 414.f))) )
-    // {
-    //     return;
-    // }
 
     EventResult eventResult;
+    eventResult.m_fileIdentifier = simpleMCEvent.m_fileIdentifier;
+    eventResult.m_eventNumber = simpleMCEvent.m_eventNumber;
+    eventResult.m_mcNeutrinoNuance = simpleMCEvent.m_mcNeutrinoNuance;
 
     for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
     {
@@ -264,9 +249,6 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
             }
         }
 
-        // if ((13 == simpleMCPrimary.m_pdgCode) && (100 < simpleMCPrimary.m_nMCHitsTotal) && (0 == nMatches))
-        //     ValidationIO::DisplaySimpleMCEvent(simpleMCEvent, primaryMinHits, 5);
-
         if (0 == nMatches) ++countingDetails.m_nMatch0;
         else if (1 == nMatches) ++countingDetails.m_nMatch1;
         else if (2 == nMatches) ++countingDetails.m_nMatch2;
@@ -281,9 +263,6 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
         primaryResult.m_trueAngle = std::acos(simpleMCPrimary.m_momentum.m_z / pTot);
         primaryResult.m_nBestMatchedHits = nBestMatchedHits;
         primaryResult.m_nBestRecoHits = nBestRecoHits;
-
-        // if ((MUON == expectedPrimary) && (0 == primaryResult.m_nPfoMatches) && (primaryResult.m_nTrueHits > 100))
-        //     std::cout << "Id " << simpleMCEvent.m_fileIdentifier << ", event " << simpleMCEvent.m_eventNumber << ", nTrueHits " << primaryResult.m_nTrueHits << std::endl;
     }
 
     if ((1 == simpleMCEvent.m_nRecoNeutrinos) && (1 == simpleMCEvent.m_nMCNeutrinos))
@@ -291,6 +270,32 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
 
     eventResult.m_nRecoNeutrinos = simpleMCEvent.m_nRecoNeutrinos;
     interactionEventResultMap[interactionType].push_back(eventResult);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+bool PassFiducialCut(const SimpleMCEvent &simpleMCEvent)
+{
+    // MicroBooNE
+    const float eVx(256.35), eVy(233.), eVz(1036.8);
+    const float xBorder(10.), yBorder(20.), zBorder(10.);
+
+    if ((simpleMCEvent.m_mcNeutrinoVtx.m_x < (eVx - xBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_x > xBorder) &&
+        (simpleMCEvent.m_mcNeutrinoVtx.m_y < (eVy / 2. - yBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_y > (-eVy / 2. + yBorder)) &&
+        (simpleMCEvent.m_mcNeutrinoVtx.m_z < (eVz - zBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_z > zBorder) )
+    {
+        return true;
+    }
+
+    // DUNE 4APA
+    // if (((simpleMCEvent.m_mcNeutrinoVtx.m_x > -349.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_x < -10.f)) &&
+    //     ((simpleMCEvent.m_mcNeutrinoVtx.m_y > -290.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_y < 290.f)) &&
+    //     ((simpleMCEvent.m_mcNeutrinoVtx.m_z > 70.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_z < 414.f)) )
+    // {
+    //     return true;
+    // }
+
+    return false;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -348,10 +353,11 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
                   << ", nMCHits " << simpleMCPrimary.m_nMCHitsTotal << " (" << simpleMCPrimary.m_nMCHitsU
                   << ", " << simpleMCPrimary.m_nMCHitsV << ", " << simpleMCPrimary.m_nMCHitsW << ")" << std::endl;
 
+        unsigned int nMatches(0);
+
         for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
         {
             const SimpleMatchedPfo &simpleMatchedPfo(*mIter);
-            unsigned int nMatches(0);
 
             if (pfoMatchingMap.count(simpleMatchedPfo.m_id) && (simpleMCPrimary.m_id == pfoMatchingMap.at(simpleMatchedPfo.m_id).m_matchedPrimaryId))
             {
@@ -367,10 +373,10 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
                           << ", nPfoHits " << simpleMatchedPfo.m_nPfoHitsTotal << " (" << simpleMatchedPfo.m_nPfoHitsU
                           << ", " << simpleMatchedPfo.m_nPfoHitsV << ", " << simpleMatchedPfo.m_nPfoHitsW << ")" << std::endl;
             }
-
-            if (1 != nMatches)
-                isCorrect = false;
         }
+
+        if (1 != nMatches)
+            isCorrect = false;
     }
 
     std::cout << std::endl << "Is correct? " << isCorrect << std::endl;
@@ -379,15 +385,26 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void DisplayInteractionCountingMap(const int primaryMinHits, const int minMatchedHits, const InteractionCountingMap &interactionCountingMap)
+void DisplayInteractionCountingMap(const int primaryMinHits, const int minMatchedHits, const InteractionCountingMap &interactionCountingMap,
+    const std::string &outputFileName)
 {
     std::cout << "MinPrimaryHits " << primaryMinHits << ", MinMatchedHits " << minMatchedHits << std::endl;
+    std::ofstream outputFile;
+
+    if (!outputFileName.empty())
+    {
+        outputFile.open(outputFileName, ios::app);
+        outputFile << "MinPrimaryHits " << primaryMinHits << ", MinMatchedHits " << minMatchedHits << std::endl;
+    }
 
     for (InteractionCountingMap::const_iterator iter = interactionCountingMap.begin(); iter != interactionCountingMap.end(); ++iter)
     {
         const InteractionType interactionType(iter->first);
         const CountingMap &countingMap(iter->second);
         std::cout << std::endl << ToString(interactionType) << std::endl;
+
+        if (!outputFileName.empty())
+            outputFile << std::endl << ToString(interactionType) << std::endl;
 
         for (CountingMap::const_iterator cIter = countingMap.begin(); cIter != countingMap.end(); ++cIter)
         {
@@ -396,16 +413,31 @@ void DisplayInteractionCountingMap(const int primaryMinHits, const int minMatche
 
             std::cout << "-" << ToString(expectedPrimary) << ": nEvents: " << countingDetails.m_nTotal << ", nPfos |0: " << countingDetails.m_nMatch0
                       << "|, |1: " << countingDetails.m_nMatch1 << "|, |2: " << countingDetails.m_nMatch2 << "|, |3+: " << countingDetails.m_nMatch3Plus << "|" << std::endl;
+
+            if (!outputFileName.empty())
+            {
+                outputFile << "-" << ToString(expectedPrimary) << ": nEvents: " << countingDetails.m_nTotal << ", nPfos |0: " << countingDetails.m_nMatch0
+                           << "|, |1: " << countingDetails.m_nMatch1 << "|, |2: " << countingDetails.m_nMatch2 << "|, |3+: " << countingDetails.m_nMatch3Plus << "|" << std::endl;
+            }
         }
     }
+
+    if (!outputFileName.empty())
+        outputFile.close();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap, const bool histogramOutput, const std::string &prefix)
+void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap, const std::string &outputFileName,
+    const std::string &correctEventFileName, const bool histogramOutput, const std::string &prefix)
 {
     // Intended for filling histograms, post-processing of information collected in main loop over ntuple, etc.
     std::cout << std::endl << "EVENT INFO " << std::endl;
+
+    std::ofstream outputFile, correctEventFile;
+    if (!outputFileName.empty()) outputFile.open(outputFileName, ios::app);
+    if (!correctEventFileName.empty()) correctEventFile.open(correctEventFileName, ios::app);
+
     InteractionPrimaryHistogramMap interactionPrimaryHistogramMap;
     InteractionEventHistogramMap interactionEventHistogramMap;
 
@@ -440,9 +472,6 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
                 if (primaryResult.m_nPfoMatches != 1)
                     isCorrect = false;
 
-                //std::cout << "-" << ToString(expectedPrimary) << ": nMatches: " << primaryResult.m_nPfoMatches << ", bestComp: "
-                //          << primaryResult.m_bestCompleteness << ", bestMatchPur: " << primaryResult.m_bestMatchPurity << std::endl;
-
                 if (histogramOutput)
                 {
                     const std::string histPrefix(prefix + ToString(interactionType) + "_" + ToString(expectedPrimary) + "_");
@@ -456,15 +485,29 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
             }
 
             if (isCorrect)
+            {
                 ++nCorrectEvents;
+
+                if (!correctEventFileName.empty())
+                    correctEventFile << "Correct event: fileId: " << eIter->m_fileIdentifier << ", eventNumber: " << eIter->m_eventNumber << ", nuance: " << eIter->m_mcNeutrinoNuance << std::endl;
+            }
         }
 
         std::cout << ToString(interactionType) << std::endl << "-nEvents " << eventResultList.size() << ", nCorrect " << nCorrectEvents
                   << ", fCorrect " << static_cast<float>(nCorrectEvents) / static_cast<float>(eventResultList.size()) << std::endl;
+
+        if (!outputFileName.empty())
+        {
+            outputFile << std::endl << ToString(interactionType) << std::endl << "-nEvents " << eventResultList.size() << ", nCorrect " << nCorrectEvents
+                       << ", fCorrect " << static_cast<float>(nCorrectEvents) / static_cast<float>(eventResultList.size()) << std::endl;
+        }
     }
 
     if (histogramOutput)
         ProcessHistogramCollections(interactionPrimaryHistogramMap);
+
+    if (!outputFileName.empty()) outputFile.close();
+    if (!correctEventFileName.empty()) correctEventFile.close();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -472,22 +515,43 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
 void FillEventHistogramCollection(const std::string &histPrefix, const EventResult &eventResult, EventHistogramCollection &eventHistogramCollection)
 {
     if (!eventHistogramCollection.m_hVtxDeltaX)
+    {
         eventHistogramCollection.m_hVtxDeltaX = new TH1F((histPrefix + "VtxDeltaX").c_str(), "", 40000, -2000., 2000.);
+        eventHistogramCollection.m_hVtxDeltaX->GetXaxis()->SetRange(-5., +5.);
+        eventHistogramCollection.m_hVtxDeltaX->GetXaxis()->SetTitle("Vertex #DeltaX [cm]");
+        eventHistogramCollection.m_hVtxDeltaX->GetYaxis()->SetTitle("nEvents");
+    }
 
     if (!eventHistogramCollection.m_hVtxDeltaY)
+    {
         eventHistogramCollection.m_hVtxDeltaY = new TH1F((histPrefix + "VtxDeltaY").c_str(), "", 40000, -2000., 2000.);
+        eventHistogramCollection.m_hVtxDeltaY->GetXaxis()->SetRange(-5., +5.);
+        eventHistogramCollection.m_hVtxDeltaY->GetXaxis()->SetTitle("Vertex #DeltaY [cm]");
+        eventHistogramCollection.m_hVtxDeltaY->GetYaxis()->SetTitle("nEvents");
+    }
 
     if (!eventHistogramCollection.m_hVtxDeltaZ)
+    {
         eventHistogramCollection.m_hVtxDeltaZ = new TH1F((histPrefix + "VtxDeltaZ").c_str(), "", 40000, -2000., 2000.);
+        eventHistogramCollection.m_hVtxDeltaZ->GetXaxis()->SetRange(-5., +5.);
+        eventHistogramCollection.m_hVtxDeltaZ->GetXaxis()->SetTitle("Vertex #DeltaZ [cm]");
+        eventHistogramCollection.m_hVtxDeltaZ->GetYaxis()->SetTitle("nEvents");
+    }
 
     if (!eventHistogramCollection.m_hVtxDeltaR)
+    {
         eventHistogramCollection.m_hVtxDeltaR = new TH1F((histPrefix + "VtxDeltaR").c_str(), "", 40000, -100., 1900.);
-
-    if (!eventHistogramCollection.m_hVtxDeltaR)
-        eventHistogramCollection.m_hVtxDeltaR = new TH1F((histPrefix + "VtxDeltaR").c_str(), "", 40000, -100., 1900.);
+        eventHistogramCollection.m_hVtxDeltaR->GetXaxis()->SetRange(-0.1, +5.);
+        eventHistogramCollection.m_hVtxDeltaR->GetXaxis()->SetTitle("Vertex #DeltaR [cm]");
+        eventHistogramCollection.m_hVtxDeltaR->GetYaxis()->SetTitle("nEvents");
+    }
 
     if (!eventHistogramCollection.m_nRecoNeutrinos)
+    {
         eventHistogramCollection.m_nRecoNeutrinos = new TH1F((histPrefix + "NRecoNeutrinos").c_str(), "", 11, -0.5, 10.5);
+        eventHistogramCollection.m_nRecoNeutrinos->GetXaxis()->SetTitle("nRecoNeutrinos");
+        eventHistogramCollection.m_nRecoNeutrinos->GetYaxis()->SetTitle("nEvents");
+    }
 
     eventHistogramCollection.m_hVtxDeltaX->Fill(eventResult.m_vertexOffset.m_x);
     eventHistogramCollection.m_hVtxDeltaY->Fill(eventResult.m_vertexOffset.m_y);
@@ -505,22 +569,54 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
     for (int n = 0; n < nHitBinEdges; ++n) hitsBinning[n] = std::pow(10., 1 + static_cast<float>(n + 2) / 10.);
 
     if (!primaryHistogramCollection.m_hHitsAll)
+    {
         primaryHistogramCollection.m_hHitsAll = new TH1F((histPrefix + "HitsAll").c_str(), "", nHitBins, hitsBinning);
+        primaryHistogramCollection.m_hHitsAll->GetXaxis()->SetRange(1., +6000);
+        primaryHistogramCollection.m_hHitsAll->GetXaxis()->SetTitle("nTrueHits");
+        primaryHistogramCollection.m_hHitsAll->GetYaxis()->SetTitle("nEvents");
+    }
 
     if (!primaryHistogramCollection.m_hHitsEfficiency)
+    {
         primaryHistogramCollection.m_hHitsEfficiency = new TH1F((histPrefix + "HitsEfficiency").c_str(), "", nHitBins, hitsBinning);
+        primaryHistogramCollection.m_hHitsEfficiency->GetXaxis()->SetRange(1., +6000);
+        primaryHistogramCollection.m_hHitsEfficiency->GetXaxis()->SetTitle("nTrueHits");
+        primaryHistogramCollection.m_hHitsEfficiency->GetYaxis()->SetRange(0., +1.01);
+        primaryHistogramCollection.m_hHitsEfficiency->GetYaxis()->SetTitle("Efficiency");
+    }
 
     if (!primaryHistogramCollection.m_hAngleAll)
+    {
         primaryHistogramCollection.m_hAngleAll = new TH1F((histPrefix + "AngleAll").c_str(), "", 64, -M_PI, M_PI);
+        primaryHistogramCollection.m_hAngleAll->GetXaxis()->SetRange(0., +3.2);
+        primaryHistogramCollection.m_hAngleAll->GetXaxis()->SetTitle("#theta_{z}");
+        primaryHistogramCollection.m_hAngleAll->GetYaxis()->SetTitle("nEvents");
+    }
 
     if (!primaryHistogramCollection.m_hAngleEfficiency)
+    {
         primaryHistogramCollection.m_hAngleEfficiency = new TH1F((histPrefix + "AngleEfficiency").c_str(), "", 64, -M_PI, M_PI);
+        primaryHistogramCollection.m_hAngleEfficiency->GetXaxis()->SetRange(0., +3.2);
+        primaryHistogramCollection.m_hAngleEfficiency->GetXaxis()->SetTitle("#theta_{z}");
+        primaryHistogramCollection.m_hAngleEfficiency->GetYaxis()->SetRange(0., +1.01);
+        primaryHistogramCollection.m_hAngleEfficiency->GetYaxis()->SetTitle("Efficiency");
+    }
 
     if (!primaryHistogramCollection.m_hCompleteness)
+    {
         primaryHistogramCollection.m_hCompleteness = new TH1F((histPrefix + "Completeness").c_str(), "", 51, -0.01, 1.01);
+        primaryHistogramCollection.m_hCompleteness->GetXaxis()->SetTitle("Completeness");
+        primaryHistogramCollection.m_hCompleteness->GetYaxis()->SetRange(0., +1.01);
+        primaryHistogramCollection.m_hCompleteness->GetYaxis()->SetTitle("Fraction of Particles");
+    }
 
     if (!primaryHistogramCollection.m_hPurity)
+    {
         primaryHistogramCollection.m_hPurity = new TH1F((histPrefix + "Purity").c_str(), "", 51, -0.01, 1.01);
+        primaryHistogramCollection.m_hPurity->GetXaxis()->SetTitle("Purity");
+        primaryHistogramCollection.m_hPurity->GetYaxis()->SetRange(0., +1.01);
+        primaryHistogramCollection.m_hPurity->GetYaxis()->SetTitle("Fraction of Particles");
+    }
 
     primaryHistogramCollection.m_hHitsAll->Fill(primaryResult.m_nTrueHits);
     primaryHistogramCollection.m_hAngleAll->Fill(primaryResult.m_trueAngle);
