@@ -134,9 +134,12 @@ public:
     EventResult();
 
     // ATTN Put items to count on a per-event basis here
+    int                 m_fileIdentifier;       ///< The file identifier
+    int                 m_eventNumber;          ///< The event number
+    int                 m_mcNeutrinoNuance;     ///< The mc neutrino nuance code (interaction type details)
+    int                 m_nRecoNeutrinos;       ///< The number of reconstructed neutrinos
     PrimaryResultMap    m_primaryResultMap;     ///< The primary result map
     SimpleThreeVector   m_vertexOffset;         ///< The vertex offset
-    int                 m_nRecoNeutrinos;       ///< The number of reconstructed neutrinos
 };
 
 typedef std::vector<EventResult> EventResultList; // ATTN Not terribly efficient, but that's not the main aim here
@@ -206,10 +209,13 @@ typedef std::map<InteractionType, PrimaryHistogramMap> InteractionPrimaryHistogr
  *  @param  correctId whether to demand that pfos are correctly flagged as tracks or showers
  *  @param  applyFiducialCut whether to apply fiducial volume cut to true neutrino vertex position
  *  @param  histPrefix histogram name prefix
+ *  @param  outputFileName file name to which to write output ascii tables, etc.
+ *  @param  correctEventFileName file name to which to write list of correct events
  */
 void Validation(const std::string &inputFiles, const bool shouldDisplayEvents = true, const bool shouldDisplayMatchedEvents = true,
     const int skipEvents = 0, const int nEventsToProcess = std::numeric_limits<int>::max(), const int primaryMinHits = 0, const int minMatchedHits = 0,
-    const bool histogramOutput = false, const bool correctId = false, const bool applyFiducialCut = false, const std::string histPrefix = "");
+    const bool histogramOutput = false, const bool correctId = false, const bool applyFiducialCut = false, const std::string histPrefix = "",
+    const std::string outputFileName = "", const std::string correctEventFileName = "");
 
 /**
  *  @brief  Get the event interaction type
@@ -273,6 +279,15 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
     InteractionEventResultMap &interactionEventResultMap);
 
 /**
+ *  @brief  Whether a simple mc event passes a fiducial cut, applied to the mc neutrino vertex
+ * 
+ *  @param  simpleMCEvent the simple mc event
+ * 
+ *  @return boolean
+ */
+bool PassFiducialCut(const SimpleMCEvent &simpleMCEvent);
+
+/**
  *  @brief  Work out which of the primary particles (expected for a given interaction types) corresponds to the provided priamry id
  *          ATTN: Relies on fact that primary list is sorted by number of true hits
  * 
@@ -299,17 +314,22 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
  *  @param  primaryMinHits the min number of hits in order to consider a primary
  *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
  *  @param  interactionCountingMap the interaction counting map
+ *  @param  file name to which to write output ascii tables, etc.
  */
-void DisplayInteractionCountingMap(const int primaryMinHits, const int minMatchedHits, const InteractionCountingMap &interactionCountingMap);
+void DisplayInteractionCountingMap(const int primaryMinHits, const int minMatchedHits, const InteractionCountingMap &interactionCountingMap,
+    const std::string &outputFileName);
 
 /**
  *  @brief  Opportunity to fill histograms, perform post-processing of information collected in main loop over ntuple, etc.
  * 
  *  @param  interactionEventResultMap the interaction event result map
+ *  @param  outputFileName file name to which to write output ascii tables, etc.
+ *  @param  correctEventFileName file name to which to write list of correct events
  *  @param  histogramOutput whether to produce output histograms
  *  @param  prefix histogram name prefix
  */
-void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap, const bool histogramOutput, const std::string &prefix);
+void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap, const std::string &outputFileName,
+    const std::string &correctEventFileName, const bool histogramOutput, const std::string &prefix);
 
 /**
  *  @brief  Fill histograms in the provided event histogram collection, using information in the provided event offset
@@ -372,8 +392,11 @@ PrimaryResult::PrimaryResult() :
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 EventResult::EventResult() :
-    m_vertexOffset(-999.f, -999.f, -999.f),
-    m_nRecoNeutrinos(0)
+    m_fileIdentifier(-1),
+    m_eventNumber(-1),
+    m_mcNeutrinoNuance(-1),
+    m_nRecoNeutrinos(0),
+    m_vertexOffset(-999.f, -999.f, -999.f)
 {
 }
 
