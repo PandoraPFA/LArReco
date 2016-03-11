@@ -517,7 +517,7 @@ void FillEventHistogramCollection(const std::string &histPrefix, const EventResu
     if (!eventHistogramCollection.m_hVtxDeltaX)
     {
         eventHistogramCollection.m_hVtxDeltaX = new TH1F((histPrefix + "VtxDeltaX").c_str(), "", 40000, -2000., 2000.);
-        eventHistogramCollection.m_hVtxDeltaX->GetXaxis()->SetRange(-5., +5.);
+        eventHistogramCollection.m_hVtxDeltaX->GetXaxis()->SetRangeUser(-5., +5.);
         eventHistogramCollection.m_hVtxDeltaX->GetXaxis()->SetTitle("Vertex #DeltaX [cm]");
         eventHistogramCollection.m_hVtxDeltaX->GetYaxis()->SetTitle("nEvents");
     }
@@ -525,7 +525,7 @@ void FillEventHistogramCollection(const std::string &histPrefix, const EventResu
     if (!eventHistogramCollection.m_hVtxDeltaY)
     {
         eventHistogramCollection.m_hVtxDeltaY = new TH1F((histPrefix + "VtxDeltaY").c_str(), "", 40000, -2000., 2000.);
-        eventHistogramCollection.m_hVtxDeltaY->GetXaxis()->SetRange(-5., +5.);
+        eventHistogramCollection.m_hVtxDeltaY->GetXaxis()->SetRangeUser(-5., +5.);
         eventHistogramCollection.m_hVtxDeltaY->GetXaxis()->SetTitle("Vertex #DeltaY [cm]");
         eventHistogramCollection.m_hVtxDeltaY->GetYaxis()->SetTitle("nEvents");
     }
@@ -533,7 +533,7 @@ void FillEventHistogramCollection(const std::string &histPrefix, const EventResu
     if (!eventHistogramCollection.m_hVtxDeltaZ)
     {
         eventHistogramCollection.m_hVtxDeltaZ = new TH1F((histPrefix + "VtxDeltaZ").c_str(), "", 40000, -2000., 2000.);
-        eventHistogramCollection.m_hVtxDeltaZ->GetXaxis()->SetRange(-5., +5.);
+        eventHistogramCollection.m_hVtxDeltaZ->GetXaxis()->SetRangeUser(-5., +5.);
         eventHistogramCollection.m_hVtxDeltaZ->GetXaxis()->SetTitle("Vertex #DeltaZ [cm]");
         eventHistogramCollection.m_hVtxDeltaZ->GetYaxis()->SetTitle("nEvents");
     }
@@ -541,7 +541,7 @@ void FillEventHistogramCollection(const std::string &histPrefix, const EventResu
     if (!eventHistogramCollection.m_hVtxDeltaR)
     {
         eventHistogramCollection.m_hVtxDeltaR = new TH1F((histPrefix + "VtxDeltaR").c_str(), "", 40000, -100., 1900.);
-        eventHistogramCollection.m_hVtxDeltaR->GetXaxis()->SetRange(-0.1, +5.);
+        eventHistogramCollection.m_hVtxDeltaR->GetXaxis()->SetRangeUser(0., +5.);
         eventHistogramCollection.m_hVtxDeltaR->GetXaxis()->SetTitle("Vertex #DeltaR [cm]");
         eventHistogramCollection.m_hVtxDeltaR->GetYaxis()->SetTitle("nEvents");
     }
@@ -571,7 +571,7 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
     if (!primaryHistogramCollection.m_hHitsAll)
     {
         primaryHistogramCollection.m_hHitsAll = new TH1F((histPrefix + "HitsAll").c_str(), "", nHitBins, hitsBinning);
-        primaryHistogramCollection.m_hHitsAll->GetXaxis()->SetRange(1., +6000);
+        primaryHistogramCollection.m_hHitsAll->GetXaxis()->SetRangeUser(1., +6000);
         primaryHistogramCollection.m_hHitsAll->GetXaxis()->SetTitle("nTrueHits");
         primaryHistogramCollection.m_hHitsAll->GetYaxis()->SetTitle("nEvents");
     }
@@ -579,16 +579,16 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
     if (!primaryHistogramCollection.m_hHitsEfficiency)
     {
         primaryHistogramCollection.m_hHitsEfficiency = new TH1F((histPrefix + "HitsEfficiency").c_str(), "", nHitBins, hitsBinning);
-        primaryHistogramCollection.m_hHitsEfficiency->GetXaxis()->SetRange(1., +6000);
+        primaryHistogramCollection.m_hHitsEfficiency->GetXaxis()->SetRangeUser(1., +6000);
         primaryHistogramCollection.m_hHitsEfficiency->GetXaxis()->SetTitle("nTrueHits");
-        primaryHistogramCollection.m_hHitsEfficiency->GetYaxis()->SetRange(0., +1.01);
+        primaryHistogramCollection.m_hHitsEfficiency->GetYaxis()->SetRangeUser(0., +1.01);
         primaryHistogramCollection.m_hHitsEfficiency->GetYaxis()->SetTitle("Efficiency");
     }
 
     if (!primaryHistogramCollection.m_hAngleAll)
     {
         primaryHistogramCollection.m_hAngleAll = new TH1F((histPrefix + "AngleAll").c_str(), "", 64, -M_PI, M_PI);
-        primaryHistogramCollection.m_hAngleAll->GetXaxis()->SetRange(0., +3.2);
+        primaryHistogramCollection.m_hAngleAll->GetXaxis()->SetRangeUser(0., +3.141);
         primaryHistogramCollection.m_hAngleAll->GetXaxis()->SetTitle("#theta_{z}");
         primaryHistogramCollection.m_hAngleAll->GetYaxis()->SetTitle("nEvents");
     }
@@ -596,9 +596,9 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
     if (!primaryHistogramCollection.m_hAngleEfficiency)
     {
         primaryHistogramCollection.m_hAngleEfficiency = new TH1F((histPrefix + "AngleEfficiency").c_str(), "", 64, -M_PI, M_PI);
-        primaryHistogramCollection.m_hAngleEfficiency->GetXaxis()->SetRange(0., +3.2);
+        primaryHistogramCollection.m_hAngleEfficiency->GetXaxis()->SetRangeUser(0., +3.141);
         primaryHistogramCollection.m_hAngleEfficiency->GetXaxis()->SetTitle("#theta_{z}");
-        primaryHistogramCollection.m_hAngleEfficiency->GetYaxis()->SetRange(0., +1.01);
+        primaryHistogramCollection.m_hAngleEfficiency->GetYaxis()->SetRangeUser(0., +1.01);
         primaryHistogramCollection.m_hAngleEfficiency->GetYaxis()->SetTitle("Efficiency");
     }
 
@@ -606,7 +606,7 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
     {
         primaryHistogramCollection.m_hCompleteness = new TH1F((histPrefix + "Completeness").c_str(), "", 51, -0.01, 1.01);
         primaryHistogramCollection.m_hCompleteness->GetXaxis()->SetTitle("Completeness");
-        primaryHistogramCollection.m_hCompleteness->GetYaxis()->SetRange(0., +1.01);
+        primaryHistogramCollection.m_hCompleteness->GetYaxis()->SetRangeUser(0., +1.01);
         primaryHistogramCollection.m_hCompleteness->GetYaxis()->SetTitle("Fraction of Particles");
     }
 
@@ -614,7 +614,7 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
     {
         primaryHistogramCollection.m_hPurity = new TH1F((histPrefix + "Purity").c_str(), "", 51, -0.01, 1.01);
         primaryHistogramCollection.m_hPurity->GetXaxis()->SetTitle("Purity");
-        primaryHistogramCollection.m_hPurity->GetYaxis()->SetRange(0., +1.01);
+        primaryHistogramCollection.m_hPurity->GetYaxis()->SetRangeUser(0., +1.01);
         primaryHistogramCollection.m_hPurity->GetYaxis()->SetTitle("Fraction of Particles");
     }
 
