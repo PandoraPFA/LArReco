@@ -12,7 +12,9 @@
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "EventReading">
          <EventFileName>/r05/dune/mcproduction_v04_06_02/prodgenie_bnb_nu_cosmic_uboone/uBooNE_Events_100_0_reco1.pndr</EventFileName>
+         <GeometryFileName>/r05/dune/mcproduction_v05_04_00/geometry_uboone/Geometry_MicroBooNE.pndr</GeometryFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
+         <ShouldReadGeometry>false</ShouldReadGeometry>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
@@ -36,6 +38,7 @@
         <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
         <MCParticleListNames>MCParticleList3D</MCParticleListNames>
         <SuppressMCParticles>22:0.01 2112:1.0</SuppressMCParticles>
+        <ShowDetector>true</ShowDetector>
     </algorithm>
 
     <!-- 2D cosmic ray reconstruction, U View -->
