@@ -156,6 +156,12 @@
         <InputClusterListNameW>ClustersW</InputClusterListNameW>
         <OutputPfoListName>Particles3D</OutputPfoListName>
     </algorithm>
+    <algorithm type = "LArCosmicRayTrackRecovery"> 
+        <InputClusterListNameU>ClustersU</InputClusterListNameU>
+        <InputClusterListNameV>ClustersV</InputClusterListNameV>
+        <InputClusterListNameW>ClustersW</InputClusterListNameW>
+        <OutputPfoListName>Particles3D</OutputPfoListName>
+    </algorithm>
 
     <!-- 2D cosmic ray shower clusters -->
     <algorithm type = "LArListDissolution">
