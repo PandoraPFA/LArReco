@@ -57,6 +57,7 @@
             <algorithm type = "LArTransverseAssociation"/>
             <algorithm type = "LArLongitudinalExtension"/>
             <algorithm type = "LArTransverseExtension"/>
+            <algorithm type = "LArCrossGapsAssociation"/>
             <algorithm type = "LArOvershootSplitting"/>
             <algorithm type = "LArBranchSplitting"/>
             <algorithm type = "LArKinkSplitting"/>
