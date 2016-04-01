@@ -260,6 +260,8 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
         primaryResult.m_nTrueHits = simpleMCPrimary.m_nMCHitsTotal;
 
         const float pTot(std::sqrt(simpleMCPrimary.m_momentum.m_x * simpleMCPrimary.m_momentum.m_x + simpleMCPrimary.m_momentum.m_y * simpleMCPrimary.m_momentum.m_y + simpleMCPrimary.m_momentum.m_z * simpleMCPrimary.m_momentum.m_z));
+        primaryResult.m_trueMomentum = pTot;
+
         primaryResult.m_trueAngle = std::acos(simpleMCPrimary.m_momentum.m_z / pTot);
         primaryResult.m_nBestMatchedHits = nBestMatchedHits;
         primaryResult.m_nBestRecoHits = nBestRecoHits;
@@ -585,6 +587,26 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
         primaryHistogramCollection.m_hHitsEfficiency->GetYaxis()->SetTitle("Efficiency");
     }
 
+    const int nMomentumBins(20); const int nMomentumBinEdges(nMomentumBins + 1);
+    float momentumBinning[nMomentumBinEdges] = {0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1., 1.1, 1.2, 1.4, 1.6, 2.0, 2.4, 2.8, 3.4, 4., 5.};
+
+    if (!primaryHistogramCollection.m_hMomentumAll)
+    {
+        primaryHistogramCollection.m_hMomentumAll = new TH1F((histPrefix + "MomentumAll").c_str(), "", nMomentumBins, momentumBinning);
+        primaryHistogramCollection.m_hMomentumAll->GetXaxis()->SetRangeUser(0., +5.5);
+        primaryHistogramCollection.m_hMomentumAll->GetXaxis()->SetTitle("True Momentum [GeV]");
+        primaryHistogramCollection.m_hMomentumAll->GetYaxis()->SetTitle("nEvents");
+    }
+
+    if (!primaryHistogramCollection.m_hMomentumEfficiency)
+    {
+        primaryHistogramCollection.m_hMomentumEfficiency = new TH1F((histPrefix + "MomentumEfficiency").c_str(), "", nMomentumBins, momentumBinning);
+        primaryHistogramCollection.m_hMomentumEfficiency->GetXaxis()->SetRangeUser(1., +5.5);
+        primaryHistogramCollection.m_hMomentumEfficiency->GetXaxis()->SetTitle("True Momentum [GeV]");
+        primaryHistogramCollection.m_hMomentumEfficiency->GetYaxis()->SetRangeUser(0., +1.01);
+        primaryHistogramCollection.m_hMomentumEfficiency->GetYaxis()->SetTitle("Efficiency");
+    }
+
     if (!primaryHistogramCollection.m_hAngleAll)
     {
         primaryHistogramCollection.m_hAngleAll = new TH1F((histPrefix + "AngleAll").c_str(), "", 64, -M_PI, M_PI);
@@ -619,11 +641,13 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
     }
 
     primaryHistogramCollection.m_hHitsAll->Fill(primaryResult.m_nTrueHits);
+    primaryHistogramCollection.m_hMomentumAll->Fill(primaryResult.m_trueMomentum);
     primaryHistogramCollection.m_hAngleAll->Fill(primaryResult.m_trueAngle);
 
     if (primaryResult.m_nPfoMatches > 0)
     {
         primaryHistogramCollection.m_hHitsEfficiency->Fill(primaryResult.m_nTrueHits);
+        primaryHistogramCollection.m_hMomentumEfficiency->Fill(primaryResult.m_trueMomentum);
         primaryHistogramCollection.m_hAngleEfficiency->Fill(primaryResult.m_trueAngle);
         primaryHistogramCollection.m_hCompleteness->Fill(primaryResult.m_bestCompleteness);
         primaryHistogramCollection.m_hPurity->Fill(primaryResult.m_bestMatchPurity);
@@ -652,6 +676,16 @@ void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interacti
                 const float error = (all > found) ? std::sqrt(efficiency * (1. - efficiency) / all) : 0.f;
                 primaryHistogramCollection.m_hHitsEfficiency->SetBinContent(n + 1, efficiency);
                 primaryHistogramCollection.m_hHitsEfficiency->SetBinError(n + 1, error);
+            }
+
+            for (int n = 0; n < primaryHistogramCollection.m_hMomentumEfficiency->GetXaxis()->GetNbins(); ++n)
+            {
+                const float found = primaryHistogramCollection.m_hMomentumEfficiency->GetBinContent(n + 1);
+                const float all = primaryHistogramCollection.m_hMomentumAll->GetBinContent(n + 1);
+                const float efficiency = (all > 0.f) ? found / all : 0.f;
+                const float error = (all > found) ? std::sqrt(efficiency * (1. - efficiency) / all) : 0.f;
+                primaryHistogramCollection.m_hMomentumEfficiency->SetBinContent(n + 1, efficiency);
+                primaryHistogramCollection.m_hMomentumEfficiency->SetBinError(n + 1, error);
             }
 
             for (int n = 0; n < primaryHistogramCollection.m_hAngleEfficiency->GetXaxis()->GetNbins(); ++n)

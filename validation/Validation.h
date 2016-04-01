@@ -111,6 +111,7 @@ public:
 
     unsigned int        m_nPfoMatches;          ///< The total number of pfo matches for a given primary
     unsigned int        m_nTrueHits;            ///< The number of true hits
+    float               m_trueMomentum;         ///< The true momentum
     float               m_trueAngle;            ///< The true angle wrt the z axis
     unsigned int        m_nBestMatchedHits;     ///< The best number of matched hits
     unsigned int        m_nBestRecoHits;        ///< The number of hits in the best matched pfo
@@ -184,6 +185,8 @@ public:
 
     TH1F *m_hHitsAll;           ///<
     TH1F *m_hHitsEfficiency;    ///<
+    TH1F *m_hMomentumAll;       ///<
+    TH1F *m_hMomentumEfficiency;///<
     TH1F *m_hAngleAll;          ///<
     TH1F *m_hAngleEfficiency;   ///<
     TH1F *m_hCompleteness;      ///<
@@ -406,6 +409,8 @@ EventResult::EventResult() :
 PrimaryHistogramCollection::PrimaryHistogramCollection() :
     m_hHitsAll(NULL),
     m_hHitsEfficiency(NULL),
+    m_hMomentumAll(NULL),
+    m_hMomentumEfficiency(NULL),
     m_hAngleAll(NULL),
     m_hAngleEfficiency(NULL),
     m_hCompleteness(NULL),
