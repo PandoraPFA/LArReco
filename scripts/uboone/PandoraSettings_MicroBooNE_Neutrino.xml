@@ -11,10 +11,10 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-         <EventFileName>/r05/dune/mcproduction_v04_26_04_04/prodgenie_bnb_nu_uboone_interaction_type/Pandora_Events_1004.pndr</EventFileName>
+         <EventFileName>/r05/dune/mcproduction_v05_04_00/prodgenie_bnb_nu_uboone_100k/uBooNE_Events_100_0_reco1.pndr</EventFileName>
          <GeometryFileName>/r05/dune/mcproduction_v05_04_00/geometry_uboone/Geometry_MicroBooNE.pndr</GeometryFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
-         <ShouldReadGeometry>false</ShouldReadGeometry>
+         <ShouldReadGeometry>true</ShouldReadGeometry>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
