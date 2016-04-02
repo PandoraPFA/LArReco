@@ -67,9 +67,13 @@
             <algorithm type = "LArLongitudinalExtension"/>
             <algorithm type = "LArTransverseExtension"/>
             <algorithm type = "LArCrossGapsAssociation"/>
+            <algorithm type = "LArCrossGapsExtension"/>
             <algorithm type = "LArOvershootSplitting"/>
             <algorithm type = "LArBranchSplitting"/>
             <algorithm type = "LArKinkSplitting"/>
+            <algorithm type = "LArTrackConsolidation">
+                <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
+            </algorithm>
         </TwoDAlgorithms>
 
         <ThreeDAlgorithms>
