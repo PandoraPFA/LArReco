@@ -56,6 +56,7 @@
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArCrossGapsAssociation"/>
+    <algorithm type = "LArCrossGapsExtension"/>
     <algorithm type = "LArBranchSplitting"><CosmicMode>true</CosmicMode></algorithm>
     <algorithm type = "LArDeltaRaySplitting"><CosmicMode>true</CosmicMode></algorithm>
     <algorithm type = "LArCrossedTrackSplitting"/>
@@ -81,6 +82,7 @@
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArCrossGapsAssociation"/>
+    <algorithm type = "LArCrossGapsExtension"/>
     <algorithm type = "LArBranchSplitting"><CosmicMode>true</CosmicMode></algorithm>
     <algorithm type = "LArDeltaRaySplitting"><CosmicMode>true</CosmicMode></algorithm>
     <algorithm type = "LArCrossedTrackSplitting"/>
@@ -106,6 +108,7 @@
     <algorithm type = "LArTransverseExtension"/>
     <algorithm type = "LArLongitudinalExtension"/>
     <algorithm type = "LArCrossGapsAssociation"/>
+    <algorithm type = "LArCrossGapsExtension"/>
     <algorithm type = "LArBranchSplitting"><CosmicMode>true</CosmicMode></algorithm>
     <algorithm type = "LArDeltaRaySplitting"><CosmicMode>true</CosmicMode></algorithm>
     <algorithm type = "LArCrossedTrackSplitting"/>
