@@ -14,8 +14,8 @@ namespace lar_pandora
 {
 
 DUNE35tTransformationPlugin::DUNE35tTransformationPlugin(const bool isForward) :
-    lar_content::LArRotationalTransformationPlugin( (isForward ? M_PI * (45.707f / 180.f) : -M_PI * (45.707f/ 180.f)),
-        (isForward ? M_PI * (44.275f/ 180.f) : -M_PI * (44.275f / 180.f)), 1.33f)
+    lar_content::LArRotationalTransformationPlugin( (isForward ? M_PI * (45.707 / 180.) : -M_PI * (45.707 / 180.)),
+        (isForward ? M_PI * (44.275 / 180.) : -M_PI * (44.275 / 180.)), 1.33)
 {
 }
 
