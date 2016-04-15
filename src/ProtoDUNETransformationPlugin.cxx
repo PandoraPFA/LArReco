@@ -14,8 +14,8 @@ namespace lar_pandora
 {
 
 ProtoDUNETransformationPlugin::ProtoDUNETransformationPlugin(const bool isForward) :
-    lar_content::LArRotationalTransformationPlugin( (isForward ? M_PI * (35.71f / 180.f) : -M_PI * (35.71f/ 180.f)),
-        (isForward ? M_PI * (35.71f/ 180.f) : -M_PI * (35.71f / 180.f)), 1.33f)
+    lar_content::LArRotationalTransformationPlugin( (isForward ? M_PI * (35.71 / 180.) : -M_PI * (35.71 / 180.)),
+        (isForward ? M_PI * (35.71 / 180.) : -M_PI * (35.71 / 180.)), 1.33)
 {
 }
 
