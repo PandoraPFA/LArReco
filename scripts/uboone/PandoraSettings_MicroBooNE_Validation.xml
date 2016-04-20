@@ -12,7 +12,9 @@
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
          <EventFileName>INPUT_FILE_NAME</EventFileName>
+         <GeometryFileName>GEOMETRY_FILE_NAME</GeometryFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
+         <ShouldReadGeometry>READ_GEOMETRY</ShouldReadGeometry>
          <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
