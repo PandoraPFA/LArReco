@@ -342,7 +342,7 @@ ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryLis
 void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &pfoMatchingMap, const int primaryMinHits)
 {
     std::cout << "---PROCESSED-MATCHING-OUTPUT--------------------------------------------------------------------" << std::endl;
-    bool isCorrect(true);
+    bool isCorrect(true), isCalculable(false);
 
     for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
     {
@@ -356,6 +356,7 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
                   << ", " << simpleMCPrimary.m_nMCHitsV << ", " << simpleMCPrimary.m_nMCHitsW << ")" << std::endl;
 
         unsigned int nMatches(0);
+        isCalculable = true;
 
         for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
         {
@@ -381,7 +382,7 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
             isCorrect = false;
     }
 
-    std::cout << std::endl << "Is correct? " << isCorrect << std::endl;
+    std::cout << std::endl << "Is correct? " << (isCorrect && isCalculable) << std::endl;
     std::cout << "------------------------------------------------------------------------------------------------" << std::endl;
 }
 
