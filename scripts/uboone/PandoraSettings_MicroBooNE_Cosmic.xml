@@ -10,8 +10,8 @@
     <MuonPlugin>LArMuonId</MuonPlugin>
 
     <!-- ALGORITHM SETTINGS -->
-    <algorithm type = "EventReading">
-         <EventFileName>/r05/dune/mcproduction_v04_06_02/prodgenie_bnb_nu_cosmic_uboone/uBooNE_Events_100_0_reco1.pndr</EventFileName>
+    <algorithm type = "LArEventReading">
+         <EventFileName>/r05/dune/mcproduction_v05_08_00/reco2_bnb_cosmic1_10k/Pandora_Events_Cosmic1_1.pndr</EventFileName>
          <GeometryFileName>/r05/dune/mcproduction_v05_04_00/geometry_uboone/Geometry_MicroBooNE.pndr</GeometryFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <ShouldReadGeometry>false</ShouldReadGeometry>
@@ -359,8 +359,7 @@
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>MCParticleList3D</MCParticleListName>
         <PfoListName>Particles3D</PfoListName>
-        <PrimaryPfosOnly>true</PrimaryPfosOnly>
-        <CollapseToPrimaryPfos>true</CollapseToPrimaryPfos>
+        <NeutrinoInducedOnly>false</NeutrinoInducedOnly>
         <PrintAllToScreen>true</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <VisualizeMatching>false</VisualizeMatching>
