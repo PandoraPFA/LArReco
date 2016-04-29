@@ -11,7 +11,7 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-         <EventFileName>/r05/dune/mcproduction_v05_04_00/prodgenie_bnb_nu_uboone_100k/uBooNE_Events_100_0_reco1.pndr</EventFileName>
+         <EventFileName>/r05/dune/mcproduction_v05_08_00/reco2_bnb_nu_10k/Pandora_Events_1.pndr</EventFileName>
          <GeometryFileName>/r05/dune/mcproduction_v05_04_00/geometry_uboone/Geometry_MicroBooNE.pndr</GeometryFileName>
          <ShouldReadEvents>true</ShouldReadEvents>
          <ShouldReadGeometry>true</ShouldReadGeometry>
@@ -312,8 +312,7 @@
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>MCParticleList3D</MCParticleListName>
         <PfoListName>AllNeutrinoParticles3D</PfoListName>
-        <PrimaryPfosOnly>true</PrimaryPfosOnly>
-        <CollapseToPrimaryPfos>true</CollapseToPrimaryPfos>
+        <NeutrinoInducedOnly>true</NeutrinoInducedOnly>
         <PrintAllToScreen>true</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <VisualizeMatching>false</VisualizeMatching>
