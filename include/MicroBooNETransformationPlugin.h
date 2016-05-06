@@ -8,7 +8,7 @@
 #ifndef MICRO_BOONE_TRANSFORMATION_PLUGIN_H
 #define MICRO_BOONE_TRANSFORMATION_PLUGIN_H 1
 
-#include "larpandoracontent/LArContent/LArPlugins/LArRotationalTransformationPlugin.h"
+#include "larpandoracontent/LArPlugins/LArRotationalTransformationPlugin.h"
 
 namespace lar_pandora
 {

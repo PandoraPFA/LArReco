@@ -8,7 +8,7 @@
 #ifndef DUNE_4APA_PSEUDO_LAYER_PLUGIN_H
 #define DUNE_4APA_PSEUDO_LAYER_PLUGIN_H 1
 
-#include "larpandoracontent/LArContent/LArPlugins/LArPseudoLayerPlugin.h"
+#include "larpandoracontent/LArPlugins/LArPseudoLayerPlugin.h"
 
 namespace lar_pandora
 {
