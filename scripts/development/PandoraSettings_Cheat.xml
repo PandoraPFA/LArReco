@@ -11,9 +11,11 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-         <EventFileName>/r05/dune/mcproduction_v04_26_04_04/prodgenie_bnb_nu_uboone_interaction_type/Pandora_Events_1004.pndr</EventFileName>
-         <ShouldReadEvents>true</ShouldReadEvents>
-         <SkipToEvent>0</SkipToEvent>
+        <EventFileName>/r05/dune/mcproduction_v05_08_00/reco2_bnb_nu_cosmic1/Pandora_Events_Cosmic1_0_0.pndr</EventFileName>
+        <GeometryFileName>/r05/dune/mcproduction_v05_08_00/geometry_uboone/Geometry_MicroBooNE.pndr</GeometryFileName>
+        <ShouldReadEvents>true</ShouldReadEvents>
+        <ShouldReadGeometry>true</ShouldReadGeometry>
+        <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
     <!-- COSMIC RAY RECONSTRUCTION -->
@@ -29,6 +31,8 @@
         <OutputMCParticleListNameW>CRMCParticleListW</OutputMCParticleListNameW>
         <OutputMCParticleListName3D>CRMCParticleList3D</OutputMCParticleListName3D>
         <CurrentMCParticleListReplacement>CRMCParticleList3D</CurrentMCParticleListReplacement>
+        <SelectCosmics>true</SelectCosmics>
+        <SelectNeutrinos>false</SelectNeutrinos>
         <MipEquivalentCut>0.</MipEquivalentCut>
     </algorithm>
 
@@ -36,6 +40,7 @@
         <CaloHitListNames>CRCaloHitListW CRCaloHitListU CRCaloHitListV</CaloHitListNames>
         <MCParticleListNames>CRMCParticleList3D</MCParticleListNames>
         <SuppressMCParticles>22:0.01 2112:1.0</SuppressMCParticles>
+        <ShowDetector>true</ShowDetector>
     </algorithm>
 
     <!-- 2D cosmic ray reconstruction, U View -->
@@ -98,7 +103,7 @@
     <!-- 3D cosmic ray identification and removal -->
     <algorithm type = "LArCheatingCosmicRayIdentification">
         <InputPfoListName>CRParticles3D</InputPfoListName>
-        <OutputPfoListName>OutputParticles3D</OutputPfoListName>
+        <OutputPfoListName>CRParentParticles3D</OutputPfoListName>
     </algorithm>
     <algorithm type = "LArListDissolution">
         <PfoListNames>CRParticles3D</PfoListNames>
@@ -108,7 +113,7 @@
 
     <!-- 3D cosmic-ray hit creation -->
     <algorithm type = "LArThreeDHitCreation">
-        <InputPfoListName>OutputParticles3D</InputPfoListName>
+        <InputPfoListName>CRParentParticles3D</InputPfoListName>
         <OutputCaloHitListName>CRCaloHitList3D</OutputCaloHitListName>
         <OutputClusterListName>CRClusters3D</OutputClusterListName>
         <HitCreationTools>
@@ -139,7 +144,16 @@
         <OutputMCParticleListNameW>NMCParticleListW</OutputMCParticleListNameW>
         <OutputMCParticleListName3D>NMCParticleList3D</OutputMCParticleListName3D>
         <CurrentMCParticleListReplacement>NMCParticleList3D</CurrentMCParticleListReplacement>
+        <SelectCosmics>false</SelectCosmics>
+        <SelectNeutrinos>true</SelectNeutrinos>
         <MipEquivalentCut>0.</MipEquivalentCut>
+    </algorithm>
+
+    <algorithm type = "LArVisualMonitoring">
+        <CaloHitListNames>NCaloHitListW NCaloHitListU NCaloHitListV</CaloHitListNames>
+        <MCParticleListNames>NMCParticleList3D</MCParticleListNames>
+        <SuppressMCParticles>22:0.01 2112:1.0</SuppressMCParticles>
+        <ShowDetector>true</ShowDetector>
     </algorithm>
 
     <!-- 2D neutrino-induced event reconstruction, U View -->
@@ -229,24 +243,28 @@
         <OutputVertexListName>NDaughterVertices3D</OutputVertexListName>
     </algorithm>
 
-    <!-- FINAL PARTICLE OUTPUT -->
-    <algorithm type = "LArListMerging">
-        <SourcePfoListNames>CRParticles3D NParentParticles3D</SourcePfoListNames>
-        <TargetPfoListNames>OutputParticles3D OutputParticles3D</TargetPfoListNames>
-    </algorithm>
-
-    <algorithm type = "LArListChanging">
-        <PfoListName>OutputParticles3D</PfoListName>
-    </algorithm>
-
     <!-- VALIDATION -->
     <algorithm type = "LArEventValidation">
         <CaloHitListName>CRCaloHitList2D</CaloHitListName>
         <MCParticleListName>CRMCParticleList3D</MCParticleListName>
-        <PfoListName>OutputParticles3D</PfoListName>
-        <PrimaryPfosOnly>true</PrimaryPfosOnly>
-        <CollapseToPrimaryPfos>true</CollapseToPrimaryPfos>
-        <PrintAllToScreen>true</PrintAllToScreen>
+        <PfoListName>CRParentParticles3D</PfoListName>
+        <NeutrinoInducedOnly>false</NeutrinoInducedOnly>
+        <PrintAllToScreen>false</PrintAllToScreen>
+        <PrintMatchingToScreen>true</PrintMatchingToScreen>
+        <VisualizeMatching>false</VisualizeMatching>
+        <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
+        <MatchingMinSharedHits>5</MatchingMinSharedHits>
+        <WriteToTree>false</WriteToTree>
+        <OutputTree>Validation</OutputTree>
+        <OutputFile>Validation.root</OutputFile>
+    </algorithm>
+
+    <algorithm type = "LArEventValidation">
+        <CaloHitListName>NCaloHitList2D</CaloHitListName>
+        <MCParticleListName>NMCParticleList3D</MCParticleListName>
+        <PfoListName>NParentParticles3D</PfoListName>
+        <NeutrinoInducedOnly>true</NeutrinoInducedOnly>
+        <PrintAllToScreen>false</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <VisualizeMatching>false</VisualizeMatching>
         <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
@@ -257,7 +275,7 @@
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
-        <PfoListNames>OutputParticles3D</PfoListNames>
+        <PfoListNames>CRParentParticles3D NParentParticles3D</PfoListNames>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
@@ -268,5 +286,15 @@
         <ClusterListNames>NClustersU NClustersV NClustersW</ClusterListNames>
         <CaloHitListNames>NCaloHitListU NCaloHitListV NCaloHitListW</CaloHitListNames>
         <ShowOnlyAvailable>true</ShowOnlyAvailable>
+    </algorithm>
+
+    <!-- FINAL PARTICLE OUTPUT -->
+    <algorithm type = "LArListMerging">
+        <SourcePfoListNames>CRParentParticles3D NParentParticles3D</SourcePfoListNames>
+        <TargetPfoListNames>OutputParticles3D OutputParticles3D</TargetPfoListNames>
+    </algorithm>
+
+    <algorithm type = "LArListChanging">
+        <PfoListName>OutputParticles3D</PfoListName>
     </algorithm>
 </pandora>
