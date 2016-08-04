@@ -267,7 +267,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
         primaryResult.m_nBestRecoHits = nBestRecoHits;
     }
 
-    if ((1 == simpleMCEvent.m_nRecoNeutrinos) && (1 == simpleMCEvent.m_nMCNeutrinos))
+    if ((0 < simpleMCEvent.m_nRecoNeutrinos) && (1 == simpleMCEvent.m_nMCNeutrinos))
         eventResult.m_vertexOffset = simpleMCEvent.m_recoNeutrinoVtx - simpleMCEvent.m_mcNeutrinoVtx;
 
     eventResult.m_nRecoNeutrinos = simpleMCEvent.m_nRecoNeutrinos;
@@ -556,10 +556,11 @@ void FillEventHistogramCollection(const std::string &histPrefix, const EventResu
         eventHistogramCollection.m_nRecoNeutrinos->GetYaxis()->SetTitle("nEvents");
     }
 
-    eventHistogramCollection.m_hVtxDeltaX->Fill(eventResult.m_vertexOffset.m_x);
+    const float xCorrection(4.95694e-01);
+    eventHistogramCollection.m_hVtxDeltaX->Fill(eventResult.m_vertexOffset.m_x - xCorrection);
     eventHistogramCollection.m_hVtxDeltaY->Fill(eventResult.m_vertexOffset.m_y);
     eventHistogramCollection.m_hVtxDeltaZ->Fill(eventResult.m_vertexOffset.m_z);
-    eventHistogramCollection.m_hVtxDeltaR->Fill(std::sqrt(eventResult.m_vertexOffset.m_x * eventResult.m_vertexOffset.m_x + eventResult.m_vertexOffset.m_y * eventResult.m_vertexOffset.m_y + eventResult.m_vertexOffset.m_z * eventResult.m_vertexOffset.m_z));
+    eventHistogramCollection.m_hVtxDeltaR->Fill(std::sqrt((eventResult.m_vertexOffset.m_x - xCorrection) * (eventResult.m_vertexOffset.m_x - xCorrection) + eventResult.m_vertexOffset.m_y * eventResult.m_vertexOffset.m_y + eventResult.m_vertexOffset.m_z * eventResult.m_vertexOffset.m_z));
     eventHistogramCollection.m_nRecoNeutrinos->Fill(eventResult.m_nRecoNeutrinos);
 }
 

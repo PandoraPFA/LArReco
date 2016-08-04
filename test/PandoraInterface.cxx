@@ -8,10 +8,10 @@
 
 #include "Api/PandoraApi.h"
 
-#include "LArContent.h"
+#include "larpandoracontent/LArContent.h"
 
-#include "LArHelpers/LArPfoHelper.h"
-#include "LArStitching/MultiPandoraApi.h"
+#include "larpandoracontent/LArHelpers/LArPfoHelper.h"
+#include "larpandoracontent/LArStitching/MultiPandoraApi.h"
 
 #include "PandoraInterface.h"
 

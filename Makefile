@@ -22,7 +22,7 @@ PROJECT_BINARY = $(PROJECT_DIR)/bin/PandoraInterface
 
 INCLUDES  = -I $(PROJECT_DIR)/include/
 INCLUDES += -I $(PANDORA_DIR)/PandoraSDK/include/
-INCLUDES += -I $(PANDORA_LARCONTENT_DIR)/include/
+INCLUDES += -I $(PANDORA_LARCONTENT_DIR)/
 ifdef MONITORING
     INCLUDES += -I $(shell root-config --incdir)
     INCLUDES += -I $(PANDORA_DIR)/PandoraMonitoring/include/

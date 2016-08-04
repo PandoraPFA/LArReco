@@ -11,11 +11,11 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-         <EventFileName>/r05/dune/mcproduction_v05_08_00/reco2_bnb_cosmic1_10k/Pandora_Events_Cosmic1_1.pndr</EventFileName>
-         <GeometryFileName>/r05/dune/mcproduction_v05_04_00/geometry_uboone/Geometry_MicroBooNE.pndr</GeometryFileName>
-         <ShouldReadEvents>true</ShouldReadEvents>
-         <ShouldReadGeometry>false</ShouldReadGeometry>
-         <SkipToEvent>0</SkipToEvent>
+        <EventFileName>/r05/dune/mcproduction_v05_08_00/reco2_bnb_nu_cosmic1/Pandora_Events_Cosmic1_0_0.pndr</EventFileName>
+        <GeometryFileName>/r05/dune/mcproduction_v05_08_00/geometry_uboone/Geometry_MicroBooNE.pndr</GeometryFileName>
+        <ShouldReadEvents>true</ShouldReadEvents>
+        <ShouldReadGeometry>true</ShouldReadGeometry>
+        <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
     <!-- COSMIC RAY RECONSTRUCTION -->
