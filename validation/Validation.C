@@ -228,9 +228,9 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
             {
                 const unsigned int absMCPdgCode(std::abs(simpleMCPrimary.m_pdgCode));
 
-                if (correctId &&
-                    ((absMCPdgCode == 13 || absMCPdgCode == 2212 || absMCPdgCode == 211) && (13 != simpleMatchedPfo.m_pdgCode) ||
-                    ((absMCPdgCode == 22 || absMCPdgCode == 11) && (11 != simpleMatchedPfo.m_pdgCode))) )
+                if (correctId && (
+                    ((absMCPdgCode == 13 || absMCPdgCode == 2212 || absMCPdgCode == 211) && (13 != simpleMatchedPfo.m_pdgCode)) ||
+                    ((absMCPdgCode == 22 || absMCPdgCode == 11) && (11 != simpleMatchedPfo.m_pdgCode)) ))
                 {
                     continue;
                 }
