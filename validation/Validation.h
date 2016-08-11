@@ -56,6 +56,7 @@ public:
 enum ExpectedPrimary
 {
     MUON,
+    ELECTRON,
     PROTON1,
     PROTON2,
     PIPLUS,
@@ -479,6 +480,7 @@ std::string ToString(const ExpectedPrimary expectedPrimary)
     switch (expectedPrimary)
     {
     case MUON: return "MUON";
+    case ELECTRON: return "ELECTRON";
     case PROTON1: return "PROTON1";
     case PROTON2: return "PROTON2";
     case PIPLUS: return "PIPLUS";

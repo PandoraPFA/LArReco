@@ -11,7 +11,7 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-        <EventFileName>/r05/dune/mcproduction_v05_08_00/reco2_bnb_nu_cosmic1/Pandora_Events_Cosmic1_0_0.pndr</EventFileName>
+        <EventFileName>/r05/dune/mcproduction_v05_08_00/selected_reco2_bnb_nu_cosmic1/Pandora_Events_Selected_1001_Cosmic1.pndr</EventFileName>
         <GeometryFileName>/r05/dune/mcproduction_v05_08_00/geometry_uboone/Geometry_MicroBooNE.pndr</GeometryFileName>
         <ShouldReadEvents>true</ShouldReadEvents>
         <ShouldReadGeometry>true</ShouldReadGeometry>
@@ -360,6 +360,21 @@
         <MCParticleListName>MCParticleList3D</MCParticleListName>
         <PfoListName>Particles3D</PfoListName>
         <NeutrinoInducedOnly>false</NeutrinoInducedOnly>
+        <PrintAllToScreen>false</PrintAllToScreen>
+        <PrintMatchingToScreen>true</PrintMatchingToScreen>
+        <VisualizeMatching>false</VisualizeMatching>
+        <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
+        <MatchingMinSharedHits>5</MatchingMinSharedHits>
+        <WriteToTree>false</WriteToTree>
+        <OutputTree>Validation</OutputTree>
+        <OutputFile>Validation.root</OutputFile>
+    </algorithm>
+
+    <algorithm type = "LArEventValidation">
+        <CaloHitListName>CaloHitList2D</CaloHitListName>
+        <MCParticleListName>MCParticleList3D</MCParticleListName>
+        <PfoListName>Particles3D</PfoListName>
+        <NeutrinoInducedOnly>true</NeutrinoInducedOnly>
         <PrintAllToScreen>true</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <VisualizeMatching>false</VisualizeMatching>
