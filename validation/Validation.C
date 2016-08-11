@@ -305,7 +305,7 @@ bool PassFiducialCut(const SimpleMCEvent &simpleMCEvent)
 ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryList &simpleMCPrimaryList, const int primaryMinHits)
 {
     // ATTN: Relies on fact that primary list is sorted by number of true hits
-    unsigned int nMuons(0), nProtons(0), nPiPlus(0), nPiMinus(0), nNeutrons(0), nPhotons(0);
+    unsigned int nMuons(0), nElectrons(0), nProtons(0), nPiPlus(0), nPiMinus(0), nNeutrons(0), nPhotons(0);
 
     for (SimpleMCPrimaryList::const_iterator iter = simpleMCPrimaryList.begin(); iter != simpleMCPrimaryList.end(); ++iter)
     {
@@ -317,6 +317,7 @@ ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryLis
         if (primaryId == simpleMCPrimary.m_id)
         {
             if ((0 == nMuons) && (13 == simpleMCPrimary.m_pdgCode)) return MUON;
+            if ((0 == nElectrons) && (11 == simpleMCPrimary.m_pdgCode)) return ELECTRON;
             if ((0 == nProtons) && (2212 == simpleMCPrimary.m_pdgCode)) return PROTON1;
             if ((1 == nProtons) && (2212 == simpleMCPrimary.m_pdgCode)) return PROTON2;
             if ((0 == nPiPlus) && (211 == simpleMCPrimary.m_pdgCode)) return PIPLUS;
@@ -327,6 +328,7 @@ ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryLis
         }
 
         if (13 == simpleMCPrimary.m_pdgCode) ++nMuons;
+        else if (11 == simpleMCPrimary.m_pdgCode) ++nElectrons;
         else if (2212 == simpleMCPrimary.m_pdgCode) ++nProtons;
         else if (211 == simpleMCPrimary.m_pdgCode) ++nPiPlus;
         else if (-211 == simpleMCPrimary.m_pdgCode) ++nPiMinus;
@@ -355,8 +357,11 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
                   << ", nMCHits " << simpleMCPrimary.m_nMCHitsTotal << " (" << simpleMCPrimary.m_nMCHitsU
                   << ", " << simpleMCPrimary.m_nMCHitsV << ", " << simpleMCPrimary.m_nMCHitsW << ")" << std::endl;
 
+
+        if (2112 != simpleMCPrimary.m_pdgCode)
+            isCalculable = true;
+
         unsigned int nMatches(0);
-        isCalculable = true;
 
         for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
         {
@@ -378,7 +383,7 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
             }
         }
 
-        if (1 != nMatches)
+        if ((1 != nMatches) && !((0 == nMatches) && (2112 == simpleMCPrimary.m_pdgCode)))
             isCorrect = false;
     }
 
