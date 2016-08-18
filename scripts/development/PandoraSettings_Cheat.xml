@@ -248,10 +248,14 @@
         <CaloHitListName>CRCaloHitList2D</CaloHitListName>
         <MCParticleListName>CRMCParticleList3D</MCParticleListName>
         <PfoListName>CRParentParticles3D</PfoListName>
+        <ClusterListNames>CRClustersU CRClustersV CRClustersW</ClusterListNames>
         <NeutrinoInducedOnly>false</NeutrinoInducedOnly>
         <PrintAllToScreen>false</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <VisualizeMatching>false</VisualizeMatching>
+        <VisualizeVertices>false</VisualizeVertices>
+        <VisualizeRemnants>false</VisualizeRemnants>
+        <VisualizeGaps>false</VisualizeGaps>
         <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
         <MatchingMinSharedHits>5</MatchingMinSharedHits>
         <WriteToTree>false</WriteToTree>
@@ -263,10 +267,14 @@
         <CaloHitListName>NCaloHitList2D</CaloHitListName>
         <MCParticleListName>NMCParticleList3D</MCParticleListName>
         <PfoListName>NParentParticles3D</PfoListName>
+        <ClusterListNames>NClustersU NClustersV NClustersW</ClusterListNames>
         <NeutrinoInducedOnly>true</NeutrinoInducedOnly>
         <PrintAllToScreen>false</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <VisualizeMatching>false</VisualizeMatching>
+        <VisualizeVertices>false</VisualizeVertices>
+        <VisualizeRemnants>false</VisualizeRemnants>
+        <VisualizeGaps>false</VisualizeGaps>
         <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
         <MatchingMinSharedHits>5</MatchingMinSharedHits>
         <WriteToTree>false</WriteToTree>
