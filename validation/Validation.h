@@ -118,6 +118,8 @@ public:
     unsigned int        m_nBestRecoHits;        ///< The number of hits in the best matched pfo
     float               m_bestCompleteness;     ///< The best match pfo is determined by the best completeness (most matched hits)
     float               m_bestMatchPurity;      ///< The purity of the best matched pfo
+
+    FloatVector         m_allCompletenesses;    ///< 
 };
 
 typedef std::map<ExpectedPrimary, PrimaryResult> PrimaryResultMap;
@@ -150,6 +152,7 @@ typedef std::map<InteractionType, EventResultList> InteractionEventResultMap;
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 class TH1F;
+class TH2F;
 
 /**
  *  @brief  EventHistogramCollection class
@@ -192,6 +195,10 @@ public:
     TH1F *m_hAngleEfficiency;   ///<
     TH1F *m_hCompleteness;      ///<
     TH1F *m_hPurity;            ///<
+
+    TH2F *m_hNPfosVsPTot;       ///<
+    TH2F *m_hBestCompVsPTot;    ///<
+    TH2F *m_hAllCompVsPTot;     ///<
 };
 
 typedef std::map<ExpectedPrimary, PrimaryHistogramCollection> PrimaryHistogramMap;
@@ -415,7 +422,10 @@ PrimaryHistogramCollection::PrimaryHistogramCollection() :
     m_hAngleAll(NULL),
     m_hAngleEfficiency(NULL),
     m_hCompleteness(NULL),
-    m_hPurity(NULL)
+    m_hPurity(NULL),
+    m_hNPfosVsPTot(NULL),
+    m_hBestCompVsPTot(NULL),
+    m_hAllCompVsPTot(NULL)
 {
 }
 

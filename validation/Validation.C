@@ -7,6 +7,7 @@
  */
 #include "TChain.h"
 #include "TH1F.h"
+#include "TH2F.h"
 
 #include "Validation.h"
 
@@ -238,6 +239,8 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
                 ++nMatches;
                 const float completeness((simpleMCPrimary.m_nMCHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMCPrimary.m_nMCHitsTotal) : 0);
                 const float purity((simpleMatchedPfo.m_nPfoHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMatchedPfo.m_nPfoHitsTotal) : 0);
+
+                primaryResult.m_allCompletenesses.push_back(completeness);
 
                 if (completeness > bestCompleteness)
                 {
@@ -646,6 +649,39 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
         primaryHistogramCollection.m_hPurity->GetYaxis()->SetRangeUser(0., +1.01);
         primaryHistogramCollection.m_hPurity->GetYaxis()->SetTitle("Fraction of Particles");
     }
+
+    if (!primaryHistogramCollection.m_hNPfosVsPTot)
+    {
+        primaryHistogramCollection.m_hNPfosVsPTot = new TH2F((histPrefix + "NMatchedPfosVsPTrue").c_str(), "", 21, -0.05, 2.05, 51, -0.5, 50.5);
+        primaryHistogramCollection.m_hNPfosVsPTot->GetXaxis()->SetTitle("P_{True} [GeV]");
+        primaryHistogramCollection.m_hNPfosVsPTot->GetXaxis()->SetRangeUser(0., +2.01);
+        primaryHistogramCollection.m_hNPfosVsPTot->GetYaxis()->SetRangeUser(0., +10.);
+        primaryHistogramCollection.m_hNPfosVsPTot->GetYaxis()->SetTitle("Number of Matched Pfos");
+    }
+
+    if (!primaryHistogramCollection.m_hBestCompVsPTot)
+    {
+        primaryHistogramCollection.m_hBestCompVsPTot = new TH2F((histPrefix + "BestCompletenessVsPTrue").c_str(), "", 21, -0.05, 2.05, 26, -0.02, 1.02);
+        primaryHistogramCollection.m_hBestCompVsPTot->GetXaxis()->SetTitle("P_{True} [GeV]");
+        primaryHistogramCollection.m_hBestCompVsPTot->GetXaxis()->SetRangeUser(0., +2.01);
+        primaryHistogramCollection.m_hBestCompVsPTot->GetYaxis()->SetRangeUser(0., +1.01);
+        primaryHistogramCollection.m_hBestCompVsPTot->GetYaxis()->SetTitle("Best Completeness");
+    }
+
+    if (!primaryHistogramCollection.m_hAllCompVsPTot)
+    {
+        primaryHistogramCollection.m_hAllCompVsPTot = new TH2F((histPrefix + "AllCompletenessesVsPTrue").c_str(), "", 21, -0.05, 2.05, 26, -0.02, 1.02);
+        primaryHistogramCollection.m_hAllCompVsPTot->GetXaxis()->SetTitle("P_{True} [GeV]");
+        primaryHistogramCollection.m_hAllCompVsPTot->GetXaxis()->SetRangeUser(0., +2.01);
+        primaryHistogramCollection.m_hAllCompVsPTot->GetYaxis()->SetRangeUser(0., +1.01);
+        primaryHistogramCollection.m_hAllCompVsPTot->GetYaxis()->SetTitle("All Matched Pfo Completenesses");
+    }
+
+    primaryHistogramCollection.m_hNPfosVsPTot->Fill(primaryResult.m_trueMomentum, primaryResult.m_nPfoMatches);
+    primaryHistogramCollection.m_hBestCompVsPTot->Fill(primaryResult.m_trueMomentum, primaryResult.m_bestCompleteness);
+
+    for (FloatVector::const_iterator iter = primaryResult.m_allCompletenesses.begin(); iter != primaryResult.m_allCompletenesses.end(); ++iter)
+        primaryHistogramCollection.m_hAllCompVsPTot->Fill(primaryResult.m_trueMomentum, *iter);
 
     primaryHistogramCollection.m_hHitsAll->Fill(primaryResult.m_nTrueHits);
     primaryHistogramCollection.m_hMomentumAll->Fill(primaryResult.m_trueMomentum);
