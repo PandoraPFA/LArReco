@@ -11,9 +11,9 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-         <EventFileName>/r05/dune/mcproduction_v04_31_00/prodgenie_nu_dune10kt_workspace/dune4apa_dc_right_Events_100_0.pndr</EventFileName>
-         <ShouldReadEvents>true</ShouldReadEvents>
-         <SkipToEvent>0</SkipToEvent>
+        <EventFileName>/r05/dune/mcproduction_v04_31_00/prodgenie_nu_dune10kt_workspace/dune4apa_dc_right_Events_100_0.pndr</EventFileName>
+        <ShouldReadEvents>true</ShouldReadEvents>
+        <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
     <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION -->
@@ -304,11 +304,13 @@
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>MCParticleList3D</MCParticleListName>
         <PfoListName>AllNeutrinoParticles3D</PfoListName>
-        <PrimaryPfosOnly>true</PrimaryPfosOnly>
-        <CollapseToPrimaryPfos>true</CollapseToPrimaryPfos>
-        <PrintAllToScreen>true</PrintAllToScreen>
+        <ClusterListNames>AllClustersU AllClustersV AllClustersW</ClusterListNames>
+        <NeutrinoInducedOnly>true</NeutrinoInducedOnly>
+        <PrintAllToScreen>false</PrintAllToScreen>
         <PrintMatchingToScreen>false</PrintMatchingToScreen>
         <VisualizeMatching>false</VisualizeMatching>
+        <VisualizeVertices>false</VisualizeVertices>
+        <VisualizeRemnants>false</VisualizeRemnants>
         <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
         <MatchingMinSharedHits>5</MatchingMinSharedHits>
         <WriteToTree>false</WriteToTree>

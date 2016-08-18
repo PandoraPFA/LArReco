@@ -312,10 +312,14 @@
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>MCParticleList3D</MCParticleListName>
         <PfoListName>AllNeutrinoParticles3D</PfoListName>
+        <ClusterListNames>AllClustersU AllClustersV AllClustersW</ClusterListNames>
         <NeutrinoInducedOnly>true</NeutrinoInducedOnly>
         <PrintAllToScreen>true</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <VisualizeMatching>false</VisualizeMatching>
+        <VisualizeVertices>false</VisualizeVertices>
+        <VisualizeRemnants>false</VisualizeRemnants>
+        <VisualizeGaps>false</VisualizeGaps>
         <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
         <MatchingMinSharedHits>5</MatchingMinSharedHits>
         <WriteToTree>false</WriteToTree>
