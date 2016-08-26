@@ -11,11 +11,12 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
+        <!--EventFileName>/r05/dune/mcproduction_v05_08_00/selected_reco2_bnb_nu_cosmic2/Pandora_Events_Selected_1001_Cosmic2.pndr</EventFileName-->
         <EventFileName>/r05/dune/mcproduction_v05_08_00/selected_reco2_bnb_nu/Pandora_Events_Selected_1004.pndr</EventFileName>
         <GeometryFileName>/r05/dune/mcproduction_v05_08_00/geometry_uboone/Geometry_MicroBooNE.pndr</GeometryFileName>
         <ShouldReadEvents>true</ShouldReadEvents>
         <ShouldReadGeometry>true</ShouldReadGeometry>
-        <SkipToEvent>0</SkipToEvent>
+        <SkipToEvent>10</SkipToEvent>
     </algorithm>
 
     <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION -->
@@ -38,7 +39,7 @@
         <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
         <MCParticleListNames>MCParticleList3D</MCParticleListNames>
         <SuppressMCParticles>22:0.01 2112:1.0</SuppressMCParticles>
-        <ShowDetector>true</ShowDetector>
+        <ShowDetector>false</ShowDetector>
     </algorithm>
 
     <!-- Reconstruction of individual neutrino interactions -->
@@ -58,6 +59,9 @@
         <tool type = "LArEventSlicing" description = "Slicing">
             <TrackPfoListName>TrackParticles3D</TrackPfoListName>
             <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+            <UsePointingAssociation>true</UsePointingAssociation>
+            <UseProximityAssociation>true</UseProximityAssociation>
+            <UseShowerConeAssociation>true</UseShowerConeAssociation>
         </tool>
 
         <TwoDAlgorithms>
@@ -226,7 +230,7 @@
             </algorithm>
         </VertexAlgorithms>
 
-        <MopUpAlgorithms>
+        <TwoDMopUpAlgorithms>
             <algorithm type = "LArVertexBasedPfoMerging">
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
@@ -253,7 +257,19 @@
                 <PfoListNames>ShowerParticles3D</PfoListNames>
                 <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
             </algorithm>
-        </MopUpAlgorithms>
+        </TwoDMopUpAlgorithms>
+
+        <ThreeDMopUpAlgorithms>
+            <algorithm type = "LArSlidingConePfoMerging">
+                <InputPfoListNames>TrackParticles3D ShowerParticles3D</InputPfoListNames>
+                <DaughterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</DaughterListNames>
+            </algorithm>
+            <!--algorithm type = "LArSlidingConeClusterMerging">
+                <InputPfoListNames>TrackParticles3D ShowerParticles3D</InputPfoListNames>
+                <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+                <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
+            </algorithm-->
+        </ThreeDMopUpAlgorithms>
 
         <NeutrinoAlgorithms>
             <algorithm type = "LArNeutrinoCreation">
@@ -316,9 +332,9 @@
         <NeutrinoInducedOnly>true</NeutrinoInducedOnly>
         <PrintAllToScreen>true</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
-        <VisualizeMatching>false</VisualizeMatching>
-        <VisualizeVertices>false</VisualizeVertices>
-        <VisualizeRemnants>false</VisualizeRemnants>
+        <VisualizeMatching>true</VisualizeMatching>
+        <VisualizeVertices>true</VisualizeVertices>
+        <VisualizeRemnants>true</VisualizeRemnants>
         <VisualizeGaps>false</VisualizeGaps>
         <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
         <MatchingMinSharedHits>5</MatchingMinSharedHits>
@@ -327,11 +343,11 @@
         <OutputFile>Validation.root</OutputFile>
     </algorithm>
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <PfoListNames>AllNeutrinoParticles3D</PfoListNames>
     </algorithm>
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <ClusterListNames>AllTrackClusters3D AllShowerClusters3D</ClusterListNames>
     </algorithm>
 
@@ -339,5 +355,5 @@
         <ClusterListNames>AllClustersU AllClustersV AllClustersW</ClusterListNames>
         <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
         <ShowOnlyAvailable>true</ShowOnlyAvailable>
-    </algorithm>
+    </algorithm-->
 </pandora>
