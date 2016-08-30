@@ -16,7 +16,7 @@
         <GeometryFileName>/r05/dune/mcproduction_v05_08_00/geometry_uboone/Geometry_MicroBooNE.pndr</GeometryFileName>
         <ShouldReadEvents>true</ShouldReadEvents>
         <ShouldReadGeometry>true</ShouldReadGeometry>
-        <SkipToEvent>10</SkipToEvent>
+        <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
     <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION -->
@@ -59,9 +59,6 @@
         <tool type = "LArEventSlicing" description = "Slicing">
             <TrackPfoListName>TrackParticles3D</TrackPfoListName>
             <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
-            <UsePointingAssociation>true</UsePointingAssociation>
-            <UseProximityAssociation>true</UseProximityAssociation>
-            <UseShowerConeAssociation>true</UseShowerConeAssociation>
         </tool>
 
         <TwoDAlgorithms>
@@ -231,44 +228,43 @@
         </VertexAlgorithms>
 
         <TwoDMopUpAlgorithms>
-            <algorithm type = "LArVertexBasedPfoMerging">
+            <algorithm type = "LArVertexBasedPfoMopUp">
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
                 <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
             </algorithm>
-            <algorithm type = "LArSplitShowerMerging">
+            <algorithm type = "LArShowerPfoMopUp">
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
                 <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
             </algorithm>
-            <algorithm type = "LArBoundedClusterMerging">
+            <algorithm type = "LArBoundedClusterMopUp">
                 <PfoListNames>ShowerParticles3D</PfoListNames>
-                <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
+                <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
             </algorithm>
-            <algorithm type = "LArConeBasedMerging">
+            <algorithm type = "LArConeClusterMopUp">
                 <PfoListNames>ShowerParticles3D</PfoListNames>
-                <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
+                <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
             </algorithm>
-            <algorithm type = "LArProximityBasedMerging">
+            <algorithm type = "LArNearbyClusterMopUp">
                 <PfoListNames>ShowerParticles3D</PfoListNames>
-                <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
-            </algorithm>
-            <algorithm type = "LArIsolatedHitMerging">
-                <PfoListNames>ShowerParticles3D</PfoListNames>
-                <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
+                <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
             </algorithm>
         </TwoDMopUpAlgorithms>
 
         <ThreeDMopUpAlgorithms>
-            <algorithm type = "LArSlidingConePfoMerging">
+            <algorithm type = "LArSlidingConePfoMopUp">
                 <InputPfoListNames>TrackParticles3D ShowerParticles3D</InputPfoListNames>
                 <DaughterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</DaughterListNames>
             </algorithm>
-            <!--algorithm type = "LArSlidingConeClusterMerging">
+            <algorithm type = "LArSlidingConeClusterMopUp">
                 <InputPfoListNames>TrackParticles3D ShowerParticles3D</InputPfoListNames>
-                <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
-                <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
-            </algorithm-->
+                <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
+            </algorithm>
+            <algorithm type = "LArIsolatedClusterMopUp">
+                <PfoListNames>ShowerParticles3D</PfoListNames>
+                <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
+            </algorithm>
         </ThreeDMopUpAlgorithms>
 
         <NeutrinoAlgorithms>
