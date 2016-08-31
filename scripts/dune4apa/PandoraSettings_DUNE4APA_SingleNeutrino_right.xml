@@ -256,7 +256,7 @@
                 <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
             </algorithm>
             <algorithm type = "LArIsolatedClusterMopUp">
-                <PfoListNames>ShowerParticles3D</PfoListNames>
+                <PfoListNames>TrackParticles3D ShowerParticles3D</PfoListNames>
                 <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
             </algorithm>
         </ThreeDMopUpAlgorithms>
