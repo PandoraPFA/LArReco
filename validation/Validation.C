@@ -11,6 +11,9 @@
 
 #include "Validation.h"
 
+#include <iostream>
+#include <iomanip>
+
 void Validation(const std::string &inputFiles, const bool shouldDisplayEvents, const bool shouldDisplayMatchedEvents, const int skipEvents,
     const int nEventsToProcess, const int primaryMinHits, const int minMatchedHits, const bool histogramOutput, const bool correctId,
     const bool applyFiducialCut, const std::string histPrefix, const std::string outputFileName, const std::string correctEventFileName)
@@ -408,6 +411,9 @@ void DisplayInteractionCountingMap(const int primaryMinHits, const int minMatche
         outputFile << "MinPrimaryHits " << primaryMinHits << ", MinMatchedHits " << minMatchedHits << std::endl;
     }
 
+    std::cout << std::fixed;
+    std::cout << std::setprecision(1);
+
     for (InteractionCountingMap::const_iterator iter = interactionCountingMap.begin(); iter != interactionCountingMap.end(); ++iter)
     {
         const InteractionType interactionType(iter->first);
@@ -422,8 +428,12 @@ void DisplayInteractionCountingMap(const int primaryMinHits, const int minMatche
             const ExpectedPrimary expectedPrimary(cIter->first);
             const CountingDetails &countingDetails(cIter->second);
 
-            std::cout << "-" << ToString(expectedPrimary) << ": nEvents: " << countingDetails.m_nTotal << ", nPfos |0: " << countingDetails.m_nMatch0
-                      << "|, |1: " << countingDetails.m_nMatch1 << "|, |2: " << countingDetails.m_nMatch2 << "|, |3+: " << countingDetails.m_nMatch3Plus << "|" << std::endl;
+            std::cout << "-" << ToString(expectedPrimary) << ": nEvents: " << countingDetails.m_nTotal
+                      << ", nPfos |0: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch0) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
+                      << "%|, |1: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch1) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
+                      << "%|, |2: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch2) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
+                      << "%|, |3+: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch3Plus) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
+                      << "%|" << std::endl;
 
             if (!outputFileName.empty())
             {
@@ -505,12 +515,12 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
         }
 
         std::cout << ToString(interactionType) << std::endl << "-nEvents " << eventResultList.size() << ", nCorrect " << nCorrectEvents
-                  << ", fCorrect " << static_cast<float>(nCorrectEvents) / static_cast<float>(eventResultList.size()) << std::endl;
+                  << ", fCorrect " << 100.f * static_cast<float>(nCorrectEvents) / static_cast<float>(eventResultList.size()) << "%" << std::endl;
 
         if (!outputFileName.empty())
         {
             outputFile << std::endl << ToString(interactionType) << std::endl << "-nEvents " << eventResultList.size() << ", nCorrect " << nCorrectEvents
-                       << ", fCorrect " << static_cast<float>(nCorrectEvents) / static_cast<float>(eventResultList.size()) << std::endl;
+                       << ", fCorrect " << 100.f * static_cast<float>(nCorrectEvents) / static_cast<float>(eventResultList.size()) << "%" << std::endl;
         }
     }
 
