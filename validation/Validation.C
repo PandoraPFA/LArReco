@@ -150,6 +150,9 @@ bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const MatchingPara
             if (usedPfoIds.count(simpleMatchedPfo.m_id))
                 continue;
 
+            if (!IsGoodMatch(simpleMCPrimary, simpleMatchedPfo, matchingParameters))
+                continue;
+
             if (simpleMatchedPfo.m_nMatchedHitsTotal > bestMatchingDetails.m_nMatchedHits)
             {
                 bestPfoMatchId = simpleMatchedPfo.m_id;
