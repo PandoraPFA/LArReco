@@ -283,10 +283,10 @@
         <OutputPfoListName>Particles3D</OutputPfoListName>
     </algorithm>
 
-    <!-- 2D cosmic-ray isolated hits -->  
-    <algorithm type = "LArIsolatedHitMerging">
+    <!-- 2D cosmic-ray isolated hits/clusters -->
+    <algorithm type = "LArIsolatedClusterMopUp">
         <PfoListNames>Particles3D DaughterParticles3D</PfoListNames>
-        <RemnantClusterListNames>ClustersU ClustersV ClustersW</RemnantClusterListNames>
+        <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
         <ExcludePfosContainingTracks>false</ExcludePfosContainingTracks>
     </algorithm>
 
@@ -363,9 +363,9 @@
         <NeutrinoInducedOnly>false</NeutrinoInducedOnly>
         <PrintAllToScreen>false</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
-        <VisualizeMatching>false</VisualizeMatching>
-        <VisualizeVertices>false</VisualizeVertices>
-        <VisualizeRemnants>false</VisualizeRemnants>
+        <VisualizeMatching>true</VisualizeMatching>
+        <VisualizeVertices>true</VisualizeVertices>
+        <VisualizeRemnants>true</VisualizeRemnants>
         <VisualizeGaps>false</VisualizeGaps>
         <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
         <MatchingMinSharedHits>5</MatchingMinSharedHits>
@@ -382,9 +382,9 @@
         <NeutrinoInducedOnly>true</NeutrinoInducedOnly>
         <PrintAllToScreen>true</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
-        <VisualizeMatching>false</VisualizeMatching>
-        <VisualizeVertices>false</VisualizeVertices>
-        <VisualizeRemnants>false</VisualizeRemnants>
+        <VisualizeMatching>true</VisualizeMatching>
+        <VisualizeVertices>true</VisualizeVertices>
+        <VisualizeRemnants>true</VisualizeRemnants>
         <VisualizeGaps>false</VisualizeGaps>
         <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
         <MatchingMinSharedHits>5</MatchingMinSharedHits>

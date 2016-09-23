@@ -11,19 +11,50 @@
 #include "ValidationIO.h"
 
 /**
+ * @brief   MatchingParameters class
+ */
+class MatchingParameters
+{
+public:
+    /**
+     *  @brief  Constructor
+     * 
+     *  @param  minPrimaryHits the minimum number of mc primary hits
+     *  @param  useSmallPrimaries whether to consider matches to mc primaries with fewer than minPrimaryHits
+     *  @param  minSharedHits the minimum number of shared hit
+     *  @param  minCompleteness the minimum particle completeness
+     *  @param  minPurity the minimum particle purity
+     *  @param  applyFiducialCut whether to apply fiducial volume cut to true neutrino vertex position
+     *  @param  correctTrackShowerId whether to demand that pfos are correctly flagged as tracks or showers
+     */
+    MatchingParameters(const int minPrimaryHits, const bool useSmallPrimaries, const int minSharedHits, const float minCompleteness,
+        const float minPurity, const bool applyFiducialCut, const bool correctTrackShowerId);
+
+    int                     m_minPrimaryHits;           ///< The minimum number of mc primary hits used in matching scheme
+    bool                    m_useSmallPrimaries;        ///< Whether to consider matches to mc primaries with fewer than m_minPrimaryHits
+    int                     m_minSharedHits;            ///< The minimum number of shared hits used in matching scheme
+    float                   m_minCompleteness;          ///< The minimum particle completeness to declare a match
+    float                   m_minPurity;                ///< The minimum particle purity to declare a match
+    bool                    m_applyFiducialCut;         ///< Whether to apply fiducial volume cut to true neutrino vertex position
+    bool                    m_correctTrackShowerId;     ///< Whether to demand that pfos are correctly flagged as tracks or showers
+};
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/**
  * @brief   MatchingDetails class
  */
 class MatchingDetails
 {
 public:
     /**
-     *  @brief  Default constructor  
+     *  @brief  Default constructor
      */
     MatchingDetails();
 
     int                     m_matchedPrimaryId;         ///< The total number of occurences
     int                     m_nMatchedHits;             ///< The number of times the primary has 0 pfo matches
-    float                   m_completeness;             ///< The completeness of the match
 };
 
 typedef std::map<int, MatchingDetails> PfoMatchingMap;
@@ -214,80 +245,99 @@ typedef std::map<InteractionType, PrimaryHistogramMap> InteractionPrimaryHistogr
  *  @param  shouldDisplayMatchedEvents whether to display matching results for individual events
  *  @param  skipEvents the number of events to skip
  *  @param  nEventsToProcess the number of events to process
- *  @param  primaryMinHits the min number of hits in order to consider a primary
- *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
+ *  @param  minPrimaryHits the min number of hits in order to consider a primary
+ *  @param  minSharedHits the min number of shared hits in order to consider a matched pfo
  *  @param  histogramOutput whether to produce output histograms
- *  @param  correctId whether to demand that pfos are correctly flagged as tracks or showers
+ *  @param  correctTrackShowerId whether to demand that pfos are correctly flagged as tracks or showers
  *  @param  applyFiducialCut whether to apply fiducial volume cut to true neutrino vertex position
  *  @param  histPrefix histogram name prefix
- *  @param  outputFileName file name to which to write output ascii tables, etc.
- *  @param  correctEventFileName file name to which to write list of correct events
+ *  @param  mapFileName file name to which to write output ascii tables, etc.
+ *  @param  eventFileName file name to which to write list of correct events
+ *  @param  useSmallPrimaries whether to consider matches to mc primaries with fewer than primaryMinHits
+ *  @param  minCompleteness minimum particle completeness to declare a match
+ *  @param  minPurity minimum particle purity to declare a match
  */
-void Validation(const std::string &inputFiles, const bool shouldDisplayEvents = true, const bool shouldDisplayMatchedEvents = true,
-    const int skipEvents = 0, const int nEventsToProcess = std::numeric_limits<int>::max(), const int primaryMinHits = 0, const int minMatchedHits = 0,
-    const bool histogramOutput = false, const bool correctId = false, const bool applyFiducialCut = false, const std::string histPrefix = "",
-    const std::string outputFileName = "", const std::string correctEventFileName = "");
+void Validation(const std::string inputFiles, const bool shouldDisplayEvents = true, const bool shouldDisplayMatchedEvents = true,
+    const int skipEvents = 0, const int nEventsToProcess = std::numeric_limits<int>::max(),
+    const int minPrimaryHits = 15, const int minSharedHits = 5,
+    const bool histogramOutput = false, const bool correctTrackShowerId = false, const bool applyFiducialCut = false,
+    const std::string histPrefix = "", const std::string mapFileName = "", const std::string eventFileName = "",
+    const bool useSmallPrimaries = true, const float minCompleteness = 0.1f, const float minPurity = 0.5f);
 
 /**
  *  @brief  Get the event interaction type
  * 
  *  @param  simpleMCEvent the simple mc event
- *  @param  primaryMinHits the min number of hits in order to consider a primary
+ *  @param  matchingParameters the matching parameters
  * 
  *  @return the interaction type
  */
-InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits);
+InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const MatchingParameters &matchingParameters);
 
 /**
  *  @brief  Finalise the mc primary to pfo matching, using a pfo matching map to store the results
  * 
  *  @param  simpleMCEvent the simple mc event
- *  @param  primaryMinHits the min number of hits in order to consider a primary
- *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
- *  @param  pfoMatchingMap the pfo matching map, to be populated
+ *  @param  matchingParameters the matching parameters
+ *  @param  pfoMatchingMap to receive the populated pfo matching map
  */
-void FinalisePfoMatching(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits, const int minMatchedHits, PfoMatchingMap &pfoMatchingMap);
+void FinalisePfoMatching(const SimpleMCEvent &simpleMCEvent, const MatchingParameters &matchingParameters, PfoMatchingMap &pfoMatchingMap);
 
 /**
  *  @brief  Get the strongest pfo match (most matched hits) between an available mc primary and an available pfo
  * 
  *  @param  simpleMCEvent the simple mc event
- *  @param  primaryMinHits the min number of hits in order to consider a primary
- *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
+ *  @param  matchingParameters the matching parameters
  *  @param  usedMCIds the list of mc primary ids with an existing match
  *  @param  usedPfoIds the list of pfo ids with an existing match
- *  @param  pfoMatchingMap the pfo matching map, to be populated
+ *  @param  pfoMatchingMap to receive the populated pfo matching map
  */
-bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits, const int minMatchedHits, IntSet &usedMCIds,
-    IntSet &usedPfoIds, PfoMatchingMap &pfoMatchingMap);
+bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const MatchingParameters &matchingParameters, IntSet &usedMCIds, IntSet &usedPfoIds,
+    PfoMatchingMap &pfoMatchingMap);
 
 /**
  *  @brief  Get the best matches for any pfos left-over after the strong matching procedure
  * 
  *  @param  simpleMCEvent the simple mc event
- *  @param  primaryMinHits the min number of hits in order to consider a primary
- *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
+ *  @param  matchingParameters the matching parameters
  *  @param  usedPfoIds the list of pfo ids with an existing match
- *  @param  pfoMatchingMap the pfo matching map, to be populated
+ *  @param  pfoMatchingMap to receive the populated pfo matching map
  */
-void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const int primaryMinHits, const int minMatchedHits, const IntSet &usedPfoIds,
+void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const MatchingParameters &matchingParameters, const IntSet &usedPfoIds,
     PfoMatchingMap &pfoMatchingMap);
 
 /**
- *  @brief  CountPfoMatches Relies on fact that primary list is sorted by number of true hits
+ *  @brief  Whether a provided mc primary has a match, of any quality (use simple matched pfo list and information in matching details map)
  * 
- *  @param  simpleMCEvent the simple mc event
- *  @param  interactionType the interaction type
- *  @param  primaryMinHits the min number of hits in order to consider a primary
- *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
- *  @param  correctId whether to demand that pfos are correctly flagged as tracks or showers
- *  @param  applyFiducialCut whether to apply fiducial volume cut to true neutrino vertex position
- *  @param  interactionCountingMap the interaction counting map, to be populated
- *  @param  interactionEventOutcomeMap the interaction event outcome map, to be populated
+ *  @param  simpleMCPrimary the simple mc primary
+ *  @param  pfoMatchingMap the pfo matching map
+ *  @param  matchingParameters the matching parameters
+ * 
+ *  @return boolean
  */
-void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType interactionType, const PfoMatchingMap &pfoMatchingMap,
-    const int primaryMinHits, const bool correctId, const bool applyFiducialCut, InteractionCountingMap &interactionCountingMap,
-    InteractionEventResultMap &interactionEventResultMap);
+bool HasMatch(const SimpleMCPrimary &simpleMCPrimary, const PfoMatchingMap &pfoMatchingMap, const MatchingParameters &matchingParameters);
+
+/**
+ *  @brief  Whether a provided mc primary and pfo are deemed to be a good match
+ * 
+ *  @param  simpleMCPrimary the simple mc primary
+ *  @param  simpleMatchedPfo the simple matched pfo
+ *  @param  matchingParameters the matching parameters
+ * 
+ *  @return boolean
+ */
+bool IsGoodMatch(const SimpleMCPrimary &simpleMCPrimary, const SimpleMatchedPfo &simpleMatchedPfo, const MatchingParameters &matchingParameters);
+
+/**
+ *  @brief  Work out which of the primary particles (expected for a given interaction types) corresponds to the provided priamry id
+ *          ATTN: Relies on fact that primary list is sorted by number of true hits
+ * 
+ *  @param  primaryId the primary id
+ *  @param  simpleMCPrimaryList the simple mc primary list
+ * 
+ *  @return the expected primary
+ */
+ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryList &simpleMCPrimaryList);
 
 /**
  *  @brief  Whether a simple mc event passes a fiducial cut, applied to the mc neutrino vertex
@@ -299,48 +349,48 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
 bool PassFiducialCut(const SimpleMCEvent &simpleMCEvent);
 
 /**
- *  @brief  Work out which of the primary particles (expected for a given interaction types) corresponds to the provided priamry id
- *          ATTN: Relies on fact that primary list is sorted by number of true hits
+ *  @brief  CountPfoMatches Relies on fact that primary list is sorted by number of true hits
  * 
- *  @param  primaryId the primary id
- *  @param  simpleMCPrimaryList the simple mc primary list
- *  @param  primaryMinHits the min number of hits in order to consider a primary
- * 
- *  @return the expected primary
+ *  @param  simpleMCEvent the simple mc event
+ *  @param  interactionType the interaction type
+ *  @param  pfoMatchingMap the pfo matching map
+ *  @param  matchingParameters, the matching parameters
+ *  @param  interactionCountingMap the interaction counting map, to be populated
+ *  @param  interactionEventOutcomeMap the interaction event outcome map, to be populated
  */
-ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryList &simpleMCPrimaryList, const int primaryMinHits);
+void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType interactionType, const PfoMatchingMap &pfoMatchingMap,
+    const MatchingParameters &matchingParameters, InteractionCountingMap &interactionCountingMap, InteractionEventResultMap &interactionEventResultMap);
 
 /**
  *  @brief  Print matching details to screen for a simple mc event
  * 
  *  @param  simpleMCEvent the simple mc event
  *  @param  pfoMatchingMap the pfo matching map
- *  @param  primaryMinHits the min number of hits in order to consider a primary
+ *  @param  matchingParameters the matching parameters
  */
-void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &pfoMatchingMap, const int primaryMinHits);
+void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &pfoMatchingMap, const MatchingParameters &matchingParameters);
 
 /**
  *  @brief  Print details to screen for a provided interaction type to counting map
  * 
- *  @param  primaryMinHits the min number of hits in order to consider a primary
- *  @param  minMatchedHits the min number of matched hits in order to consider a matched pfo
  *  @param  interactionCountingMap the interaction counting map
- *  @param  file name to which to write output ascii tables, etc.
+ *  @param  matchingParameters the matching parameters
+ *  @param  mapFileName file name to which to write output ascii tables, etc.
  */
-void DisplayInteractionCountingMap(const int primaryMinHits, const int minMatchedHits, const InteractionCountingMap &interactionCountingMap,
-    const std::string &outputFileName);
+void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCountingMap, const MatchingParameters &matchingParameters,
+    const std::string &mapFileName);
 
 /**
  *  @brief  Opportunity to fill histograms, perform post-processing of information collected in main loop over ntuple, etc.
  * 
  *  @param  interactionEventResultMap the interaction event result map
- *  @param  outputFileName file name to which to write output ascii tables, etc.
- *  @param  correctEventFileName file name to which to write list of correct events
+ *  @param  mapFileName file name to which to write output ascii tables, etc.
+ *  @param  eventFileName file name to which to write list of correct events
  *  @param  histogramOutput whether to produce output histograms
  *  @param  prefix histogram name prefix
  */
-void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap, const std::string &outputFileName,
-    const std::string &correctEventFileName, const bool histogramOutput, const std::string &prefix);
+void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap, const std::string &mapFileName,
+    const std::string &eventFileName, const bool histogramOutput, const std::string &prefix);
 
 /**
  *  @brief  Fill histograms in the provided event histogram collection, using information in the provided event offset
@@ -370,10 +420,24 @@ void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interacti
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
 
+MatchingParameters::MatchingParameters(const int minPrimaryHits, const bool useSmallPrimaries, const int minSharedHits, const float minCompleteness,
+        const float minPurity, const bool applyFiducialCut, const bool correctTrackShowerId) :
+    m_minPrimaryHits(minPrimaryHits),
+    m_useSmallPrimaries(useSmallPrimaries),
+    m_minSharedHits(minSharedHits),
+    m_minCompleteness(minCompleteness),
+    m_minPurity(minPurity),
+    m_applyFiducialCut(applyFiducialCut),
+    m_correctTrackShowerId(correctTrackShowerId)
+{
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------
+
 MatchingDetails::MatchingDetails() :
     m_matchedPrimaryId(-1),
-    m_nMatchedHits(0),
-    m_completeness(0.f)
+    m_nMatchedHits(0)
 {
 }
 
