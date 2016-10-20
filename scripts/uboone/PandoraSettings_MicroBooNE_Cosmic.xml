@@ -3,7 +3,7 @@
 <pandora>
     <!-- GLOBAL SETTINGS -->
     <IsMonitoringEnabled>true</IsMonitoringEnabled>
-    <ShouldDisplayAlgorithmInfo>true</ShouldDisplayAlgorithmInfo>
+    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
     <!-- PLUGIN SETTINGS -->
@@ -34,12 +34,12 @@
         <MipEquivalentCut>0.</MipEquivalentCut>
     </algorithm>
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
         <MCParticleListNames>MCParticleList3D</MCParticleListNames>
         <SuppressMCParticles>22:0.01 2112:1.0</SuppressMCParticles>
         <ShowDetector>true</ShowDetector>
-    </algorithm>
+    </algorithm-->
 
     <!-- 2D cosmic ray reconstruction, U View -->
     <algorithm type = "LArClusteringParent">
@@ -135,6 +135,7 @@
             <tool type = "LArMissingTrackSegment"/>
             <tool type = "LArTrackSplitting"/>
             <tool type = "LArLongTracks"><MinMatchedFraction>0.75</MinMatchedFraction><MinXOverlapFraction>0.75</MinXOverlapFraction></tool>
+            <tool type = "LArTracksCrossingGaps"><MinMatchedFraction>0.75</MinMatchedFraction><MinXOverlapFraction>0.75</MinXOverlapFraction></tool>
             <tool type = "LArMissingTrack"/>
         </TrackTools>
     </algorithm>
@@ -393,17 +394,17 @@
         <OutputFile>Validation.root</OutputFile>
     </algorithm>
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <PfoListNames>Particles3D</PfoListNames>
-    </algorithm>
+    </algorithm-->
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <ClusterListNames>Clusters3D DaughterClusters3D</ClusterListNames>
-    </algorithm>
+    </algorithm-->
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
         <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
         <ShowOnlyAvailable>true</ShowOnlyAvailable>
-    </algorithm>
+    </algorithm-->
 </pandora>

@@ -1,0 +1,28 @@
+<!-- Pandora settings xml file -->
+
+<pandora>
+    <!-- GLOBAL SETTINGS -->
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
+    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
+    <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
+
+    <!-- PLUGIN SETTINGS -->
+    <MuonPlugin>LArMuonId</MuonPlugin>
+
+    <!-- ALGORITHM SETTINGS -->
+    <algorithm type = "LArEventReading">
+        <EventFileName>/r05/dune/mcproduction_v05_08_00/selected_reco2_bnb_nu/Pandora_Events_Selected_1004.pndr</EventFileName>
+        <GeometryFileName>/r05/dune/mcproduction_v05_08_00/geometry_uboone/Geometry_MicroBooNE.pndr</GeometryFileName>
+        <ShouldReadEvents>true</ShouldReadEvents>
+        <ShouldReadGeometry>true</ShouldReadGeometry>
+        <SkipToEvent>0</SkipToEvent>
+    </algorithm>
+
+     <algorithm type = "LArEventWriting">
+        <EventFileName>Pandora_Events_Selected_1004_100.xml</EventFileName>
+        <ShouldWriteEvents>true</ShouldWriteEvents>
+        <ShouldOverwriteEventFile>true</ShouldOverwriteEventFile>
+        <ShouldWriteMCRelationships>true</ShouldWriteMCRelationships>
+        <ShouldWriteTrackRelationships>true</ShouldWriteTrackRelationships>
+    </algorithm>
+</pandora>
