@@ -131,8 +131,6 @@
             </algorithm>
             <algorithm type = "LArShowerGrowing">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
-                <ShouldRemoveShowerPfos>true</ShouldRemoveShowerPfos>
-                <InputPfoListNames>ShowerParticles3D</InputPfoListNames>
             </algorithm>
             <algorithm type = "LArThreeDShowers">
                 <InputClusterListNameU>ClustersU</InputClusterListNameU>
