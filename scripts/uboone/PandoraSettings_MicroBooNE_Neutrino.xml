@@ -51,7 +51,7 @@
         <ClusterListNameV>ClustersV</ClusterListNameV>
         <ClusterListNameW>ClustersW</ClusterListNameW>
 
-        <ShouldPerformSlicing>true</ShouldPerformSlicing>
+        <ShouldPerformSlicing>false</ShouldPerformSlicing>
 
         <algorithm type = "LArTrackClusterCreation" description = "TwoDClustering"/>
 
@@ -120,12 +120,18 @@
             </algorithm>
 
             <!-- Shower reconstruction -->
-            <algorithm type = "LArCheatingClusterCharacterisation">
+            <algorithm type = "LArClusterCharacterisation">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+                <WriteToTree>true</WriteToTree>
+                <OutputTree>TrkShw2D</OutputTree>
+                <OutputFile>TrkShw_2D_NoBranches.root</OutputFile>
             </algorithm>
             <algorithm type = "LArPfoCharacterisation">
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+                <WriteToTree>true</WriteToTree>
+                <OutputTree>TrkShw3DI</OutputTree>
+                <OutputFile>TrkShw_3x2D_NoBranches.root</OutputFile>
             </algorithm>
             <algorithm type = "LArListDeletion">
                 <PfoListNames>ShowerParticles3D</PfoListNames>
@@ -211,6 +217,9 @@
             <algorithm type = "LArPfoCharacterisation">
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+                <WriteToTree>true</WriteToTree>
+                <OutputTree>TrkShw3DII</OutputTree>
+                <OutputFile>TrkShw_3x2D_Branches.root</OutputFile>
             </algorithm>
             <algorithm type = "LArThreeDHitCreation">
                 <InputPfoListName>TrackParticles3D</InputPfoListName>
@@ -339,6 +348,13 @@
     <!-- Final output and validation -->
     <algorithm type = "LArListChanging">
         <PfoListName>AllNeutrinoParticles3D</PfoListName>
+    </algorithm>
+
+    <algorithm type = "LArMCParticleMonitoring">
+        <CaloHitListName>CaloHitList2D</CaloHitListName>
+        <MCParticleListName>MCParticleList3D</MCParticleListName>
+        <NeutrinoInducedOnly>true</NeutrinoInducedOnly>
+        <MinHitsForDisplay>1</MinHitsForDisplay>
     </algorithm>
 
     <algorithm type = "LArEventValidation">
