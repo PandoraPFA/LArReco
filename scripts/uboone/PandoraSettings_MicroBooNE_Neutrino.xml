@@ -124,14 +124,17 @@
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
                 <WriteToTree>true</WriteToTree>
                 <OutputTree>TrkShw2D</OutputTree>
-                <OutputFile>TrkShw_2D_NoBranches.root</OutputFile>
+                <OutputFile>TrkShw_2D_NoBranches_1004.root</OutputFile>
             </algorithm>
             <algorithm type = "LArPfoCharacterisation">
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+                <ClusterListNameU>ClustersU</ClusterListNameU>
+                <ClusterListNameV>ClustersV</ClusterListNameV>
+                <ClusterListNameW>ClustersW</ClusterListNameW>
                 <WriteToTree>true</WriteToTree>
                 <OutputTree>TrkShw3DI</OutputTree>
-                <OutputFile>TrkShw_3x2D_NoBranches.root</OutputFile>
+                <OutputFile>TrkShw_3x2D_NoBranches_1004.root</OutputFile>
             </algorithm>
             <algorithm type = "LArListDeletion">
                 <PfoListNames>ShowerParticles3D</PfoListNames>
@@ -217,9 +220,12 @@
             <algorithm type = "LArPfoCharacterisation">
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+                <ClusterListNameU>ClustersU</ClusterListNameU>
+                <ClusterListNameV>ClustersV</ClusterListNameV>
+                <ClusterListNameW>ClustersW</ClusterListNameW>
                 <WriteToTree>true</WriteToTree>
                 <OutputTree>TrkShw3DII</OutputTree>
-                <OutputFile>TrkShw_3x2D_Branches.root</OutputFile>
+                <OutputFile>TrkShw_3x2D_Branches_1004.root</OutputFile>
             </algorithm>
             <algorithm type = "LArThreeDHitCreation">
                 <InputPfoListName>TrackParticles3D</InputPfoListName>
