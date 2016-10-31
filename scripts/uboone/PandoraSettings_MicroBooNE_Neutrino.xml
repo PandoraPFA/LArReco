@@ -51,7 +51,7 @@
         <ClusterListNameV>ClustersV</ClusterListNameV>
         <ClusterListNameW>ClustersW</ClusterListNameW>
 
-        <ShouldPerformSlicing>false</ShouldPerformSlicing>
+        <ShouldPerformSlicing>true</ShouldPerformSlicing>
 
         <algorithm type = "LArTrackClusterCreation" description = "TwoDClustering"/>
 
@@ -120,12 +120,6 @@
             </algorithm>
 
             <!-- Shower reconstruction -->
-            <algorithm type = "LArClusterCharacterisation">
-                <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
-                <WriteToTree>true</WriteToTree>
-                <OutputTree>TrkShw2D</OutputTree>
-                <OutputFile>TrkShw_2D_NoBranches_1004.root</OutputFile>
-            </algorithm>
             <algorithm type = "LArPfoCharacterisation">
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
@@ -138,6 +132,12 @@
             </algorithm>
             <algorithm type = "LArListDeletion">
                 <PfoListNames>ShowerParticles3D</PfoListNames>
+            </algorithm>
+            <algorithm type = "LArClusterCharacterisation">
+                <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+                <WriteToTree>true</WriteToTree>
+                <OutputTree>TrkShw2D</OutputTree>
+                <OutputFile>TrkShw_2D_NoBranches_1004.root</OutputFile>
             </algorithm>
             <algorithm type = "LArShowerGrowing">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
@@ -217,7 +217,7 @@
         </ThreeDAlgorithms>
 
         <ThreeDHitAlgorithms>
-            <algorithm type = "LArPfoCharacterisation">
+            <algorithm type = "LArCheatingPfoCharacterisation">
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
                 <ClusterListNameU>ClustersU</ClusterListNameU>
@@ -379,7 +379,7 @@
         <MatchingMinSharedHits>5</MatchingMinSharedHits>
         <WriteToTree>true</WriteToTree>
         <OutputTree>Validation</OutputTree>
-        <OutputFile>Validation4.root</OutputFile>
+        <OutputFile>Validation_1004.root</OutputFile>
     </algorithm>
 
     <!--algorithm type = "LArVisualMonitoring">
