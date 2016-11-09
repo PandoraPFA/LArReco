@@ -51,7 +51,7 @@
         <ClusterListNameV>ClustersV</ClusterListNameV>
         <ClusterListNameW>ClustersW</ClusterListNameW>
 
-        <ShouldPerformSlicing>false</ShouldPerformSlicing>
+        <ShouldPerformSlicing>true</ShouldPerformSlicing>
 
         <algorithm type = "LArTrackClusterCreation" description = "TwoDClustering"/>
 
@@ -132,9 +132,6 @@
             </algorithm>
             <algorithm type = "LArShowerGrowing">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
-                <WriteToTree>true</WriteToTree>
-                <OutputTree>ShwGrow</OutputTree>
-                <OutputFile>ShwGrow_1004.root</OutputFile>
             </algorithm>
             <algorithm type = "LArThreeDShowers">
                 <InputClusterListNameU>ClustersU</InputClusterListNameU>
@@ -143,8 +140,7 @@
                 <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
                 <ShowerTools>
                     <tool type = "LArClearShowers"/>
-                    <tool type = "LArSplitShowers"><NCommonClusters>2</NCommonClusters></tool>
-                    <!--tool type = "LArSplitShowers"><NCommonClusters>1</NCommonClusters></tool-->
+                    <tool type = "LArSplitShowers"/>
                     <tool type = "LArSimpleShowers"/>
                 </ShowerTools>
             </algorithm>
