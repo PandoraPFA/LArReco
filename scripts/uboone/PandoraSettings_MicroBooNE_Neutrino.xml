@@ -140,8 +140,7 @@
                 <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
                 <ShowerTools>
                     <tool type = "LArClearShowers"/>
-                    <tool type = "LArSplitShowers"><NCommonClusters>2</NCommonClusters></tool>
-                    <tool type = "LArSplitShowers"><NCommonClusters>1</NCommonClusters></tool>
+                    <tool type = "LArSplitShowers"/>
                     <tool type = "LArSimpleShowers"/>
                 </ShowerTools>
             </algorithm>
