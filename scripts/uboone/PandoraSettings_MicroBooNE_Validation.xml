@@ -246,7 +246,6 @@
             </algorithm>
             <algorithm type = "LArVertexSplitting">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
-                <MinClusterLength>5.</MinClusterLength>
             </algorithm>
         </VertexAlgorithms>
 
