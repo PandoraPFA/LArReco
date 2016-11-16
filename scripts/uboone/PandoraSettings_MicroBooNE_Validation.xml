@@ -236,6 +236,7 @@
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
                 <OutputVertexListName>CandidateVertices</OutputVertexListName>
                 <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
+                <EnableCrossingCandidates>true</EnableCrossingCandidates>
             </algorithm>
             <algorithm type = "LArEnergyKickVertexSelection">
                 <InputCaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</InputCaloHitListNames>
