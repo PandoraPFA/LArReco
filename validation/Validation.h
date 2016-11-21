@@ -90,6 +90,9 @@ enum ExpectedPrimary
     ELECTRON,
     PROTON1,
     PROTON2,
+    PROTON3,
+    PROTON4,
+    PROTON5,
     PIPLUS,
     PIMINUS,
     NEUTRON,
@@ -107,21 +110,70 @@ typedef std::map<ExpectedPrimary, CountingDetails> CountingMap;
  */
 enum InteractionType
 {
+    // TODO Move to dynamic interaction type identification and labelling
     CCQEL_MU,
     CCQEL_MU_P,
     CCQEL_MU_P_P,
+    CCQEL_MU_P_P_P,
+    CCQEL_MU_P_P_P_P,
+    CCQEL_MU_P_P_P_P_P,
     NCQEL_P,
     NCQEL_P_P,
+    NCQEL_P_P_P,
+    NCQEL_P_P_P_P,
+    NCQEL_P_P_P_P_P,
+    CCRES_MU,
+    CCRES_MU_P,
+    CCRES_MU_P_P,
+    CCRES_MU_P_P_P,
+    CCRES_MU_P_P_P_P,
+    CCRES_MU_P_P_P_P_P,
     CCRES_MU_PIPLUS,
     CCRES_MU_P_PIPLUS,
     CCRES_MU_P_P_PIPLUS,
+    CCRES_MU_P_P_P_PIPLUS,
+    CCRES_MU_P_P_P_P_PIPLUS,
+    CCRES_MU_P_P_P_P_P_PIPLUS,
+    CCRES_MU_PHOTON,
+    CCRES_MU_P_PHOTON,
+    CCRES_MU_P_P_PHOTON,
+    CCRES_MU_P_P_P_PHOTON,
+    CCRES_MU_P_P_P_P_PHOTON,
+    CCRES_MU_P_P_P_P_P_PHOTON,
     CCRES_MU_PIZERO,
     CCRES_MU_P_PIZERO,
     CCRES_MU_P_P_PIZERO,
+    CCRES_MU_P_P_P_PIZERO,
+    CCRES_MU_P_P_P_P_PIZERO,
+    CCRES_MU_P_P_P_P_P_PIZERO,
+    NCRES_PIPLUS,
     NCRES_P_PIPLUS,
     NCRES_P_P_PIPLUS,
+    NCRES_P_P_P_PIPLUS,
+    NCRES_P_P_P_P_PIPLUS,
+    NCRES_P_P_P_P_P_PIPLUS,
+    NCRES_PIMINUS,
+    NCRES_P_PIMINUS,
+    NCRES_P_P_PIMINUS,
+    NCRES_P_P_P_PIMINUS,
+    NCRES_P_P_P_P_PIMINUS,
+    NCRES_P_P_P_P_P_PIMINUS,
+    NCRES_PHOTON,
+    NCRES_P_PHOTON,
+    NCRES_P_P_PHOTON,
+    NCRES_P_P_P_PHOTON,
+    NCRES_P_P_P_P_PHOTON,
+    NCRES_P_P_P_P_P_PHOTON,
+    NCRES_PIZERO,
     NCRES_P_PIZERO,
     NCRES_P_P_PIZERO,
+    NCRES_P_P_P_PIZERO,
+    NCRES_P_P_P_P_PIZERO,
+    NCRES_P_P_P_P_P_PIZERO,
+    CCDIS,
+    NCDIS,
+    CCCOH,
+    NCCOH,
     OTHER_INTERACTION,
     ALL_INTERACTIONS // ATTN use carefully!
 };
@@ -522,18 +574,66 @@ std::string ToString(const InteractionType interactionType)
     case CCQEL_MU: return "CCQEL_MU";
     case CCQEL_MU_P: return "CCQEL_MU_P";
     case CCQEL_MU_P_P: return "CCQEL_MU_P_P";
+    case CCQEL_MU_P_P_P: return "CCQEL_MU_P_P_P";
+    case CCQEL_MU_P_P_P_P: return "CCQEL_MU_P_P_P_P";
+    case CCQEL_MU_P_P_P_P_P: return "CCQEL_MU_P_P_P_P_P";
     case NCQEL_P: return "NCQEL_P";
     case NCQEL_P_P: return "NCQEL_P_P";
+    case NCQEL_P_P_P: return "NCQEL_P_P_P";
+    case NCQEL_P_P_P_P: return "NCQEL_P_P_P_P";
+    case NCQEL_P_P_P_P_P: return "NCQEL_P_P_P_P_P";
+    case CCRES_MU: return "CCRES_MU";
+    case CCRES_MU_P: return "CCRES_MU_P";
+    case CCRES_MU_P_P: return "CCRES_MU_P_P";
+    case CCRES_MU_P_P_P: return "CCRES_MU_P_P_P";
+    case CCRES_MU_P_P_P_P: return "CCRES_MU_P_P_P_P";
+    case CCRES_MU_P_P_P_P_P: return "CCRES_MU_P_P_P_P_P";
     case CCRES_MU_PIPLUS: return "CCRES_MU_PIPLUS";
     case CCRES_MU_P_PIPLUS: return "CCRES_MU_P_PIPLUS";
     case CCRES_MU_P_P_PIPLUS: return "CCRES_MU_P_P_PIPLUS";
+    case CCRES_MU_P_P_P_PIPLUS: return "CCRES_MU_P_P_P_PIPLUS";
+    case CCRES_MU_P_P_P_P_PIPLUS: return "CCRES_MU_P_P_P_P_PIPLUS";
+    case CCRES_MU_P_P_P_P_P_PIPLUS: return "CCRES_MU_P_P_P_P_P_PIPLUS";
+    case CCRES_MU_PHOTON: return "CCRES_MU_PHOTON";
+    case CCRES_MU_P_PHOTON: return "CCRES_MU_P_PHOTON";
+    case CCRES_MU_P_P_PHOTON: return "CCRES_MU_P_P_PHOTON";
+    case CCRES_MU_P_P_P_PHOTON: return "CCRES_MU_P_P_P_PHOTON";
+    case CCRES_MU_P_P_P_P_PHOTON: return "CCRES_MU_P_P_P_P_PHOTON";
+    case CCRES_MU_P_P_P_P_P_PHOTON: return "CCRES_MU_P_P_P_P_P_PHOTON";
     case CCRES_MU_PIZERO: return "CCRES_MU_PIZERO";
     case CCRES_MU_P_PIZERO: return "CCRES_MU_P_PIZERO";
     case CCRES_MU_P_P_PIZERO: return "CCRES_MU_P_P_PIZERO";
+    case CCRES_MU_P_P_P_PIZERO: return "CCRES_MU_P_P_P_PIZERO";
+    case CCRES_MU_P_P_P_P_PIZERO: return "CCRES_MU_P_P_P_P_PIZERO";
+    case CCRES_MU_P_P_P_P_P_PIZERO: return "CCRES_MU_P_P_P_P_P_PIZERO";
+    case NCRES_PIPLUS: return "NCRES_PIPLUS";
     case NCRES_P_PIPLUS: return "NCRES_P_PIPLUS";
     case NCRES_P_P_PIPLUS: return "NCRES_P_P_PIPLUS";
+    case NCRES_P_P_P_PIPLUS: return "NCRES_P_P_P_PIPLUS";
+    case NCRES_P_P_P_P_PIPLUS: return "NCRES_P_P_P_P_PIPLUS";
+    case NCRES_P_P_P_P_P_PIPLUS: return "NCRES_P_P_P_P_P_PIPLUS";
+    case NCRES_PIMINUS: return "NCRES_PIMINUS";
+    case NCRES_P_PIMINUS: return "NCRES_P_PIMINUS";
+    case NCRES_P_P_PIMINUS: return "NCRES_P_P_PIMINUS";
+    case NCRES_P_P_P_PIMINUS: return "NCRES_P_P_P_PIMINUS";
+    case NCRES_P_P_P_P_PIMINUS: return "NCRES_P_P_P_P_PIMINUS";
+    case NCRES_P_P_P_P_P_PIMINUS: return "NCRES_P_P_P_P_P_PIMINUS";
+    case NCRES_PHOTON: return "NCRES_PHOTON";
+    case NCRES_P_PHOTON: return "NCRES_P_PHOTON";
+    case NCRES_P_P_PHOTON: return "NCRES_P_P_PHOTON";
+    case NCRES_P_P_P_PHOTON: return "NCRES_P_P_P_PHOTON";
+    case NCRES_P_P_P_P_PHOTON: return "NCRES_P_P_P_P_PHOTON";
+    case NCRES_P_P_P_P_P_PHOTON: return "NCRES_P_P_P_P_P_PHOTON";
+    case NCRES_PIZERO: return "NCRES_PIZERO";
     case NCRES_P_PIZERO: return "NCRES_P_PIZERO";
     case NCRES_P_P_PIZERO: return "NCRES_P_P_PIZERO";
+    case NCRES_P_P_P_PIZERO: return "NCRES_P_P_P_PIZERO";
+    case NCRES_P_P_P_P_PIZERO: return "NCRES_P_P_P_P_PIZERO";
+    case NCRES_P_P_P_P_P_PIZERO: return "NCRES_P_P_P_P_P_PIZERO";
+    case CCDIS: return "CCDIS";
+    case NCDIS: return "NCDIS";
+    case CCCOH: return "CCCOH";
+    case NCCOH: return "NCCOH";
     case OTHER_INTERACTION: return "OTHER_INTERACTION";
     case ALL_INTERACTIONS: return "ALL_INTERACTIONS";
     default: return "UNKNOWN";
@@ -557,6 +657,9 @@ std::string ToString(const ExpectedPrimary expectedPrimary)
     case ELECTRON: return "ELECTRON";
     case PROTON1: return "PROTON1";
     case PROTON2: return "PROTON2";
+    case PROTON3: return "PROTON3";
+    case PROTON4: return "PROTON4";
+    case PROTON5: return "PROTON5";
     case PIPLUS: return "PIPLUS";
     case PIMINUS: return "PIMINUS";
     case NEUTRON: return "NEUTRON";
