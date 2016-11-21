@@ -89,18 +89,24 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const Mat
 
     InteractionType interactionType(OTHER_INTERACTION);
 
-    if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (1 == nNonNeutrons) && (1 == nMuons) && (0 == nProtons)) return CCQEL_MU;
-    if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (2 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons)) return CCQEL_MU_P;
-    if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons)) return CCQEL_MU_P_P;
-    if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (4 == nNonNeutrons) && (1 == nMuons) && (3 == nProtons)) return CCQEL_MU_P_P_P;
-    if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (5 == nNonNeutrons) && (1 == nMuons) && (4 == nProtons)) return CCQEL_MU_P_P_P_P;
-    if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (6 == nNonNeutrons) && (1 == nMuons) && (5 == nProtons)) return CCQEL_MU_P_P_P_P_P;
+    if (1001 == simpleMCEvent.m_mcNeutrinoNuance)
+    {
+        if ((1 == nNonNeutrons) && (1 == nMuons) && (0 == nProtons)) return CCQEL_MU;
+        if ((2 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons)) return CCQEL_MU_P;
+        if ((3 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons)) return CCQEL_MU_P_P;
+        if ((4 == nNonNeutrons) && (1 == nMuons) && (3 == nProtons)) return CCQEL_MU_P_P_P;
+        if ((5 == nNonNeutrons) && (1 == nMuons) && (4 == nProtons)) return CCQEL_MU_P_P_P_P;
+        if ((6 == nNonNeutrons) && (1 == nMuons) && (5 == nProtons)) return CCQEL_MU_P_P_P_P_P;
+    }
 
-    if ((1002 == simpleMCEvent.m_mcNeutrinoNuance) && (1 == nNonNeutrons) && (1 == nProtons)) return NCQEL_P;
-    if ((1002 == simpleMCEvent.m_mcNeutrinoNuance) && (2 == nNonNeutrons) && (2 == nProtons)) return NCQEL_P_P;
-    if ((1002 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nNonNeutrons) && (3 == nProtons)) return NCQEL_P_P_P;
-    if ((1002 == simpleMCEvent.m_mcNeutrinoNuance) && (4 == nNonNeutrons) && (4 == nProtons)) return NCQEL_P_P_P_P;
-    if ((1002 == simpleMCEvent.m_mcNeutrinoNuance) && (5 == nNonNeutrons) && (5 == nProtons)) return NCQEL_P_P_P_P_P;
+    if (1002 == simpleMCEvent.m_mcNeutrinoNuance)
+    {
+        if ((1 == nNonNeutrons) && (1 == nProtons)) return NCQEL_P;
+        if ((2 == nNonNeutrons) && (2 == nProtons)) return NCQEL_P_P;
+        if ((3 == nNonNeutrons) && (3 == nProtons)) return NCQEL_P_P_P;
+        if ((4 == nNonNeutrons) && (4 == nProtons)) return NCQEL_P_P_P_P;
+        if ((5 == nNonNeutrons) && (5 == nProtons)) return NCQEL_P_P_P_P_P;
+    }
 
     if ((simpleMCEvent.m_mcNeutrinoNuance >= 1003) && (simpleMCEvent.m_mcNeutrinoNuance <= 1005))
     {
