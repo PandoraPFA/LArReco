@@ -118,6 +118,10 @@ public:
     int                     m_nMCHitsU;                 ///< The number of u mc hits
     int                     m_nMCHitsV;                 ///< The number of v mc hits
     int                     m_nMCHitsW;                 ///< The number of w mc hits
+    int                     m_nGoodMCHitsTotal;         ///< The total number of good mc hits
+    int                     m_nGoodMCHitsU;             ///< The number of good u mc hits
+    int                     m_nGoodMCHitsV;             ///< The number of good v mc hits
+    int                     m_nGoodMCHitsW;             ///< The number of good w mc hits
     float                   m_energy;                   ///< The energy
     SimpleThreeVector       m_momentum;                 ///< The momentum (presumably at the vertex)
     SimpleThreeVector       m_vertex;                   ///< The vertex
@@ -249,6 +253,10 @@ SimpleMCPrimary::SimpleMCPrimary() :
     m_nMCHitsU(0),
     m_nMCHitsV(0),
     m_nMCHitsW(0),
+    m_nGoodMCHitsTotal(0),
+    m_nGoodMCHitsU(0),
+    m_nGoodMCHitsV(0),
+    m_nGoodMCHitsW(0),
     m_energy(0.f),
     m_momentum(0.f, 0.f, 0.f),
     m_vertex(-1.f, -1.f, -1.f),
@@ -310,6 +318,10 @@ unsigned int ValidationIO::ReadNextEvent(TChain *const pTChain, const unsigned i
         pTChain->SetBranchAddress("mcPrimaryNHitsU", &simpleMCPrimary.m_nMCHitsU);
         pTChain->SetBranchAddress("mcPrimaryNHitsV", &simpleMCPrimary.m_nMCHitsV);
         pTChain->SetBranchAddress("mcPrimaryNHitsW", &simpleMCPrimary.m_nMCHitsW);
+        pTChain->SetBranchAddress("mcPrimaryNGoodHitsTotal", &simpleMCPrimary.m_nGoodMCHitsTotal);
+        pTChain->SetBranchAddress("mcPrimaryNGoodHitsU", &simpleMCPrimary.m_nGoodMCHitsU);
+        pTChain->SetBranchAddress("mcPrimaryNGoodHitsV", &simpleMCPrimary.m_nGoodMCHitsV);
+        pTChain->SetBranchAddress("mcPrimaryNGoodHitsW", &simpleMCPrimary.m_nGoodMCHitsW);
         pTChain->SetBranchAddress("mcPrimaryE", &simpleMCPrimary.m_energy);
         pTChain->SetBranchAddress("mcPrimaryPX", &simpleMCPrimary.m_momentum.m_x);
         pTChain->SetBranchAddress("mcPrimaryPY", &simpleMCPrimary.m_momentum.m_y);
@@ -407,9 +419,11 @@ void ValidationIO::DisplaySimpleMCEvent(const SimpleMCEvent &simpleMCEvent)
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
 
-        std::cout << std::endl << "MCPrimary " << simpleMCPrimary.m_id << ", PDG " << simpleMCPrimary.m_pdgCode
+        std::cout << std::endl << "Primary " << simpleMCPrimary.m_id << ", PDG " << simpleMCPrimary.m_pdgCode
                   << ", nMCHits " << simpleMCPrimary.m_nMCHitsTotal << " (" << simpleMCPrimary.m_nMCHitsU
-                  << ", " << simpleMCPrimary.m_nMCHitsV << ", " << simpleMCPrimary.m_nMCHitsW << ")" << std::endl;
+                  << ", " << simpleMCPrimary.m_nMCHitsV << ", " << simpleMCPrimary.m_nMCHitsW << "),"
+                  << " [nGood " << simpleMCPrimary.m_nGoodMCHitsTotal << " (" << simpleMCPrimary.m_nGoodMCHitsU << ", " << simpleMCPrimary.m_nGoodMCHitsV
+                  << ", " << simpleMCPrimary.m_nGoodMCHitsW << ")]" << std::endl;
 
         for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
         {

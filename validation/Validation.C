@@ -73,7 +73,7 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const Mat
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
 
-        if (simpleMCPrimary.m_nMCHitsTotal < matchingParameters.m_minPrimaryHits)
+        if (simpleMCPrimary.m_nGoodMCHitsTotal < matchingParameters.m_minPrimaryHits)
             continue;
 
         if (2112 != simpleMCPrimary.m_pdgCode)
@@ -137,7 +137,7 @@ bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const MatchingPara
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
 
-        if (!matchingParameters.m_useSmallPrimaries && (simpleMCPrimary.m_nMCHitsTotal < matchingParameters.m_minPrimaryHits))
+        if (!matchingParameters.m_useSmallPrimaries && (simpleMCPrimary.m_nGoodMCHitsTotal < matchingParameters.m_minPrimaryHits))
             continue;
 
         if (usedMCIds.count(simpleMCPrimary.m_id))
@@ -182,7 +182,7 @@ void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const MatchingPa
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
 
-        if (!matchingParameters.m_useSmallPrimaries && (simpleMCPrimary.m_nMCHitsTotal < matchingParameters.m_minPrimaryHits))
+        if (!matchingParameters.m_useSmallPrimaries && (simpleMCPrimary.m_nGoodMCHitsTotal < matchingParameters.m_minPrimaryHits))
             continue;
 
         for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
@@ -308,7 +308,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
         const ExpectedPrimary expectedPrimary(GetExpectedPrimary(simpleMCPrimary.m_id, simpleMCEvent.m_mcPrimaryList));
 
-        const bool isTargetPrimary((simpleMCPrimary.m_nMCHitsTotal >= matchingParameters.m_minPrimaryHits) && (2112 != simpleMCPrimary.m_pdgCode));
+        const bool isTargetPrimary((simpleMCPrimary.m_nGoodMCHitsTotal >= matchingParameters.m_minPrimaryHits) && (2112 != simpleMCPrimary.m_pdgCode));
 
         if (!isTargetPrimary)
             continue;
@@ -384,7 +384,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
 void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &pfoMatchingMap, const MatchingParameters &matchingParameters)
 {
     std::cout << "---PROCESSED-MATCHING-OUTPUT--------------------------------------------------------------------" << std::endl;
-    std::cout << "MinPrimaryHits " << matchingParameters.m_minPrimaryHits << ", MinSharedHits " << matchingParameters.m_minSharedHits
+    std::cout << "MinGoodPrimaryHits " << matchingParameters.m_minPrimaryHits << ", MinSharedHits " << matchingParameters.m_minSharedHits
               << ", UseSmallPrimaries " << matchingParameters.m_useSmallPrimaries << ", MinCompleteness " << matchingParameters.m_minCompleteness
               << ", MinPurity " << matchingParameters.m_minPurity << std::endl;
 
@@ -394,14 +394,16 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
         const bool hasMatch(HasMatch(simpleMCPrimary, pfoMatchingMap, matchingParameters));
-        const bool isTargetPrimary((simpleMCPrimary.m_nMCHitsTotal >= matchingParameters.m_minPrimaryHits) && (2112 != simpleMCPrimary.m_pdgCode));
+        const bool isTargetPrimary((simpleMCPrimary.m_nGoodMCHitsTotal >= matchingParameters.m_minPrimaryHits) && (2112 != simpleMCPrimary.m_pdgCode));
 
         if (!hasMatch && !isTargetPrimary)
             continue;
 
         std::cout << std::endl << (!isTargetPrimary ? "(Non target) " : "") << "Primary " << simpleMCPrimary.m_id
                   << ", PDG " << simpleMCPrimary.m_pdgCode << ", nMCHits " << simpleMCPrimary.m_nMCHitsTotal
-                  << " (" << simpleMCPrimary.m_nMCHitsU << ", " << simpleMCPrimary.m_nMCHitsV << ", " << simpleMCPrimary.m_nMCHitsW << ")" << std::endl;
+                  << " (" << simpleMCPrimary.m_nMCHitsU << ", " << simpleMCPrimary.m_nMCHitsV << ", " << simpleMCPrimary.m_nMCHitsW << "),"
+                  << " [nGood " << simpleMCPrimary.m_nGoodMCHitsTotal << " (" << simpleMCPrimary.m_nGoodMCHitsU << ", " << simpleMCPrimary.m_nGoodMCHitsV
+                  << ", " << simpleMCPrimary.m_nGoodMCHitsW << ")]" << std::endl;
 
         if (2112 != simpleMCPrimary.m_pdgCode)
             isCalculable = true;
@@ -440,7 +442,7 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
 
 void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCountingMap, const MatchingParameters &matchingParameters, const std::string &mapFileName)
 {
-    std::cout << "MinPrimaryHits " << matchingParameters.m_minPrimaryHits << ", MinSharedHits " << matchingParameters.m_minSharedHits
+    std::cout << "MinGoodPrimaryHits " << matchingParameters.m_minPrimaryHits << ", MinSharedHits " << matchingParameters.m_minSharedHits
               << ", UseSmallPrimaries " << matchingParameters.m_useSmallPrimaries << ", MinCompleteness " << matchingParameters.m_minCompleteness
               << ", MinPurity " << matchingParameters.m_minPurity << std::endl;
 
@@ -448,7 +450,7 @@ void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCoun
     if (!mapFileName.empty())
     {
         mapFile.open(mapFileName, ios::app);
-        mapFile << "MinPrimaryHits " << matchingParameters.m_minPrimaryHits << ", MinSharedHits " << matchingParameters.m_minSharedHits
+        mapFile << "MinGoodPrimaryHits " << matchingParameters.m_minPrimaryHits << ", MinSharedHits " << matchingParameters.m_minSharedHits
                 << ", UseSmallPrimaries " << matchingParameters.m_useSmallPrimaries << ", MinCompleteness " << matchingParameters.m_minCompleteness
                 << ", MinPurity " << matchingParameters.m_minPurity << std::endl;
     }
