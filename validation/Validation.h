@@ -19,7 +19,9 @@ public:
     /**
      *  @brief  Constructor
      * 
-     *  @param  minPrimaryHits the minimum number of mc primary hits
+     *  @param  minPrimaryGoodHits the minimum number of good mc primary hits
+     *  @param  minHitsForGoodView minimum number of good mc primary hits in given view to declare view to be good
+     *  @param  minPrimaryGoodViews minimum number of good views for a mc primary
      *  @param  useSmallPrimaries whether to consider matches to mc primaries with fewer than minPrimaryHits
      *  @param  minSharedHits the minimum number of shared hit
      *  @param  minCompleteness the minimum particle completeness
@@ -27,11 +29,13 @@ public:
      *  @param  applyFiducialCut whether to apply fiducial volume cut to true neutrino vertex position
      *  @param  correctTrackShowerId whether to demand that pfos are correctly flagged as tracks or showers
      */
-    MatchingParameters(const int minPrimaryHits, const bool useSmallPrimaries, const int minSharedHits, const float minCompleteness,
-        const float minPurity, const bool applyFiducialCut, const bool correctTrackShowerId);
+    MatchingParameters(const int minPrimaryGoodHits, const int minHitsForGoodView, const int minPrimaryGoodViews, const bool useSmallPrimaries,
+        const int minSharedHits, const float minCompleteness, const float minPurity, const bool applyFiducialCut, const bool correctTrackShowerId);
 
-    int                     m_minPrimaryHits;           ///< The minimum number of mc primary hits used in matching scheme
-    bool                    m_useSmallPrimaries;        ///< Whether to consider matches to mc primaries with fewer than m_minPrimaryHits
+    int                     m_minPrimaryGoodHits;       ///< The minimum number of good mc primary hits
+    bool                    m_useSmallPrimaries;        ///< Whether to consider matches to mc primaries with fewer than m_minPrimaryGoodHits
+    int                     m_minHitsForGoodView;       ///< The minimum number of good mc primary hits in given view to declare view to be good
+    int                     m_minPrimaryGoodViews;      ///< The minimum number of good views for a mc primary
     int                     m_minSharedHits;            ///< The minimum number of shared hits used in matching scheme
     float                   m_minCompleteness;          ///< The minimum particle completeness to declare a match
     float                   m_minPurity;                ///< The minimum particle purity to declare a match
@@ -297,24 +301,38 @@ typedef std::map<InteractionType, PrimaryHistogramMap> InteractionPrimaryHistogr
  *  @param  shouldDisplayMatchedEvents whether to display matching results for individual events
  *  @param  skipEvents the number of events to skip
  *  @param  nEventsToProcess the number of events to process
- *  @param  minPrimaryHits the min number of hits in order to consider a primary
+ *  @param  minPrimaryGoodHits the minimum number of good mc primary hits
+ *  @param  minHitsForGoodView minimum number of good mc primary hits in given view to declare view to be good
+ *  @param  minPrimaryGoodViews minimum number of good views for a mc primary
+ *  @param  minCompleteness minimum particle completeness to declare a match
+ *  @param  minPurity minimum particle purity to declare a match
+ *  @param  useSmallPrimaries whether to consider matches to mc primaries with fewer than minPrimaryHits
  *  @param  minSharedHits the min number of shared hits in order to consider a matched pfo
- *  @param  histogramOutput whether to produce output histograms
- *  @param  correctTrackShowerId whether to demand that pfos are correctly flagged as tracks or showers
  *  @param  applyFiducialCut whether to apply fiducial volume cut to true neutrino vertex position
+ *  @param  correctTrackShowerId whether to demand that pfos are correctly flagged as tracks or showers
+ *  @param  histogramOutput whether to produce output histograms
  *  @param  histPrefix histogram name prefix
  *  @param  mapFileName file name to which to write output ascii tables, etc.
  *  @param  eventFileName file name to which to write list of correct events
- *  @param  useSmallPrimaries whether to consider matches to mc primaries with fewer than primaryMinHits
- *  @param  minCompleteness minimum particle completeness to declare a match
- *  @param  minPurity minimum particle purity to declare a match
  */
-void Validation(const std::string inputFiles, const bool shouldDisplayEvents = true, const bool shouldDisplayMatchedEvents = true,
-    const int skipEvents = 0, const int nEventsToProcess = std::numeric_limits<int>::max(),
-    const int minPrimaryHits = 15, const int minSharedHits = 5,
-    const bool histogramOutput = false, const bool correctTrackShowerId = false, const bool applyFiducialCut = false,
-    const std::string histPrefix = "", const std::string mapFileName = "", const std::string eventFileName = "",
-    const bool useSmallPrimaries = true, const float minCompleteness = 0.1f, const float minPurity = 0.5f);
+void Validation(const std::string inputFiles,
+    const bool shouldDisplayEvents = true,
+    const bool shouldDisplayMatchedEvents = true,
+    const int skipEvents = 0,
+    const int nEventsToProcess = std::numeric_limits<int>::max(),
+    const int minPrimaryGoodHits = 15,
+    const int minHitsForGoodView = 5,
+    const int minPrimaryGoodViews = 2,
+    const bool useSmallPrimaries = true,
+    const int minSharedHits = 5,
+    const float minCompleteness = 0.1f,
+    const float minPurity = 0.5f,
+    const bool applyFiducialCut = true,
+    const bool correctTrackShowerId = false,
+    const bool histogramOutput = false,
+    const std::string histPrefix = "",
+    const std::string mapFileName = "",
+    const std::string eventFileName = "");
 
 /**
  *  @brief  Get the event interaction type
@@ -357,6 +375,16 @@ bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const MatchingPara
  */
 void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const MatchingParameters &matchingParameters, const IntSet &usedPfoIds,
     PfoMatchingMap &pfoMatchingMap);
+
+/**
+ *  @brief  Whether a provided mc primary passes selection, based on number of "good" hits
+ * 
+ *  @param  simpleMCPrimary the simple mc primary
+ *  @param  matchingParameters the matching parameters
+ * 
+ *  @return boolean
+ */
+bool IsGoodMCPrimary(const SimpleMCPrimary &simpleMCPrimary, const MatchingParameters &matchingParameters);
 
 /**
  *  @brief  Whether a provided mc primary has a match, of any quality (use simple matched pfo list and information in matching details map)
@@ -472,9 +500,11 @@ void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interacti
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-MatchingParameters::MatchingParameters(const int minPrimaryHits, const bool useSmallPrimaries, const int minSharedHits, const float minCompleteness,
-        const float minPurity, const bool applyFiducialCut, const bool correctTrackShowerId) :
-    m_minPrimaryHits(minPrimaryHits),
+MatchingParameters::MatchingParameters(const int minPrimaryGoodHits, const int minHitsForGoodView, const int minPrimaryGoodViews, const bool useSmallPrimaries,
+        const int minSharedHits, const float minCompleteness, const float minPurity, const bool applyFiducialCut, const bool correctTrackShowerId) :
+    m_minPrimaryGoodHits(minPrimaryGoodHits),
+    m_minHitsForGoodView(minHitsForGoodView),
+    m_minPrimaryGoodViews(minPrimaryGoodViews),
     m_useSmallPrimaries(useSmallPrimaries),
     m_minSharedHits(minSharedHits),
     m_minCompleteness(minCompleteness),

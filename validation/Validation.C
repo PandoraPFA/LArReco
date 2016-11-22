@@ -14,12 +14,28 @@
 #include <iostream>
 #include <iomanip>
 
-void Validation(const std::string inputFiles, const bool shouldDisplayEvents, const bool shouldDisplayMatchedEvents, const int skipEvents,
-    const int nEventsToProcess, const int minPrimaryHits, const int minSharedHits, const bool histogramOutput, const bool correctTrackShowerId,
-    const bool applyFiducialCut, const std::string histPrefix, const std::string mapFileName, const std::string eventFileName,
-    const bool useSmallPrimaries, const float minCompleteness, const float minPurity) // TODO Reduce number of arguments to avoid confusion
+// TODO Reduce number of arguments to avoid confusion
+void Validation(const std::string inputFiles,
+    const bool shouldDisplayEvents,
+    const bool shouldDisplayMatchedEvents,
+    const int skipEvents,
+    const int nEventsToProcess,
+    const int minPrimaryGoodHits,
+    const int minHitsForGoodView,
+    const int minPrimaryGoodViews,
+    const bool useSmallPrimaries,
+    const int minSharedHits,
+    const float minCompleteness,
+    const float minPurity,
+    const bool applyFiducialCut,
+    const bool correctTrackShowerId,
+    const bool histogramOutput,
+    const std::string histPrefix,
+    const std::string mapFileName,
+    const std::string eventFileName)
 {
-    const MatchingParameters matchingParameters(minPrimaryHits, useSmallPrimaries, minSharedHits, minCompleteness, minPurity, applyFiducialCut, correctTrackShowerId);
+    const MatchingParameters matchingParameters(minPrimaryGoodHits, minHitsForGoodView, minPrimaryGoodViews, useSmallPrimaries,
+        minSharedHits, minCompleteness, minPurity, applyFiducialCut, correctTrackShowerId);
 
     TChain *pTChain = new TChain("Validation", "pTChain");
     pTChain->Add(inputFiles.c_str());
@@ -73,7 +89,7 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const Mat
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
 
-        if (simpleMCPrimary.m_nGoodMCHitsTotal < matchingParameters.m_minPrimaryHits)
+        if (!IsGoodMCPrimary(simpleMCPrimary, matchingParameters))
             continue;
 
         if (2112 != simpleMCPrimary.m_pdgCode)
@@ -202,7 +218,7 @@ bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const MatchingPara
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
 
-        if (!matchingParameters.m_useSmallPrimaries && (simpleMCPrimary.m_nGoodMCHitsTotal < matchingParameters.m_minPrimaryHits))
+        if (!matchingParameters.m_useSmallPrimaries && !IsGoodMCPrimary(simpleMCPrimary, matchingParameters))
             continue;
 
         if (usedMCIds.count(simpleMCPrimary.m_id))
@@ -247,7 +263,7 @@ void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const MatchingPa
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
 
-        if (!matchingParameters.m_useSmallPrimaries && (simpleMCPrimary.m_nGoodMCHitsTotal < matchingParameters.m_minPrimaryHits))
+        if (!matchingParameters.m_useSmallPrimaries && !IsGoodMCPrimary(simpleMCPrimary, matchingParameters))
             continue;
 
         for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
@@ -266,6 +282,24 @@ void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const MatchingPa
             }
         }
     }
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+bool IsGoodMCPrimary(const SimpleMCPrimary &simpleMCPrimary, const MatchingParameters &matchingParameters)
+{
+    if (simpleMCPrimary.m_nGoodMCHitsTotal < matchingParameters.m_minPrimaryGoodHits)
+        return false;
+
+    int nGoodViews(0);
+    if (simpleMCPrimary.m_nGoodMCHitsU >= matchingParameters.m_minHitsForGoodView) ++nGoodViews;
+    if (simpleMCPrimary.m_nGoodMCHitsV >= matchingParameters.m_minHitsForGoodView) ++nGoodViews;
+    if (simpleMCPrimary.m_nGoodMCHitsW >= matchingParameters.m_minHitsForGoodView) ++nGoodViews;
+
+    if (nGoodViews < matchingParameters.m_minPrimaryGoodViews)
+        return false;
+
+    return true;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -375,7 +409,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
         const ExpectedPrimary expectedPrimary(GetExpectedPrimary(simpleMCPrimary.m_id, simpleMCEvent.m_mcPrimaryList));
 
-        const bool isTargetPrimary((simpleMCPrimary.m_nGoodMCHitsTotal >= matchingParameters.m_minPrimaryHits) && (2112 != simpleMCPrimary.m_pdgCode));
+        const bool isTargetPrimary(IsGoodMCPrimary(simpleMCPrimary, matchingParameters) && (2112 != simpleMCPrimary.m_pdgCode));
 
         if (!isTargetPrimary)
             continue;
@@ -451,7 +485,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType i
 void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &pfoMatchingMap, const MatchingParameters &matchingParameters)
 {
     std::cout << "---PROCESSED-MATCHING-OUTPUT--------------------------------------------------------------------" << std::endl;
-    std::cout << "MinGoodPrimaryHits " << matchingParameters.m_minPrimaryHits << ", MinSharedHits " << matchingParameters.m_minSharedHits
+    std::cout << "MinGoodPrimaryHits " << matchingParameters.m_minPrimaryGoodHits << ", MinSharedHits " << matchingParameters.m_minSharedHits
               << ", UseSmallPrimaries " << matchingParameters.m_useSmallPrimaries << ", MinCompleteness " << matchingParameters.m_minCompleteness
               << ", MinPurity " << matchingParameters.m_minPurity << std::endl;
 
@@ -461,7 +495,7 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
         const bool hasMatch(HasMatch(simpleMCPrimary, pfoMatchingMap, matchingParameters));
-        const bool isTargetPrimary((simpleMCPrimary.m_nGoodMCHitsTotal >= matchingParameters.m_minPrimaryHits) && (2112 != simpleMCPrimary.m_pdgCode));
+        const bool isTargetPrimary(IsGoodMCPrimary(simpleMCPrimary, matchingParameters) && (2112 != simpleMCPrimary.m_pdgCode));
 
         if (!hasMatch && !isTargetPrimary)
             continue;
@@ -509,17 +543,15 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
 
 void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCountingMap, const MatchingParameters &matchingParameters, const std::string &mapFileName)
 {
-    std::cout << "MinGoodPrimaryHits " << matchingParameters.m_minPrimaryHits << ", MinSharedHits " << matchingParameters.m_minSharedHits
-              << ", UseSmallPrimaries " << matchingParameters.m_useSmallPrimaries << ", MinCompleteness " << matchingParameters.m_minCompleteness
-              << ", MinPurity " << matchingParameters.m_minPurity << std::endl;
+    std::cout << "MinPrimaryGoodHits " << matchingParameters.m_minPrimaryGoodHits << ", MinHitsForGoodView " << matchingParameters.m_minHitsForGoodView << ", MinPrimaryGoodViews " << matchingParameters.m_minPrimaryGoodViews << std::endl;
+    std::cout << "UseSmallPrimaries " << matchingParameters.m_useSmallPrimaries << ", MinSharedHits " << matchingParameters.m_minSharedHits << ", MinCompleteness " << matchingParameters.m_minCompleteness << ", MinPurity " << matchingParameters.m_minPurity << std::endl;
 
     std::ofstream mapFile;
     if (!mapFileName.empty())
     {
         mapFile.open(mapFileName, ios::app);
-        mapFile << "MinGoodPrimaryHits " << matchingParameters.m_minPrimaryHits << ", MinSharedHits " << matchingParameters.m_minSharedHits
-                << ", UseSmallPrimaries " << matchingParameters.m_useSmallPrimaries << ", MinCompleteness " << matchingParameters.m_minCompleteness
-                << ", MinPurity " << matchingParameters.m_minPurity << std::endl;
+        mapFile << "MinPrimaryGoodHits " << matchingParameters.m_minPrimaryGoodHits << ", MinHitsForGoodView " << matchingParameters.m_minHitsForGoodView << ", MinPrimaryGoodViews " << matchingParameters.m_minPrimaryGoodViews << std::endl;
+        mapFile << "UseSmallPrimaries " << matchingParameters.m_useSmallPrimaries << ", MinSharedHits " << matchingParameters.m_minSharedHits << ", MinCompleteness " << matchingParameters.m_minCompleteness << ", MinPurity " << matchingParameters.m_minPurity << std::endl;
     }
 
     std::cout << std::fixed;
