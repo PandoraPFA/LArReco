@@ -407,10 +407,11 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const Par
  * 
  *  @param  primaryId the primary id
  *  @param  simpleMCPrimaryList the simple mc primary list
+ *  @param  parameters the parameters
  * 
  *  @return the expected primary
  */
-ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryList &simpleMCPrimaryList);
+ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryList &simpleMCPrimaryList, const Parameters &parameters);
 
 /**
  *  @brief  Print details to screen for a provided interaction type to counting map

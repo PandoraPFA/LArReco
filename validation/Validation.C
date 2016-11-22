@@ -195,9 +195,8 @@ bool IsGoodMatch(const SimpleMCPrimary &simpleMCPrimary, const SimpleMatchedPfo 
 void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &pfoMatchingMap, const Parameters &parameters)
 {
     std::cout << "---PROCESSED-MATCHING-OUTPUT--------------------------------------------------------------------" << std::endl;
-    std::cout << "MinGoodPrimaryHits " << parameters.m_minPrimaryGoodHits << ", MinSharedHits " << parameters.m_minSharedHits
-              << ", UseSmallPrimaries " << parameters.m_useSmallPrimaries << ", MinCompleteness " << parameters.m_minCompleteness
-              << ", MinPurity " << parameters.m_minPurity << std::endl;
+    std::cout << "MinPrimaryGoodHits " << parameters.m_minPrimaryGoodHits << ", MinHitsForGoodView " << parameters.m_minHitsForGoodView << ", MinPrimaryGoodViews " << parameters.m_minPrimaryGoodViews << std::endl;
+    std::cout << "UseSmallPrimaries " << parameters.m_useSmallPrimaries << ", MinSharedHits " << parameters.m_minSharedHits << ", MinCompleteness " << parameters.m_minCompleteness << ", MinPurity " << parameters.m_minPurity << std::endl;
 
     bool isCorrect(true), isCalculable(false);
 
@@ -267,7 +266,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
     for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
-        const ExpectedPrimary expectedPrimary(GetExpectedPrimary(simpleMCPrimary.m_id, simpleMCEvent.m_mcPrimaryList));
+        const ExpectedPrimary expectedPrimary(GetExpectedPrimary(simpleMCPrimary.m_id, simpleMCEvent.m_mcPrimaryList, parameters));
 
         const bool isTargetPrimary(IsGoodMCPrimary(simpleMCPrimary, parameters) && (2112 != simpleMCPrimary.m_pdgCode));
 
@@ -481,7 +480,7 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const Par
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryList &simpleMCPrimaryList)
+ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryList &simpleMCPrimaryList, const Parameters &parameters)
 {
     // ATTN: Relies on fact that primary list is sorted by number of good true hits
     unsigned int nMuons(0), nElectrons(0), nProtons(0), nPiPlus(0), nPiMinus(0), nNeutrons(0), nPhotons(0);
@@ -489,6 +488,9 @@ ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryLis
     for (SimpleMCPrimaryList::const_iterator iter = simpleMCPrimaryList.begin(); iter != simpleMCPrimaryList.end(); ++iter)
     {
         const SimpleMCPrimary &simpleMCPrimary(*iter);
+
+        if (!IsGoodMCPrimary(simpleMCPrimary, parameters))
+            continue;
 
         if (primaryId == simpleMCPrimary.m_id)
         {
