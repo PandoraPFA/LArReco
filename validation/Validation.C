@@ -14,13 +14,8 @@
 #include <iostream>
 #include <iomanip>
 
-void Validation(const std::string inputFiles, const bool shouldDisplayEvents, const bool shouldDisplayMatchedEvents, const int skipEvents,
-    const int nEventsToProcess, const int minPrimaryHits, const int minSharedHits, const bool histogramOutput, const bool correctTrackShowerId,
-    const bool applyFiducialCut, const std::string histPrefix, const std::string mapFileName, const std::string eventFileName,
-    const bool useSmallPrimaries, const float minCompleteness, const float minPurity) // TODO Reduce number of arguments to avoid confusion
+void Validation(const std::string inputFiles, const Parameters parameters)
 {
-    const MatchingParameters matchingParameters(minPrimaryHits, useSmallPrimaries, minSharedHits, minCompleteness, minPurity, applyFiducialCut, correctTrackShowerId);
-
     TChain *pTChain = new TChain("Validation", "pTChain");
     pTChain->Add(inputFiles.c_str());
 
@@ -35,37 +30,343 @@ void Validation(const std::string inputFiles, const bool shouldDisplayEvents, co
         SimpleMCEvent simpleMCEvent;
         iEntry += ValidationIO::ReadNextEvent(pTChain, iEntry, simpleMCEvent);
 
-        if (nEvents++ < skipEvents)
+        if (nEvents++ < parameters.m_skipEvents)
             continue;
 
         if (nEvents % 50 == 0)
             std::cout << "nEvents " << nEvents << "\r" << std::flush;
 
-        if (nProcessedEvents++ >= nEventsToProcess)
+        if (nProcessedEvents++ >= parameters.m_nEventsToProcess)
             break;
 
-        if (shouldDisplayEvents)
+        if (parameters.m_displayEvents)
             ValidationIO::DisplaySimpleMCEvent(simpleMCEvent);
 
         // Analysis code starts here
         PfoMatchingMap pfoMatchingMap;
-        FinalisePfoMatching(simpleMCEvent, matchingParameters, pfoMatchingMap);
+        FinalisePfoMatching(simpleMCEvent, parameters, pfoMatchingMap);
 
-        if (shouldDisplayMatchedEvents)
-            DisplaySimpleMCEventMatches(simpleMCEvent, pfoMatchingMap, matchingParameters);
+        if (parameters.m_displayMatchedEvents)
+            DisplaySimpleMCEventMatches(simpleMCEvent, pfoMatchingMap, parameters);
 
-        const InteractionType interactionType(GetInteractionType(simpleMCEvent, matchingParameters));
-        CountPfoMatches(simpleMCEvent, interactionType, pfoMatchingMap, matchingParameters, interactionCountingMap, interactionEventResultMap);
+        CountPfoMatches(simpleMCEvent, pfoMatchingMap, parameters, interactionCountingMap, interactionEventResultMap);
     }
 
     // Processing of final output
-    DisplayInteractionCountingMap(interactionCountingMap, matchingParameters, mapFileName);
-    AnalyseInteractionEventResultMap(interactionEventResultMap, mapFileName, eventFileName, histogramOutput, histPrefix);
+    DisplayInteractionCountingMap(interactionCountingMap, parameters);
+    AnalyseInteractionEventResultMap(interactionEventResultMap, parameters);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const MatchingParameters &matchingParameters)
+void FinalisePfoMatching(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters, PfoMatchingMap &pfoMatchingMap)
+{
+    // Get best matches, one-by-one, until no more strong matches possible
+    IntSet usedMCIds, usedPfoIds;
+    while (GetStrongestPfoMatch(simpleMCEvent, parameters, usedMCIds, usedPfoIds, pfoMatchingMap)) {}
+
+    // Assign any remaining pfos to primaries, based on number of matched hits
+    GetRemainingPfoMatches(simpleMCEvent, parameters, usedPfoIds, pfoMatchingMap);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters, IntSet &usedMCIds, IntSet &usedPfoIds,
+    PfoMatchingMap &pfoMatchingMap)
+{
+    int bestPfoMatchId(-1);
+    MatchingDetails bestMatchingDetails;
+
+    for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
+    {
+        const SimpleMCPrimary &simpleMCPrimary(*pIter);
+
+        if (!parameters.m_useSmallPrimaries && !IsGoodMCPrimary(simpleMCPrimary, parameters))
+            continue;
+
+        if (usedMCIds.count(simpleMCPrimary.m_id))
+            continue;
+
+        for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
+        {
+            const SimpleMatchedPfo &simpleMatchedPfo(*mIter);
+            
+            if (usedPfoIds.count(simpleMatchedPfo.m_id))
+                continue;
+
+            if (!IsGoodMatch(simpleMCPrimary, simpleMatchedPfo, parameters))
+                continue;
+
+            if (simpleMatchedPfo.m_nMatchedHitsTotal > bestMatchingDetails.m_nMatchedHits)
+            {
+                bestPfoMatchId = simpleMatchedPfo.m_id;
+                bestMatchingDetails.m_matchedPrimaryId = simpleMCPrimary.m_id;
+                bestMatchingDetails.m_nMatchedHits = simpleMatchedPfo.m_nMatchedHitsTotal;
+            }
+        }
+    }
+
+    if (bestPfoMatchId > -1)
+    {
+        pfoMatchingMap[bestPfoMatchId] = bestMatchingDetails;
+        usedMCIds.insert(bestMatchingDetails.m_matchedPrimaryId);
+        usedPfoIds.insert(bestPfoMatchId);
+        return true;
+    }
+
+    return false;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters, const IntSet &usedPfoIds,
+    PfoMatchingMap &pfoMatchingMap)
+{
+    for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
+    {
+        const SimpleMCPrimary &simpleMCPrimary(*pIter);
+
+        if (!parameters.m_useSmallPrimaries && !IsGoodMCPrimary(simpleMCPrimary, parameters))
+            continue;
+
+        for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
+        {
+            const SimpleMatchedPfo &simpleMatchedPfo(*mIter);
+
+            if (usedPfoIds.count(simpleMatchedPfo.m_id))
+                continue;
+
+            MatchingDetails &matchingDetails(pfoMatchingMap[simpleMatchedPfo.m_id]);
+
+            if (simpleMatchedPfo.m_nMatchedHitsTotal > matchingDetails.m_nMatchedHits)
+            {
+                matchingDetails.m_matchedPrimaryId = simpleMCPrimary.m_id;
+                matchingDetails.m_nMatchedHits = simpleMatchedPfo.m_nMatchedHitsTotal;
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+bool IsGoodMCPrimary(const SimpleMCPrimary &simpleMCPrimary, const Parameters &parameters)
+{
+    if (simpleMCPrimary.m_nGoodMCHitsTotal < parameters.m_minPrimaryGoodHits)
+        return false;
+
+    int nGoodViews(0);
+    if (simpleMCPrimary.m_nGoodMCHitsU >= parameters.m_minHitsForGoodView) ++nGoodViews;
+    if (simpleMCPrimary.m_nGoodMCHitsV >= parameters.m_minHitsForGoodView) ++nGoodViews;
+    if (simpleMCPrimary.m_nGoodMCHitsW >= parameters.m_minHitsForGoodView) ++nGoodViews;
+
+    if (nGoodViews < parameters.m_minPrimaryGoodViews)
+        return false;
+
+    return true;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+bool HasMatch(const SimpleMCPrimary &simpleMCPrimary, const PfoMatchingMap &pfoMatchingMap, const Parameters &parameters)
+{
+    for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
+    {
+        const SimpleMatchedPfo &simpleMatchedPfo(*mIter);
+
+        if (pfoMatchingMap.count(simpleMatchedPfo.m_id) && (simpleMCPrimary.m_id == pfoMatchingMap.at(simpleMatchedPfo.m_id).m_matchedPrimaryId))
+            return true;
+    }
+
+    return false;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+bool IsGoodMatch(const SimpleMCPrimary &simpleMCPrimary, const SimpleMatchedPfo &simpleMatchedPfo, const Parameters &parameters)
+{
+    const float purity((simpleMatchedPfo.m_nPfoHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMatchedPfo.m_nPfoHitsTotal) : 0.f);
+    const float completeness((simpleMCPrimary.m_nMCHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMCPrimary.m_nMCHitsTotal) : 0.f);
+
+    return ((simpleMatchedPfo.m_nMatchedHitsTotal >= parameters.m_minSharedHits) && (purity >= parameters.m_minPurity) && (completeness >= parameters.m_minCompleteness));
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &pfoMatchingMap, const Parameters &parameters)
+{
+    std::cout << "---PROCESSED-MATCHING-OUTPUT--------------------------------------------------------------------" << std::endl;
+    std::cout << "MinGoodPrimaryHits " << parameters.m_minPrimaryGoodHits << ", MinSharedHits " << parameters.m_minSharedHits
+              << ", UseSmallPrimaries " << parameters.m_useSmallPrimaries << ", MinCompleteness " << parameters.m_minCompleteness
+              << ", MinPurity " << parameters.m_minPurity << std::endl;
+
+    bool isCorrect(true), isCalculable(false);
+
+    for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
+    {
+        const SimpleMCPrimary &simpleMCPrimary(*pIter);
+        const bool hasMatch(HasMatch(simpleMCPrimary, pfoMatchingMap, parameters));
+        const bool isTargetPrimary(IsGoodMCPrimary(simpleMCPrimary, parameters) && (2112 != simpleMCPrimary.m_pdgCode));
+
+        if (!hasMatch && !isTargetPrimary)
+            continue;
+
+        std::cout << std::endl << (!isTargetPrimary ? "(Non target) " : "") << "Primary " << simpleMCPrimary.m_id
+                  << ", PDG " << simpleMCPrimary.m_pdgCode << ", nMCHits " << simpleMCPrimary.m_nMCHitsTotal
+                  << " (" << simpleMCPrimary.m_nMCHitsU << ", " << simpleMCPrimary.m_nMCHitsV << ", " << simpleMCPrimary.m_nMCHitsW << "),"
+                  << " [nGood " << simpleMCPrimary.m_nGoodMCHitsTotal << " (" << simpleMCPrimary.m_nGoodMCHitsU << ", " << simpleMCPrimary.m_nGoodMCHitsV
+                  << ", " << simpleMCPrimary.m_nGoodMCHitsW << ")]" << std::endl;
+
+        if (2112 != simpleMCPrimary.m_pdgCode)
+            isCalculable = true;
+
+        unsigned int nMatches(0);
+
+        for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
+        {
+            const SimpleMatchedPfo &simpleMatchedPfo(*mIter);
+
+            if (pfoMatchingMap.count(simpleMatchedPfo.m_id) && (simpleMCPrimary.m_id == pfoMatchingMap.at(simpleMatchedPfo.m_id).m_matchedPrimaryId))
+            {
+                const bool isGoodMatch(IsGoodMatch(simpleMCPrimary, simpleMatchedPfo, parameters));
+
+                if (isGoodMatch) ++nMatches;
+                std::cout << "-" << (!isGoodMatch ? "(Below threshold) " : "") << "MatchedPfo " << simpleMatchedPfo.m_id;
+
+                if (simpleMatchedPfo.m_parentId >= 0) std::cout << ", ParentPfo " << simpleMatchedPfo.m_parentId;
+
+                std::cout << ", PDG " << simpleMatchedPfo.m_pdgCode << ", nMatchedHits " << simpleMatchedPfo.m_nMatchedHitsTotal
+                          << " (" << simpleMatchedPfo.m_nMatchedHitsU << ", " << simpleMatchedPfo.m_nMatchedHitsV << ", " << simpleMatchedPfo.m_nMatchedHitsW << ")"
+                          << ", nPfoHits " << simpleMatchedPfo.m_nPfoHitsTotal
+                          << " (" << simpleMatchedPfo.m_nPfoHitsU << ", " << simpleMatchedPfo.m_nPfoHitsV << ", " << simpleMatchedPfo.m_nPfoHitsW << ")" << std::endl;
+            }
+        }
+
+        if (isTargetPrimary && (1 != nMatches))
+            isCorrect = false;
+    }
+
+    std::cout << std::endl << "Is correct? " << (isCorrect && isCalculable) << std::endl;
+    std::cout << "------------------------------------------------------------------------------------------------" << std::endl;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &pfoMatchingMap, const Parameters &parameters,
+    InteractionCountingMap &interactionCountingMap, InteractionEventResultMap &interactionEventResultMap)
+{
+    if (parameters.m_applyFiducialCut && !PassFiducialCut(simpleMCEvent))
+        return;
+
+    const InteractionType interactionType(GetInteractionType(simpleMCEvent, parameters));
+
+    EventResult eventResult;
+    eventResult.m_fileIdentifier = simpleMCEvent.m_fileIdentifier;
+    eventResult.m_eventNumber = simpleMCEvent.m_eventNumber;
+    eventResult.m_mcNeutrinoNuance = simpleMCEvent.m_mcNeutrinoNuance;
+
+    for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
+    {
+        const SimpleMCPrimary &simpleMCPrimary(*pIter);
+        const ExpectedPrimary expectedPrimary(GetExpectedPrimary(simpleMCPrimary.m_id, simpleMCEvent.m_mcPrimaryList));
+
+        const bool isTargetPrimary(IsGoodMCPrimary(simpleMCPrimary, parameters) && (2112 != simpleMCPrimary.m_pdgCode));
+
+        if (!isTargetPrimary)
+            continue;
+
+        CountingDetails &countingDetails = interactionCountingMap[interactionType][expectedPrimary];
+        PrimaryResult &primaryResult = eventResult.m_primaryResultMap[expectedPrimary];
+
+        ++countingDetails.m_nTotal;
+        unsigned int nMatches(0), nBestMatchedHits(0), nBestRecoHits(0);
+        float bestMatchPurity(0.f), bestCompleteness(0.f);
+
+        for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
+        {
+            const SimpleMatchedPfo &simpleMatchedPfo(*mIter);
+
+            if (pfoMatchingMap.count(simpleMatchedPfo.m_id) && (simpleMCPrimary.m_id == pfoMatchingMap.at(simpleMatchedPfo.m_id).m_matchedPrimaryId))
+            {
+                if (!IsGoodMatch(simpleMCPrimary, simpleMatchedPfo, parameters))
+                    continue;
+
+                const unsigned int absMCPdgCode(std::abs(simpleMCPrimary.m_pdgCode));
+
+                if (parameters.m_correctTrackShowerId && (
+                    ((absMCPdgCode == 13 || absMCPdgCode == 2212 || absMCPdgCode == 211) && (13 != simpleMatchedPfo.m_pdgCode)) ||
+                    ((absMCPdgCode == 22 || absMCPdgCode == 11) && (11 != simpleMatchedPfo.m_pdgCode)) ))
+                {
+                    continue;
+                }
+
+                ++nMatches;
+                const float purity((simpleMatchedPfo.m_nPfoHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMatchedPfo.m_nPfoHitsTotal) : 0);
+                const float completeness((simpleMCPrimary.m_nMCHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMCPrimary.m_nMCHitsTotal) : 0);
+
+                if (completeness > bestCompleteness)
+                {
+                    bestMatchPurity = purity;
+                    bestCompleteness = completeness;
+                    nBestMatchedHits = simpleMatchedPfo.m_nMatchedHitsTotal;
+                    nBestRecoHits = simpleMatchedPfo.m_nPfoHitsTotal;
+                }
+            }
+        }
+
+        if (0 == nMatches) ++countingDetails.m_nMatch0;
+        else if (1 == nMatches) ++countingDetails.m_nMatch1;
+        else if (2 == nMatches) ++countingDetails.m_nMatch2;
+        else ++countingDetails.m_nMatch3Plus;
+
+        primaryResult.m_nPfoMatches = nMatches;
+        primaryResult.m_bestCompleteness = bestCompleteness;
+        primaryResult.m_bestMatchPurity = bestMatchPurity;
+        primaryResult.m_nTrueHits = simpleMCPrimary.m_nMCHitsTotal;
+
+        const float pTot(std::sqrt(simpleMCPrimary.m_momentum.m_x * simpleMCPrimary.m_momentum.m_x + simpleMCPrimary.m_momentum.m_y * simpleMCPrimary.m_momentum.m_y + simpleMCPrimary.m_momentum.m_z * simpleMCPrimary.m_momentum.m_z));
+        primaryResult.m_trueMomentum = pTot;
+
+        primaryResult.m_trueAngle = std::acos(simpleMCPrimary.m_momentum.m_z / pTot);
+        primaryResult.m_nBestMatchedHits = nBestMatchedHits;
+        primaryResult.m_nBestRecoHits = nBestRecoHits;
+    }
+
+    if ((0 < simpleMCEvent.m_nRecoNeutrinos) && (1 == simpleMCEvent.m_nMCNeutrinos))
+        eventResult.m_vertexOffset = simpleMCEvent.m_recoNeutrinoVtx - simpleMCEvent.m_mcNeutrinoVtx;
+
+    eventResult.m_nRecoNeutrinos = simpleMCEvent.m_nRecoNeutrinos;
+    interactionEventResultMap[interactionType].push_back(eventResult);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+bool PassFiducialCut(const SimpleMCEvent &simpleMCEvent)
+{
+    // MicroBooNE
+    const float eVx(256.35), eVy(233.), eVz(1036.8);
+    const float xBorder(10.), yBorder(20.), zBorder(10.);
+
+    if ((simpleMCEvent.m_mcNeutrinoVtx.m_x < (eVx - xBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_x > xBorder) &&
+        (simpleMCEvent.m_mcNeutrinoVtx.m_y < (eVy / 2. - yBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_y > (-eVy / 2. + yBorder)) &&
+        (simpleMCEvent.m_mcNeutrinoVtx.m_z < (eVz - zBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_z > zBorder) )
+    {
+        return true;
+    }
+
+    // DUNE 4APA
+    // if (((simpleMCEvent.m_mcNeutrinoVtx.m_x > -349.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_x < -10.f)) &&
+    //     ((simpleMCEvent.m_mcNeutrinoVtx.m_y > -290.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_y < 290.f)) &&
+    //     ((simpleMCEvent.m_mcNeutrinoVtx.m_z > 70.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_z < 414.f)) )
+    // {
+    //     return true;
+    // }
+
+    return false;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters)
 {
     unsigned int nNonNeutrons(0), nMuons(0), nProtons(0), nPiPlus(0), nPiMinus(0), nNeutrons(0), nPhotons(0);
 
@@ -73,7 +374,7 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const Mat
     {
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
 
-        if (simpleMCPrimary.m_nGoodMCHitsTotal < matchingParameters.m_minPrimaryHits)
+        if (!IsGoodMCPrimary(simpleMCPrimary, parameters))
             continue;
 
         if (2112 != simpleMCPrimary.m_pdgCode)
@@ -89,18 +390,24 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const Mat
 
     InteractionType interactionType(OTHER_INTERACTION);
 
-    if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (1 == nNonNeutrons) && (1 == nMuons) && (0 == nProtons)) return CCQEL_MU;
-    if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (2 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons)) return CCQEL_MU_P;
-    if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons)) return CCQEL_MU_P_P;
-    if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (4 == nNonNeutrons) && (1 == nMuons) && (3 == nProtons)) return CCQEL_MU_P_P_P;
-    if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (5 == nNonNeutrons) && (1 == nMuons) && (4 == nProtons)) return CCQEL_MU_P_P_P_P;
-    if ((1001 == simpleMCEvent.m_mcNeutrinoNuance) && (6 == nNonNeutrons) && (1 == nMuons) && (5 == nProtons)) return CCQEL_MU_P_P_P_P_P;
+    if (1001 == simpleMCEvent.m_mcNeutrinoNuance)
+    {
+        if ((1 == nNonNeutrons) && (1 == nMuons) && (0 == nProtons)) return CCQEL_MU;
+        if ((2 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons)) return CCQEL_MU_P;
+        if ((3 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons)) return CCQEL_MU_P_P;
+        if ((4 == nNonNeutrons) && (1 == nMuons) && (3 == nProtons)) return CCQEL_MU_P_P_P;
+        if ((5 == nNonNeutrons) && (1 == nMuons) && (4 == nProtons)) return CCQEL_MU_P_P_P_P;
+        if ((6 == nNonNeutrons) && (1 == nMuons) && (5 == nProtons)) return CCQEL_MU_P_P_P_P_P;
+    }
 
-    if ((1002 == simpleMCEvent.m_mcNeutrinoNuance) && (1 == nNonNeutrons) && (1 == nProtons)) return NCQEL_P;
-    if ((1002 == simpleMCEvent.m_mcNeutrinoNuance) && (2 == nNonNeutrons) && (2 == nProtons)) return NCQEL_P_P;
-    if ((1002 == simpleMCEvent.m_mcNeutrinoNuance) && (3 == nNonNeutrons) && (3 == nProtons)) return NCQEL_P_P_P;
-    if ((1002 == simpleMCEvent.m_mcNeutrinoNuance) && (4 == nNonNeutrons) && (4 == nProtons)) return NCQEL_P_P_P_P;
-    if ((1002 == simpleMCEvent.m_mcNeutrinoNuance) && (5 == nNonNeutrons) && (5 == nProtons)) return NCQEL_P_P_P_P_P;
+    if (1002 == simpleMCEvent.m_mcNeutrinoNuance)
+    {
+        if ((1 == nNonNeutrons) && (1 == nProtons)) return NCQEL_P;
+        if ((2 == nNonNeutrons) && (2 == nProtons)) return NCQEL_P_P;
+        if ((3 == nNonNeutrons) && (3 == nProtons)) return NCQEL_P_P_P;
+        if ((4 == nNonNeutrons) && (4 == nProtons)) return NCQEL_P_P_P_P;
+        if ((5 == nNonNeutrons) && (5 == nProtons)) return NCQEL_P_P_P_P_P;
+    }
 
     if ((simpleMCEvent.m_mcNeutrinoNuance >= 1003) && (simpleMCEvent.m_mcNeutrinoNuance <= 1005))
     {
@@ -174,124 +481,9 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const Mat
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void FinalisePfoMatching(const SimpleMCEvent &simpleMCEvent, const MatchingParameters &matchingParameters, PfoMatchingMap &pfoMatchingMap)
-{
-    // Get best matches, one-by-one, until no more strong matches possible
-    IntSet usedMCIds, usedPfoIds;
-    while (GetStrongestPfoMatch(simpleMCEvent, matchingParameters, usedMCIds, usedPfoIds, pfoMatchingMap)) {}
-
-    // Assign any remaining pfos to primaries, based on number of matched hits
-    GetRemainingPfoMatches(simpleMCEvent, matchingParameters, usedPfoIds, pfoMatchingMap);
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-bool GetStrongestPfoMatch(const SimpleMCEvent &simpleMCEvent, const MatchingParameters &matchingParameters, IntSet &usedMCIds, IntSet &usedPfoIds,
-    PfoMatchingMap &pfoMatchingMap)
-{
-    int bestPfoMatchId(-1);
-    MatchingDetails bestMatchingDetails;
-
-    for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
-    {
-        const SimpleMCPrimary &simpleMCPrimary(*pIter);
-
-        if (!matchingParameters.m_useSmallPrimaries && (simpleMCPrimary.m_nGoodMCHitsTotal < matchingParameters.m_minPrimaryHits))
-            continue;
-
-        if (usedMCIds.count(simpleMCPrimary.m_id))
-            continue;
-
-        for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
-        {
-            const SimpleMatchedPfo &simpleMatchedPfo(*mIter);
-            
-            if (usedPfoIds.count(simpleMatchedPfo.m_id))
-                continue;
-
-            if (!IsGoodMatch(simpleMCPrimary, simpleMatchedPfo, matchingParameters))
-                continue;
-
-            if (simpleMatchedPfo.m_nMatchedHitsTotal > bestMatchingDetails.m_nMatchedHits)
-            {
-                bestPfoMatchId = simpleMatchedPfo.m_id;
-                bestMatchingDetails.m_matchedPrimaryId = simpleMCPrimary.m_id;
-                bestMatchingDetails.m_nMatchedHits = simpleMatchedPfo.m_nMatchedHitsTotal;
-            }
-        }
-    }
-
-    if (bestPfoMatchId > -1)
-    {
-        pfoMatchingMap[bestPfoMatchId] = bestMatchingDetails;
-        usedMCIds.insert(bestMatchingDetails.m_matchedPrimaryId);
-        usedPfoIds.insert(bestPfoMatchId);
-        return true;
-    }
-
-    return false;
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-void GetRemainingPfoMatches(const SimpleMCEvent &simpleMCEvent, const MatchingParameters &matchingParameters, const IntSet &usedPfoIds,
-    PfoMatchingMap &pfoMatchingMap)
-{
-    for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
-    {
-        const SimpleMCPrimary &simpleMCPrimary(*pIter);
-
-        if (!matchingParameters.m_useSmallPrimaries && (simpleMCPrimary.m_nGoodMCHitsTotal < matchingParameters.m_minPrimaryHits))
-            continue;
-
-        for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
-        {
-            const SimpleMatchedPfo &simpleMatchedPfo(*mIter);
-
-            if (usedPfoIds.count(simpleMatchedPfo.m_id))
-                continue;
-
-            MatchingDetails &matchingDetails(pfoMatchingMap[simpleMatchedPfo.m_id]);
-
-            if (simpleMatchedPfo.m_nMatchedHitsTotal > matchingDetails.m_nMatchedHits)
-            {
-                matchingDetails.m_matchedPrimaryId = simpleMCPrimary.m_id;
-                matchingDetails.m_nMatchedHits = simpleMatchedPfo.m_nMatchedHitsTotal;
-            }
-        }
-    }
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-bool HasMatch(const SimpleMCPrimary &simpleMCPrimary, const PfoMatchingMap &pfoMatchingMap, const MatchingParameters &matchingParameters)
-{
-    for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
-    {
-        const SimpleMatchedPfo &simpleMatchedPfo(*mIter);
-
-        if (pfoMatchingMap.count(simpleMatchedPfo.m_id) && (simpleMCPrimary.m_id == pfoMatchingMap.at(simpleMatchedPfo.m_id).m_matchedPrimaryId))
-            return true;
-    }
-
-    return false;
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-bool IsGoodMatch(const SimpleMCPrimary &simpleMCPrimary, const SimpleMatchedPfo &simpleMatchedPfo, const MatchingParameters &matchingParameters)
-{
-    const float purity((simpleMatchedPfo.m_nPfoHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMatchedPfo.m_nPfoHitsTotal) : 0.f);
-    const float completeness((simpleMCPrimary.m_nMCHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMCPrimary.m_nMCHitsTotal) : 0.f);
-
-    return ((simpleMatchedPfo.m_nMatchedHitsTotal >= matchingParameters.m_minSharedHits) && (purity >= matchingParameters.m_minPurity) && (completeness >= matchingParameters.m_minCompleteness));
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
 ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryList &simpleMCPrimaryList)
 {
-    // ATTN: Relies on fact that primary list is sorted by number of true hits
+    // ATTN: Relies on fact that primary list is sorted by number of good true hits
     unsigned int nMuons(0), nElectrons(0), nProtons(0), nPiPlus(0), nPiMinus(0), nNeutrons(0), nPhotons(0);
 
     for (SimpleMCPrimaryList::const_iterator iter = simpleMCPrimaryList.begin(); iter != simpleMCPrimaryList.end(); ++iter)
@@ -327,193 +519,17 @@ ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryLis
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-bool PassFiducialCut(const SimpleMCEvent &simpleMCEvent)
+void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCountingMap, const Parameters &parameters)
 {
-    // MicroBooNE
-    const float eVx(256.35), eVy(233.), eVz(1036.8);
-    const float xBorder(10.), yBorder(20.), zBorder(10.);
-
-    if ((simpleMCEvent.m_mcNeutrinoVtx.m_x < (eVx - xBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_x > xBorder) &&
-        (simpleMCEvent.m_mcNeutrinoVtx.m_y < (eVy / 2. - yBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_y > (-eVy / 2. + yBorder)) &&
-        (simpleMCEvent.m_mcNeutrinoVtx.m_z < (eVz - zBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_z > zBorder) )
-    {
-        return true;
-    }
-
-    // DUNE 4APA
-    // if (((simpleMCEvent.m_mcNeutrinoVtx.m_x > -349.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_x < -10.f)) &&
-    //     ((simpleMCEvent.m_mcNeutrinoVtx.m_y > -290.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_y < 290.f)) &&
-    //     ((simpleMCEvent.m_mcNeutrinoVtx.m_z > 70.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_z < 414.f)) )
-    // {
-    //     return true;
-    // }
-
-    return false;
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const InteractionType interactionType, const PfoMatchingMap &pfoMatchingMap,
-    const MatchingParameters &matchingParameters, InteractionCountingMap &interactionCountingMap, InteractionEventResultMap &interactionEventResultMap)
-{
-    if (matchingParameters.m_applyFiducialCut && !PassFiducialCut(simpleMCEvent))
-        return;
-
-    EventResult eventResult;
-    eventResult.m_fileIdentifier = simpleMCEvent.m_fileIdentifier;
-    eventResult.m_eventNumber = simpleMCEvent.m_eventNumber;
-    eventResult.m_mcNeutrinoNuance = simpleMCEvent.m_mcNeutrinoNuance;
-
-    for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
-    {
-        const SimpleMCPrimary &simpleMCPrimary(*pIter);
-        const ExpectedPrimary expectedPrimary(GetExpectedPrimary(simpleMCPrimary.m_id, simpleMCEvent.m_mcPrimaryList));
-
-        const bool isTargetPrimary((simpleMCPrimary.m_nGoodMCHitsTotal >= matchingParameters.m_minPrimaryHits) && (2112 != simpleMCPrimary.m_pdgCode));
-
-        if (!isTargetPrimary)
-            continue;
-
-        CountingDetails &countingDetails = interactionCountingMap[interactionType][expectedPrimary];
-        PrimaryResult &primaryResult = eventResult.m_primaryResultMap[expectedPrimary];
-
-        ++countingDetails.m_nTotal;
-        unsigned int nMatches(0), nBestMatchedHits(0), nBestRecoHits(0);
-        float bestMatchPurity(0.f), bestCompleteness(0.f);
-
-        for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
-        {
-            const SimpleMatchedPfo &simpleMatchedPfo(*mIter);
-
-            if (pfoMatchingMap.count(simpleMatchedPfo.m_id) && (simpleMCPrimary.m_id == pfoMatchingMap.at(simpleMatchedPfo.m_id).m_matchedPrimaryId))
-            {
-                if (!IsGoodMatch(simpleMCPrimary, simpleMatchedPfo, matchingParameters))
-                    continue;
-
-                const unsigned int absMCPdgCode(std::abs(simpleMCPrimary.m_pdgCode));
-
-                if (matchingParameters.m_correctTrackShowerId && (
-                    ((absMCPdgCode == 13 || absMCPdgCode == 2212 || absMCPdgCode == 211) && (13 != simpleMatchedPfo.m_pdgCode)) ||
-                    ((absMCPdgCode == 22 || absMCPdgCode == 11) && (11 != simpleMatchedPfo.m_pdgCode)) ))
-                {
-                    continue;
-                }
-
-                ++nMatches;
-                const float purity((simpleMatchedPfo.m_nPfoHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMatchedPfo.m_nPfoHitsTotal) : 0);
-                const float completeness((simpleMCPrimary.m_nMCHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMCPrimary.m_nMCHitsTotal) : 0);
-
-                //primaryResult.m_allCompletenesses.push_back(completeness); // ATTN Expensive?
-
-                if (completeness > bestCompleteness)
-                {
-                    bestMatchPurity = purity;
-                    bestCompleteness = completeness;
-                    nBestMatchedHits = simpleMatchedPfo.m_nMatchedHitsTotal;
-                    nBestRecoHits = simpleMatchedPfo.m_nPfoHitsTotal;
-                }
-            }
-        }
-
-        if (0 == nMatches) ++countingDetails.m_nMatch0;
-        else if (1 == nMatches) ++countingDetails.m_nMatch1;
-        else if (2 == nMatches) ++countingDetails.m_nMatch2;
-        else ++countingDetails.m_nMatch3Plus;
-
-        primaryResult.m_nPfoMatches = nMatches;
-        primaryResult.m_bestCompleteness = bestCompleteness;
-        primaryResult.m_bestMatchPurity = bestMatchPurity;
-        primaryResult.m_nTrueHits = simpleMCPrimary.m_nMCHitsTotal;
-
-        const float pTot(std::sqrt(simpleMCPrimary.m_momentum.m_x * simpleMCPrimary.m_momentum.m_x + simpleMCPrimary.m_momentum.m_y * simpleMCPrimary.m_momentum.m_y + simpleMCPrimary.m_momentum.m_z * simpleMCPrimary.m_momentum.m_z));
-        primaryResult.m_trueMomentum = pTot;
-
-        primaryResult.m_trueAngle = std::acos(simpleMCPrimary.m_momentum.m_z / pTot);
-        primaryResult.m_nBestMatchedHits = nBestMatchedHits;
-        primaryResult.m_nBestRecoHits = nBestRecoHits;
-    }
-
-    if ((0 < simpleMCEvent.m_nRecoNeutrinos) && (1 == simpleMCEvent.m_nMCNeutrinos))
-        eventResult.m_vertexOffset = simpleMCEvent.m_recoNeutrinoVtx - simpleMCEvent.m_mcNeutrinoVtx;
-
-    eventResult.m_nRecoNeutrinos = simpleMCEvent.m_nRecoNeutrinos;
-    interactionEventResultMap[interactionType].push_back(eventResult);
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &pfoMatchingMap, const MatchingParameters &matchingParameters)
-{
-    std::cout << "---PROCESSED-MATCHING-OUTPUT--------------------------------------------------------------------" << std::endl;
-    std::cout << "MinGoodPrimaryHits " << matchingParameters.m_minPrimaryHits << ", MinSharedHits " << matchingParameters.m_minSharedHits
-              << ", UseSmallPrimaries " << matchingParameters.m_useSmallPrimaries << ", MinCompleteness " << matchingParameters.m_minCompleteness
-              << ", MinPurity " << matchingParameters.m_minPurity << std::endl;
-
-    bool isCorrect(true), isCalculable(false);
-
-    for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
-    {
-        const SimpleMCPrimary &simpleMCPrimary(*pIter);
-        const bool hasMatch(HasMatch(simpleMCPrimary, pfoMatchingMap, matchingParameters));
-        const bool isTargetPrimary((simpleMCPrimary.m_nGoodMCHitsTotal >= matchingParameters.m_minPrimaryHits) && (2112 != simpleMCPrimary.m_pdgCode));
-
-        if (!hasMatch && !isTargetPrimary)
-            continue;
-
-        std::cout << std::endl << (!isTargetPrimary ? "(Non target) " : "") << "Primary " << simpleMCPrimary.m_id
-                  << ", PDG " << simpleMCPrimary.m_pdgCode << ", nMCHits " << simpleMCPrimary.m_nMCHitsTotal
-                  << " (" << simpleMCPrimary.m_nMCHitsU << ", " << simpleMCPrimary.m_nMCHitsV << ", " << simpleMCPrimary.m_nMCHitsW << "),"
-                  << " [nGood " << simpleMCPrimary.m_nGoodMCHitsTotal << " (" << simpleMCPrimary.m_nGoodMCHitsU << ", " << simpleMCPrimary.m_nGoodMCHitsV
-                  << ", " << simpleMCPrimary.m_nGoodMCHitsW << ")]" << std::endl;
-
-        if (2112 != simpleMCPrimary.m_pdgCode)
-            isCalculable = true;
-
-        unsigned int nMatches(0);
-
-        for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
-        {
-            const SimpleMatchedPfo &simpleMatchedPfo(*mIter);
-
-            if (pfoMatchingMap.count(simpleMatchedPfo.m_id) && (simpleMCPrimary.m_id == pfoMatchingMap.at(simpleMatchedPfo.m_id).m_matchedPrimaryId))
-            {
-                const bool isGoodMatch(IsGoodMatch(simpleMCPrimary, simpleMatchedPfo, matchingParameters));
-
-                if (isGoodMatch) ++nMatches;
-                std::cout << "-" << (!isGoodMatch ? "(Below threshold) " : "") << "MatchedPfo " << simpleMatchedPfo.m_id;
-
-                if (simpleMatchedPfo.m_parentId >= 0) std::cout << ", ParentPfo " << simpleMatchedPfo.m_parentId;
-
-                std::cout << ", PDG " << simpleMatchedPfo.m_pdgCode << ", nMatchedHits " << simpleMatchedPfo.m_nMatchedHitsTotal
-                          << " (" << simpleMatchedPfo.m_nMatchedHitsU << ", " << simpleMatchedPfo.m_nMatchedHitsV << ", " << simpleMatchedPfo.m_nMatchedHitsW << ")"
-                          << ", nPfoHits " << simpleMatchedPfo.m_nPfoHitsTotal
-                          << " (" << simpleMatchedPfo.m_nPfoHitsU << ", " << simpleMatchedPfo.m_nPfoHitsV << ", " << simpleMatchedPfo.m_nPfoHitsW << ")" << std::endl;
-            }
-        }
-
-        if (isTargetPrimary && (1 != nMatches))
-            isCorrect = false;
-    }
-
-    std::cout << std::endl << "Is correct? " << (isCorrect && isCalculable) << std::endl;
-    std::cout << "------------------------------------------------------------------------------------------------" << std::endl;
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCountingMap, const MatchingParameters &matchingParameters, const std::string &mapFileName)
-{
-    std::cout << "MinGoodPrimaryHits " << matchingParameters.m_minPrimaryHits << ", MinSharedHits " << matchingParameters.m_minSharedHits
-              << ", UseSmallPrimaries " << matchingParameters.m_useSmallPrimaries << ", MinCompleteness " << matchingParameters.m_minCompleteness
-              << ", MinPurity " << matchingParameters.m_minPurity << std::endl;
+    std::cout << "MinPrimaryGoodHits " << parameters.m_minPrimaryGoodHits << ", MinHitsForGoodView " << parameters.m_minHitsForGoodView << ", MinPrimaryGoodViews " << parameters.m_minPrimaryGoodViews << std::endl;
+    std::cout << "UseSmallPrimaries " << parameters.m_useSmallPrimaries << ", MinSharedHits " << parameters.m_minSharedHits << ", MinCompleteness " << parameters.m_minCompleteness << ", MinPurity " << parameters.m_minPurity << std::endl;
 
     std::ofstream mapFile;
-    if (!mapFileName.empty())
+    if (!parameters.m_mapFileName.empty())
     {
-        mapFile.open(mapFileName, ios::app);
-        mapFile << "MinGoodPrimaryHits " << matchingParameters.m_minPrimaryHits << ", MinSharedHits " << matchingParameters.m_minSharedHits
-                << ", UseSmallPrimaries " << matchingParameters.m_useSmallPrimaries << ", MinCompleteness " << matchingParameters.m_minCompleteness
-                << ", MinPurity " << matchingParameters.m_minPurity << std::endl;
+        mapFile.open(parameters.m_mapFileName, ios::app);
+        mapFile << "MinPrimaryGoodHits " << parameters.m_minPrimaryGoodHits << ", MinHitsForGoodView " << parameters.m_minHitsForGoodView << ", MinPrimaryGoodViews " << parameters.m_minPrimaryGoodViews << std::endl;
+        mapFile << "UseSmallPrimaries " << parameters.m_useSmallPrimaries << ", MinSharedHits " << parameters.m_minSharedHits << ", MinCompleteness " << parameters.m_minCompleteness << ", MinPurity " << parameters.m_minPurity << std::endl;
     }
 
     std::cout << std::fixed;
@@ -525,7 +541,7 @@ void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCoun
         const CountingMap &countingMap(iter->second);
         std::cout << std::endl << ToString(interactionType) << std::endl;
 
-        if (!mapFileName.empty())
+        if (!parameters.m_mapFileName.empty())
             mapFile << std::endl << ToString(interactionType) << std::endl;
 
         for (CountingMap::const_iterator cIter = countingMap.begin(); cIter != countingMap.end(); ++cIter)
@@ -540,7 +556,7 @@ void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCoun
                       << "%|, |3+: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch3Plus) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
                       << "%|" << std::endl;
 
-            if (!mapFileName.empty())
+            if (!parameters.m_mapFileName.empty())
             {
                 mapFile << "-" << ToString(expectedPrimary) << ": nEvents: " << countingDetails.m_nTotal
                         << ", nPfos |0: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch0) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
@@ -552,21 +568,20 @@ void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCoun
         }
     }
 
-    if (!mapFileName.empty())
+    if (!parameters.m_mapFileName.empty())
         mapFile.close();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap, const std::string &mapFileName,
-    const std::string &eventFileName, const bool histogramOutput, const std::string &prefix)
+void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interactionEventResultMap, const Parameters &parameters)
 {
     // Intended for filling histograms, post-processing of information collected in main loop over ntuple, etc.
     std::cout << std::endl << "EVENT INFO " << std::endl;
 
     std::ofstream mapFile, eventFile;
-    if (!mapFileName.empty()) mapFile.open(mapFileName, ios::app);
-    if (!eventFileName.empty()) eventFile.open(eventFileName, ios::app);
+    if (!parameters.m_mapFileName.empty()) mapFile.open(parameters.m_mapFileName, ios::app);
+    if (!parameters.m_eventFileName.empty()) eventFile.open(parameters.m_eventFileName, ios::app);
 
     InteractionPrimaryHistogramMap interactionPrimaryHistogramMap;
     InteractionEventHistogramMap interactionEventHistogramMap;
@@ -583,13 +598,13 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
             const PrimaryResultMap &primaryResultMap(eIter->m_primaryResultMap);
             bool isCorrect(!primaryResultMap.empty());
 
-            if (histogramOutput)
+            if (parameters.m_histogramOutput)
             {
-                const std::string histPrefix(prefix + ToString(interactionType) + "_");
+                const std::string histPrefix(parameters.m_histPrefix + ToString(interactionType) + "_");
                 EventHistogramCollection &histogramCollection(interactionEventHistogramMap[interactionType]);
                 FillEventHistogramCollection(histPrefix, *eIter, histogramCollection);
 
-                const std::string histPrefixAll(prefix + ToString(ALL_INTERACTIONS) + "_");
+                const std::string histPrefixAll(parameters.m_histPrefix + ToString(ALL_INTERACTIONS) + "_");
                 EventHistogramCollection &histogramCollectionAll(interactionEventHistogramMap[ALL_INTERACTIONS]);
                 FillEventHistogramCollection(histPrefixAll, *eIter, histogramCollectionAll);
             }
@@ -602,13 +617,13 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
                 if (primaryResult.m_nPfoMatches != 1)
                     isCorrect = false;
 
-                if (histogramOutput)
+                if (parameters.m_histogramOutput)
                 {
-                    const std::string histPrefix(prefix + ToString(interactionType) + "_" + ToString(expectedPrimary) + "_");
+                    const std::string histPrefix(parameters.m_histPrefix + ToString(interactionType) + "_" + ToString(expectedPrimary) + "_");
                     PrimaryHistogramCollection &histogramCollection(interactionPrimaryHistogramMap[interactionType][expectedPrimary]);
                     FillPrimaryHistogramCollection(histPrefix, primaryResult, histogramCollection);
 
-                    const std::string histPrefixAll(prefix + ToString(ALL_INTERACTIONS) + "_" + ToString(expectedPrimary) + "_");
+                    const std::string histPrefixAll(parameters.m_histPrefix + ToString(ALL_INTERACTIONS) + "_" + ToString(expectedPrimary) + "_");
                     PrimaryHistogramCollection &histogramCollectionAll(interactionPrimaryHistogramMap[ALL_INTERACTIONS][expectedPrimary]);
                     FillPrimaryHistogramCollection(histPrefixAll, primaryResult, histogramCollectionAll);
                 }
@@ -618,7 +633,7 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
             {
                 ++nCorrectEvents;
 
-                if (!eventFileName.empty())
+                if (!parameters.m_eventFileName.empty())
                     eventFile << "Correct event: fileId: " << eIter->m_fileIdentifier << ", eventNumber: " << eIter->m_eventNumber << ", nuance: " << eIter->m_mcNeutrinoNuance << std::endl;
             }
         }
@@ -626,18 +641,18 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
         std::cout << ToString(interactionType) << std::endl << "-nEvents " << eventResultList.size() << ", nCorrect " << nCorrectEvents
                   << ", fCorrect " << 100.f * static_cast<float>(nCorrectEvents) / static_cast<float>(eventResultList.size()) << "%" << std::endl;
 
-        if (!mapFileName.empty())
+        if (!parameters.m_mapFileName.empty())
         {
             mapFile << ToString(interactionType) << std::endl << "-nEvents " << eventResultList.size() << ", nCorrect " << nCorrectEvents
                     << ", fCorrect " << 100.f * static_cast<float>(nCorrectEvents) / static_cast<float>(eventResultList.size()) << "%" << std::endl;
         }
     }
 
-    if (histogramOutput)
+    if (parameters.m_histogramOutput)
         ProcessHistogramCollections(interactionPrimaryHistogramMap);
 
-    if (!mapFileName.empty()) mapFile.close();
-    if (!eventFileName.empty()) eventFile.close();
+    if (!parameters.m_mapFileName.empty()) mapFile.close();
+    if (!parameters.m_eventFileName.empty()) eventFile.close();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -787,20 +802,8 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
         primaryHistogramCollection.m_hBestCompVsPTot->GetYaxis()->SetTitle("Best Completeness");
     }
 
-    if (!primaryHistogramCollection.m_hAllCompVsPTot)
-    {
-        primaryHistogramCollection.m_hAllCompVsPTot = new TH2F((histPrefix + "AllCompletenessesVsPTrue").c_str(), "", 21, -0.05, 2.05, 26, -0.02, 1.02);
-        primaryHistogramCollection.m_hAllCompVsPTot->GetXaxis()->SetTitle("P_{True} [GeV]");
-        primaryHistogramCollection.m_hAllCompVsPTot->GetXaxis()->SetRangeUser(0., +2.01);
-        primaryHistogramCollection.m_hAllCompVsPTot->GetYaxis()->SetRangeUser(0., +1.01);
-        primaryHistogramCollection.m_hAllCompVsPTot->GetYaxis()->SetTitle("All Matched Pfo Completenesses");
-    }
-
     primaryHistogramCollection.m_hNPfosVsPTot->Fill(primaryResult.m_trueMomentum, primaryResult.m_nPfoMatches);
     primaryHistogramCollection.m_hBestCompVsPTot->Fill(primaryResult.m_trueMomentum, primaryResult.m_bestCompleteness);
-
-    for (FloatVector::const_iterator iter = primaryResult.m_allCompletenesses.begin(); iter != primaryResult.m_allCompletenesses.end(); ++iter)
-        primaryHistogramCollection.m_hAllCompVsPTot->Fill(primaryResult.m_trueMomentum, *iter);
 
     primaryHistogramCollection.m_hHitsAll->Fill(primaryResult.m_nTrueHits);
     primaryHistogramCollection.m_hMomentumAll->Fill(primaryResult.m_trueMomentum);
