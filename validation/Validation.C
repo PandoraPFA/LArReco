@@ -514,8 +514,8 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const Par
 
     if (simpleMCEvent.m_mcNeutrinoNuance == 1091) return CCDIS;
     if (simpleMCEvent.m_mcNeutrinoNuance == 1092) return NCDIS;
-    if (simpleMCEvent.m_mcNeutrinoNuance == 1096) return CCCOH;
-    if (simpleMCEvent.m_mcNeutrinoNuance == 1097) return NCCOH;
+    if (simpleMCEvent.m_mcNeutrinoNuance == 1096) return NCCOH;
+    if (simpleMCEvent.m_mcNeutrinoNuance == 1097) return CCCOH;
 
     return OTHER_INTERACTION;
 }
