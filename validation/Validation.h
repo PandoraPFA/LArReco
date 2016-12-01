@@ -36,6 +36,9 @@ public:
     bool                    m_applyFiducialCut;         ///< Whether to apply fiducial volume cut to true neutrino vertex position
     bool                    m_correctTrackShowerId;     ///< Whether to demand that pfos are correctly flagged as tracks or showers
 
+    float                   m_minNeutrinoPurity;        ///< The minimum neutrino purity to consider event (note: can't handle presence of multiple true neutrinos)
+    float                   m_minNeutrinoCompleteness;  ///< The minimum neutrino completeness to consider event (note: can't handle presence of multiple true neutrinos)
+
     bool                    m_histogramOutput;          ///< Whether to produce output histograms
     std::string             m_histPrefix;               ///< Histogram name prefix
     std::string             m_mapFileName;              ///< File name to which to write output ascii tables, etc.
@@ -506,6 +509,8 @@ Parameters::Parameters() :
     m_minPurity(0.5f),
     m_applyFiducialCut(true),
     m_correctTrackShowerId(false),
+    m_minNeutrinoPurity(-1.f),
+    m_minNeutrinoCompleteness(-1.f),
     m_histogramOutput(false)
 {
 }

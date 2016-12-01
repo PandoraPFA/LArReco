@@ -10,6 +10,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <limits>
 #include <map>
@@ -156,6 +157,11 @@ public:
     int                     m_nRecoNeutrinos;           ///< The number of reconstructed neutrinos
     int                     m_recoNeutrinoPdg;          ///< The reconstructed neutrino pdg code
     SimpleThreeVector       m_recoNeutrinoVtx;          ///< The reconstructed neutrino vertex
+    int                     m_nEventNeutrinoHitsTotal;  ///< The total number of neutrino-induced hits in the event
+    int                     m_nEventOtherHitsTotal;     ///< The total number of other (non-neutrino) hits in the event
+    int                     m_nRecoNeutrinoHitsTotal;   ///< The total number of neutrino-induced hits in the input reco neutrino(s)
+    int                     m_nRecoOtherHitsTotal;      ///< The total number of (non-neutrino) hits in the input reco neutrino(s)
+    int                     m_recoNeutrinoNPrimaries;   ///< The number of reconstructed primary partices in the input reco neutrino(s)
     int                     m_nMCPrimaries;             ///< The number of mc primaries
     SimpleMCPrimaryList     m_mcPrimaryList;            ///< The list of mc primaries
 };
@@ -304,7 +310,12 @@ unsigned int ValidationIO::ReadNextEvent(TChain *const pTChain, const unsigned i
     pTChain->SetBranchAddress("recoNeutrinoVtxX", &simpleMCEvent.m_recoNeutrinoVtx.m_x);
     pTChain->SetBranchAddress("recoNeutrinoVtxY", &simpleMCEvent.m_recoNeutrinoVtx.m_y);
     pTChain->SetBranchAddress("recoNeutrinoVtxZ", &simpleMCEvent.m_recoNeutrinoVtx.m_z);
+    pTChain->SetBranchAddress("nEventNeutrinoHitsTotal", &simpleMCEvent.m_nEventNeutrinoHitsTotal);
+    pTChain->SetBranchAddress("nEventOtherHitsTotal", &simpleMCEvent.m_nEventOtherHitsTotal);
+    pTChain->SetBranchAddress("nRecoNeutrinoHitsTotal", &simpleMCEvent.m_nRecoNeutrinoHitsTotal);
+    pTChain->SetBranchAddress("nRecoOtherHitsTotal", &simpleMCEvent.m_nRecoOtherHitsTotal);
     pTChain->SetBranchAddress("nMCPrimaries", &simpleMCEvent.m_nMCPrimaries);
+    pTChain->SetBranchAddress("recoNeutrinoNPrimaries", &simpleMCEvent.m_recoNeutrinoNPrimaries);
 
     pTChain->GetEntry(iEntry);
 
@@ -409,11 +420,23 @@ unsigned int ValidationIO::ReadNextEvent(TChain *const pTChain, const unsigned i
 
 void ValidationIO::DisplaySimpleMCEvent(const SimpleMCEvent &simpleMCEvent)
 {
+    const std::streamsize ss(std::cout.precision());
+
     std::cout << "---RAW-MATCHING-OUTPUT--------------------------------------------------------------------------" << std::endl;
     std::cout << "File " << simpleMCEvent.m_fileIdentifier << ", event " << simpleMCEvent.m_eventNumber << std::endl
-              << "nuPdg " << simpleMCEvent.m_mcNeutrinoPdg << ", nuance " << simpleMCEvent.m_mcNeutrinoNuance
-              << " (" << simpleMCEvent.m_nMCNeutrinos << ") " << std::endl << "recoNuPdg " << simpleMCEvent.m_recoNeutrinoPdg
-              << " (" << simpleMCEvent.m_nRecoNeutrinos << ") " << std::endl;
+              << "nuPdg " << simpleMCEvent.m_mcNeutrinoPdg << " (" << simpleMCEvent.m_nMCNeutrinos << "), nuance "
+              << simpleMCEvent.m_mcNeutrinoNuance << ", nPrimaries " << simpleMCEvent.m_nMCPrimaries << std::endl
+              << "recoNuPdg " << simpleMCEvent.m_recoNeutrinoPdg << " (" << simpleMCEvent.m_nRecoNeutrinos << ")";
+
+    if (simpleMCEvent.m_nRecoNeutrinoHitsTotal + simpleMCEvent.m_nRecoOtherHitsTotal > 0)
+        std::cout << ", Purity " << std::setprecision(2) << (static_cast<float>(simpleMCEvent.m_nRecoNeutrinoHitsTotal) / static_cast<float>(simpleMCEvent.m_nRecoNeutrinoHitsTotal + simpleMCEvent.m_nRecoOtherHitsTotal))
+                  << std::setprecision(ss) << " (" << simpleMCEvent.m_nRecoNeutrinoHitsTotal << " / " << (simpleMCEvent.m_nRecoNeutrinoHitsTotal + simpleMCEvent.m_nRecoOtherHitsTotal) << ")";
+
+    if (simpleMCEvent.m_nEventNeutrinoHitsTotal > 0)
+        std::cout << ", Completeness " << std::setprecision(2) << (static_cast<float>(simpleMCEvent.m_nRecoNeutrinoHitsTotal)  / static_cast<float>(simpleMCEvent.m_nEventNeutrinoHitsTotal))
+                  << std::setprecision(ss) << " (" << simpleMCEvent.m_nRecoNeutrinoHitsTotal << " / " << simpleMCEvent.m_nEventNeutrinoHitsTotal << ")";
+
+    std::cout << ", nPrimaries " << simpleMCEvent.m_recoNeutrinoNPrimaries << std::endl;
 
     for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
     {
