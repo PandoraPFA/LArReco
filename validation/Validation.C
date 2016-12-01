@@ -256,6 +256,14 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
     if (parameters.m_applyFiducialCut && !PassFiducialCut(simpleMCEvent))
         return;
 
+    const int nRecoHitsTotal(simpleMCEvent.m_nRecoNeutrinoHitsTotal + simpleMCEvent.m_nRecoOtherHitsTotal);
+    const float neutrinoPurity((nRecoHitsTotal > 0) ? static_cast<float>(simpleMCEvent.m_nRecoNeutrinoHitsTotal) / static_cast<float>(nRecoHitsTotal) : 0.f);
+    const float neutrinoCompleteness((simpleMCEvent.m_nEventNeutrinoHitsTotal > 0) ? static_cast<float>(simpleMCEvent.m_nRecoNeutrinoHitsTotal) / static_cast<float>(simpleMCEvent.m_nEventNeutrinoHitsTotal) : 0.f);
+
+    if ((neutrinoPurity < parameters.m_minNeutrinoPurity) || (neutrinoCompleteness < parameters.m_minNeutrinoCompleteness))
+        return;
+
+    bool hasTargetPrimary(false);
     const InteractionType interactionType(GetInteractionType(simpleMCEvent, parameters));
 
     EventResult eventResult;
@@ -273,6 +281,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
         if (!isTargetPrimary)
             continue;
 
+        hasTargetPrimary = true;
         CountingDetails &countingDetails = interactionCountingMap[interactionType][expectedPrimary];
         PrimaryResult &primaryResult = eventResult.m_primaryResultMap[expectedPrimary];
 
@@ -334,7 +343,9 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
         eventResult.m_vertexOffset = simpleMCEvent.m_recoNeutrinoVtx - simpleMCEvent.m_mcNeutrinoVtx;
 
     eventResult.m_nRecoNeutrinos = simpleMCEvent.m_nRecoNeutrinos;
-    interactionEventResultMap[interactionType].push_back(eventResult);
+
+    if (hasTargetPrimary)
+        interactionEventResultMap[interactionType].push_back(eventResult);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
