@@ -270,6 +270,8 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
     eventResult.m_fileIdentifier = simpleMCEvent.m_fileIdentifier;
     eventResult.m_eventNumber = simpleMCEvent.m_eventNumber;
     eventResult.m_mcNeutrinoNuance = simpleMCEvent.m_mcNeutrinoNuance;
+    eventResult.m_nRecoNeutrinos = simpleMCEvent.m_nRecoNeutrinos;
+    eventResult.m_nTrueNeutrinos = simpleMCEvent.m_nMCNeutrinos;
 
     for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
     {
@@ -340,9 +342,13 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
     }
 
     if ((0 < simpleMCEvent.m_nRecoNeutrinos) && (1 == simpleMCEvent.m_nMCNeutrinos))
-        eventResult.m_vertexOffset = simpleMCEvent.m_recoNeutrinoVtx - simpleMCEvent.m_mcNeutrinoVtx;
+    {
+        eventResult.m_neutrinoPurity = neutrinoPurity;
+        eventResult.m_neutrinoCompleteness = neutrinoCompleteness;
 
-    eventResult.m_nRecoNeutrinos = simpleMCEvent.m_nRecoNeutrinos;
+        eventResult.m_vertexOffset = simpleMCEvent.m_recoNeutrinoVtx - simpleMCEvent.m_mcNeutrinoVtx;
+        eventResult.m_vertexOffset.m_x = eventResult.m_vertexOffset.m_x - parameters.m_vertexXCorrection;
+    }
 
     if (hasTargetPrimary)
         interactionEventResultMap[interactionType].push_back(eventResult);
@@ -746,19 +752,49 @@ void FillEventHistogramCollection(const std::string &histPrefix, const EventResu
         eventHistogramCollection.m_hVtxDeltaR->GetYaxis()->SetTitle("nEvents");
     }
 
-    if (!eventHistogramCollection.m_nRecoNeutrinos)
+    if (!eventHistogramCollection.m_hNeutrinoPurity)
     {
-        eventHistogramCollection.m_nRecoNeutrinos = new TH1F((histPrefix + "NRecoNeutrinos").c_str(), "", 11, -0.5, 10.5);
-        eventHistogramCollection.m_nRecoNeutrinos->GetXaxis()->SetTitle("nRecoNeutrinos");
-        eventHistogramCollection.m_nRecoNeutrinos->GetYaxis()->SetTitle("nEvents");
+        eventHistogramCollection.m_hNeutrinoPurity = new TH1F((histPrefix + "NeutrinoPurity").c_str(), "", 51, -0.01, 1.01);
+        eventHistogramCollection.m_hNeutrinoPurity->GetXaxis()->SetRangeUser(0., +1.01);
+        eventHistogramCollection.m_hNeutrinoPurity->GetXaxis()->SetTitle("Reco Neutrino Purity");
+        eventHistogramCollection.m_hNeutrinoPurity->GetYaxis()->SetTitle("nRecoNeutrinos");
     }
 
-    const float xCorrection(4.95694e-01);
-    eventHistogramCollection.m_hVtxDeltaX->Fill(eventResult.m_vertexOffset.m_x - xCorrection);
+    if (!eventHistogramCollection.m_hCosmicFraction)
+    {
+        eventHistogramCollection.m_hCosmicFraction = new TH1F((histPrefix + "CosmicFraction").c_str(), "", 51, -0.01, 1.01);
+        eventHistogramCollection.m_hCosmicFraction->GetXaxis()->SetRangeUser(0., +1.01);
+        eventHistogramCollection.m_hCosmicFraction->GetXaxis()->SetTitle("Cosmic Contamination");
+        eventHistogramCollection.m_hCosmicFraction->GetYaxis()->SetTitle("nRecoNeutrinos");
+    }
+
+    if (!eventHistogramCollection.m_hNeutrinoCompleteness)
+    {
+        eventHistogramCollection.m_hNeutrinoCompleteness = new TH1F((histPrefix + "NeutrinoCompleteness").c_str(), "", 51, -0.01, 1.01);
+        eventHistogramCollection.m_hNeutrinoCompleteness->GetXaxis()->SetRangeUser(0., +1.01);
+        eventHistogramCollection.m_hNeutrinoCompleteness->GetXaxis()->SetTitle("Reco Neutrino Completeness");
+        eventHistogramCollection.m_hNeutrinoCompleteness->GetYaxis()->SetTitle("nRecoNeutrinos");
+    }
+
+    if (!eventHistogramCollection.m_hNRecoNeutrinos)
+    {
+        eventHistogramCollection.m_hNRecoNeutrinos = new TH1F((histPrefix + "NRecoNeutrinos").c_str(), "", 11, -0.5, 10.5);
+        eventHistogramCollection.m_hNRecoNeutrinos->GetXaxis()->SetTitle("nRecoNeutrinos");
+        eventHistogramCollection.m_hNRecoNeutrinos->GetYaxis()->SetTitle("nEvents");
+    }
+
+    eventHistogramCollection.m_hVtxDeltaX->Fill(eventResult.m_vertexOffset.m_x);
     eventHistogramCollection.m_hVtxDeltaY->Fill(eventResult.m_vertexOffset.m_y);
     eventHistogramCollection.m_hVtxDeltaZ->Fill(eventResult.m_vertexOffset.m_z);
-    eventHistogramCollection.m_hVtxDeltaR->Fill(std::sqrt((eventResult.m_vertexOffset.m_x - xCorrection) * (eventResult.m_vertexOffset.m_x - xCorrection) + eventResult.m_vertexOffset.m_y * eventResult.m_vertexOffset.m_y + eventResult.m_vertexOffset.m_z * eventResult.m_vertexOffset.m_z));
-    eventHistogramCollection.m_nRecoNeutrinos->Fill(eventResult.m_nRecoNeutrinos);
+    eventHistogramCollection.m_hVtxDeltaR->Fill(std::sqrt(eventResult.m_vertexOffset.m_x * eventResult.m_vertexOffset.m_x + eventResult.m_vertexOffset.m_y * eventResult.m_vertexOffset.m_y + eventResult.m_vertexOffset.m_z * eventResult.m_vertexOffset.m_z));
+    eventHistogramCollection.m_hNRecoNeutrinos->Fill(eventResult.m_nRecoNeutrinos);
+
+    if ((eventResult.m_nRecoNeutrinos > 0) && (eventResult.m_nTrueNeutrinos == 1))
+    {
+        eventHistogramCollection.m_hNeutrinoPurity->Fill(eventResult.m_neutrinoPurity);
+        eventHistogramCollection.m_hCosmicFraction->Fill(1.f - eventResult.m_neutrinoPurity);
+        eventHistogramCollection.m_hNeutrinoCompleteness->Fill(eventResult.m_neutrinoCompleteness);
+    }
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
