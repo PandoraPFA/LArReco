@@ -257,7 +257,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
         return;
 
     const int nRecoHitsTotal(simpleMCEvent.m_nRecoNeutrinoHitsTotal + simpleMCEvent.m_nRecoOtherHitsTotal);
-    const float neutrinoPurity((nRecoHitsTotal > 0) ? static_cast<float>(simpleMCEvent.m_nRecoNeutrinoHitsTotal) / static_cast<float>(nRecoHitsTotal) : 0.f);
+    const float neutrinoPurity((nRecoHitsTotal > 0) ? static_cast<float>(simpleMCEvent.m_nRecoNeutrinoHitsTotal) / static_cast<float>(nRecoHitsTotal) : 0.f); // ATTN Think about where to place null value in histogram
     const float neutrinoCompleteness((simpleMCEvent.m_nEventNeutrinoHitsTotal > 0) ? static_cast<float>(simpleMCEvent.m_nRecoNeutrinoHitsTotal) / static_cast<float>(simpleMCEvent.m_nEventNeutrinoHitsTotal) : 0.f);
 
     if ((neutrinoPurity < parameters.m_minNeutrinoPurity) || (neutrinoCompleteness < parameters.m_minNeutrinoCompleteness))
@@ -272,6 +272,8 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
     eventResult.m_mcNeutrinoNuance = simpleMCEvent.m_mcNeutrinoNuance;
     eventResult.m_nRecoNeutrinos = simpleMCEvent.m_nRecoNeutrinos;
     eventResult.m_nTrueNeutrinos = simpleMCEvent.m_nMCNeutrinos;
+    eventResult.m_neutrinoPurity = neutrinoPurity;
+    eventResult.m_neutrinoCompleteness = neutrinoCompleteness;
 
     for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
     {
@@ -343,9 +345,6 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
 
     if ((0 < simpleMCEvent.m_nRecoNeutrinos) && (1 == simpleMCEvent.m_nMCNeutrinos))
     {
-        eventResult.m_neutrinoPurity = neutrinoPurity;
-        eventResult.m_neutrinoCompleteness = neutrinoCompleteness;
-
         eventResult.m_vertexOffset = simpleMCEvent.m_recoNeutrinoVtx - simpleMCEvent.m_mcNeutrinoVtx;
         eventResult.m_vertexOffset.m_x = eventResult.m_vertexOffset.m_x - parameters.m_vertexXCorrection;
     }
@@ -659,17 +658,6 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
             const PrimaryResultMap &primaryResultMap(eIter->m_primaryResultMap);
             bool isCorrect(!primaryResultMap.empty());
 
-            if (parameters.m_histogramOutput)
-            {
-                const std::string histPrefix(parameters.m_histPrefix + ToString(interactionType) + "_");
-                EventHistogramCollection &histogramCollection(interactionEventHistogramMap[interactionType]);
-                FillEventHistogramCollection(histPrefix, *eIter, histogramCollection);
-
-                const std::string histPrefixAll(parameters.m_histPrefix + ToString(ALL_INTERACTIONS) + "_");
-                EventHistogramCollection &histogramCollectionAll(interactionEventHistogramMap[ALL_INTERACTIONS]);
-                FillEventHistogramCollection(histPrefixAll, *eIter, histogramCollectionAll);
-            }
-
             for (PrimaryResultMap::const_iterator pIter = primaryResultMap.begin(), pIterEnd = primaryResultMap.end(); pIter != pIterEnd; ++pIter)
             {
                 const ExpectedPrimary expectedPrimary(pIter->first);
@@ -688,6 +676,17 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
                     PrimaryHistogramCollection &histogramCollectionAll(interactionPrimaryHistogramMap[ALL_INTERACTIONS][expectedPrimary]);
                     FillPrimaryHistogramCollection(histPrefixAll, primaryResult, histogramCollectionAll);
                 }
+            }
+
+            if (parameters.m_histogramOutput)
+            {
+                const std::string histPrefix(parameters.m_histPrefix + ToString(interactionType) + "_");
+                EventHistogramCollection &histogramCollection(interactionEventHistogramMap[interactionType]);
+                FillEventHistogramCollection(histPrefix, isCorrect, *eIter, histogramCollection);
+
+                const std::string histPrefixAll(parameters.m_histPrefix + ToString(ALL_INTERACTIONS) + "_");
+                EventHistogramCollection &histogramCollectionAll(interactionEventHistogramMap[ALL_INTERACTIONS]);
+                FillEventHistogramCollection(histPrefixAll, isCorrect, *eIter, histogramCollectionAll);
             }
 
             if (isCorrect)
@@ -718,7 +717,7 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void FillEventHistogramCollection(const std::string &histPrefix, const EventResult &eventResult, EventHistogramCollection &eventHistogramCollection)
+void FillEventHistogramCollection(const std::string &histPrefix, const bool isCorrect, const EventResult &eventResult, EventHistogramCollection &eventHistogramCollection)
 {
     if (!eventHistogramCollection.m_hVtxDeltaX)
     {
@@ -760,6 +759,14 @@ void FillEventHistogramCollection(const std::string &histPrefix, const EventResu
         eventHistogramCollection.m_hNeutrinoPurity->GetYaxis()->SetTitle("nRecoNeutrinos");
     }
 
+    if (!eventHistogramCollection.m_hNuPurityCorrect)
+    {
+        eventHistogramCollection.m_hNuPurityCorrect = new TH1F((histPrefix + "NeutrinoPurityCorrect").c_str(), "", 51, -0.01, 1.01);
+        eventHistogramCollection.m_hNuPurityCorrect->GetXaxis()->SetRangeUser(0., +1.01);
+        eventHistogramCollection.m_hNuPurityCorrect->GetXaxis()->SetTitle("Reco Neutrino Purity");
+        eventHistogramCollection.m_hNuPurityCorrect->GetYaxis()->SetTitle("nCorrectRecoNeutrinos");
+    }
+
     if (!eventHistogramCollection.m_hCosmicFraction)
     {
         eventHistogramCollection.m_hCosmicFraction = new TH1F((histPrefix + "CosmicFraction").c_str(), "", 51, -0.01, 1.01);
@@ -776,6 +783,14 @@ void FillEventHistogramCollection(const std::string &histPrefix, const EventResu
         eventHistogramCollection.m_hNeutrinoCompleteness->GetYaxis()->SetTitle("nRecoNeutrinos");
     }
 
+    if (!eventHistogramCollection.m_hNuCompletenessCorrect)
+    {
+        eventHistogramCollection.m_hNuCompletenessCorrect = new TH1F((histPrefix + "NeutrinoCompletenessCorrect").c_str(), "", 51, -0.01, 1.01);
+        eventHistogramCollection.m_hNuCompletenessCorrect->GetXaxis()->SetRangeUser(0., +1.01);
+        eventHistogramCollection.m_hNuCompletenessCorrect->GetXaxis()->SetTitle("Reco Neutrino Completeness");
+        eventHistogramCollection.m_hNuCompletenessCorrect->GetYaxis()->SetTitle("nCorrectRecoNeutrinos");
+    }
+
     if (!eventHistogramCollection.m_hNRecoNeutrinos)
     {
         eventHistogramCollection.m_hNRecoNeutrinos = new TH1F((histPrefix + "NRecoNeutrinos").c_str(), "", 11, -0.5, 10.5);
@@ -789,11 +804,14 @@ void FillEventHistogramCollection(const std::string &histPrefix, const EventResu
     eventHistogramCollection.m_hVtxDeltaR->Fill(std::sqrt(eventResult.m_vertexOffset.m_x * eventResult.m_vertexOffset.m_x + eventResult.m_vertexOffset.m_y * eventResult.m_vertexOffset.m_y + eventResult.m_vertexOffset.m_z * eventResult.m_vertexOffset.m_z));
     eventHistogramCollection.m_hNRecoNeutrinos->Fill(eventResult.m_nRecoNeutrinos);
 
-    if ((eventResult.m_nRecoNeutrinos > 0) && (eventResult.m_nTrueNeutrinos == 1))
+    eventHistogramCollection.m_hNeutrinoPurity->Fill(eventResult.m_neutrinoPurity);
+    eventHistogramCollection.m_hCosmicFraction->Fill(1.f - eventResult.m_neutrinoPurity);
+    eventHistogramCollection.m_hNeutrinoCompleteness->Fill(eventResult.m_neutrinoCompleteness);
+
+    if (isCorrect)
     {
-        eventHistogramCollection.m_hNeutrinoPurity->Fill(eventResult.m_neutrinoPurity);
-        eventHistogramCollection.m_hCosmicFraction->Fill(1.f - eventResult.m_neutrinoPurity);
-        eventHistogramCollection.m_hNeutrinoCompleteness->Fill(eventResult.m_neutrinoCompleteness);
+        eventHistogramCollection.m_hNuPurityCorrect->Fill(eventResult.m_neutrinoPurity);
+        eventHistogramCollection.m_hNuCompletenessCorrect->Fill(eventResult.m_neutrinoCompleteness);
     }
 }
 

@@ -326,8 +326,10 @@ public:
     TH1F                   *m_hVtxDeltaZ;               ///< 
     TH1F                   *m_hVtxDeltaR;               ///< 
     TH1F                   *m_hNeutrinoPurity;          ///<
+    TH1F                   *m_hNuPurityCorrect;         ///<
     TH1F                   *m_hCosmicFraction;          ///<
     TH1F                   *m_hNeutrinoCompleteness;    ///<
+    TH1F                   *m_hNuCompletenessCorrect;   ///<
     TH1F                   *m_hNRecoNeutrinos;          ///<
 };
 
@@ -488,10 +490,11 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
  *  @brief  Fill histograms in the provided event histogram collection, using information in the provided event offset
  * 
  *  @param  histPrefix the histogram prefix
+ *  @param  isCorrect whether the event is deemed correct
  *  @param  eventResult the event result
  *  @param  eventHistogramCollection the event histogram collection
  */
-void FillEventHistogramCollection(const std::string &histPrefix, const EventResult &eventResult, EventHistogramCollection &eventHistogramCollection);
+void FillEventHistogramCollection(const std::string &histPrefix, const bool isCorrect, const EventResult &eventResult, EventHistogramCollection &eventHistogramCollection);
 
 /**
  *  @brief  Process histograms stored in the provided map e.g. calculating final efficiencies, normalising, etc.
@@ -596,8 +599,10 @@ EventHistogramCollection::EventHistogramCollection() :
     m_hVtxDeltaZ(NULL),
     m_hVtxDeltaR(NULL),
     m_hNeutrinoPurity(NULL),
+    m_hNuPurityCorrect(NULL),
     m_hCosmicFraction(NULL),
     m_hNeutrinoCompleteness(NULL),
+    m_hNuCompletenessCorrect(NULL),
     m_hNRecoNeutrinos(NULL)
 {
 }
