@@ -250,7 +250,8 @@
         <MCParticleListName>CRMCParticleList3D</MCParticleListName>
         <PfoListName>CRParentParticles3D</PfoListName>
         <ClusterListNames>CRClustersU CRClustersV CRClustersW</ClusterListNames>
-        <NeutrinoInducedOnly>false</NeutrinoInducedOnly>
+        <UseRecoNeutrinosOnly>false</UseRecoNeutrinosOnly>
+        <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
         <PrintAllToScreen>false</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <VisualizeMatching>false</VisualizeMatching>
@@ -269,7 +270,9 @@
         <MCParticleListName>NMCParticleList3D</MCParticleListName>
         <PfoListName>NParentParticles3D</PfoListName>
         <ClusterListNames>NClustersU NClustersV NClustersW</ClusterListNames>
-        <NeutrinoInducedOnly>true</NeutrinoInducedOnly>
+        <IntegrateOverRecoNeutrinos>false</IntegrateOverRecoNeutrinos>
+        <UseRecoNeutrinosOnly>true</UseRecoNeutrinosOnly>
+        <UseTrueNeutrinosOnly>true</UseTrueNeutrinosOnly>
         <PrintAllToScreen>false</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <VisualizeMatching>false</VisualizeMatching>

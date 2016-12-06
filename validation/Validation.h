@@ -39,6 +39,8 @@ public:
     float                   m_minNeutrinoPurity;        ///< The minimum neutrino purity to consider event (note: can't handle presence of multiple true neutrinos)
     float                   m_minNeutrinoCompleteness;  ///< The minimum neutrino completeness to consider event (note: can't handle presence of multiple true neutrinos)
 
+    float                   m_vertexXCorrection;        ///< The vertex x correction, added to reported mc neutrino endpoint x value, in cm
+
     bool                    m_histogramOutput;          ///< Whether to produce output histograms
     std::string             m_histPrefix;               ///< Histogram name prefix
     std::string             m_mapFileName;              ///< File name to which to write output ascii tables, etc.
@@ -264,6 +266,9 @@ public:
     int                     m_eventNumber;              ///< The event number
     int                     m_mcNeutrinoNuance;         ///< The mc neutrino nuance code (interaction type details)
     int                     m_nRecoNeutrinos;           ///< The number of reconstructed neutrinos
+    int                     m_nTrueNeutrinos;           ///< The number of true neutrinos
+    float                   m_neutrinoPurity;           ///< The reco neutrino purity
+    float                   m_neutrinoCompleteness;     ///< The reco neutrino completeness
     PrimaryResultMap        m_primaryResultMap;         ///< The primary result map
     SimpleThreeVector       m_vertexOffset;             ///< The vertex offset
 };
@@ -320,7 +325,12 @@ public:
     TH1F                   *m_hVtxDeltaY;               ///< 
     TH1F                   *m_hVtxDeltaZ;               ///< 
     TH1F                   *m_hVtxDeltaR;               ///< 
-    TH1F                   *m_nRecoNeutrinos;           ///<
+    TH1F                   *m_hNeutrinoPurity;          ///<
+    TH1F                   *m_hNuPurityCorrect;         ///<
+    TH1F                   *m_hCosmicFraction;          ///<
+    TH1F                   *m_hNeutrinoCompleteness;    ///<
+    TH1F                   *m_hNuCompletenessCorrect;   ///<
+    TH1F                   *m_hNRecoNeutrinos;          ///<
 };
 
 typedef std::map<InteractionType, EventHistogramCollection> InteractionEventHistogramMap;
@@ -480,10 +490,11 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
  *  @brief  Fill histograms in the provided event histogram collection, using information in the provided event offset
  * 
  *  @param  histPrefix the histogram prefix
+ *  @param  isCorrect whether the event is deemed correct
  *  @param  eventResult the event result
  *  @param  eventHistogramCollection the event histogram collection
  */
-void FillEventHistogramCollection(const std::string &histPrefix, const EventResult &eventResult, EventHistogramCollection &eventHistogramCollection);
+void FillEventHistogramCollection(const std::string &histPrefix, const bool isCorrect, const EventResult &eventResult, EventHistogramCollection &eventHistogramCollection);
 
 /**
  *  @brief  Process histograms stored in the provided map e.g. calculating final efficiencies, normalising, etc.
@@ -511,6 +522,7 @@ Parameters::Parameters() :
     m_correctTrackShowerId(false),
     m_minNeutrinoPurity(-1.f),
     m_minNeutrinoCompleteness(-1.f),
+    m_vertexXCorrection(0.495694f),
     m_histogramOutput(false)
 {
 }
@@ -554,6 +566,9 @@ EventResult::EventResult() :
     m_eventNumber(-1),
     m_mcNeutrinoNuance(-1),
     m_nRecoNeutrinos(0),
+    m_nTrueNeutrinos(0),
+    m_neutrinoPurity(-1.f),
+    m_neutrinoCompleteness(-1.f),
     m_vertexOffset(-999.f, -999.f, -999.f)
 {
 }
@@ -583,7 +598,12 @@ EventHistogramCollection::EventHistogramCollection() :
     m_hVtxDeltaY(NULL),
     m_hVtxDeltaZ(NULL),
     m_hVtxDeltaR(NULL),
-    m_nRecoNeutrinos(NULL)
+    m_hNeutrinoPurity(NULL),
+    m_hNuPurityCorrect(NULL),
+    m_hCosmicFraction(NULL),
+    m_hNeutrinoCompleteness(NULL),
+    m_hNuCompletenessCorrect(NULL),
+    m_hNRecoNeutrinos(NULL)
 {
 }
 
