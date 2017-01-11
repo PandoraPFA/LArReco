@@ -47,6 +47,8 @@ public:
     std::string             m_mapFileName;              ///< File name to which to write output ascii tables, etc.
     std::string             m_eventFileName;            ///< File name to which to write list of correct events
 
+    bool                    m_inclusiveMode;            ///< Whether to use inclusive or exclusive final states for performance metrics
+
     float                   m_minFractionOfAllHits;     ///< Input details must represent at least a given fraction of all hit in all drift volumes (as recorded in file, below)
     std::string             m_hitCountingFileName;      ///< The name of the file containing information about all hits in all drift volumes
 };
@@ -123,6 +125,106 @@ typedef std::map<ExpectedPrimary, CountingDetails> CountingMap;
 enum InteractionType
 {
     // TODO Move to dynamic interaction type identification and labelling
+    // Exclusive mode
+    CCQEL_MU,
+    CCQEL_MU_P,
+    CCQEL_MU_P_P,
+    CCQEL_MU_P_P_P,
+    CCQEL_MU_P_P_P_P,
+    CCQEL_MU_P_P_P_P_P,
+    CCQEL_E,
+    CCQEL_E_P,
+    CCQEL_E_P_P,
+    CCQEL_E_P_P_P,
+    CCQEL_E_P_P_P_P,
+    CCQEL_E_P_P_P_P_P,
+    NCQEL_P,
+    NCQEL_P_P,
+    NCQEL_P_P_P,
+    NCQEL_P_P_P_P,
+    NCQEL_P_P_P_P_P,
+    CCRES_MU,
+    CCRES_MU_P,
+    CCRES_MU_P_P,
+    CCRES_MU_P_P_P,
+    CCRES_MU_P_P_P_P,
+    CCRES_MU_P_P_P_P_P,
+    CCRES_MU_PIPLUS,
+    CCRES_MU_P_PIPLUS,
+    CCRES_MU_P_P_PIPLUS,
+    CCRES_MU_P_P_P_PIPLUS,
+    CCRES_MU_P_P_P_P_PIPLUS,
+    CCRES_MU_P_P_P_P_P_PIPLUS,
+    CCRES_MU_PHOTON,
+    CCRES_MU_P_PHOTON,
+    CCRES_MU_P_P_PHOTON,
+    CCRES_MU_P_P_P_PHOTON,
+    CCRES_MU_P_P_P_P_PHOTON,
+    CCRES_MU_P_P_P_P_P_PHOTON,
+    CCRES_MU_PIZERO,
+    CCRES_MU_P_PIZERO,
+    CCRES_MU_P_P_PIZERO,
+    CCRES_MU_P_P_P_PIZERO,
+    CCRES_MU_P_P_P_P_PIZERO,
+    CCRES_MU_P_P_P_P_P_PIZERO,
+    CCRES_E,
+    CCRES_E_P,
+    CCRES_E_P_P,
+    CCRES_E_P_P_P,
+    CCRES_E_P_P_P_P,
+    CCRES_E_P_P_P_P_P,
+    CCRES_E_PIPLUS,
+    CCRES_E_P_PIPLUS,
+    CCRES_E_P_P_PIPLUS,
+    CCRES_E_P_P_P_PIPLUS,
+    CCRES_E_P_P_P_P_PIPLUS,
+    CCRES_E_P_P_P_P_P_PIPLUS,
+    CCRES_E_PHOTON,
+    CCRES_E_P_PHOTON,
+    CCRES_E_P_P_PHOTON,
+    CCRES_E_P_P_P_PHOTON,
+    CCRES_E_P_P_P_P_PHOTON,
+    CCRES_E_P_P_P_P_P_PHOTON,
+    CCRES_E_PIZERO,
+    CCRES_E_P_PIZERO,
+    CCRES_E_P_P_PIZERO,
+    CCRES_E_P_P_P_PIZERO,
+    CCRES_E_P_P_P_P_PIZERO,
+    CCRES_E_P_P_P_P_P_PIZERO,
+    NCRES_P,
+    NCRES_P_P,
+    NCRES_P_P_P,
+    NCRES_P_P_P_P,
+    NCRES_P_P_P_P_P,
+    NCRES_PIPLUS,
+    NCRES_P_PIPLUS,
+    NCRES_P_P_PIPLUS,
+    NCRES_P_P_P_PIPLUS,
+    NCRES_P_P_P_P_PIPLUS,
+    NCRES_P_P_P_P_P_PIPLUS,
+    NCRES_PIMINUS,
+    NCRES_P_PIMINUS,
+    NCRES_P_P_PIMINUS,
+    NCRES_P_P_P_PIMINUS,
+    NCRES_P_P_P_P_PIMINUS,
+    NCRES_P_P_P_P_P_PIMINUS,
+    NCRES_PHOTON,
+    NCRES_P_PHOTON,
+    NCRES_P_P_PHOTON,
+    NCRES_P_P_P_PHOTON,
+    NCRES_P_P_P_P_PHOTON,
+    NCRES_P_P_P_P_P_PHOTON,
+    NCRES_PIZERO,
+    NCRES_P_PIZERO,
+    NCRES_P_P_PIZERO,
+    NCRES_P_P_P_PIZERO,
+    NCRES_P_P_P_P_PIZERO,
+    NCRES_P_P_P_P_P_PIZERO,
+    CCDIS,
+    NCDIS,
+    CCCOH,
+    NCCOH,
+    // Inclusive mode
     CC_MU,
     CC_MU_P,
     CC_MU_P_P,
@@ -463,6 +565,16 @@ bool PassFiducialCut(const SimpleMCEvent &simpleMCEvent);
 InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters);
 
 /**
+ *  @brief  Get the inclusive mode event interaction type
+ * 
+ *  @param  simpleMCEvent the simple mc event
+ *  @param  parameters the parameters
+ * 
+ *  @return the interaction type
+ */
+InteractionType GetInclusiveInteractionType(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters);
+
+/**
  *  @brief  Work out which of the primary particles (expected for a given interaction types) corresponds to the provided priamry id
  *          ATTN: Relies on fact that primary list is sorted by number of true hits
  * 
@@ -537,6 +649,7 @@ Parameters::Parameters() :
     m_minNeutrinoCompleteness(-1.f),
     m_vertexXCorrection(0.495694f),
     m_histogramOutput(false),
+    m_inclusiveMode(false),
     m_minFractionOfAllHits(0.9f)
 {
 }
@@ -635,6 +748,106 @@ std::string ToString(const InteractionType interactionType)
 {
     switch (interactionType)
     {
+    // Exclusive mode
+    case CCQEL_MU: return "CCQEL_MU";
+    case CCQEL_MU_P: return "CCQEL_MU_P";
+    case CCQEL_MU_P_P: return "CCQEL_MU_P_P";
+    case CCQEL_MU_P_P_P: return "CCQEL_MU_P_P_P";
+    case CCQEL_MU_P_P_P_P: return "CCQEL_MU_P_P_P_P";
+    case CCQEL_MU_P_P_P_P_P: return "CCQEL_MU_P_P_P_P_P";
+    case CCQEL_E: return "CCQEL_E";
+    case CCQEL_E_P: return "CCQEL_E_P";
+    case CCQEL_E_P_P: return "CCQEL_E_P_P";
+    case CCQEL_E_P_P_P: return "CCQEL_E_P_P_P";
+    case CCQEL_E_P_P_P_P: return "CCQEL_E_P_P_P_P";
+    case CCQEL_E_P_P_P_P_P: return "CCQEL_E_P_P_P_P_P";
+    case NCQEL_P: return "NCQEL_P";
+    case NCQEL_P_P: return "NCQEL_P_P";
+    case NCQEL_P_P_P: return "NCQEL_P_P_P";
+    case NCQEL_P_P_P_P: return "NCQEL_P_P_P_P";
+    case NCQEL_P_P_P_P_P: return "NCQEL_P_P_P_P_P";
+    case CCRES_MU: return "CCRES_MU";
+    case CCRES_MU_P: return "CCRES_MU_P";
+    case CCRES_MU_P_P: return "CCRES_MU_P_P";
+    case CCRES_MU_P_P_P: return "CCRES_MU_P_P_P";
+    case CCRES_MU_P_P_P_P: return "CCRES_MU_P_P_P_P";
+    case CCRES_MU_P_P_P_P_P: return "CCRES_MU_P_P_P_P_P";
+    case CCRES_MU_PIPLUS: return "CCRES_MU_PIPLUS";
+    case CCRES_MU_P_PIPLUS: return "CCRES_MU_P_PIPLUS";
+    case CCRES_MU_P_P_PIPLUS: return "CCRES_MU_P_P_PIPLUS";
+    case CCRES_MU_P_P_P_PIPLUS: return "CCRES_MU_P_P_P_PIPLUS";
+    case CCRES_MU_P_P_P_P_PIPLUS: return "CCRES_MU_P_P_P_P_PIPLUS";
+    case CCRES_MU_P_P_P_P_P_PIPLUS: return "CCRES_MU_P_P_P_P_P_PIPLUS";
+    case CCRES_MU_PHOTON: return "CCRES_MU_PHOTON";
+    case CCRES_MU_P_PHOTON: return "CCRES_MU_P_PHOTON";
+    case CCRES_MU_P_P_PHOTON: return "CCRES_MU_P_P_PHOTON";
+    case CCRES_MU_P_P_P_PHOTON: return "CCRES_MU_P_P_P_PHOTON";
+    case CCRES_MU_P_P_P_P_PHOTON: return "CCRES_MU_P_P_P_P_PHOTON";
+    case CCRES_MU_P_P_P_P_P_PHOTON: return "CCRES_MU_P_P_P_P_P_PHOTON";
+    case CCRES_MU_PIZERO: return "CCRES_MU_PIZERO";
+    case CCRES_MU_P_PIZERO: return "CCRES_MU_P_PIZERO";
+    case CCRES_MU_P_P_PIZERO: return "CCRES_MU_P_P_PIZERO";
+    case CCRES_MU_P_P_P_PIZERO: return "CCRES_MU_P_P_P_PIZERO";
+    case CCRES_MU_P_P_P_P_PIZERO: return "CCRES_MU_P_P_P_P_PIZERO";
+    case CCRES_MU_P_P_P_P_P_PIZERO: return "CCRES_MU_P_P_P_P_P_PIZERO";
+    case CCRES_E: return "CCRES_E";
+    case CCRES_E_P: return "CCRES_E_P";
+    case CCRES_E_P_P: return "CCRES_E_P_P";
+    case CCRES_E_P_P_P: return "CCRES_E_P_P_P";
+    case CCRES_E_P_P_P_P: return "CCRES_E_P_P_P_P";
+    case CCRES_E_P_P_P_P_P: return "CCRES_E_P_P_P_P_P";
+    case CCRES_E_PIPLUS: return "CCRES_E_PIPLUS";
+    case CCRES_E_P_PIPLUS: return "CCRES_E_P_PIPLUS";
+    case CCRES_E_P_P_PIPLUS: return "CCRES_E_P_P_PIPLUS";
+    case CCRES_E_P_P_P_PIPLUS: return "CCRES_E_P_P_P_PIPLUS";
+    case CCRES_E_P_P_P_P_PIPLUS: return "CCRES_E_P_P_P_P_PIPLUS";
+    case CCRES_E_P_P_P_P_P_PIPLUS: return "CCRES_E_P_P_P_P_P_PIPLUS";
+    case CCRES_E_PHOTON: return "CCRES_E_PHOTON";
+    case CCRES_E_P_PHOTON: return "CCRES_E_P_PHOTON";
+    case CCRES_E_P_P_PHOTON: return "CCRES_E_P_P_PHOTON";
+    case CCRES_E_P_P_P_PHOTON: return "CCRES_E_P_P_P_PHOTON";
+    case CCRES_E_P_P_P_P_PHOTON: return "CCRES_E_P_P_P_P_PHOTON";
+    case CCRES_E_P_P_P_P_P_PHOTON: return "CCRES_E_P_P_P_P_P_PHOTON";
+    case CCRES_E_PIZERO: return "CCRES_E_PIZERO";
+    case CCRES_E_P_PIZERO: return "CCRES_E_P_PIZERO";
+    case CCRES_E_P_P_PIZERO: return "CCRES_E_P_P_PIZERO";
+    case CCRES_E_P_P_P_PIZERO: return "CCRES_E_P_P_P_PIZERO";
+    case CCRES_E_P_P_P_P_PIZERO: return "CCRES_E_P_P_P_P_PIZERO";
+    case CCRES_E_P_P_P_P_P_PIZERO: return "CCRES_E_P_P_P_P_P_PIZERO";
+    case NCRES_P: return "NCRES_P";
+    case NCRES_P_P: return "NCRES_P_P";
+    case NCRES_P_P_P: return "NCRES_P_P_P";
+    case NCRES_P_P_P_P: return "NCRES_P_P_P_P";
+    case NCRES_P_P_P_P_P: return "NCRES_P_P_P_P_P";
+    case NCRES_PIPLUS: return "NCRES_PIPLUS";
+    case NCRES_P_PIPLUS: return "NCRES_P_PIPLUS";
+    case NCRES_P_P_PIPLUS: return "NCRES_P_P_PIPLUS";
+    case NCRES_P_P_P_PIPLUS: return "NCRES_P_P_P_PIPLUS";
+    case NCRES_P_P_P_P_PIPLUS: return "NCRES_P_P_P_P_PIPLUS";
+    case NCRES_P_P_P_P_P_PIPLUS: return "NCRES_P_P_P_P_P_PIPLUS";
+    case NCRES_PIMINUS: return "NCRES_PIMINUS";
+    case NCRES_P_PIMINUS: return "NCRES_P_PIMINUS";
+    case NCRES_P_P_PIMINUS: return "NCRES_P_P_PIMINUS";
+    case NCRES_P_P_P_PIMINUS: return "NCRES_P_P_P_PIMINUS";
+    case NCRES_P_P_P_P_PIMINUS: return "NCRES_P_P_P_P_PIMINUS";
+    case NCRES_P_P_P_P_P_PIMINUS: return "NCRES_P_P_P_P_P_PIMINUS";
+    case NCRES_PHOTON: return "NCRES_PHOTON";
+    case NCRES_P_PHOTON: return "NCRES_P_PHOTON";
+    case NCRES_P_P_PHOTON: return "NCRES_P_P_PHOTON";
+    case NCRES_P_P_P_PHOTON: return "NCRES_P_P_P_PHOTON";
+    case NCRES_P_P_P_P_PHOTON: return "NCRES_P_P_P_P_PHOTON";
+    case NCRES_P_P_P_P_P_PHOTON: return "NCRES_P_P_P_P_P_PHOTON";
+    case NCRES_PIZERO: return "NCRES_PIZERO";
+    case NCRES_P_PIZERO: return "NCRES_P_PIZERO";
+    case NCRES_P_P_PIZERO: return "NCRES_P_P_PIZERO";
+    case NCRES_P_P_P_PIZERO: return "NCRES_P_P_P_PIZERO";
+    case NCRES_P_P_P_P_PIZERO: return "NCRES_P_P_P_P_PIZERO";
+    case NCRES_P_P_P_P_P_PIZERO: return "NCRES_P_P_P_P_P_PIZERO";
+    case CCDIS: return "CCDIS";
+    case NCDIS: return "NCDIS";
+    case CCCOH: return "CCCOH";
+    case NCCOH: return "NCCOH";
+    // Inclusive mode
     case CC_MU: return "CC_MU";
     case CC_MU_P: return "CC_MU_P";
     case CC_MU_P_P: return "CC_MU_P_P";
