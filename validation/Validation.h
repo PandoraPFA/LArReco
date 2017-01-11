@@ -42,9 +42,13 @@ public:
     float                   m_vertexXCorrection;        ///< The vertex x correction, added to reported mc neutrino endpoint x value, in cm
 
     bool                    m_histogramOutput;          ///< Whether to produce output histograms
+
     std::string             m_histPrefix;               ///< Histogram name prefix
     std::string             m_mapFileName;              ///< File name to which to write output ascii tables, etc.
     std::string             m_eventFileName;            ///< File name to which to write list of correct events
+
+    float                   m_minFractionOfAllHits;     ///< Input details must represent at least a given fraction of all hit in all drift volumes (as recorded in file, below)
+    std::string             m_hitCountingFileName;      ///< The name of the file containing information about all hits in all drift volumes
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -119,104 +123,83 @@ typedef std::map<ExpectedPrimary, CountingDetails> CountingMap;
 enum InteractionType
 {
     // TODO Move to dynamic interaction type identification and labelling
-    CCQEL_MU,
-    CCQEL_MU_P,
-    CCQEL_MU_P_P,
-    CCQEL_MU_P_P_P,
-    CCQEL_MU_P_P_P_P,
-    CCQEL_MU_P_P_P_P_P,
-    CCQEL_E,
-    CCQEL_E_P,
-    CCQEL_E_P_P,
-    CCQEL_E_P_P_P,
-    CCQEL_E_P_P_P_P,
-    CCQEL_E_P_P_P_P_P,
-    NCQEL_P,
-    NCQEL_P_P,
-    NCQEL_P_P_P,
-    NCQEL_P_P_P_P,
-    NCQEL_P_P_P_P_P,
-    CCRES_MU,
-    CCRES_MU_P,
-    CCRES_MU_P_P,
-    CCRES_MU_P_P_P,
-    CCRES_MU_P_P_P_P,
-    CCRES_MU_P_P_P_P_P,
-    CCRES_MU_PIPLUS,
-    CCRES_MU_P_PIPLUS,
-    CCRES_MU_P_P_PIPLUS,
-    CCRES_MU_P_P_P_PIPLUS,
-    CCRES_MU_P_P_P_P_PIPLUS,
-    CCRES_MU_P_P_P_P_P_PIPLUS,
-    CCRES_MU_PHOTON,
-    CCRES_MU_P_PHOTON,
-    CCRES_MU_P_P_PHOTON,
-    CCRES_MU_P_P_P_PHOTON,
-    CCRES_MU_P_P_P_P_PHOTON,
-    CCRES_MU_P_P_P_P_P_PHOTON,
-    CCRES_MU_PIZERO,
-    CCRES_MU_P_PIZERO,
-    CCRES_MU_P_P_PIZERO,
-    CCRES_MU_P_P_P_PIZERO,
-    CCRES_MU_P_P_P_P_PIZERO,
-    CCRES_MU_P_P_P_P_P_PIZERO,
-    CCRES_E,
-    CCRES_E_P,
-    CCRES_E_P_P,
-    CCRES_E_P_P_P,
-    CCRES_E_P_P_P_P,
-    CCRES_E_P_P_P_P_P,
-    CCRES_E_PIPLUS,
-    CCRES_E_P_PIPLUS,
-    CCRES_E_P_P_PIPLUS,
-    CCRES_E_P_P_P_PIPLUS,
-    CCRES_E_P_P_P_P_PIPLUS,
-    CCRES_E_P_P_P_P_P_PIPLUS,
-    CCRES_E_PHOTON,
-    CCRES_E_P_PHOTON,
-    CCRES_E_P_P_PHOTON,
-    CCRES_E_P_P_P_PHOTON,
-    CCRES_E_P_P_P_P_PHOTON,
-    CCRES_E_P_P_P_P_P_PHOTON,
-    CCRES_E_PIZERO,
-    CCRES_E_P_PIZERO,
-    CCRES_E_P_P_PIZERO,
-    CCRES_E_P_P_P_PIZERO,
-    CCRES_E_P_P_P_P_PIZERO,
-    CCRES_E_P_P_P_P_P_PIZERO,
-    NCRES_P,
-    NCRES_P_P,
-    NCRES_P_P_P,
-    NCRES_P_P_P_P,
-    NCRES_P_P_P_P_P,
-    NCRES_PIPLUS,
-    NCRES_P_PIPLUS,
-    NCRES_P_P_PIPLUS,
-    NCRES_P_P_P_PIPLUS,
-    NCRES_P_P_P_P_PIPLUS,
-    NCRES_P_P_P_P_P_PIPLUS,
-    NCRES_PIMINUS,
-    NCRES_P_PIMINUS,
-    NCRES_P_P_PIMINUS,
-    NCRES_P_P_P_PIMINUS,
-    NCRES_P_P_P_P_PIMINUS,
-    NCRES_P_P_P_P_P_PIMINUS,
-    NCRES_PHOTON,
-    NCRES_P_PHOTON,
-    NCRES_P_P_PHOTON,
-    NCRES_P_P_P_PHOTON,
-    NCRES_P_P_P_P_PHOTON,
-    NCRES_P_P_P_P_P_PHOTON,
-    NCRES_PIZERO,
-    NCRES_P_PIZERO,
-    NCRES_P_P_PIZERO,
-    NCRES_P_P_P_PIZERO,
-    NCRES_P_P_P_P_PIZERO,
-    NCRES_P_P_P_P_P_PIZERO,
-    CCDIS,
-    NCDIS,
-    CCCOH,
-    NCCOH,
+    CC_MU,
+    CC_MU_P,
+    CC_MU_P_P,
+    CC_MU_P_P_P,
+    CC_MU_P_P_P_P,
+    CC_MU_P_P_P_P_P,
+    CC_MU_PIPLUS,
+    CC_MU_P_PIPLUS,
+    CC_MU_P_P_PIPLUS,
+    CC_MU_P_P_P_PIPLUS,
+    CC_MU_P_P_P_P_PIPLUS,
+    CC_MU_P_P_P_P_P_PIPLUS,
+    CC_MU_PHOTON,
+    CC_MU_P_PHOTON,
+    CC_MU_P_P_PHOTON,
+    CC_MU_P_P_P_PHOTON,
+    CC_MU_P_P_P_P_PHOTON,
+    CC_MU_P_P_P_P_P_PHOTON,
+    CC_MU_PIZERO,
+    CC_MU_P_PIZERO,
+    CC_MU_P_P_PIZERO,
+    CC_MU_P_P_P_PIZERO,
+    CC_MU_P_P_P_P_PIZERO,
+    CC_MU_P_P_P_P_P_PIZERO,
+    CC_E,
+    CC_E_P,
+    CC_E_P_P,
+    CC_E_P_P_P,
+    CC_E_P_P_P_P,
+    CC_E_P_P_P_P_P,
+    CC_E_PIPLUS,
+    CC_E_P_PIPLUS,
+    CC_E_P_P_PIPLUS,
+    CC_E_P_P_P_PIPLUS,
+    CC_E_P_P_P_P_PIPLUS,
+    CC_E_P_P_P_P_P_PIPLUS,
+    CC_E_PHOTON,
+    CC_E_P_PHOTON,
+    CC_E_P_P_PHOTON,
+    CC_E_P_P_P_PHOTON,
+    CC_E_P_P_P_P_PHOTON,
+    CC_E_P_P_P_P_P_PHOTON,
+    CC_E_PIZERO,
+    CC_E_P_PIZERO,
+    CC_E_P_P_PIZERO,
+    CC_E_P_P_P_PIZERO,
+    CC_E_P_P_P_P_PIZERO,
+    CC_E_P_P_P_P_P_PIZERO,
+    NC_P,
+    NC_P_P,
+    NC_P_P_P,
+    NC_P_P_P_P,
+    NC_P_P_P_P_P,
+    NC_PIPLUS,
+    NC_P_PIPLUS,
+    NC_P_P_PIPLUS,
+    NC_P_P_P_PIPLUS,
+    NC_P_P_P_P_PIPLUS,
+    NC_P_P_P_P_P_PIPLUS,
+    NC_PIMINUS,
+    NC_P_PIMINUS,
+    NC_P_P_PIMINUS,
+    NC_P_P_P_PIMINUS,
+    NC_P_P_P_P_PIMINUS,
+    NC_P_P_P_P_P_PIMINUS,
+    NC_PHOTON,
+    NC_P_PHOTON,
+    NC_P_P_PHOTON,
+    NC_P_P_P_PHOTON,
+    NC_P_P_P_P_PHOTON,
+    NC_P_P_P_P_P_PHOTON,
+    NC_PIZERO,
+    NC_P_PIZERO,
+    NC_P_P_PIZERO,
+    NC_P_P_P_PIZERO,
+    NC_P_P_P_P_PIZERO,
+    NC_P_P_P_P_P_PIZERO,
     OTHER_INTERACTION,
     ALL_INTERACTIONS // ATTN use carefully!
 };
@@ -344,6 +327,36 @@ typedef std::map<InteractionType, EventHistogramCollection> InteractionEventHist
  *  @param  parameters the parameters
  */
 void Validation(const std::string inputFiles, const Parameters parameters = Parameters());
+
+typedef std::map<int, int> EventToNHitsMap;
+typedef std::map<int, EventToNHitsMap> HitCountingMap;
+
+/**
+ *  @brief  Write hit counting map, which stores total numbers of hits (in all drift volumes) for given file ids and event numbers
+ * 
+ *  @param  inputFiles the regex identifying the input root files
+ *  @param  outputFile the name of the output text file to create, storing hit counting information
+ */
+void WriteHitCountingMap(const std::string inputFiles, const std::string outputFile);
+
+/**
+ *  @brief  Fill hit counting map from the text file identified in the parameters block
+ * 
+ *  @param  parameters the parameters
+ *  @param  hitCountingMap to receive the populated hit counting map
+ */
+void FillHitCountingMap(const Parameters &parameters, HitCountingMap hitCountingMap);
+
+/**
+ *  @brief  Whether a single drift volume "event" represents at least the minumum fraction of all hits in all volumes
+ * 
+ *  @param  simpleMCEvent the simple mc event
+ *  @param  parameters the parameters
+ *  @param  hitCountingMap the hit counting map
+ * 
+ *  @return boolean
+ */
+bool PassesHitCountingCheck(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters, const HitCountingMap &hitCountingMap);
 
 /**
  *  @brief  Finalise the mc primary to pfo matching, using a pfo matching map to store the results
@@ -518,12 +531,13 @@ Parameters::Parameters() :
     m_minSharedHits(5),
     m_minCompleteness(0.1f),
     m_minPurity(0.5f),
-    m_applyFiducialCut(true),
+    m_applyFiducialCut(false),
     m_correctTrackShowerId(false),
     m_minNeutrinoPurity(-1.f),
     m_minNeutrinoCompleteness(-1.f),
     m_vertexXCorrection(0.495694f),
-    m_histogramOutput(false)
+    m_histogramOutput(false),
+    m_minFractionOfAllHits(0.9f)
 {
 }
 
@@ -621,104 +635,83 @@ std::string ToString(const InteractionType interactionType)
 {
     switch (interactionType)
     {
-    case CCQEL_MU: return "CCQEL_MU";
-    case CCQEL_MU_P: return "CCQEL_MU_P";
-    case CCQEL_MU_P_P: return "CCQEL_MU_P_P";
-    case CCQEL_MU_P_P_P: return "CCQEL_MU_P_P_P";
-    case CCQEL_MU_P_P_P_P: return "CCQEL_MU_P_P_P_P";
-    case CCQEL_MU_P_P_P_P_P: return "CCQEL_MU_P_P_P_P_P";
-    case CCQEL_E: return "CCQEL_E";
-    case CCQEL_E_P: return "CCQEL_E_P";
-    case CCQEL_E_P_P: return "CCQEL_E_P_P";
-    case CCQEL_E_P_P_P: return "CCQEL_E_P_P_P";
-    case CCQEL_E_P_P_P_P: return "CCQEL_E_P_P_P_P";
-    case CCQEL_E_P_P_P_P_P: return "CCQEL_E_P_P_P_P_P";
-    case NCQEL_P: return "NCQEL_P";
-    case NCQEL_P_P: return "NCQEL_P_P";
-    case NCQEL_P_P_P: return "NCQEL_P_P_P";
-    case NCQEL_P_P_P_P: return "NCQEL_P_P_P_P";
-    case NCQEL_P_P_P_P_P: return "NCQEL_P_P_P_P_P";
-    case CCRES_MU: return "CCRES_MU";
-    case CCRES_MU_P: return "CCRES_MU_P";
-    case CCRES_MU_P_P: return "CCRES_MU_P_P";
-    case CCRES_MU_P_P_P: return "CCRES_MU_P_P_P";
-    case CCRES_MU_P_P_P_P: return "CCRES_MU_P_P_P_P";
-    case CCRES_MU_P_P_P_P_P: return "CCRES_MU_P_P_P_P_P";
-    case CCRES_MU_PIPLUS: return "CCRES_MU_PIPLUS";
-    case CCRES_MU_P_PIPLUS: return "CCRES_MU_P_PIPLUS";
-    case CCRES_MU_P_P_PIPLUS: return "CCRES_MU_P_P_PIPLUS";
-    case CCRES_MU_P_P_P_PIPLUS: return "CCRES_MU_P_P_P_PIPLUS";
-    case CCRES_MU_P_P_P_P_PIPLUS: return "CCRES_MU_P_P_P_P_PIPLUS";
-    case CCRES_MU_P_P_P_P_P_PIPLUS: return "CCRES_MU_P_P_P_P_P_PIPLUS";
-    case CCRES_MU_PHOTON: return "CCRES_MU_PHOTON";
-    case CCRES_MU_P_PHOTON: return "CCRES_MU_P_PHOTON";
-    case CCRES_MU_P_P_PHOTON: return "CCRES_MU_P_P_PHOTON";
-    case CCRES_MU_P_P_P_PHOTON: return "CCRES_MU_P_P_P_PHOTON";
-    case CCRES_MU_P_P_P_P_PHOTON: return "CCRES_MU_P_P_P_P_PHOTON";
-    case CCRES_MU_P_P_P_P_P_PHOTON: return "CCRES_MU_P_P_P_P_P_PHOTON";
-    case CCRES_MU_PIZERO: return "CCRES_MU_PIZERO";
-    case CCRES_MU_P_PIZERO: return "CCRES_MU_P_PIZERO";
-    case CCRES_MU_P_P_PIZERO: return "CCRES_MU_P_P_PIZERO";
-    case CCRES_MU_P_P_P_PIZERO: return "CCRES_MU_P_P_P_PIZERO";
-    case CCRES_MU_P_P_P_P_PIZERO: return "CCRES_MU_P_P_P_P_PIZERO";
-    case CCRES_MU_P_P_P_P_P_PIZERO: return "CCRES_MU_P_P_P_P_P_PIZERO";
-    case CCRES_E: return "CCRES_E";
-    case CCRES_E_P: return "CCRES_E_P";
-    case CCRES_E_P_P: return "CCRES_E_P_P";
-    case CCRES_E_P_P_P: return "CCRES_E_P_P_P";
-    case CCRES_E_P_P_P_P: return "CCRES_E_P_P_P_P";
-    case CCRES_E_P_P_P_P_P: return "CCRES_E_P_P_P_P_P";
-    case CCRES_E_PIPLUS: return "CCRES_E_PIPLUS";
-    case CCRES_E_P_PIPLUS: return "CCRES_E_P_PIPLUS";
-    case CCRES_E_P_P_PIPLUS: return "CCRES_E_P_P_PIPLUS";
-    case CCRES_E_P_P_P_PIPLUS: return "CCRES_E_P_P_P_PIPLUS";
-    case CCRES_E_P_P_P_P_PIPLUS: return "CCRES_E_P_P_P_P_PIPLUS";
-    case CCRES_E_P_P_P_P_P_PIPLUS: return "CCRES_E_P_P_P_P_P_PIPLUS";
-    case CCRES_E_PHOTON: return "CCRES_E_PHOTON";
-    case CCRES_E_P_PHOTON: return "CCRES_E_P_PHOTON";
-    case CCRES_E_P_P_PHOTON: return "CCRES_E_P_P_PHOTON";
-    case CCRES_E_P_P_P_PHOTON: return "CCRES_E_P_P_P_PHOTON";
-    case CCRES_E_P_P_P_P_PHOTON: return "CCRES_E_P_P_P_P_PHOTON";
-    case CCRES_E_P_P_P_P_P_PHOTON: return "CCRES_E_P_P_P_P_P_PHOTON";
-    case CCRES_E_PIZERO: return "CCRES_E_PIZERO";
-    case CCRES_E_P_PIZERO: return "CCRES_E_P_PIZERO";
-    case CCRES_E_P_P_PIZERO: return "CCRES_E_P_P_PIZERO";
-    case CCRES_E_P_P_P_PIZERO: return "CCRES_E_P_P_P_PIZERO";
-    case CCRES_E_P_P_P_P_PIZERO: return "CCRES_E_P_P_P_P_PIZERO";
-    case CCRES_E_P_P_P_P_P_PIZERO: return "CCRES_E_P_P_P_P_P_PIZERO";
-    case NCRES_P: return "NCRES_P";
-    case NCRES_P_P: return "NCRES_P_P";
-    case NCRES_P_P_P: return "NCRES_P_P_P";
-    case NCRES_P_P_P_P: return "NCRES_P_P_P_P";
-    case NCRES_P_P_P_P_P: return "NCRES_P_P_P_P_P";
-    case NCRES_PIPLUS: return "NCRES_PIPLUS";
-    case NCRES_P_PIPLUS: return "NCRES_P_PIPLUS";
-    case NCRES_P_P_PIPLUS: return "NCRES_P_P_PIPLUS";
-    case NCRES_P_P_P_PIPLUS: return "NCRES_P_P_P_PIPLUS";
-    case NCRES_P_P_P_P_PIPLUS: return "NCRES_P_P_P_P_PIPLUS";
-    case NCRES_P_P_P_P_P_PIPLUS: return "NCRES_P_P_P_P_P_PIPLUS";
-    case NCRES_PIMINUS: return "NCRES_PIMINUS";
-    case NCRES_P_PIMINUS: return "NCRES_P_PIMINUS";
-    case NCRES_P_P_PIMINUS: return "NCRES_P_P_PIMINUS";
-    case NCRES_P_P_P_PIMINUS: return "NCRES_P_P_P_PIMINUS";
-    case NCRES_P_P_P_P_PIMINUS: return "NCRES_P_P_P_P_PIMINUS";
-    case NCRES_P_P_P_P_P_PIMINUS: return "NCRES_P_P_P_P_P_PIMINUS";
-    case NCRES_PHOTON: return "NCRES_PHOTON";
-    case NCRES_P_PHOTON: return "NCRES_P_PHOTON";
-    case NCRES_P_P_PHOTON: return "NCRES_P_P_PHOTON";
-    case NCRES_P_P_P_PHOTON: return "NCRES_P_P_P_PHOTON";
-    case NCRES_P_P_P_P_PHOTON: return "NCRES_P_P_P_P_PHOTON";
-    case NCRES_P_P_P_P_P_PHOTON: return "NCRES_P_P_P_P_P_PHOTON";
-    case NCRES_PIZERO: return "NCRES_PIZERO";
-    case NCRES_P_PIZERO: return "NCRES_P_PIZERO";
-    case NCRES_P_P_PIZERO: return "NCRES_P_P_PIZERO";
-    case NCRES_P_P_P_PIZERO: return "NCRES_P_P_P_PIZERO";
-    case NCRES_P_P_P_P_PIZERO: return "NCRES_P_P_P_P_PIZERO";
-    case NCRES_P_P_P_P_P_PIZERO: return "NCRES_P_P_P_P_P_PIZERO";
-    case CCDIS: return "CCDIS";
-    case NCDIS: return "NCDIS";
-    case CCCOH: return "CCCOH";
-    case NCCOH: return "NCCOH";
+    case CC_MU: return "CC_MU";
+    case CC_MU_P: return "CC_MU_P";
+    case CC_MU_P_P: return "CC_MU_P_P";
+    case CC_MU_P_P_P: return "CC_MU_P_P_P";
+    case CC_MU_P_P_P_P: return "CC_MU_P_P_P_P";
+    case CC_MU_P_P_P_P_P: return "CC_MU_P_P_P_P_P";
+    case CC_MU_PIPLUS: return "CC_MU_PIPLUS";
+    case CC_MU_P_PIPLUS: return "CC_MU_P_PIPLUS";
+    case CC_MU_P_P_PIPLUS: return "CC_MU_P_P_PIPLUS";
+    case CC_MU_P_P_P_PIPLUS: return "CC_MU_P_P_P_PIPLUS";
+    case CC_MU_P_P_P_P_PIPLUS: return "CC_MU_P_P_P_P_PIPLUS";
+    case CC_MU_P_P_P_P_P_PIPLUS: return "CC_MU_P_P_P_P_P_PIPLUS";
+    case CC_MU_PHOTON: return "CC_MU_PHOTON";
+    case CC_MU_P_PHOTON: return "CC_MU_P_PHOTON";
+    case CC_MU_P_P_PHOTON: return "CC_MU_P_P_PHOTON";
+    case CC_MU_P_P_P_PHOTON: return "CC_MU_P_P_P_PHOTON";
+    case CC_MU_P_P_P_P_PHOTON: return "CC_MU_P_P_P_P_PHOTON";
+    case CC_MU_P_P_P_P_P_PHOTON: return "CC_MU_P_P_P_P_P_PHOTON";
+    case CC_MU_PIZERO: return "CC_MU_PIZERO";
+    case CC_MU_P_PIZERO: return "CC_MU_P_PIZERO";
+    case CC_MU_P_P_PIZERO: return "CC_MU_P_P_PIZERO";
+    case CC_MU_P_P_P_PIZERO: return "CC_MU_P_P_P_PIZERO";
+    case CC_MU_P_P_P_P_PIZERO: return "CC_MU_P_P_P_P_PIZERO";
+    case CC_MU_P_P_P_P_P_PIZERO: return "CC_MU_P_P_P_P_P_PIZERO";
+    case CC_E: return "CC_E";
+    case CC_E_P: return "CC_E_P";
+    case CC_E_P_P: return "CC_E_P_P";
+    case CC_E_P_P_P: return "CC_E_P_P_P";
+    case CC_E_P_P_P_P: return "CC_E_P_P_P_P";
+    case CC_E_P_P_P_P_P: return "CC_E_P_P_P_P_P";
+    case CC_E_PIPLUS: return "CC_E_PIPLUS";
+    case CC_E_P_PIPLUS: return "CC_E_P_PIPLUS";
+    case CC_E_P_P_PIPLUS: return "CC_E_P_P_PIPLUS";
+    case CC_E_P_P_P_PIPLUS: return "CC_E_P_P_P_PIPLUS";
+    case CC_E_P_P_P_P_PIPLUS: return "CC_E_P_P_P_P_PIPLUS";
+    case CC_E_P_P_P_P_P_PIPLUS: return "CC_E_P_P_P_P_P_PIPLUS";
+    case CC_E_PHOTON: return "CC_E_PHOTON";
+    case CC_E_P_PHOTON: return "CC_E_P_PHOTON";
+    case CC_E_P_P_PHOTON: return "CC_E_P_P_PHOTON";
+    case CC_E_P_P_P_PHOTON: return "CC_E_P_P_P_PHOTON";
+    case CC_E_P_P_P_P_PHOTON: return "CC_E_P_P_P_P_PHOTON";
+    case CC_E_P_P_P_P_P_PHOTON: return "CC_E_P_P_P_P_P_PHOTON";
+    case CC_E_PIZERO: return "CC_E_PIZERO";
+    case CC_E_P_PIZERO: return "CC_E_P_PIZERO";
+    case CC_E_P_P_PIZERO: return "CC_E_P_P_PIZERO";
+    case CC_E_P_P_P_PIZERO: return "CC_E_P_P_P_PIZERO";
+    case CC_E_P_P_P_P_PIZERO: return "CC_E_P_P_P_P_PIZERO";
+    case CC_E_P_P_P_P_P_PIZERO: return "CC_E_P_P_P_P_P_PIZERO";
+    case NC_P: return "NC_P";
+    case NC_P_P: return "NC_P_P";
+    case NC_P_P_P: return "NC_P_P_P";
+    case NC_P_P_P_P: return "NC_P_P_P_P";
+    case NC_P_P_P_P_P: return "NC_P_P_P_P_P";
+    case NC_PIPLUS: return "NC_PIPLUS";
+    case NC_P_PIPLUS: return "NC_P_PIPLUS";
+    case NC_P_P_PIPLUS: return "NC_P_P_PIPLUS";
+    case NC_P_P_P_PIPLUS: return "NC_P_P_P_PIPLUS";
+    case NC_P_P_P_P_PIPLUS: return "NC_P_P_P_P_PIPLUS";
+    case NC_P_P_P_P_P_PIPLUS: return "NC_P_P_P_P_P_PIPLUS";
+    case NC_PIMINUS: return "NC_PIMINUS";
+    case NC_P_PIMINUS: return "NC_P_PIMINUS";
+    case NC_P_P_PIMINUS: return "NC_P_P_PIMINUS";
+    case NC_P_P_P_PIMINUS: return "NC_P_P_P_PIMINUS";
+    case NC_P_P_P_P_PIMINUS: return "NC_P_P_P_P_PIMINUS";
+    case NC_P_P_P_P_P_PIMINUS: return "NC_P_P_P_P_P_PIMINUS";
+    case NC_PHOTON: return "NC_PHOTON";
+    case NC_P_PHOTON: return "NC_P_PHOTON";
+    case NC_P_P_PHOTON: return "NC_P_P_PHOTON";
+    case NC_P_P_P_PHOTON: return "NC_P_P_P_PHOTON";
+    case NC_P_P_P_P_PHOTON: return "NC_P_P_P_P_PHOTON";
+    case NC_P_P_P_P_P_PHOTON: return "NC_P_P_P_P_P_PHOTON";
+    case NC_PIZERO: return "NC_PIZERO";
+    case NC_P_PIZERO: return "NC_P_PIZERO";
+    case NC_P_P_PIZERO: return "NC_P_P_PIZERO";
+    case NC_P_P_P_PIZERO: return "NC_P_P_P_PIZERO";
+    case NC_P_P_P_P_PIZERO: return "NC_P_P_P_P_PIZERO";
+    case NC_P_P_P_P_P_PIZERO: return "NC_P_P_P_P_P_PIZERO";
     case OTHER_INTERACTION: return "OTHER_INTERACTION";
     case ALL_INTERACTIONS: return "ALL_INTERACTIONS";
     default: return "UNKNOWN";
