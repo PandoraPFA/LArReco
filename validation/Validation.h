@@ -531,7 +531,7 @@ Parameters::Parameters() :
     m_minSharedHits(5),
     m_minCompleteness(0.1f),
     m_minPurity(0.5f),
-    m_applyFiducialCut(false),
+    m_applyFiducialCut(true),
     m_correctTrackShowerId(false),
     m_minNeutrinoPurity(-1.f),
     m_minNeutrinoCompleteness(-1.f),

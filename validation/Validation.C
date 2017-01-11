@@ -70,12 +70,16 @@ void WriteHitCountingMap(const std::string inputFiles, const std::string outputF
     pTChain->Add(inputFiles.c_str());
 
     HitCountingMap hitCountingMap;
-    int nEvents(0), nProcessedEvents(0);
+    int nEvents(0);
 
     for (int iEntry = 0; iEntry < pTChain->GetEntries(); )
     {
         SimpleMCEvent simpleMCEvent;
         iEntry += ValidationIO::ReadNextEvent(pTChain, iEntry, simpleMCEvent);
+
+        if (nEvents++ % 50 == 0)
+            std::cout << "nEvents " << nEvents << "\r" << std::flush;
+
         hitCountingMap[simpleMCEvent.m_fileIdentifier][simpleMCEvent.m_eventNumber] = simpleMCEvent.m_nEventNeutrinoHitsTotal;
     }
 
@@ -441,24 +445,27 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
 
 bool PassFiducialCut(const SimpleMCEvent &simpleMCEvent)
 {
-    // MicroBooNE
-    const float eVx(256.35), eVy(233.), eVz(1036.8);
+//    // MicroBooNE
+//    const float eVx(256.35), eVy(233.), eVz(1036.8);
+//    const float xBorder(10.), yBorder(20.), zBorder(10.);
+//
+//    if ((simpleMCEvent.m_mcNeutrinoVtx.m_x < (eVx - xBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_x > xBorder) &&
+//        (simpleMCEvent.m_mcNeutrinoVtx.m_y < (eVy / 2. - yBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_y > (-eVy / 2. + yBorder)) &&
+//        (simpleMCEvent.m_mcNeutrinoVtx.m_z < (eVz - zBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_z > zBorder) )
+//    {
+//        return true;
+//    }
+
+    // DUNE 10kt
+    const float eVx(1490.), eVy(1207.85), eVz(5809.75);
     const float xBorder(10.), yBorder(20.), zBorder(10.);
 
-    if ((simpleMCEvent.m_mcNeutrinoVtx.m_x < (eVx - xBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_x > xBorder) &&
+    if ((simpleMCEvent.m_mcNeutrinoVtx.m_x < (eVx / 2. - xBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_x > (-eVx / 2. + xBorder)) &&
         (simpleMCEvent.m_mcNeutrinoVtx.m_y < (eVy / 2. - yBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_y > (-eVy / 2. + yBorder)) &&
         (simpleMCEvent.m_mcNeutrinoVtx.m_z < (eVz - zBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_z > zBorder) )
     {
         return true;
     }
-
-    // DUNE 4APA
-    // if (((simpleMCEvent.m_mcNeutrinoVtx.m_x > -349.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_x < -10.f)) &&
-    //     ((simpleMCEvent.m_mcNeutrinoVtx.m_y > -290.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_y < 290.f)) &&
-    //     ((simpleMCEvent.m_mcNeutrinoVtx.m_z > 70.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_z < 414.f)) )
-    // {
-    //     return true;
-    // }
 
     return false;
 }
