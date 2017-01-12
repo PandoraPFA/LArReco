@@ -244,7 +244,35 @@ enum InteractionType
     CCDIS_MU_P_P_P_PIZERO,
     CCDIS_MU_P_P_P_P_PIZERO,
     CCDIS_MU_P_P_P_P_P_PIZERO,
-    NCDIS,
+    NCDIS_P,
+    NCDIS_P_P,
+    NCDIS_P_P_P,
+    NCDIS_P_P_P_P,
+    NCDIS_P_P_P_P_P,
+    NCDIS_PIPLUS,
+    NCDIS_P_PIPLUS,
+    NCDIS_P_P_PIPLUS,
+    NCDIS_P_P_P_PIPLUS,
+    NCDIS_P_P_P_P_PIPLUS,
+    NCDIS_P_P_P_P_P_PIPLUS,
+    NCDIS_PIMINUS,
+    NCDIS_P_PIMINUS,
+    NCDIS_P_P_PIMINUS,
+    NCDIS_P_P_P_PIMINUS,
+    NCDIS_P_P_P_P_PIMINUS,
+    NCDIS_P_P_P_P_P_PIMINUS,
+    NCDIS_PHOTON,
+    NCDIS_P_PHOTON,
+    NCDIS_P_P_PHOTON,
+    NCDIS_P_P_P_PHOTON,
+    NCDIS_P_P_P_P_PHOTON,
+    NCDIS_P_P_P_P_P_PHOTON,
+    NCDIS_PIZERO,
+    NCDIS_P_PIZERO,
+    NCDIS_P_P_PIZERO,
+    NCDIS_P_P_P_PIZERO,
+    NCDIS_P_P_P_P_PIZERO,
+    NCDIS_P_P_P_P_P_PIZERO,
     CCCOH,
     NCCOH,
     // Inclusive mode
@@ -890,7 +918,35 @@ std::string ToString(const InteractionType interactionType)
     case CCDIS_MU_P_P_P_PIZERO: return "CCDIS_MU_P_P_P_PIZERO";
     case CCDIS_MU_P_P_P_P_PIZERO: return "CCDIS_MU_P_P_P_P_PIZERO";
     case CCDIS_MU_P_P_P_P_P_PIZERO: return "CCDIS_MU_P_P_P_P_P_PIZERO";
-    case NCDIS: return "NCDIS";
+    case NCDIS_P: return "NCDIS_P";
+    case NCDIS_P_P: return "NCDIS_P_P";
+    case NCDIS_P_P_P: return "NCDIS_P_P_P";
+    case NCDIS_P_P_P_P: return "NCDIS_P_P_P_P";
+    case NCDIS_P_P_P_P_P: return "NCDIS_P_P_P_P_P";
+    case NCDIS_PIPLUS: return "NCDIS_PIPLUS";
+    case NCDIS_P_PIPLUS: return "NCDIS_P_PIPLUS";
+    case NCDIS_P_P_PIPLUS: return "NCDIS_P_P_PIPLUS";
+    case NCDIS_P_P_P_PIPLUS: return "NCDIS_P_P_P_PIPLUS";
+    case NCDIS_P_P_P_P_PIPLUS: return "NCDIS_P_P_P_P_PIPLUS";
+    case NCDIS_P_P_P_P_P_PIPLUS: return "NCDIS_P_P_P_P_P_PIPLUS";
+    case NCDIS_PIMINUS: return "NCDIS_PIMINUS";
+    case NCDIS_P_PIMINUS: return "NCDIS_P_PIMINUS";
+    case NCDIS_P_P_PIMINUS: return "NCDIS_P_P_PIMINUS";
+    case NCDIS_P_P_P_PIMINUS: return "NCDIS_P_P_P_PIMINUS";
+    case NCDIS_P_P_P_P_PIMINUS: return "NCDIS_P_P_P_P_PIMINUS";
+    case NCDIS_P_P_P_P_P_PIMINUS: return "NCDIS_P_P_P_P_P_PIMINUS";
+    case NCDIS_PHOTON: return "NCDIS_PHOTON";
+    case NCDIS_P_PHOTON: return "NCDIS_P_PHOTON";
+    case NCDIS_P_P_PHOTON: return "NCDIS_P_P_PHOTON";
+    case NCDIS_P_P_P_PHOTON: return "NCDIS_P_P_P_PHOTON";
+    case NCDIS_P_P_P_P_PHOTON: return "NCDIS_P_P_P_P_PHOTON";
+    case NCDIS_P_P_P_P_P_PHOTON: return "NCDIS_P_P_P_P_P_PHOTON";
+    case NCDIS_PIZERO: return "NCDIS_PIZERO";
+    case NCDIS_P_PIZERO: return "NCDIS_P_PIZERO";
+    case NCDIS_P_P_PIZERO: return "NCDIS_P_P_PIZERO";
+    case NCDIS_P_P_P_PIZERO: return "NCDIS_P_P_P_PIZERO";
+    case NCDIS_P_P_P_P_PIZERO: return "NCDIS_P_P_P_P_PIZERO";
+    case NCDIS_P_P_P_P_P_PIZERO: return "NCDIS_P_P_P_P_P_PIZERO";
     case CCCOH: return "CCCOH";
     case NCCOH: return "NCCOH";
     // Inclusive mode
