@@ -220,7 +220,30 @@ enum InteractionType
     NCRES_P_P_P_PIZERO,
     NCRES_P_P_P_P_PIZERO,
     NCRES_P_P_P_P_P_PIZERO,
-    CCDIS,
+    CCDIS_MU,
+    CCDIS_MU_P,
+    CCDIS_MU_P_P,
+    CCDIS_MU_P_P_P,
+    CCDIS_MU_P_P_P_P,
+    CCDIS_MU_P_P_P_P_P,
+    CCDIS_MU_PIPLUS,
+    CCDIS_MU_P_PIPLUS,
+    CCDIS_MU_P_P_PIPLUS,
+    CCDIS_MU_P_P_P_PIPLUS,
+    CCDIS_MU_P_P_P_P_PIPLUS,
+    CCDIS_MU_P_P_P_P_P_PIPLUS,
+    CCDIS_MU_PHOTON,
+    CCDIS_MU_P_PHOTON,
+    CCDIS_MU_P_P_PHOTON,
+    CCDIS_MU_P_P_P_PHOTON,
+    CCDIS_MU_P_P_P_P_PHOTON,
+    CCDIS_MU_P_P_P_P_P_PHOTON,
+    CCDIS_MU_PIZERO,
+    CCDIS_MU_P_PIZERO,
+    CCDIS_MU_P_P_PIZERO,
+    CCDIS_MU_P_P_P_PIZERO,
+    CCDIS_MU_P_P_P_P_PIZERO,
+    CCDIS_MU_P_P_P_P_P_PIZERO,
     NCDIS,
     CCCOH,
     NCCOH,
@@ -843,7 +866,30 @@ std::string ToString(const InteractionType interactionType)
     case NCRES_P_P_P_PIZERO: return "NCRES_P_P_P_PIZERO";
     case NCRES_P_P_P_P_PIZERO: return "NCRES_P_P_P_P_PIZERO";
     case NCRES_P_P_P_P_P_PIZERO: return "NCRES_P_P_P_P_P_PIZERO";
-    case CCDIS: return "CCDIS";
+    case CCDIS_MU: return "CCDIS_MU";
+    case CCDIS_MU_P: return "CCDIS_MU_P";
+    case CCDIS_MU_P_P: return "CCDIS_MU_P_P";
+    case CCDIS_MU_P_P_P: return "CCDIS_MU_P_P_P";
+    case CCDIS_MU_P_P_P_P: return "CCDIS_MU_P_P_P_P";
+    case CCDIS_MU_P_P_P_P_P: return "CCDIS_MU_P_P_P_P_P";
+    case CCDIS_MU_PIPLUS: return "CCDIS_MU_PIPLUS";
+    case CCDIS_MU_P_PIPLUS: return "CCDIS_MU_P_PIPLUS";
+    case CCDIS_MU_P_P_PIPLUS: return "CCDIS_MU_P_P_PIPLUS";
+    case CCDIS_MU_P_P_P_PIPLUS: return "CCDIS_MU_P_P_P_PIPLUS";
+    case CCDIS_MU_P_P_P_P_PIPLUS: return "CCDIS_MU_P_P_P_P_PIPLUS";
+    case CCDIS_MU_P_P_P_P_P_PIPLUS: return "CCDIS_MU_P_P_P_P_P_PIPLUS";
+    case CCDIS_MU_PHOTON: return "CCDIS_MU_PHOTON";
+    case CCDIS_MU_P_PHOTON: return "CCDIS_MU_P_PHOTON";
+    case CCDIS_MU_P_P_PHOTON: return "CCDIS_MU_P_P_PHOTON";
+    case CCDIS_MU_P_P_P_PHOTON: return "CCDIS_MU_P_P_P_PHOTON";
+    case CCDIS_MU_P_P_P_P_PHOTON: return "CCDIS_MU_P_P_P_P_PHOTON";
+    case CCDIS_MU_P_P_P_P_P_PHOTON: return "CCDIS_MU_P_P_P_P_P_PHOTON";
+    case CCDIS_MU_PIZERO: return "CCDIS_MU_PIZERO";
+    case CCDIS_MU_P_PIZERO: return "CCDIS_MU_P_PIZERO";
+    case CCDIS_MU_P_P_PIZERO: return "CCDIS_MU_P_P_PIZERO";
+    case CCDIS_MU_P_P_P_PIZERO: return "CCDIS_MU_P_P_P_PIZERO";
+    case CCDIS_MU_P_P_P_P_PIZERO: return "CCDIS_MU_P_P_P_P_PIZERO";
+    case CCDIS_MU_P_P_P_P_P_PIZERO: return "CCDIS_MU_P_P_P_P_P_PIZERO";
     case NCDIS: return "NCDIS";
     case CCCOH: return "CCCOH";
     case NCCOH: return "NCCOH";
