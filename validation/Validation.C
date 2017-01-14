@@ -344,7 +344,7 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
 void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &pfoMatchingMap, const Parameters &parameters,
     InteractionCountingMap &interactionCountingMap, InteractionEventResultMap &interactionEventResultMap)
 {
-    if (parameters.m_applyFiducialCut && !PassFiducialCut(simpleMCEvent))
+    if (parameters.m_applyFiducialCut && !PassFiducialCut(simpleMCEvent, parameters))
         return;
 
     const int nRecoHitsTotal(simpleMCEvent.m_nRecoNeutrinoHitsTotal + simpleMCEvent.m_nRecoOtherHitsTotal);
@@ -356,7 +356,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
 
     bool hasTargetPrimary(false);
     const InteractionType interactionType(!parameters.m_inclusiveMode ? GetInteractionType(simpleMCEvent, parameters) : GetInclusiveInteractionType(simpleMCEvent, parameters));
-//std::cout << "interactionType " << ToString(interactionType) << std::endl;
+
     EventResult eventResult;
     eventResult.m_fileIdentifier = simpleMCEvent.m_fileIdentifier;
     eventResult.m_eventNumber = simpleMCEvent.m_eventNumber;
@@ -446,28 +446,34 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-bool PassFiducialCut(const SimpleMCEvent &simpleMCEvent)
+bool PassFiducialCut(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters)
 {
-//    // MicroBooNE
-//    const float eVx(256.35), eVy(233.), eVz(1036.8);
-//    const float xBorder(10.), yBorder(20.), zBorder(10.);
-//
-//    if ((simpleMCEvent.m_mcNeutrinoVtx.m_x < (eVx - xBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_x > xBorder) &&
-//        (simpleMCEvent.m_mcNeutrinoVtx.m_y < (eVy / 2. - yBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_y > (-eVy / 2. + yBorder)) &&
-//        (simpleMCEvent.m_mcNeutrinoVtx.m_z < (eVz - zBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_z > zBorder) )
-//    {
-//        return true;
-//    }
-
     // DUNE 10kt
-    const float eVx(1490.), eVy(1207.85), eVz(5809.75);
-    const float xBorder(10.), yBorder(20.), zBorder(10.);
-
-    if ((simpleMCEvent.m_mcNeutrinoVtx.m_x < (eVx / 2. - xBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_x > (-eVx / 2. + xBorder)) &&
-        (simpleMCEvent.m_mcNeutrinoVtx.m_y < (eVy / 2. - yBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_y > (-eVy / 2. + yBorder)) &&
-        (simpleMCEvent.m_mcNeutrinoVtx.m_z < (eVz - zBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_z > zBorder) )
+    if (parameters.m_useDune10ktFidVol)
     {
-        return true;
+        // DUNE 10kt
+        const float eVx(1490.), eVy(1207.85), eVz(5809.75);
+        const float xBorder(10.), yBorder(20.), zBorder(10.);
+
+        if ((simpleMCEvent.m_mcNeutrinoVtx.m_x < (eVx / 2. - xBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_x > (-eVx / 2. + xBorder)) &&
+            (simpleMCEvent.m_mcNeutrinoVtx.m_y < (eVy / 2. - yBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_y > (-eVy / 2. + yBorder)) &&
+            (simpleMCEvent.m_mcNeutrinoVtx.m_z < (eVz - zBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_z > zBorder) )
+        {
+            return true;
+        }
+    }
+    else
+    {
+        // MicroBooNE
+        const float eVx(256.35), eVy(233.), eVz(1036.8);
+        const float xBorder(10.), yBorder(20.), zBorder(10.);
+
+        if ((simpleMCEvent.m_mcNeutrinoVtx.m_x < (eVx - xBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_x > xBorder) &&
+            (simpleMCEvent.m_mcNeutrinoVtx.m_y < (eVy / 2. - yBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_y > (-eVy / 2. + yBorder)) &&
+            (simpleMCEvent.m_mcNeutrinoVtx.m_z < (eVz - zBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_z > zBorder) )
+        {
+            return true;
+        }
     }
 
     return false;

@@ -33,7 +33,10 @@ public:
     int                     m_minSharedHits;            ///< The minimum number of shared hits used in matching scheme
     float                   m_minCompleteness;          ///< The minimum particle completeness to declare a match
     float                   m_minPurity;                ///< The minimum particle purity to declare a match
+
     bool                    m_applyFiducialCut;         ///< Whether to apply fiducial volume cut to true neutrino vertex position
+    bool                    m_useDune10ktFidVol;        ///< Whether to use dune10kt fiducial volume, as opposed to microboone (more options later)
+
     bool                    m_correctTrackShowerId;     ///< Whether to demand that pfos are correctly flagged as tracks or showers
 
     float                   m_minNeutrinoPurity;        ///< The minimum neutrino purity to consider event (note: can't handle presence of multiple true neutrinos)
@@ -589,7 +592,7 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
  * 
  *  @param  simpleMCEvent the simple mc event
  *  @param  pfoMatchingMap the pfo matching map
- *  @param  parameters, the parameters
+ *  @param  parameters the parameters
  *  @param  interactionCountingMap the interaction counting map, to be populated
  *  @param  interactionEventOutcomeMap the interaction event outcome map, to be populated
  */
@@ -600,10 +603,11 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
  *  @brief  Whether a simple mc event passes a fiducial cut, applied to the mc neutrino vertex
  * 
  *  @param  simpleMCEvent the simple mc event
+ *  @param  parameters the parameters
  * 
  *  @return boolean
  */
-bool PassFiducialCut(const SimpleMCEvent &simpleMCEvent);
+bool PassFiducialCut(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters);
 
 /**
  *  @brief  Get the event interaction type
@@ -695,6 +699,7 @@ Parameters::Parameters() :
     m_minCompleteness(0.1f),
     m_minPurity(0.5f),
     m_applyFiducialCut(true),
+    m_useDune10ktFidVol(false),
     m_correctTrackShowerId(false),
     m_minNeutrinoPurity(-1.f),
     m_minNeutrinoCompleteness(-1.f),
