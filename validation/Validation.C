@@ -94,7 +94,7 @@ void WriteHitCountingMap(const std::string inputFiles, const std::string outputF
         for (EventToNHitsMap::const_iterator eIter = fIter->second.begin(), eIterEnd = fIter->second.end(); eIter != eIterEnd; ++eIter)
             myfile << fIter->first << ", " << eIter->first << ", " << eIter->second << std::endl;
     }
-    
+
     myfile.close();
 }
 
