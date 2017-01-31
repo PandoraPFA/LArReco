@@ -11,7 +11,7 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-         <EventFileName>/usera/marshall/Test/github/temp/LArRecoMP/pndr/35t/singles/35t_dc_short_Events.pndr</EventFileName>
+        <EventFileName>/path/to/pndr/file/pattern/using/VOLUMEID/replacement/here</EventFileName>
         <ShouldReadEvents>true</ShouldReadEvents>
         <SkipToEvent>0</SkipToEvent>
     </algorithm>
@@ -34,9 +34,6 @@
 
     <!--algorithm type = "LArVisualMonitoring">
         <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
-        <MCParticleListNames>MCParticleList3D</MCParticleListNames>
-        <SuppressMCParticles>22:0.01 2112:1.0</SuppressMCParticles>
-        <ShowDetector>false</ShowDetector>
     </algorithm-->
 
     <!-- 2D cosmic ray reconstruction, U View -->
@@ -359,28 +356,30 @@
         <MCParticleListName>MCParticleList3D</MCParticleListName>
         <PfoListName>Particles3D</PfoListName>
         <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
-        <NeutrinoInducedOnly>false</NeutrinoInducedOnly>
+        <UseRecoNeutrinosOnly>false</UseRecoNeutrinosOnly>
+        <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
         <PrintAllToScreen>false</PrintAllToScreen>
-        <PrintMatchingToScreen>false</PrintMatchingToScreen>
+        <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <VisualizeMatching>false</VisualizeMatching>
         <VisualizeVertices>false</VisualizeVertices>
         <VisualizeRemnants>false</VisualizeRemnants>
+        <VisualizeGaps>false</VisualizeGaps>
         <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
         <MatchingMinSharedHits>5</MatchingMinSharedHits>
         <WriteToTree>false</WriteToTree>
         <OutputTree>Validation</OutputTree>
-        <OutputFile>Validation.root</OutputFile>
+        <OutputFile>ValidationVOLUMEID.root</OutputFile>
     </algorithm>
 
     <!--algorithm type = "LArVisualMonitoring">
         <PfoListNames>Particles3D</PfoListNames>
-    </algorithm>
+    </algorithm-->
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <ClusterListNames>Clusters3D DaughterClusters3D</ClusterListNames>
-    </algorithm>
+    </algorithm-->
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
         <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
         <ShowOnlyAvailable>true</ShowOnlyAvailable>

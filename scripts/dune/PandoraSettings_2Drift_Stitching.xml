@@ -3,7 +3,7 @@
 <pandora>
     <!-- GLOBAL SETTINGS -->
     <IsMonitoringEnabled>true</IsMonitoringEnabled>
-    <ShouldDisplayAlgorithmInfo>true</ShouldDisplayAlgorithmInfo>
+    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
     <!-- PLUGIN SETTINGS -->
@@ -12,8 +12,8 @@
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArStitching">
         <StitchingTools>
-            <tool type = "LArStitchingObjectCreation"/>
-            <tool type = "LArStitchingPfoMerging"/>
+            <!--tool type = "LArStitchingObjectCreation"/-->
+            <!--tool type = "LArStitchingPfoMerging"/-->
         </StitchingTools>
         <NewPfoListName>RecreatedPfos</NewPfoListName>
         <NewVertexListName>RecreatedVertices</NewVertexListName>

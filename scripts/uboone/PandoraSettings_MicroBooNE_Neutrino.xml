@@ -352,12 +352,12 @@
         <PrintAllToScreen>true</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <VisualizeMatching>false</VisualizeMatching>
-        <VisualizeVertices>true</VisualizeVertices>
-        <VisualizeRemnants>true</VisualizeRemnants>
+        <VisualizeVertices>false</VisualizeVertices>
+        <VisualizeRemnants>false</VisualizeRemnants>
         <VisualizeGaps>false</VisualizeGaps>
         <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
         <MatchingMinSharedHits>5</MatchingMinSharedHits>
-        <WriteToTree>true</WriteToTree>
+        <WriteToTree>false</WriteToTree>
         <OutputTree>Validation</OutputTree>
         <OutputFile>Validation_1004.root</OutputFile>
     </algorithm>
