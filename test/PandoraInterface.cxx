@@ -247,7 +247,7 @@ void CreateDaughterPandoraInstances(const std::string &configFileName, const LAr
             new lar_content::LArRotationalTransformationPlugin(driftVolume.GetWireAngleU(), driftVolume.GetWireAngleV(), driftVolume.GetSigmaUVZ())));
 
         std::string thisConfigFileName(configFileName);
-        const size_t insertPosition(thisConfigFileName.empty() ? 0 : thisConfigFileName.length() - std::string(".xml").length());
+        const size_t insertPosition((thisConfigFileName.length() < 4) ? 0 : thisConfigFileName.length() - std::string(".xml").length());
             thisConfigFileName = thisConfigFileName.insert(insertPosition, volumeIdString.str());
 
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPandora, thisConfigFileName));
