@@ -11,13 +11,18 @@
 
 #include "Validation.h"
 
-#include <iostream>
-#include <iomanip>
+#include <fstream>
+#include <sstream>
 
 void Validation(const std::string inputFiles, const Parameters parameters)
 {
     TChain *pTChain = new TChain("Validation", "pTChain");
     pTChain->Add(inputFiles.c_str());
+
+    HitCountingMap hitCountingMap;
+
+    if (!parameters.m_hitCountingFileName.empty())
+        FillHitCountingMap(parameters, hitCountingMap);
 
     // To store final output
     InteractionCountingMap interactionCountingMap;
@@ -31,6 +36,9 @@ void Validation(const std::string inputFiles, const Parameters parameters)
         iEntry += ValidationIO::ReadNextEvent(pTChain, iEntry, simpleMCEvent);
 
         if (nEvents++ < parameters.m_skipEvents)
+            continue;
+
+        if (!hitCountingMap.empty() && !PassesHitCountingCheck(simpleMCEvent, parameters, hitCountingMap))
             continue;
 
         if (nEvents % 50 == 0)
@@ -55,6 +63,89 @@ void Validation(const std::string inputFiles, const Parameters parameters)
     // Processing of final output
     DisplayInteractionCountingMap(interactionCountingMap, parameters);
     AnalyseInteractionEventResultMap(interactionEventResultMap, parameters);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void WriteHitCountingMap(const std::string inputFiles, const std::string outputFile)
+{
+    TChain *pTChain = new TChain("Validation", "pTChain");
+    pTChain->Add(inputFiles.c_str());
+
+    HitCountingMap hitCountingMap;
+    int nEvents(0);
+
+    for (int iEntry = 0; iEntry < pTChain->GetEntries(); )
+    {
+        SimpleMCEvent simpleMCEvent;
+        iEntry += ValidationIO::ReadNextEvent(pTChain, iEntry, simpleMCEvent);
+
+        if (nEvents++ % 50 == 0)
+            std::cout << "nEvents " << nEvents << "\r" << std::flush;
+
+        hitCountingMap[simpleMCEvent.m_fileIdentifier][simpleMCEvent.m_eventNumber] = simpleMCEvent.m_nEventNeutrinoHitsTotal;
+    }
+
+    std::ofstream myfile;
+    myfile.open(outputFile);
+
+    for (HitCountingMap::const_iterator fIter = hitCountingMap.begin(), fIterEnd = hitCountingMap.end(); fIter != fIterEnd; ++fIter)
+    {
+        for (EventToNHitsMap::const_iterator eIter = fIter->second.begin(), eIterEnd = fIter->second.end(); eIter != eIterEnd; ++eIter)
+            myfile << fIter->first << ", " << eIter->first << ", " << eIter->second << std::endl;
+    }
+
+    myfile.close();
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void FillHitCountingMap(const Parameters &parameters, HitCountingMap hitCountingMap)
+{
+    std::ifstream myfile;
+    myfile.open(parameters.m_hitCountingFileName);
+    std::string line;
+
+    while (std::getline(myfile, line))
+    {
+        int fileId(-1), eventNumber(-1), nHits(-1), counter(0);
+        std::istringstream linestream(line);
+        std::string value;
+
+        while (std::getline(linestream, value, ','))
+        {
+            int &output((0 == counter) ? fileId : (1 == counter) ? eventNumber : nHits);
+            std::istringstream iss(value);
+            iss >> output;
+            ++counter;
+        }
+
+        if (counter != 3)
+        {
+            std::cout << "Invalid entries in hit counting map " << std::endl;
+            throw;
+        }
+
+        hitCountingMap[fileId][eventNumber] = nHits;
+    }
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+bool PassesHitCountingCheck(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters, const HitCountingMap &hitCountingMap)
+{
+    HitCountingMap::const_iterator fIter = hitCountingMap.find(simpleMCEvent.m_fileIdentifier);
+
+    if (hitCountingMap.end() == fIter)
+        return false;
+
+    EventToNHitsMap::const_iterator eIter = fIter->second.find(simpleMCEvent.m_eventNumber);
+
+    if (fIter->second.end() == eIter)
+        return false;
+
+    const float hitFraction((eIter->second > 0) ? static_cast<float>(simpleMCEvent.m_nEventNeutrinoHitsTotal) / static_cast<float>(eIter->second) : 0.f);
+    return (hitFraction > parameters.m_minFractionOfAllHits);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -253,18 +344,18 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
 void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &pfoMatchingMap, const Parameters &parameters,
     InteractionCountingMap &interactionCountingMap, InteractionEventResultMap &interactionEventResultMap)
 {
-    if (parameters.m_applyFiducialCut && !PassFiducialCut(simpleMCEvent))
+    if (parameters.m_applyFiducialCut && !PassFiducialCut(simpleMCEvent, parameters))
         return;
 
     const int nRecoHitsTotal(simpleMCEvent.m_nRecoNeutrinoHitsTotal + simpleMCEvent.m_nRecoOtherHitsTotal);
-    const float neutrinoPurity((nRecoHitsTotal > 0) ? static_cast<float>(simpleMCEvent.m_nRecoNeutrinoHitsTotal) / static_cast<float>(nRecoHitsTotal) : 0.f); // ATTN Think about where to place null value in histogram
+    const float neutrinoPurity((nRecoHitsTotal > 0) ? static_cast<float>(simpleMCEvent.m_nRecoNeutrinoHitsTotal) / static_cast<float>(nRecoHitsTotal) : -1.f); // ATTN Think about where to place null value in histogram
     const float neutrinoCompleteness((simpleMCEvent.m_nEventNeutrinoHitsTotal > 0) ? static_cast<float>(simpleMCEvent.m_nRecoNeutrinoHitsTotal) / static_cast<float>(simpleMCEvent.m_nEventNeutrinoHitsTotal) : 0.f);
 
     if ((neutrinoPurity < parameters.m_minNeutrinoPurity) || (neutrinoCompleteness < parameters.m_minNeutrinoCompleteness))
         return;
 
     bool hasTargetPrimary(false);
-    const InteractionType interactionType(GetInteractionType(simpleMCEvent, parameters));
+    const InteractionType interactionType(!parameters.m_inclusiveMode ? GetInteractionType(simpleMCEvent, parameters) : GetInclusiveInteractionType(simpleMCEvent, parameters));
 
     EventResult eventResult;
     eventResult.m_fileIdentifier = simpleMCEvent.m_fileIdentifier;
@@ -355,26 +446,35 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-bool PassFiducialCut(const SimpleMCEvent &simpleMCEvent)
+bool PassFiducialCut(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters)
 {
-    // MicroBooNE
-    const float eVx(256.35), eVy(233.), eVz(1036.8);
-    const float xBorder(10.), yBorder(20.), zBorder(10.);
-
-    if ((simpleMCEvent.m_mcNeutrinoVtx.m_x < (eVx - xBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_x > xBorder) &&
-        (simpleMCEvent.m_mcNeutrinoVtx.m_y < (eVy / 2. - yBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_y > (-eVy / 2. + yBorder)) &&
-        (simpleMCEvent.m_mcNeutrinoVtx.m_z < (eVz - zBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_z > zBorder) )
+    // DUNE 10kt
+    if (parameters.m_useDune10ktFidVol)
     {
-        return true;
-    }
+        // DUNE 10kt
+        const float eVx(1490.), eVy(1207.85), eVz(5809.75);
+        const float xBorder(10.), yBorder(20.), zBorder(10.);
 
-    // DUNE 4APA
-    // if (((simpleMCEvent.m_mcNeutrinoVtx.m_x > -349.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_x < -10.f)) &&
-    //     ((simpleMCEvent.m_mcNeutrinoVtx.m_y > -290.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_y < 290.f)) &&
-    //     ((simpleMCEvent.m_mcNeutrinoVtx.m_z > 70.f) && (simpleMCEvent.m_mcNeutrinoVtx.m_z < 414.f)) )
-    // {
-    //     return true;
-    // }
+        if ((simpleMCEvent.m_mcNeutrinoVtx.m_x < (eVx / 2. - xBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_x > (-eVx / 2. + xBorder)) &&
+            (simpleMCEvent.m_mcNeutrinoVtx.m_y < (eVy / 2. - yBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_y > (-eVy / 2. + yBorder)) &&
+            (simpleMCEvent.m_mcNeutrinoVtx.m_z < (eVz - zBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_z > zBorder) )
+        {
+            return true;
+        }
+    }
+    else
+    {
+        // MicroBooNE
+        const float eVx(256.35), eVy(233.), eVz(1036.8);
+        const float xBorder(10.), yBorder(20.), zBorder(10.);
+
+        if ((simpleMCEvent.m_mcNeutrinoVtx.m_x < (eVx - xBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_x > xBorder) &&
+            (simpleMCEvent.m_mcNeutrinoVtx.m_y < (eVy / 2. - yBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_y > (-eVy / 2. + yBorder)) &&
+            (simpleMCEvent.m_mcNeutrinoVtx.m_z < (eVz - zBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_z > zBorder) )
+        {
+            return true;
+        }
+    }
 
     return false;
 }
@@ -528,10 +628,206 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const Par
         if ((7 == nNonNeutrons) && (5 == nProtons) && (2 == nPhotons)) return NCRES_P_P_P_P_P_PIZERO;
     }
 
-    if (simpleMCEvent.m_mcNeutrinoNuance == 1091) return CCDIS;
-    if (simpleMCEvent.m_mcNeutrinoNuance == 1092) return NCDIS;
+    if (simpleMCEvent.m_mcNeutrinoNuance == 1091)
+    {
+        if ((1 == nNonNeutrons) && (1 == nMuons) && (0 == nProtons)) return CCDIS_MU;
+        if ((2 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons)) return CCDIS_MU_P;
+        if ((3 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons)) return CCDIS_MU_P_P;
+        if ((4 == nNonNeutrons) && (1 == nMuons) && (3 == nProtons)) return CCDIS_MU_P_P_P;
+        if ((5 == nNonNeutrons) && (1 == nMuons) && (4 == nProtons)) return CCDIS_MU_P_P_P_P;
+        if ((6 == nNonNeutrons) && (1 == nMuons) && (5 == nProtons)) return CCDIS_MU_P_P_P_P_P;
+
+        if ((2 == nNonNeutrons) && (1 == nMuons) && (0 == nProtons) && (1 == nPiPlus)) return CCDIS_MU_PIPLUS;
+        if ((3 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons) && (1 == nPiPlus)) return CCDIS_MU_P_PIPLUS;
+        if ((4 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons) && (1 == nPiPlus)) return CCDIS_MU_P_P_PIPLUS;
+        if ((5 == nNonNeutrons) && (1 == nMuons) && (3 == nProtons) && (1 == nPiPlus)) return CCDIS_MU_P_P_P_PIPLUS;
+        if ((6 == nNonNeutrons) && (1 == nMuons) && (4 == nProtons) && (1 == nPiPlus)) return CCDIS_MU_P_P_P_P_PIPLUS;
+        if ((7 == nNonNeutrons) && (1 == nMuons) && (5 == nProtons) && (1 == nPiPlus)) return CCDIS_MU_P_P_P_P_P_PIPLUS;
+
+        if ((2 == nNonNeutrons) && (1 == nMuons) && (0 == nProtons) && (1 == nPhotons)) return CCDIS_MU_PHOTON;
+        if ((3 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons) && (1 == nPhotons)) return CCDIS_MU_P_PHOTON;
+        if ((4 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons) && (1 == nPhotons)) return CCDIS_MU_P_P_PHOTON;
+        if ((5 == nNonNeutrons) && (1 == nMuons) && (3 == nProtons) && (1 == nPhotons)) return CCDIS_MU_P_P_P_PHOTON;
+        if ((6 == nNonNeutrons) && (1 == nMuons) && (4 == nProtons) && (1 == nPhotons)) return CCDIS_MU_P_P_P_P_PHOTON;
+        if ((7 == nNonNeutrons) && (1 == nMuons) && (5 == nProtons) && (1 == nPhotons)) return CCDIS_MU_P_P_P_P_P_PHOTON;
+
+        if ((3 == nNonNeutrons) && (1 == nMuons) && (0 == nProtons) && (2 == nPhotons)) return CCDIS_MU_PIZERO;
+        if ((4 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons) && (2 == nPhotons)) return CCDIS_MU_P_PIZERO;
+        if ((5 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons) && (2 == nPhotons)) return CCDIS_MU_P_P_PIZERO;
+        if ((6 == nNonNeutrons) && (1 == nMuons) && (3 == nProtons) && (2 == nPhotons)) return CCDIS_MU_P_P_P_PIZERO;
+        if ((7 == nNonNeutrons) && (1 == nMuons) && (4 == nProtons) && (2 == nPhotons)) return CCDIS_MU_P_P_P_P_PIZERO;
+        if ((8 == nNonNeutrons) && (1 == nMuons) && (5 == nProtons) && (2 == nPhotons)) return CCDIS_MU_P_P_P_P_P_PIZERO;
+    }
+
+    if (simpleMCEvent.m_mcNeutrinoNuance == 1092)
+    {
+        if ((1 == nNonNeutrons) && (1 == nProtons)) return NCDIS_P;
+        if ((2 == nNonNeutrons) && (2 == nProtons)) return NCDIS_P_P;
+        if ((3 == nNonNeutrons) && (3 == nProtons)) return NCDIS_P_P_P;
+        if ((4 == nNonNeutrons) && (4 == nProtons)) return NCDIS_P_P_P_P;
+        if ((5 == nNonNeutrons) && (5 == nProtons)) return NCDIS_P_P_P_P_P;
+
+        if ((1 == nNonNeutrons) && (0 == nProtons) && (1 == nPiPlus)) return NCDIS_PIPLUS;
+        if ((2 == nNonNeutrons) && (1 == nProtons) && (1 == nPiPlus)) return NCDIS_P_PIPLUS;
+        if ((3 == nNonNeutrons) && (2 == nProtons) && (1 == nPiPlus)) return NCDIS_P_P_PIPLUS;
+        if ((4 == nNonNeutrons) && (3 == nProtons) && (1 == nPiPlus)) return NCDIS_P_P_P_PIPLUS;
+        if ((5 == nNonNeutrons) && (4 == nProtons) && (1 == nPiPlus)) return NCDIS_P_P_P_P_PIPLUS;
+        if ((6 == nNonNeutrons) && (5 == nProtons) && (1 == nPiPlus)) return NCDIS_P_P_P_P_P_PIPLUS;
+
+        if ((1 == nNonNeutrons) && (0 == nProtons) && (1 == nPiMinus)) return NCDIS_PIMINUS;
+        if ((2 == nNonNeutrons) && (1 == nProtons) && (1 == nPiMinus)) return NCDIS_P_PIMINUS;
+        if ((3 == nNonNeutrons) && (2 == nProtons) && (1 == nPiMinus)) return NCDIS_P_P_PIMINUS;
+        if ((4 == nNonNeutrons) && (3 == nProtons) && (1 == nPiMinus)) return NCDIS_P_P_P_PIMINUS;
+        if ((5 == nNonNeutrons) && (4 == nProtons) && (1 == nPiMinus)) return NCDIS_P_P_P_P_PIMINUS;
+        if ((6 == nNonNeutrons) && (5 == nProtons) && (1 == nPiMinus)) return NCDIS_P_P_P_P_P_PIMINUS;
+
+        if ((1 == nNonNeutrons) && (0 == nProtons) && (1 == nPhotons)) return NCDIS_PHOTON;
+        if ((2 == nNonNeutrons) && (1 == nProtons) && (1 == nPhotons)) return NCDIS_P_PHOTON;
+        if ((3 == nNonNeutrons) && (2 == nProtons) && (1 == nPhotons)) return NCDIS_P_P_PHOTON;
+        if ((4 == nNonNeutrons) && (3 == nProtons) && (1 == nPhotons)) return NCDIS_P_P_P_PHOTON;
+        if ((5 == nNonNeutrons) && (4 == nProtons) && (1 == nPhotons)) return NCDIS_P_P_P_P_PHOTON;
+        if ((6 == nNonNeutrons) && (5 == nProtons) && (1 == nPhotons)) return NCDIS_P_P_P_P_P_PHOTON;
+
+        if ((2 == nNonNeutrons) && (0 == nProtons) && (2 == nPhotons)) return NCDIS_PIZERO;
+        if ((3 == nNonNeutrons) && (1 == nProtons) && (2 == nPhotons)) return NCDIS_P_PIZERO;
+        if ((4 == nNonNeutrons) && (2 == nProtons) && (2 == nPhotons)) return NCDIS_P_P_PIZERO;
+        if ((5 == nNonNeutrons) && (3 == nProtons) && (2 == nPhotons)) return NCDIS_P_P_P_PIZERO;
+        if ((6 == nNonNeutrons) && (4 == nProtons) && (2 == nPhotons)) return NCDIS_P_P_P_P_PIZERO;
+        if ((7 == nNonNeutrons) && (5 == nProtons) && (2 == nPhotons)) return NCDIS_P_P_P_P_P_PIZERO;
+    }
+
     if (simpleMCEvent.m_mcNeutrinoNuance == 1096) return NCCOH;
     if (simpleMCEvent.m_mcNeutrinoNuance == 1097) return CCCOH;
+
+    return OTHER_INTERACTION;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+InteractionType GetInclusiveInteractionType(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters)
+{
+    unsigned int nNonNeutrons(0), nMuons(0), nElectrons(0), nProtons(0), nPiPlus(0), nPiMinus(0), nNeutrons(0), nPhotons(0);
+
+    for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
+    {
+        const SimpleMCPrimary &simpleMCPrimary(*pIter);
+
+        if (!IsGoodMCPrimary(simpleMCPrimary, parameters))
+            continue;
+
+        if (2112 != simpleMCPrimary.m_pdgCode)
+            ++nNonNeutrons;
+
+        if (13 == simpleMCPrimary.m_pdgCode) ++nMuons;
+        if (11 == simpleMCPrimary.m_pdgCode) ++nElectrons;
+        else if (2212 == simpleMCPrimary.m_pdgCode) ++nProtons;
+        else if (22 == simpleMCPrimary.m_pdgCode) ++nPhotons;
+        else if (211 == simpleMCPrimary.m_pdgCode) ++nPiPlus;
+        else if (-211 == simpleMCPrimary.m_pdgCode) ++nPiMinus;
+        else if (2112 == simpleMCPrimary.m_pdgCode) ++nNeutrons;
+    }
+
+    InteractionType interactionType(OTHER_INTERACTION);
+
+    const int nuance(simpleMCEvent.m_mcNeutrinoNuance);
+
+    const bool isCC(nuance == 1001 || nuance == 1003 || nuance == 1004 || nuance == 1005 || nuance == 1091 || nuance == 1097);
+    const bool isNC(nuance == 1002 || nuance == 1006 || nuance == 1007 || nuance == 1008 || nuance == 1009 || nuance == 1092 || nuance == 1096);
+//std::cout << " nuance " << nuance << " isCC " << isCC << " isNC " << isNC << " nNonNeutrons " << nNonNeutrons << " nMuons " << nMuons<< ", nElectrons " << nElectrons << " nProtons " << nProtons << " nPiPlus " << nPiPlus << ", nPiMinus " << nPiMinus << ", nPhotons " << nPhotons << std::endl;
+    if (isCC)
+    {
+        if ((1 == nNonNeutrons) && (1 == nMuons) && (0 == nProtons)) return CC_MU;
+        if ((2 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons)) return CC_MU_P;
+        if ((3 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons)) return CC_MU_P_P;
+        if ((4 == nNonNeutrons) && (1 == nMuons) && (3 == nProtons)) return CC_MU_P_P_P;
+        if ((5 == nNonNeutrons) && (1 == nMuons) && (4 == nProtons)) return CC_MU_P_P_P_P;
+        if ((6 == nNonNeutrons) && (1 == nMuons) && (5 == nProtons)) return CC_MU_P_P_P_P_P;
+
+        if ((2 == nNonNeutrons) && (1 == nMuons) && (0 == nProtons) && (1 == nPiPlus)) return CC_MU_PIPLUS;
+        if ((3 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons) && (1 == nPiPlus)) return CC_MU_P_PIPLUS;
+        if ((4 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons) && (1 == nPiPlus)) return CC_MU_P_P_PIPLUS;
+        if ((5 == nNonNeutrons) && (1 == nMuons) && (3 == nProtons) && (1 == nPiPlus)) return CC_MU_P_P_P_PIPLUS;
+        if ((6 == nNonNeutrons) && (1 == nMuons) && (4 == nProtons) && (1 == nPiPlus)) return CC_MU_P_P_P_P_PIPLUS;
+        if ((7 == nNonNeutrons) && (1 == nMuons) && (5 == nProtons) && (1 == nPiPlus)) return CC_MU_P_P_P_P_P_PIPLUS;
+
+        if ((2 == nNonNeutrons) && (1 == nMuons) && (0 == nProtons) && (1 == nPhotons)) return CC_MU_PHOTON;
+        if ((3 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons) && (1 == nPhotons)) return CC_MU_P_PHOTON;
+        if ((4 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons) && (1 == nPhotons)) return CC_MU_P_P_PHOTON;
+        if ((5 == nNonNeutrons) && (1 == nMuons) && (3 == nProtons) && (1 == nPhotons)) return CC_MU_P_P_P_PHOTON;
+        if ((6 == nNonNeutrons) && (1 == nMuons) && (4 == nProtons) && (1 == nPhotons)) return CC_MU_P_P_P_P_PHOTON;
+        if ((7 == nNonNeutrons) && (1 == nMuons) && (5 == nProtons) && (1 == nPhotons)) return CC_MU_P_P_P_P_P_PHOTON;
+
+        if ((3 == nNonNeutrons) && (1 == nMuons) && (0 == nProtons) && (2 == nPhotons)) return CC_MU_PIZERO;
+        if ((4 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons) && (2 == nPhotons)) return CC_MU_P_PIZERO;
+        if ((5 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons) && (2 == nPhotons)) return CC_MU_P_P_PIZERO;
+        if ((6 == nNonNeutrons) && (1 == nMuons) && (3 == nProtons) && (2 == nPhotons)) return CC_MU_P_P_P_PIZERO;
+        if ((7 == nNonNeutrons) && (1 == nMuons) && (4 == nProtons) && (2 == nPhotons)) return CC_MU_P_P_P_P_PIZERO;
+        if ((8 == nNonNeutrons) && (1 == nMuons) && (5 == nProtons) && (2 == nPhotons)) return CC_MU_P_P_P_P_P_PIZERO;
+
+        if ((1 == nNonNeutrons) && (1 == nElectrons) && (0 == nProtons)) return CC_E;
+        if ((2 == nNonNeutrons) && (1 == nElectrons) && (1 == nProtons)) return CC_E_P;
+        if ((3 == nNonNeutrons) && (1 == nElectrons) && (2 == nProtons)) return CC_E_P_P;
+        if ((4 == nNonNeutrons) && (1 == nElectrons) && (3 == nProtons)) return CC_E_P_P_P;
+        if ((5 == nNonNeutrons) && (1 == nElectrons) && (4 == nProtons)) return CC_E_P_P_P_P;
+        if ((6 == nNonNeutrons) && (1 == nElectrons) && (5 == nProtons)) return CC_E_P_P_P_P_P;
+
+        if ((2 == nNonNeutrons) && (1 == nElectrons) && (0 == nProtons) && (1 == nPiPlus)) return CC_E_PIPLUS;
+        if ((3 == nNonNeutrons) && (1 == nElectrons) && (1 == nProtons) && (1 == nPiPlus)) return CC_E_P_PIPLUS;
+        if ((4 == nNonNeutrons) && (1 == nElectrons) && (2 == nProtons) && (1 == nPiPlus)) return CC_E_P_P_PIPLUS;
+        if ((5 == nNonNeutrons) && (1 == nElectrons) && (3 == nProtons) && (1 == nPiPlus)) return CC_E_P_P_P_PIPLUS;
+        if ((6 == nNonNeutrons) && (1 == nElectrons) && (4 == nProtons) && (1 == nPiPlus)) return CC_E_P_P_P_P_PIPLUS;
+        if ((7 == nNonNeutrons) && (1 == nElectrons) && (5 == nProtons) && (1 == nPiPlus)) return CC_E_P_P_P_P_P_PIPLUS;
+
+        if ((2 == nNonNeutrons) && (1 == nElectrons) && (0 == nProtons) && (1 == nPhotons)) return CC_E_PHOTON;
+        if ((3 == nNonNeutrons) && (1 == nElectrons) && (1 == nProtons) && (1 == nPhotons)) return CC_E_P_PHOTON;
+        if ((4 == nNonNeutrons) && (1 == nElectrons) && (2 == nProtons) && (1 == nPhotons)) return CC_E_P_P_PHOTON;
+        if ((5 == nNonNeutrons) && (1 == nElectrons) && (3 == nProtons) && (1 == nPhotons)) return CC_E_P_P_P_PHOTON;
+        if ((6 == nNonNeutrons) && (1 == nElectrons) && (4 == nProtons) && (1 == nPhotons)) return CC_E_P_P_P_P_PHOTON;
+        if ((7 == nNonNeutrons) && (1 == nElectrons) && (5 == nProtons) && (1 == nPhotons)) return CC_E_P_P_P_P_P_PHOTON;
+
+        if ((3 == nNonNeutrons) && (1 == nElectrons) && (0 == nProtons) && (2 == nPhotons)) return CC_E_PIZERO;
+        if ((4 == nNonNeutrons) && (1 == nElectrons) && (1 == nProtons) && (2 == nPhotons)) return CC_E_P_PIZERO;
+        if ((5 == nNonNeutrons) && (1 == nElectrons) && (2 == nProtons) && (2 == nPhotons)) return CC_E_P_P_PIZERO;
+        if ((6 == nNonNeutrons) && (1 == nElectrons) && (3 == nProtons) && (2 == nPhotons)) return CC_E_P_P_P_PIZERO;
+        if ((7 == nNonNeutrons) && (1 == nElectrons) && (4 == nProtons) && (2 == nPhotons)) return CC_E_P_P_P_P_PIZERO;
+        if ((8 == nNonNeutrons) && (1 == nElectrons) && (5 == nProtons) && (2 == nPhotons)) return CC_E_P_P_P_P_P_PIZERO;
+    }
+    else if (isNC)
+    {
+        if ((1 == nNonNeutrons) && (1 == nProtons)) return NC_P;
+        if ((2 == nNonNeutrons) && (2 == nProtons)) return NC_P_P;
+        if ((3 == nNonNeutrons) && (3 == nProtons)) return NC_P_P_P;
+        if ((4 == nNonNeutrons) && (4 == nProtons)) return NC_P_P_P_P;
+        if ((5 == nNonNeutrons) && (5 == nProtons)) return NC_P_P_P_P_P;
+
+        if ((1 == nNonNeutrons) && (0 == nProtons) && (1 == nPiPlus)) return NC_PIPLUS;
+        if ((2 == nNonNeutrons) && (1 == nProtons) && (1 == nPiPlus)) return NC_P_PIPLUS;
+        if ((3 == nNonNeutrons) && (2 == nProtons) && (1 == nPiPlus)) return NC_P_P_PIPLUS;
+        if ((4 == nNonNeutrons) && (3 == nProtons) && (1 == nPiPlus)) return NC_P_P_P_PIPLUS;
+        if ((5 == nNonNeutrons) && (4 == nProtons) && (1 == nPiPlus)) return NC_P_P_P_P_PIPLUS;
+        if ((6 == nNonNeutrons) && (5 == nProtons) && (1 == nPiPlus)) return NC_P_P_P_P_P_PIPLUS;
+
+        if ((1 == nNonNeutrons) && (0 == nProtons) && (1 == nPiMinus)) return NC_PIMINUS;
+        if ((2 == nNonNeutrons) && (1 == nProtons) && (1 == nPiMinus)) return NC_P_PIMINUS;
+        if ((3 == nNonNeutrons) && (2 == nProtons) && (1 == nPiMinus)) return NC_P_P_PIMINUS;
+        if ((4 == nNonNeutrons) && (3 == nProtons) && (1 == nPiMinus)) return NC_P_P_P_PIMINUS;
+        if ((5 == nNonNeutrons) && (4 == nProtons) && (1 == nPiMinus)) return NC_P_P_P_P_PIMINUS;
+        if ((6 == nNonNeutrons) && (5 == nProtons) && (1 == nPiMinus)) return NC_P_P_P_P_P_PIMINUS;
+
+        if ((1 == nNonNeutrons) && (0 == nProtons) && (1 == nPhotons)) return NC_PHOTON;
+        if ((2 == nNonNeutrons) && (1 == nProtons) && (1 == nPhotons)) return NC_P_PHOTON;
+        if ((3 == nNonNeutrons) && (2 == nProtons) && (1 == nPhotons)) return NC_P_P_PHOTON;
+        if ((4 == nNonNeutrons) && (3 == nProtons) && (1 == nPhotons)) return NC_P_P_P_PHOTON;
+        if ((5 == nNonNeutrons) && (4 == nProtons) && (1 == nPhotons)) return NC_P_P_P_P_PHOTON;
+        if ((6 == nNonNeutrons) && (5 == nProtons) && (1 == nPhotons)) return NC_P_P_P_P_P_PHOTON;
+
+        if ((2 == nNonNeutrons) && (0 == nProtons) && (2 == nPhotons)) return NC_PIZERO;
+        if ((3 == nNonNeutrons) && (1 == nProtons) && (2 == nPhotons)) return NC_P_PIZERO;
+        if ((4 == nNonNeutrons) && (2 == nProtons) && (2 == nPhotons)) return NC_P_P_PIZERO;
+        if ((5 == nNonNeutrons) && (3 == nProtons) && (2 == nPhotons)) return NC_P_P_P_PIZERO;
+        if ((6 == nNonNeutrons) && (4 == nProtons) && (2 == nPhotons)) return NC_P_P_P_P_PIZERO;
+        if ((7 == nNonNeutrons) && (5 == nProtons) && (2 == nPhotons)) return NC_P_P_P_P_P_PIZERO;
+    }
 
     return OTHER_INTERACTION;
 }
