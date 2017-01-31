@@ -348,7 +348,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
         return;
 
     const int nRecoHitsTotal(simpleMCEvent.m_nRecoNeutrinoHitsTotal + simpleMCEvent.m_nRecoOtherHitsTotal);
-    const float neutrinoPurity((nRecoHitsTotal > 0) ? static_cast<float>(simpleMCEvent.m_nRecoNeutrinoHitsTotal) / static_cast<float>(nRecoHitsTotal) : 0.f); // ATTN Think about where to place null value in histogram
+    const float neutrinoPurity((nRecoHitsTotal > 0) ? static_cast<float>(simpleMCEvent.m_nRecoNeutrinoHitsTotal) / static_cast<float>(nRecoHitsTotal) : -1.f); // ATTN Think about where to place null value in histogram
     const float neutrinoCompleteness((simpleMCEvent.m_nEventNeutrinoHitsTotal > 0) ? static_cast<float>(simpleMCEvent.m_nRecoNeutrinoHitsTotal) / static_cast<float>(simpleMCEvent.m_nEventNeutrinoHitsTotal) : 0.f);
 
     if ((neutrinoPurity < parameters.m_minNeutrinoPurity) || (neutrinoCompleteness < parameters.m_minNeutrinoCompleteness))
