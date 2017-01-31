@@ -11,7 +11,7 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-        <EventFileName>/r05/dune/mcproduction_v04_31_00/prodgenie_nu_dune10kt_workspace/dune4apa_dc_left_Events_100_0.pndr</EventFileName>
+        <EventFileName>/r05/dune/marshall/validation/dune10kt/v06_19_00/sample0/pndr/dune10kt_test_eventsVOLUMEID_100.pndr</EventFileName>
         <ShouldReadEvents>true</ShouldReadEvents>
         <SkipToEvent>0</SkipToEvent>
     </algorithm>
@@ -34,9 +34,6 @@
 
     <!--algorithm type = "LArVisualMonitoring">
         <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
-        <MCParticleListNames>MCParticleList3D</MCParticleListNames>
-        <SuppressMCParticles>22:0.01 2112:1.0</SuppressMCParticles>
-        <ShowDetector>false</ShowDetector>
     </algorithm-->
 
     <!-- Reconstruction of individual neutrino interactions -->
@@ -344,28 +341,32 @@
         <MCParticleListName>MCParticleList3D</MCParticleListName>
         <PfoListName>AllNeutrinoParticles3D</PfoListName>
         <ClusterListNames>AllClustersU AllClustersV AllClustersW</ClusterListNames>
-        <NeutrinoInducedOnly>true</NeutrinoInducedOnly>
-        <PrintAllToScreen>false</PrintAllToScreen>
-        <PrintMatchingToScreen>false</PrintMatchingToScreen>
+        <IntegrateOverRecoNeutrinos>false</IntegrateOverRecoNeutrinos>
+        <UseRecoNeutrinosOnly>true</UseRecoNeutrinosOnly>
+        <UseTrueNeutrinosOnly>true</UseTrueNeutrinosOnly>
+        <PrintAllToScreen>true</PrintAllToScreen>
+        <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <VisualizeMatching>false</VisualizeMatching>
         <VisualizeVertices>false</VisualizeVertices>
         <VisualizeRemnants>false</VisualizeRemnants>
+        <VisualizeGaps>false</VisualizeGaps>
         <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
         <MatchingMinSharedHits>5</MatchingMinSharedHits>
         <WriteToTree>false</WriteToTree>
+        <FileIdentifier>0</FileIdentifier>
         <OutputTree>Validation</OutputTree>
-        <OutputFile>Validation.root</OutputFile>
+        <OutputFile>ValidationVOLUMEID.root</OutputFile>
     </algorithm>
 
-    <!--algorithm type = "LArVisualMonitoring">
+    <algorithm type = "LArVisualMonitoring">
         <PfoListNames>AllNeutrinoParticles3D</PfoListNames>
     </algorithm>
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <ClusterListNames>AllTrackClusters3D AllShowerClusters3D</ClusterListNames>
-    </algorithm>
+    </algorithm-->
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <ClusterListNames>AllClustersU AllClustersV AllClustersW</ClusterListNames>
         <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
         <ShowOnlyAvailable>true</ShowOnlyAvailable>

@@ -365,9 +365,9 @@
         <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
         <PrintAllToScreen>false</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
-        <VisualizeMatching>true</VisualizeMatching>
-        <VisualizeVertices>true</VisualizeVertices>
-        <VisualizeRemnants>true</VisualizeRemnants>
+        <VisualizeMatching>false</VisualizeMatching>
+        <VisualizeVertices>false</VisualizeVertices>
+        <VisualizeRemnants>false</VisualizeRemnants>
         <VisualizeGaps>false</VisualizeGaps>
         <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
         <MatchingMinSharedHits>5</MatchingMinSharedHits>
@@ -385,9 +385,9 @@
         <UseTrueNeutrinosOnly>true</UseTrueNeutrinosOnly>
         <PrintAllToScreen>true</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
-        <VisualizeMatching>true</VisualizeMatching>
-        <VisualizeVertices>true</VisualizeVertices>
-        <VisualizeRemnants>true</VisualizeRemnants>
+        <VisualizeMatching>false</VisualizeMatching>
+        <VisualizeVertices>false</VisualizeVertices>
+        <VisualizeRemnants>false</VisualizeRemnants>
         <VisualizeGaps>false</VisualizeGaps>
         <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
         <MatchingMinSharedHits>5</MatchingMinSharedHits>

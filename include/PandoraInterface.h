@@ -28,8 +28,9 @@ public:
      */
     Parameters();
 
-    std::string     m_pandoraSettingsFile;          ///< The path to the pandora settings file (mandatory parameter)
     std::string     m_detectorDescriptionFile;      ///< The detector description file (mandatory parameter)
+    std::string     m_pandoraSettingsFile;          ///< The path to the pandora settings file (mandatory parameter)
+    std::string     m_stitchingSettingsFile;        ///< The path to the stitching settings file (required only if multiple drift volumes)
     int             m_nEventsToProcess;             ///< The number of events to process (default all events in file)
     bool            m_shouldDisplayEventTime;       ///< Whether event times should be calculated and displayed (default false)
     bool            m_shouldDisplayEventNumber;     ///< Whether event numbers should be displayed (default false)

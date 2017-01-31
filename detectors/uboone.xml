@@ -1,0 +1,16 @@
+<LArDriftVolume>
+    <VolumeID>0</VolumeID>
+    <IsPositiveDrift>0</IsPositiveDrift>
+    <WirePitchU>0.3</WirePitchU>
+    <WirePitchV>0.3</WirePitchV>
+    <WirePitchW>0.3</WirePitchW>
+    <WireAngleU>1.0472</WireAngleU>
+    <WireAngleV>1.0472</WireAngleV>
+    <CenterX>128.175</CenterX>
+    <CenterY>0.97</CenterY>
+    <CenterZ>518.5</CenterZ>
+    <WidthX>256.35</WidthX>
+    <WidthY>233</WidthY>
+    <WidthZ>1036.8</WidthZ>
+    <SigmaUVZ>1</SigmaUVZ>
+</LArDriftVolume>

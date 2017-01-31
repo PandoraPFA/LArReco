@@ -69,15 +69,18 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
 {
     int c(0);
 
-    while ((c = getopt(argc, argv, "i:d:n:t::N::h")) != -1)
+    while ((c = getopt(argc, argv, "d:i:s:n:t::N::h")) != -1)
     {
         switch (c)
         {
+        case 'd':
+            parameters.m_detectorDescriptionFile = optarg;
+            break;
         case 'i':
             parameters.m_pandoraSettingsFile = optarg;
             break;
-        case 'd':
-            parameters.m_detectorDescriptionFile = optarg;
+        case 's':
+            parameters.m_stitchingSettingsFile = optarg;
             break;
         case 'n':
             parameters.m_nEventsToProcess = atoi(optarg);
@@ -91,11 +94,12 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
         case 'h':
         default:
             std::cout << std::endl << "./bin/PandoraInterface " << std::endl
-                      << "    -i PandoraSettings.xml  (mandatory)" << std::endl
-                      << "    -d Detector.xml         (mandatory)" << std::endl
-                      << "    -n NEventsToProcess     (optional)" << std::endl
-                      << "    -N                      (optional, display event numbers)" << std::endl
-                      << "    -t                      (optional, display event times)" << std::endl << std::endl;
+                      << "    -d Detector.xml          (mandatory)" << std::endl
+                      << "    -i PandoraSettings.xml   (mandatory)" << std::endl
+                      << "    -s StitchingSettings.xml (use-case dependent)" << std::endl
+                      << "    -n NEventsToProcess      (optional)" << std::endl
+                      << "    -N                       (optional, display event numbers)" << std::endl
+                      << "    -t                       (optional, display event times)" << std::endl << std::endl;
             return false;
         }
     }
@@ -117,10 +121,21 @@ void CreatePandoraInstances(const Parameters &parameters, const Pandora *&pPrima
     }
 
     // Single volume: one Pandora instance. Multiple volumes: one Pandora for each volume and additional instance for stitching volumes
-    CreatePrimaryPandoraInstance(parameters.m_pandoraSettingsFile, driftVolumeList, pPrimaryPandora);
-
     if (driftVolumeList.size() > 1)
+    {
+        if (parameters.m_stitchingSettingsFile.empty())
+        {
+            std::cout << "Multiple drift volumes present - must provide a stitching settings file." << std::endl;
+            throw StatusCodeException(STATUS_CODE_INVALID_PARAMETER);
+        }
+
+        CreatePrimaryPandoraInstance(parameters.m_stitchingSettingsFile, driftVolumeList, pPrimaryPandora);
         CreateDaughterPandoraInstances(parameters.m_pandoraSettingsFile, driftVolumeList, pPrimaryPandora);
+    }
+    else
+    {
+        CreatePrimaryPandoraInstance(parameters.m_pandoraSettingsFile, driftVolumeList, pPrimaryPandora);
+    }
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
