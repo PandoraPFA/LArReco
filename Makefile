@@ -32,8 +32,7 @@ ifdef MONITORING
     DEFINES = -DMONITORING=1
 endif
 
-SOURCES  =  $(wildcard $(PROJECT_DIR)/src/*.cxx)
-SOURCES +=  $(wildcard $(PROJECT_DIR)/test/*.cxx)
+SOURCES =  $(wildcard $(PROJECT_DIR)/test/*.cxx)
 OBJECTS = $(SOURCES:.cxx=.o)
 DEPENDS = $(OBJECTS:.o=.d)
 
