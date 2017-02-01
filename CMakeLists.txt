@@ -68,11 +68,11 @@ endif()
 # Build products
 
 # - Collect sources - not ideal because you have to keep running CMake to pick up changes
-file(GLOB_RECURSE LAR_RECO_SRCS RELATIVE ${PROJECT_SOURCE_DIR} "src/*.cxx")
+#file(GLOB_RECURSE LAR_RECO_SRCS RELATIVE ${PROJECT_SOURCE_DIR} "src/*.cxx")
 
 # - Add library and properties
-add_library(${PROJECT_NAME} SHARED ${LAR_RECO_SRCS})
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${${PROJECT_NAME}_VERSION} SOVERSION ${${PROJECT_NAME}_SOVERSION})
+#add_library(${PROJECT_NAME} SHARED ${LAR_RECO_SRCS})
+#set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${${PROJECT_NAME}_VERSION} SOVERSION ${${PROJECT_NAME}_SOVERSION})
 
 # - Executable
 add_executable(PandoraInterface ${PROJECT_SOURCE_DIR}/test/PandoraInterface.cxx)
