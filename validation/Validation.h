@@ -501,7 +501,7 @@ void WriteHitCountingMap(const std::string inputFiles, const std::string outputF
  *  @param  parameters the parameters
  *  @param  hitCountingMap to receive the populated hit counting map
  */
-void FillHitCountingMap(const Parameters &parameters, HitCountingMap hitCountingMap);
+void FillHitCountingMap(const Parameters &parameters, HitCountingMap &hitCountingMap);
 
 /**
  *  @brief  Whether a single drift volume "event" represents at least the minumum fraction of all hits in all volumes
@@ -513,6 +513,27 @@ void FillHitCountingMap(const Parameters &parameters, HitCountingMap hitCounting
  *  @return boolean
  */
 bool PassesHitCountingCheck(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters, const HitCountingMap &hitCountingMap);
+
+typedef std::map<int, InteractionType> EventToInteractionTypeMap;
+typedef std::map<int, EventToInteractionTypeMap> InteractionTypeMap;
+
+/**
+ *  @brief  Populate provided interaction type map with degtails in specified root files, as configured by specified parameters
+ * 
+ *  @param  inputFiles the regex identifying the input root files
+ *  @param  parameters the parameters
+ *  @param  interactionTypeMap to receive the interaction type map
+ */
+void PopulateInteractionTypeMap(const std::string inputFiles, const Parameters &parameters, InteractionTypeMap &interactionTypeMap);
+
+/**
+ *  @brief  Produce a 2d histogram showing dispersal of input interaction types to new classifications, following e.g. CR hit removal
+ * 
+ *  @param  originalInteractionTypeMap the first original interaction type map
+ *  @param  newInteractionTypeMap the new interaction type map
+ *  @param  histPrefix the prefix for the output histogram
+ */
+void CompareInteractionTypeMaps(const InteractionTypeMap &originalInteractionTypeMap, const InteractionTypeMap &newInteractionTypeMap, const std::string &histPrefix);
 
 /**
  *  @brief  Finalise the mc primary to pfo matching, using a pfo matching map to store the results
