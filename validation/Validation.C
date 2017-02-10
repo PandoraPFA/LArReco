@@ -100,7 +100,7 @@ void WriteHitCountingMap(const std::string inputFiles, const std::string outputF
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void FillHitCountingMap(const Parameters &parameters, HitCountingMap hitCountingMap)
+void FillHitCountingMap(const Parameters &parameters, HitCountingMap &hitCountingMap)
 {
     std::ifstream myfile;
     myfile.open(parameters.m_hitCountingFileName);
@@ -146,6 +146,92 @@ bool PassesHitCountingCheck(const SimpleMCEvent &simpleMCEvent, const Parameters
 
     const float hitFraction((eIter->second > 0) ? static_cast<float>(simpleMCEvent.m_nEventNeutrinoHitsTotal) / static_cast<float>(eIter->second) : 0.f);
     return (hitFraction > parameters.m_minFractionOfAllHits);
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void PopulateInteractionTypeMap(const std::string inputFiles, const Parameters &parameters, InteractionTypeMap &interactionTypeMap)
+{
+    TChain *pTChain = new TChain("Validation", "pTChain");
+    pTChain->Add(inputFiles.c_str());
+
+    HitCountingMap hitCountingMap;
+    int nEvents(0);
+
+    for (int iEntry = 0; iEntry < pTChain->GetEntries(); )
+    {
+        SimpleMCEvent simpleMCEvent;
+        iEntry += ValidationIO::ReadNextEvent(pTChain, iEntry, simpleMCEvent);
+
+        if (nEvents++ % 50 == 0)
+            std::cout << "nEvents " << nEvents << "\r" << std::flush;
+
+        if (parameters.m_applyFiducialCut && !PassFiducialCut(simpleMCEvent, parameters))
+            continue;
+
+        const InteractionType interactionType(!parameters.m_inclusiveMode ? GetInteractionType(simpleMCEvent, parameters) :
+            GetInclusiveInteractionType(simpleMCEvent, parameters));
+
+        if (interactionTypeMap.count(simpleMCEvent.m_fileIdentifier) && interactionTypeMap[simpleMCEvent.m_fileIdentifier].count(simpleMCEvent.m_eventNumber))
+            std::cout << "File id and event number already present " << simpleMCEvent.m_fileIdentifier << ", " << simpleMCEvent.m_eventNumber << std::endl;
+
+        interactionTypeMap[simpleMCEvent.m_fileIdentifier][simpleMCEvent.m_eventNumber] = interactionType;
+    }
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void CompareInteractionTypeMaps(const InteractionTypeMap &originalInteractionTypeMap, const InteractionTypeMap &newInteractionTypeMap, const std::string &histPrefix)
+{
+    TH2F *const pComparison = new TH2F((histPrefix + "InteractionTypeMixing").c_str(), "", ALL_INTERACTIONS + 1, 0, ALL_INTERACTIONS, ALL_INTERACTIONS + 1, 0, ALL_INTERACTIONS);
+    //pComparison->SetName((histPrefix + "InteractionTypeMixing").c_str());
+    pComparison->GetXaxis()->SetTitle("Original Interaction Type");
+    pComparison->GetYaxis()->SetTitle("New Interaction Type");
+
+    for (unsigned int i = 0; i < ALL_INTERACTIONS; ++i)
+    {
+        pComparison->GetXaxis()->SetBinLabel(i + 1, ToString(static_cast<InteractionType>(i)).c_str());
+        pComparison->GetYaxis()->SetBinLabel(i + 1, ToString(static_cast<InteractionType>(i)).c_str());
+    }
+
+    for (InteractionTypeMap::const_iterator origFIter = originalInteractionTypeMap.begin(), origFIterEnd = originalInteractionTypeMap.end(); origFIter != origFIterEnd; ++origFIter)
+    {
+        const int fileId(origFIter->first);
+
+        for (EventToInteractionTypeMap::const_iterator origEIter = origFIter->second.begin(), origEIterEnd = origFIter->second.end(); origEIter != origEIterEnd; ++origEIter)
+        {
+            const int eventNumber(origEIter->first);
+            const InteractionType originalInteractionType(origEIter->second);
+
+            InteractionTypeMap::const_iterator newFIter(newInteractionTypeMap.find(fileId));
+
+            if (newInteractionTypeMap.end() == newFIter)
+                continue;
+
+            EventToInteractionTypeMap::const_iterator newEIter(newFIter->second.find(eventNumber));
+
+            if (newFIter->second.end() == newEIter)
+                continue;
+
+            const InteractionType newInteractionType(newEIter->second);
+            pComparison->Fill(originalInteractionType, newInteractionType, 1.);
+
+            if (newInteractionType != originalInteractionType)
+                std::cout << "File " << fileId << ", Evt " << eventNumber << ", From " << ToString(originalInteractionType) << ", To " << ToString(newInteractionType) << std::endl;
+        }
+    }
+
+    // Derive nicer version here
+    for (unsigned int i = 0; i < ALL_INTERACTIONS; ++i)
+    {
+        const int nEntries(pComparison->Integral(i + 1, i + 1, 0, ALL_INTERACTIONS));
+
+        if (0 == nEntries)
+            continue;
+
+        for (unsigned int j = 0; j < ALL_INTERACTIONS; ++j)
+            pComparison->SetBinContent(i + 1, j + 1, 100. * pComparison->GetBinContent(i + 1, j + 1) / static_cast<float>(nEntries));
+    }
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
