@@ -41,6 +41,7 @@ public:
 
     float                   m_minNeutrinoPurity;        ///< The minimum neutrino purity to consider event (note: can't handle presence of multiple true neutrinos)
     float                   m_minNeutrinoCompleteness;  ///< The minimum neutrino completeness to consider event (note: can't handle presence of multiple true neutrinos)
+    float                   m_minPrimaryHitsFraction;   ///< The minimum fraction of primary hits remaining after CR removal to pass interaction type check
 
     float                   m_vertexXCorrection;        ///< The vertex x correction, added to reported mc neutrino endpoint x value, in cm
 
@@ -476,13 +477,33 @@ typedef std::map<InteractionType, EventHistogramCollection> InteractionEventHist
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
+typedef std::pair<InteractionType, int> IntTypeAndHits;
+typedef std::map<int, IntTypeAndHits> EventToInteractionTypeMap;
+typedef std::map<int, EventToInteractionTypeMap> InteractionTypeMap;
+
+/**
+ *  @brief  Validation - Main entry point for analysis
+ * 
+ *  @param  inputFiles the regex identifying the input root files
+ */
+void Validation(const std::string &inputFiles);
+
 /**
  *  @brief  Validation - Main entry point for analysis
  * 
  *  @param  inputFiles the regex identifying the input root files
  *  @param  parameters the parameters
  */
-void Validation(const std::string inputFiles, const Parameters parameters = Parameters());
+void Validation(const std::string &inputFiles, const Parameters &parameters);
+
+/**
+ *  @brief  Validation - Main entry point for analysis
+ * 
+ *  @param  inputFiles the regex identifying the input root files
+ *  @param  parameters the parameters
+ *  @param  interactionTypeMap the interaction type map
+ */
+void Validation(const std::string &inputFiles, const Parameters &parameters, const InteractionTypeMap &interactionTypeMap);
 
 typedef std::map<int, int> EventToNHitsMap;
 typedef std::map<int, EventToNHitsMap> HitCountingMap;
@@ -514,9 +535,6 @@ void FillHitCountingMap(const Parameters &parameters, HitCountingMap &hitCountin
  */
 bool PassesHitCountingCheck(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters, const HitCountingMap &hitCountingMap);
 
-typedef std::map<int, InteractionType> EventToInteractionTypeMap;
-typedef std::map<int, EventToInteractionTypeMap> InteractionTypeMap;
-
 /**
  *  @brief  Populate provided interaction type map with degtails in specified root files, as configured by specified parameters
  * 
@@ -527,13 +545,24 @@ typedef std::map<int, EventToInteractionTypeMap> InteractionTypeMap;
 void PopulateInteractionTypeMap(const std::string inputFiles, const Parameters &parameters, InteractionTypeMap &interactionTypeMap);
 
 /**
+ *  @brief  Whether an event has been malformed by cosmic-ray removal, altering its recorded interaction type or substantially changing number of primary hits
+ * 
+ *  @param  simpleMCEvent the simple mc event
+ *  @param  parameters the parameters
+ *  @param  origInteractionTypeMap the original interaction type map
+ * 
+ *  @return boolean
+ */
+bool PassesInteractionTypeCheck(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters, const InteractionTypeMap &origInteractionTypeMap);
+
+/**
  *  @brief  Produce a 2d histogram showing dispersal of input interaction types to new classifications, following e.g. CR hit removal
  * 
  *  @param  originalInteractionTypeMap the first original interaction type map
  *  @param  newInteractionTypeMap the new interaction type map
- *  @param  histPrefix the prefix for the output histogram
+ *  @param  parameters the parameters
  */
-void CompareInteractionTypeMaps(const InteractionTypeMap &originalInteractionTypeMap, const InteractionTypeMap &newInteractionTypeMap, const std::string &histPrefix);
+void CompareInteractionTypeMaps(const InteractionTypeMap &originalInteractionTypeMap, const InteractionTypeMap &newInteractionTypeMap, const Parameters &parameters);
 
 /**
  *  @brief  Finalise the mc primary to pfo matching, using a pfo matching map to store the results
@@ -724,6 +753,7 @@ Parameters::Parameters() :
     m_correctTrackShowerId(false),
     m_minNeutrinoPurity(-1.f),
     m_minNeutrinoCompleteness(-1.f),
+    m_minPrimaryHitsFraction(0.9f),
     m_vertexXCorrection(0.495694f),
     m_histogramOutput(false),
     m_inclusiveMode(false),

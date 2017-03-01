@@ -14,7 +14,21 @@
 #include <fstream>
 #include <sstream>
 
-void Validation(const std::string inputFiles, const Parameters parameters)
+void Validation(const std::string &inputFiles)
+{
+    Validation(inputFiles, Parameters(), InteractionTypeMap());
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void Validation(const std::string &inputFiles, const Parameters &parameters)
+{
+    Validation(inputFiles, parameters, InteractionTypeMap());
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void Validation(const std::string &inputFiles, const Parameters &parameters, const InteractionTypeMap &interactionTypeMap)
 {
     TChain *pTChain = new TChain("Validation", "pTChain");
     pTChain->Add(inputFiles.c_str());
@@ -36,6 +50,9 @@ void Validation(const std::string inputFiles, const Parameters parameters)
         iEntry += ValidationIO::ReadNextEvent(pTChain, iEntry, simpleMCEvent);
 
         if (nEvents++ < parameters.m_skipEvents)
+            continue;
+
+        if (!interactionTypeMap.empty() && !PassesInteractionTypeCheck(simpleMCEvent, parameters, interactionTypeMap))
             continue;
 
         if (!hitCountingMap.empty() && !PassesHitCountingCheck(simpleMCEvent, parameters, hitCountingMap))
@@ -175,16 +192,55 @@ void PopulateInteractionTypeMap(const std::string inputFiles, const Parameters &
         if (interactionTypeMap.count(simpleMCEvent.m_fileIdentifier) && interactionTypeMap[simpleMCEvent.m_fileIdentifier].count(simpleMCEvent.m_eventNumber))
             std::cout << "File id and event number already present " << simpleMCEvent.m_fileIdentifier << ", " << simpleMCEvent.m_eventNumber << std::endl;
 
-        interactionTypeMap[simpleMCEvent.m_fileIdentifier][simpleMCEvent.m_eventNumber] = interactionType;
+        int nPrimaryHits(0);
+
+        for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
+            nPrimaryHits += pIter->m_nMCHitsTotal;
+
+        interactionTypeMap[simpleMCEvent.m_fileIdentifier][simpleMCEvent.m_eventNumber] = IntTypeAndHits(interactionType, nPrimaryHits);
     }
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void CompareInteractionTypeMaps(const InteractionTypeMap &originalInteractionTypeMap, const InteractionTypeMap &newInteractionTypeMap, const std::string &histPrefix)
+bool PassesInteractionTypeCheck(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters, const InteractionTypeMap &origInteractionTypeMap)
 {
-    TH2F *const pComparison = new TH2F((histPrefix + "InteractionTypeMixing").c_str(), "", ALL_INTERACTIONS + 1, 0, ALL_INTERACTIONS, ALL_INTERACTIONS + 1, 0, ALL_INTERACTIONS);
-    //pComparison->SetName((histPrefix + "InteractionTypeMixing").c_str());
+    InteractionTypeMap::const_iterator origFIter(origInteractionTypeMap.find(simpleMCEvent.m_fileIdentifier));
+
+    if (origInteractionTypeMap.end() == origFIter)
+        return false;
+
+    EventToInteractionTypeMap::const_iterator origEIter(origFIter->second.find(simpleMCEvent.m_eventNumber));
+
+    if (origFIter->second.end() == origEIter)
+        return false;
+
+    InteractionType originalInteractionType(origEIter->second.first);
+    const int nOriginalPrimaryHits(origEIter->second.second);
+
+    const InteractionType newInteractionType(!parameters.m_inclusiveMode ? GetInteractionType(simpleMCEvent, parameters) :
+        GetInclusiveInteractionType(simpleMCEvent, parameters));
+
+    int nNewPrimaryHits(0);
+
+    for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
+        nNewPrimaryHits += pIter->m_nMCHitsTotal;
+
+    if ((newInteractionType != originalInteractionType) || (static_cast<float>(nNewPrimaryHits) < parameters.m_minPrimaryHitsFraction * static_cast<float>(nOriginalPrimaryHits)))
+    {
+        std::cout << "File " << simpleMCEvent.m_fileIdentifier << ", Evt " << simpleMCEvent.m_eventNumber << ", From " << ToString(originalInteractionType)
+                  << ", To " << ToString(newInteractionType) << ", OrigHits " << nOriginalPrimaryHits << ", CurrentHits " << nNewPrimaryHits << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void CompareInteractionTypeMaps(const InteractionTypeMap &originalInteractionTypeMap, const InteractionTypeMap &newInteractionTypeMap, const Parameters &parameters)
+{
+    TH2F *const pComparison = new TH2F((parameters.m_histPrefix + "InteractionTypeMixing").c_str(), "", ALL_INTERACTIONS + 1, 0, ALL_INTERACTIONS, ALL_INTERACTIONS + 1, 0, ALL_INTERACTIONS);
     pComparison->GetXaxis()->SetTitle("Original Interaction Type");
     pComparison->GetYaxis()->SetTitle("New Interaction Type");
 
@@ -201,7 +257,8 @@ void CompareInteractionTypeMaps(const InteractionTypeMap &originalInteractionTyp
         for (EventToInteractionTypeMap::const_iterator origEIter = origFIter->second.begin(), origEIterEnd = origFIter->second.end(); origEIter != origEIterEnd; ++origEIter)
         {
             const int eventNumber(origEIter->first);
-            const InteractionType originalInteractionType(origEIter->second);
+            const InteractionType originalInteractionType(origEIter->second.first);
+            const int nOriginalPrimaryHits(origEIter->second.second);
 
             InteractionTypeMap::const_iterator newFIter(newInteractionTypeMap.find(fileId));
 
@@ -213,25 +270,31 @@ void CompareInteractionTypeMaps(const InteractionTypeMap &originalInteractionTyp
             if (newFIter->second.end() == newEIter)
                 continue;
 
-            const InteractionType newInteractionType(newEIter->second);
-            pComparison->Fill(originalInteractionType, newInteractionType, 1.);
+            InteractionType newInteractionType(newEIter->second.first);
+            const int nNewPrimaryHits(newEIter->second.second);
 
-            if (newInteractionType != originalInteractionType)
-                std::cout << "File " << fileId << ", Evt " << eventNumber << ", From " << ToString(originalInteractionType) << ", To " << ToString(newInteractionType) << std::endl;
+            if ((newInteractionType != originalInteractionType) || (static_cast<float>(nNewPrimaryHits) < parameters.m_minPrimaryHitsFraction * static_cast<float>(nOriginalPrimaryHits)))
+            {
+                std::cout << "File " << fileId << ", Evt " << eventNumber << ", From " << ToString(originalInteractionType) << ", To " << ToString(newInteractionType)
+                          << ", OrigHits " << nOriginalPrimaryHits << ", CurrentHits " << nNewPrimaryHits << std::endl;
+                newInteractionType = OTHER_INTERACTION;
+            }
+
+            pComparison->Fill(originalInteractionType, newInteractionType, 1.);
         }
     }
 
-    // Derive nicer version here
-    for (unsigned int i = 0; i < ALL_INTERACTIONS; ++i)
-    {
-        const int nEntries(pComparison->Integral(i + 1, i + 1, 0, ALL_INTERACTIONS));
-
-        if (0 == nEntries)
-            continue;
-
-        for (unsigned int j = 0; j < ALL_INTERACTIONS; ++j)
-            pComparison->SetBinContent(i + 1, j + 1, 100. * pComparison->GetBinContent(i + 1, j + 1) / static_cast<float>(nEntries));
-    }
+//    // Derive nicer version here
+//    for (unsigned int i = 0; i < ALL_INTERACTIONS; ++i)
+//    {
+//        const int nEntries(pComparison->Integral(i + 1, i + 1, 0, ALL_INTERACTIONS));
+//
+//        if (0 == nEntries)
+//            continue;
+//
+//        for (unsigned int j = 0; j < ALL_INTERACTIONS; ++j)
+//            pComparison->SetBinContent(i + 1, j + 1, 100. * pComparison->GetBinContent(i + 1, j + 1) / static_cast<float>(nEntries));
+//    }
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -515,7 +578,84 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
         const float pTot(std::sqrt(simpleMCPrimary.m_momentum.m_x * simpleMCPrimary.m_momentum.m_x + simpleMCPrimary.m_momentum.m_y * simpleMCPrimary.m_momentum.m_y + simpleMCPrimary.m_momentum.m_z * simpleMCPrimary.m_momentum.m_z));
         primaryResult.m_trueMomentum = pTot;
 
-        primaryResult.m_trueAngle = std::acos(simpleMCPrimary.m_momentum.m_z / pTot);
+        primaryResult.m_trueAngle = -1;//std::acos(simpleMCPrimary.m_momentum.m_z / pTot);
+
+        if (CCQEL_MU_P == interactionType)
+        {
+            const SimpleMCPrimary *pPrimary0(nullptr);
+            const SimpleMCPrimary *pPrimary1(nullptr);
+
+            for (SimpleMCPrimaryList::const_iterator pIter2 = simpleMCEvent.m_mcPrimaryList.begin(); pIter2 != simpleMCEvent.m_mcPrimaryList.end(); ++pIter2)
+            {
+                const SimpleMCPrimary &thisSimpleMCPrimary(*pIter2);
+                const ExpectedPrimary thisExpectedPrimary(GetExpectedPrimary(thisSimpleMCPrimary.m_id, simpleMCEvent.m_mcPrimaryList, parameters));
+                if (thisExpectedPrimary == MUON) pPrimary0 = &thisSimpleMCPrimary;
+                if (thisExpectedPrimary == PROTON1) pPrimary1 = &thisSimpleMCPrimary;
+            }
+
+            if (pPrimary0 && pPrimary1)
+            {
+                const float pTot0(std::sqrt(pPrimary0->m_momentum.m_x * pPrimary0->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary0->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary0->m_momentum.m_z));
+                const float pTot1(std::sqrt(pPrimary1->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary1->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary1->m_momentum.m_z * pPrimary1->m_momentum.m_z));
+                primaryResult.m_trueAngle = std::acos((pPrimary0->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary1->m_momentum.m_z) / (pTot0 * pTot1));
+            }
+        }
+
+        if (CCRES_MU_P_PIZERO == interactionType)
+        {
+            const SimpleMCPrimary *pPrimary0(nullptr);
+            const SimpleMCPrimary *pPrimary1(nullptr);
+
+            for (SimpleMCPrimaryList::const_iterator pIter2 = simpleMCEvent.m_mcPrimaryList.begin(); pIter2 != simpleMCEvent.m_mcPrimaryList.end(); ++pIter2)
+            {
+                const SimpleMCPrimary &thisSimpleMCPrimary(*pIter2);
+                const ExpectedPrimary thisExpectedPrimary(GetExpectedPrimary(thisSimpleMCPrimary.m_id, simpleMCEvent.m_mcPrimaryList, parameters));
+                if (thisExpectedPrimary == PHOTON1) pPrimary0 = &thisSimpleMCPrimary;
+                if (thisExpectedPrimary == PHOTON2) pPrimary1 = &thisSimpleMCPrimary;
+            }
+
+            if (pPrimary0 && pPrimary1)
+            {
+                const float pTot0(std::sqrt(pPrimary0->m_momentum.m_x * pPrimary0->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary0->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary0->m_momentum.m_z));
+                const float pTot1(std::sqrt(pPrimary1->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary1->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary1->m_momentum.m_z * pPrimary1->m_momentum.m_z));
+                primaryResult.m_trueAngle = std::acos((pPrimary0->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary1->m_momentum.m_z) / (pTot0 * pTot1));
+            }
+        }
+
+        if (CCRES_MU_P_PIPLUS == interactionType)
+        {
+            const SimpleMCPrimary *pPrimary0(nullptr);
+            const SimpleMCPrimary *pPrimary1(nullptr);
+            const SimpleMCPrimary *pPrimary2(nullptr);
+
+            for (SimpleMCPrimaryList::const_iterator pIter2 = simpleMCEvent.m_mcPrimaryList.begin(); pIter2 != simpleMCEvent.m_mcPrimaryList.end(); ++pIter2)
+            {
+                const SimpleMCPrimary &thisSimpleMCPrimary(*pIter2);
+                const ExpectedPrimary thisExpectedPrimary(GetExpectedPrimary(thisSimpleMCPrimary.m_id, simpleMCEvent.m_mcPrimaryList, parameters));
+                if (thisExpectedPrimary == MUON) pPrimary0 = &thisSimpleMCPrimary;
+                if (thisExpectedPrimary == PROTON1) pPrimary1 = &thisSimpleMCPrimary;
+                if (thisExpectedPrimary == PIPLUS) pPrimary2 = &thisSimpleMCPrimary;
+            }
+
+            if (pPrimary0 && pPrimary1 && pPrimary2)
+            {
+                const float pTot0(std::sqrt(pPrimary0->m_momentum.m_x * pPrimary0->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary0->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary0->m_momentum.m_z));
+                const float pTot1(std::sqrt(pPrimary1->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary1->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary1->m_momentum.m_z * pPrimary1->m_momentum.m_z));
+                const float pTot2(std::sqrt(pPrimary2->m_momentum.m_x * pPrimary2->m_momentum.m_x + pPrimary2->m_momentum.m_y * pPrimary2->m_momentum.m_y + pPrimary2->m_momentum.m_z * pPrimary2->m_momentum.m_z));
+
+                const float angle01(std::acos((pPrimary0->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary1->m_momentum.m_z) / (pTot0 * pTot1)));
+                const float angle02(std::acos((pPrimary0->m_momentum.m_x * pPrimary2->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary2->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary2->m_momentum.m_z) / (pTot0 * pTot2)));
+                const float angle12(std::acos((pPrimary1->m_momentum.m_x * pPrimary2->m_momentum.m_x + pPrimary1->m_momentum.m_y * pPrimary2->m_momentum.m_y + pPrimary1->m_momentum.m_z * pPrimary2->m_momentum.m_z) / (pTot1 * pTot2)));
+
+                float chosenAngle(-1.f);
+                if (MUON == expectedPrimary) chosenAngle = std::min(angle01, angle02);
+                else if (PROTON1 == expectedPrimary) chosenAngle = std::min(angle01, angle12);
+                else if (PIPLUS == expectedPrimary) chosenAngle = std::min(angle02, angle12);
+
+                primaryResult.m_trueAngle = chosenAngle;
+            }
+        }
+
         primaryResult.m_nBestMatchedHits = nBestMatchedHits;
         primaryResult.m_nBestRecoHits = nBestRecoHits;
     }
@@ -1106,7 +1246,7 @@ void FillEventHistogramCollection(const std::string &histPrefix, const bool isCo
         eventHistogramCollection.m_hVtxDeltaX = new TH1F((histPrefix + "VtxDeltaX").c_str(), "", 40000, -2000., 2000.);
         eventHistogramCollection.m_hVtxDeltaX->GetXaxis()->SetRangeUser(-5., +5.);
         eventHistogramCollection.m_hVtxDeltaX->GetXaxis()->SetTitle("Vertex #DeltaX [cm]");
-        eventHistogramCollection.m_hVtxDeltaX->GetYaxis()->SetTitle("nEvents");
+        eventHistogramCollection.m_hVtxDeltaX->GetYaxis()->SetTitle("Number of Events");
     }
 
     if (!eventHistogramCollection.m_hVtxDeltaY)
@@ -1114,7 +1254,7 @@ void FillEventHistogramCollection(const std::string &histPrefix, const bool isCo
         eventHistogramCollection.m_hVtxDeltaY = new TH1F((histPrefix + "VtxDeltaY").c_str(), "", 40000, -2000., 2000.);
         eventHistogramCollection.m_hVtxDeltaY->GetXaxis()->SetRangeUser(-5., +5.);
         eventHistogramCollection.m_hVtxDeltaY->GetXaxis()->SetTitle("Vertex #DeltaY [cm]");
-        eventHistogramCollection.m_hVtxDeltaY->GetYaxis()->SetTitle("nEvents");
+        eventHistogramCollection.m_hVtxDeltaY->GetYaxis()->SetTitle("Number of Events");
     }
 
     if (!eventHistogramCollection.m_hVtxDeltaZ)
@@ -1122,7 +1262,7 @@ void FillEventHistogramCollection(const std::string &histPrefix, const bool isCo
         eventHistogramCollection.m_hVtxDeltaZ = new TH1F((histPrefix + "VtxDeltaZ").c_str(), "", 40000, -2000., 2000.);
         eventHistogramCollection.m_hVtxDeltaZ->GetXaxis()->SetRangeUser(-5., +5.);
         eventHistogramCollection.m_hVtxDeltaZ->GetXaxis()->SetTitle("Vertex #DeltaZ [cm]");
-        eventHistogramCollection.m_hVtxDeltaZ->GetYaxis()->SetTitle("nEvents");
+        eventHistogramCollection.m_hVtxDeltaZ->GetYaxis()->SetTitle("Number of Events");
     }
 
     if (!eventHistogramCollection.m_hVtxDeltaR)
@@ -1130,7 +1270,7 @@ void FillEventHistogramCollection(const std::string &histPrefix, const bool isCo
         eventHistogramCollection.m_hVtxDeltaR = new TH1F((histPrefix + "VtxDeltaR").c_str(), "", 40000, -100., 1900.);
         eventHistogramCollection.m_hVtxDeltaR->GetXaxis()->SetRangeUser(0., +5.);
         eventHistogramCollection.m_hVtxDeltaR->GetXaxis()->SetTitle("Vertex #DeltaR [cm]");
-        eventHistogramCollection.m_hVtxDeltaR->GetYaxis()->SetTitle("nEvents");
+        eventHistogramCollection.m_hVtxDeltaR->GetYaxis()->SetTitle("Number of Events");
     }
 
     if (!eventHistogramCollection.m_hNeutrinoPurity)
@@ -1138,7 +1278,7 @@ void FillEventHistogramCollection(const std::string &histPrefix, const bool isCo
         eventHistogramCollection.m_hNeutrinoPurity = new TH1F((histPrefix + "NeutrinoPurity").c_str(), "", 51, -0.01, 1.01);
         eventHistogramCollection.m_hNeutrinoPurity->GetXaxis()->SetRangeUser(0., +1.01);
         eventHistogramCollection.m_hNeutrinoPurity->GetXaxis()->SetTitle("Reco Neutrino Purity");
-        eventHistogramCollection.m_hNeutrinoPurity->GetYaxis()->SetTitle("nRecoNeutrinos");
+        eventHistogramCollection.m_hNeutrinoPurity->GetYaxis()->SetTitle("Number of Reconstructed Neutrinos");
     }
 
     if (!eventHistogramCollection.m_hNuPurityCorrect)
@@ -1146,7 +1286,7 @@ void FillEventHistogramCollection(const std::string &histPrefix, const bool isCo
         eventHistogramCollection.m_hNuPurityCorrect = new TH1F((histPrefix + "NeutrinoPurityCorrect").c_str(), "", 51, -0.01, 1.01);
         eventHistogramCollection.m_hNuPurityCorrect->GetXaxis()->SetRangeUser(0., +1.01);
         eventHistogramCollection.m_hNuPurityCorrect->GetXaxis()->SetTitle("Reco Neutrino Purity");
-        eventHistogramCollection.m_hNuPurityCorrect->GetYaxis()->SetTitle("nCorrectRecoNeutrinos");
+        eventHistogramCollection.m_hNuPurityCorrect->GetYaxis()->SetTitle("Number of Correctly Reconstructed Neutrinos");
     }
 
     if (!eventHistogramCollection.m_hCosmicFraction)
@@ -1154,30 +1294,30 @@ void FillEventHistogramCollection(const std::string &histPrefix, const bool isCo
         eventHistogramCollection.m_hCosmicFraction = new TH1F((histPrefix + "CosmicFraction").c_str(), "", 51, -0.01, 1.01);
         eventHistogramCollection.m_hCosmicFraction->GetXaxis()->SetRangeUser(0., +1.01);
         eventHistogramCollection.m_hCosmicFraction->GetXaxis()->SetTitle("Cosmic Contamination");
-        eventHistogramCollection.m_hCosmicFraction->GetYaxis()->SetTitle("nRecoNeutrinos");
+        eventHistogramCollection.m_hCosmicFraction->GetYaxis()->SetTitle("Number of Reconstructed Neutrinos");
     }
 
     if (!eventHistogramCollection.m_hNeutrinoCompleteness)
     {
         eventHistogramCollection.m_hNeutrinoCompleteness = new TH1F((histPrefix + "NeutrinoCompleteness").c_str(), "", 51, -0.01, 1.01);
         eventHistogramCollection.m_hNeutrinoCompleteness->GetXaxis()->SetRangeUser(0., +1.01);
-        eventHistogramCollection.m_hNeutrinoCompleteness->GetXaxis()->SetTitle("Reco Neutrino Completeness");
-        eventHistogramCollection.m_hNeutrinoCompleteness->GetYaxis()->SetTitle("nRecoNeutrinos");
+        eventHistogramCollection.m_hNeutrinoCompleteness->GetXaxis()->SetTitle("Reconstructed Neutrino Completeness");
+        eventHistogramCollection.m_hNeutrinoCompleteness->GetYaxis()->SetTitle("Number of Reconstructed Neutrinos");
     }
 
     if (!eventHistogramCollection.m_hNuCompletenessCorrect)
     {
         eventHistogramCollection.m_hNuCompletenessCorrect = new TH1F((histPrefix + "NeutrinoCompletenessCorrect").c_str(), "", 51, -0.01, 1.01);
         eventHistogramCollection.m_hNuCompletenessCorrect->GetXaxis()->SetRangeUser(0., +1.01);
-        eventHistogramCollection.m_hNuCompletenessCorrect->GetXaxis()->SetTitle("Reco Neutrino Completeness");
-        eventHistogramCollection.m_hNuCompletenessCorrect->GetYaxis()->SetTitle("nCorrectRecoNeutrinos");
+        eventHistogramCollection.m_hNuCompletenessCorrect->GetXaxis()->SetTitle("Reconstructed Neutrino Completeness");
+        eventHistogramCollection.m_hNuCompletenessCorrect->GetYaxis()->SetTitle("Number of Correctly Reconstructed Neutrinos");
     }
 
     if (!eventHistogramCollection.m_hNRecoNeutrinos)
     {
         eventHistogramCollection.m_hNRecoNeutrinos = new TH1F((histPrefix + "NRecoNeutrinos").c_str(), "", 11, -0.5, 10.5);
-        eventHistogramCollection.m_hNRecoNeutrinos->GetXaxis()->SetTitle("nRecoNeutrinos");
-        eventHistogramCollection.m_hNRecoNeutrinos->GetYaxis()->SetTitle("nEvents");
+        eventHistogramCollection.m_hNRecoNeutrinos->GetXaxis()->SetTitle("Number of Reconstructed Neutrinos");
+        eventHistogramCollection.m_hNRecoNeutrinos->GetYaxis()->SetTitle("Number of Events");
     }
 
     eventHistogramCollection.m_hVtxDeltaX->Fill(eventResult.m_vertexOffset.m_x);
@@ -1209,17 +1349,17 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
     {
         primaryHistogramCollection.m_hHitsAll = new TH1F((histPrefix + "HitsAll").c_str(), "", nHitBins, hitsBinning);
         primaryHistogramCollection.m_hHitsAll->GetXaxis()->SetRangeUser(1., +6000);
-        primaryHistogramCollection.m_hHitsAll->GetXaxis()->SetTitle("nTrueHits");
-        primaryHistogramCollection.m_hHitsAll->GetYaxis()->SetTitle("nEvents");
+        primaryHistogramCollection.m_hHitsAll->GetXaxis()->SetTitle("Number of Hits");
+        primaryHistogramCollection.m_hHitsAll->GetYaxis()->SetTitle("Number of Events");
     }
 
     if (!primaryHistogramCollection.m_hHitsEfficiency)
     {
         primaryHistogramCollection.m_hHitsEfficiency = new TH1F((histPrefix + "HitsEfficiency").c_str(), "", nHitBins, hitsBinning);
         primaryHistogramCollection.m_hHitsEfficiency->GetXaxis()->SetRangeUser(1., +6000);
-        primaryHistogramCollection.m_hHitsEfficiency->GetXaxis()->SetTitle("nTrueHits");
+        primaryHistogramCollection.m_hHitsEfficiency->GetXaxis()->SetTitle("Number of Hits");
         primaryHistogramCollection.m_hHitsEfficiency->GetYaxis()->SetRangeUser(0., +1.01);
-        primaryHistogramCollection.m_hHitsEfficiency->GetYaxis()->SetTitle("Efficiency");
+        primaryHistogramCollection.m_hHitsEfficiency->GetYaxis()->SetTitle("Reconstruction Efficiency");
     }
 
     const int nMomentumBins(20); const int nMomentumBinEdges(nMomentumBins + 1);
@@ -1230,7 +1370,7 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
         primaryHistogramCollection.m_hMomentumAll = new TH1F((histPrefix + "MomentumAll").c_str(), "", nMomentumBins, momentumBinning);
         primaryHistogramCollection.m_hMomentumAll->GetXaxis()->SetRangeUser(0., +5.5);
         primaryHistogramCollection.m_hMomentumAll->GetXaxis()->SetTitle("True Momentum [GeV]");
-        primaryHistogramCollection.m_hMomentumAll->GetYaxis()->SetTitle("nEvents");
+        primaryHistogramCollection.m_hMomentumAll->GetYaxis()->SetTitle("Number of Events");
     }
 
     if (!primaryHistogramCollection.m_hMomentumEfficiency)
@@ -1239,7 +1379,7 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
         primaryHistogramCollection.m_hMomentumEfficiency->GetXaxis()->SetRangeUser(1., +5.5);
         primaryHistogramCollection.m_hMomentumEfficiency->GetXaxis()->SetTitle("True Momentum [GeV]");
         primaryHistogramCollection.m_hMomentumEfficiency->GetYaxis()->SetRangeUser(0., +1.01);
-        primaryHistogramCollection.m_hMomentumEfficiency->GetYaxis()->SetTitle("Efficiency");
+        primaryHistogramCollection.m_hMomentumEfficiency->GetYaxis()->SetTitle("Reconstruction Efficiency");
     }
 
     if (!primaryHistogramCollection.m_hAngleAll)
@@ -1247,7 +1387,7 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
         primaryHistogramCollection.m_hAngleAll = new TH1F((histPrefix + "AngleAll").c_str(), "", 64, -M_PI, M_PI);
         primaryHistogramCollection.m_hAngleAll->GetXaxis()->SetRangeUser(0., +3.141);
         primaryHistogramCollection.m_hAngleAll->GetXaxis()->SetTitle("#theta_{z}");
-        primaryHistogramCollection.m_hAngleAll->GetYaxis()->SetTitle("nEvents");
+        primaryHistogramCollection.m_hAngleAll->GetYaxis()->SetTitle("Number of Events");
     }
 
     if (!primaryHistogramCollection.m_hAngleEfficiency)
@@ -1256,7 +1396,7 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
         primaryHistogramCollection.m_hAngleEfficiency->GetXaxis()->SetRangeUser(0., +3.141);
         primaryHistogramCollection.m_hAngleEfficiency->GetXaxis()->SetTitle("#theta_{z}");
         primaryHistogramCollection.m_hAngleEfficiency->GetYaxis()->SetRangeUser(0., +1.01);
-        primaryHistogramCollection.m_hAngleEfficiency->GetYaxis()->SetTitle("Efficiency");
+        primaryHistogramCollection.m_hAngleEfficiency->GetYaxis()->SetTitle("Reconstruction Efficiency");
     }
 
     if (!primaryHistogramCollection.m_hCompleteness)
@@ -1264,7 +1404,7 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
         primaryHistogramCollection.m_hCompleteness = new TH1F((histPrefix + "Completeness").c_str(), "", 51, -0.01, 1.01);
         primaryHistogramCollection.m_hCompleteness->GetXaxis()->SetTitle("Completeness");
         primaryHistogramCollection.m_hCompleteness->GetYaxis()->SetRangeUser(0., +1.01);
-        primaryHistogramCollection.m_hCompleteness->GetYaxis()->SetTitle("Fraction of Particles");
+        primaryHistogramCollection.m_hCompleteness->GetYaxis()->SetTitle("Fraction of Events");
     }
 
     if (!primaryHistogramCollection.m_hPurity)
@@ -1272,7 +1412,7 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
         primaryHistogramCollection.m_hPurity = new TH1F((histPrefix + "Purity").c_str(), "", 51, -0.01, 1.01);
         primaryHistogramCollection.m_hPurity->GetXaxis()->SetTitle("Purity");
         primaryHistogramCollection.m_hPurity->GetYaxis()->SetRangeUser(0., +1.01);
-        primaryHistogramCollection.m_hPurity->GetYaxis()->SetTitle("Fraction of Particles");
+        primaryHistogramCollection.m_hPurity->GetYaxis()->SetTitle("Fraction of Events");
     }
 
     if (!primaryHistogramCollection.m_hNPfosVsPTot)
@@ -1281,7 +1421,7 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
         primaryHistogramCollection.m_hNPfosVsPTot->GetXaxis()->SetTitle("P_{True} [GeV]");
         primaryHistogramCollection.m_hNPfosVsPTot->GetXaxis()->SetRangeUser(0., +2.01);
         primaryHistogramCollection.m_hNPfosVsPTot->GetYaxis()->SetRangeUser(0., +10.);
-        primaryHistogramCollection.m_hNPfosVsPTot->GetYaxis()->SetTitle("Number of Matched Pfos");
+        primaryHistogramCollection.m_hNPfosVsPTot->GetYaxis()->SetTitle("Number of Matched Particles");
     }
 
     if (!primaryHistogramCollection.m_hBestCompVsPTot)
@@ -1324,7 +1464,7 @@ void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interacti
             const ExpectedPrimary expectedPrimary(hIter->first);
             const PrimaryHistogramCollection &primaryHistogramCollection(hIter->second);
 
-            for (int n = 0; n < primaryHistogramCollection.m_hHitsEfficiency->GetXaxis()->GetNbins(); ++n)
+            for (int n = -1; n <= primaryHistogramCollection.m_hHitsEfficiency->GetXaxis()->GetNbins(); ++n)
             {
                 const float found = primaryHistogramCollection.m_hHitsEfficiency->GetBinContent(n + 1);
                 const float all = primaryHistogramCollection.m_hHitsAll->GetBinContent(n + 1);
@@ -1334,7 +1474,7 @@ void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interacti
                 primaryHistogramCollection.m_hHitsEfficiency->SetBinError(n + 1, error);
             }
 
-            for (int n = 0; n < primaryHistogramCollection.m_hMomentumEfficiency->GetXaxis()->GetNbins(); ++n)
+            for (int n = -1; n <= primaryHistogramCollection.m_hMomentumEfficiency->GetXaxis()->GetNbins(); ++n)
             {
                 const float found = primaryHistogramCollection.m_hMomentumEfficiency->GetBinContent(n + 1);
                 const float all = primaryHistogramCollection.m_hMomentumAll->GetBinContent(n + 1);
@@ -1344,7 +1484,7 @@ void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interacti
                 primaryHistogramCollection.m_hMomentumEfficiency->SetBinError(n + 1, error);
             }
 
-            for (int n = 0; n < primaryHistogramCollection.m_hAngleEfficiency->GetXaxis()->GetNbins(); ++n)
+            for (int n = -1; n <= primaryHistogramCollection.m_hAngleEfficiency->GetXaxis()->GetNbins(); ++n)
             {
                 const float found = primaryHistogramCollection.m_hAngleEfficiency->GetBinContent(n + 1);
                 const float all = primaryHistogramCollection.m_hAngleAll->GetBinContent(n + 1);
