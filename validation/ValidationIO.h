@@ -151,7 +151,7 @@ public:
     int                     m_mcNeutrinoPdg;            ///< The mc neutrino pdg code
     int                     m_mcNeutrinoNuance;         ///< The mc neutrino nuance code (interaction type details)
     SimpleThreeVector       m_mcNeutrinoVtx;            ///< The mc neutrino vertex
-    SimpleThreeVector       m_mcNeutrinoE;              ///< The mc neutrino energy
+    float                   m_mcNeutrinoE;              ///< The mc neutrino energy
     SimpleThreeVector       m_mcNeutrinoP;              ///< The mc neutrino momentum
     int                     m_nRecoNeutrinos;           ///< The number of reconstructed neutrinos
     int                     m_recoNeutrinoPdg;          ///< The reconstructed neutrino pdg code
