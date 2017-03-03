@@ -10,6 +10,8 @@
 
 #include "ValidationIO.h"
 
+#include <limits>
+
 /**
  * @brief   Parameters class
  */
@@ -50,8 +52,6 @@ public:
     std::string             m_histPrefix;               ///< Histogram name prefix
     std::string             m_mapFileName;              ///< File name to which to write output ascii tables, etc.
     std::string             m_eventFileName;            ///< File name to which to write list of correct events
-
-    bool                    m_inclusiveMode;            ///< Whether to use inclusive or exclusive final states for performance metrics
 
     float                   m_minFractionOfAllHits;     ///< Input details must represent at least a given fraction of all hit in all drift volumes (as recorded in file, below)
     std::string             m_hitCountingFileName;      ///< The name of the file containing information about all hits in all drift volumes
@@ -279,84 +279,6 @@ enum InteractionType
     NCDIS_P_P_P_P_P_PIZERO,
     CCCOH,
     NCCOH,
-    // Inclusive mode
-    CC_MU,
-    CC_MU_P,
-    CC_MU_P_P,
-    CC_MU_P_P_P,
-    CC_MU_P_P_P_P,
-    CC_MU_P_P_P_P_P,
-    CC_MU_PIPLUS,
-    CC_MU_P_PIPLUS,
-    CC_MU_P_P_PIPLUS,
-    CC_MU_P_P_P_PIPLUS,
-    CC_MU_P_P_P_P_PIPLUS,
-    CC_MU_P_P_P_P_P_PIPLUS,
-    CC_MU_PHOTON,
-    CC_MU_P_PHOTON,
-    CC_MU_P_P_PHOTON,
-    CC_MU_P_P_P_PHOTON,
-    CC_MU_P_P_P_P_PHOTON,
-    CC_MU_P_P_P_P_P_PHOTON,
-    CC_MU_PIZERO,
-    CC_MU_P_PIZERO,
-    CC_MU_P_P_PIZERO,
-    CC_MU_P_P_P_PIZERO,
-    CC_MU_P_P_P_P_PIZERO,
-    CC_MU_P_P_P_P_P_PIZERO,
-    CC_E,
-    CC_E_P,
-    CC_E_P_P,
-    CC_E_P_P_P,
-    CC_E_P_P_P_P,
-    CC_E_P_P_P_P_P,
-    CC_E_PIPLUS,
-    CC_E_P_PIPLUS,
-    CC_E_P_P_PIPLUS,
-    CC_E_P_P_P_PIPLUS,
-    CC_E_P_P_P_P_PIPLUS,
-    CC_E_P_P_P_P_P_PIPLUS,
-    CC_E_PHOTON,
-    CC_E_P_PHOTON,
-    CC_E_P_P_PHOTON,
-    CC_E_P_P_P_PHOTON,
-    CC_E_P_P_P_P_PHOTON,
-    CC_E_P_P_P_P_P_PHOTON,
-    CC_E_PIZERO,
-    CC_E_P_PIZERO,
-    CC_E_P_P_PIZERO,
-    CC_E_P_P_P_PIZERO,
-    CC_E_P_P_P_P_PIZERO,
-    CC_E_P_P_P_P_P_PIZERO,
-    NC_P,
-    NC_P_P,
-    NC_P_P_P,
-    NC_P_P_P_P,
-    NC_P_P_P_P_P,
-    NC_PIPLUS,
-    NC_P_PIPLUS,
-    NC_P_P_PIPLUS,
-    NC_P_P_P_PIPLUS,
-    NC_P_P_P_P_PIPLUS,
-    NC_P_P_P_P_P_PIPLUS,
-    NC_PIMINUS,
-    NC_P_PIMINUS,
-    NC_P_P_PIMINUS,
-    NC_P_P_P_PIMINUS,
-    NC_P_P_P_P_PIMINUS,
-    NC_P_P_P_P_P_PIMINUS,
-    NC_PHOTON,
-    NC_P_PHOTON,
-    NC_P_P_PHOTON,
-    NC_P_P_P_PHOTON,
-    NC_P_P_P_P_PHOTON,
-    NC_P_P_P_P_P_PHOTON,
-    NC_PIZERO,
-    NC_P_PIZERO,
-    NC_P_P_PIZERO,
-    NC_P_P_P_PIZERO,
-    NC_P_P_P_P_PIZERO,
-    NC_P_P_P_P_P_PIZERO,
     OTHER_INTERACTION,
     ALL_INTERACTIONS // ATTN use carefully!
 };
@@ -411,6 +333,8 @@ public:
     float                   m_neutrinoCompleteness;     ///< The reco neutrino completeness
     PrimaryResultMap        m_primaryResultMap;         ///< The primary result map
     SimpleThreeVector       m_vertexOffset;             ///< The vertex offset
+    float                   m_trueVtxShwDistance;       ///< The true distance between interaction vertex and shower vertex
+    float                   m_recoVtxShwDistance;       ///< The reco distance between interaction vertex and shower vertex
 };
 
 typedef std::vector<EventResult> EventResultList; // ATTN Not terribly efficient, but that's not the main aim here
@@ -471,6 +395,9 @@ public:
     TH1F                   *m_hNeutrinoCompleteness;    ///<
     TH1F                   *m_hNuCompletenessCorrect;   ///<
     TH1F                   *m_hNRecoNeutrinos;          ///<
+    TH1F                   *m_hTrueVtxShwDistance;      ///<
+    TH1F                   *m_hRecoVtxShwDistance;      ///<
+    TH1F                   *m_hVtxShwResolution;        ///<
 };
 
 typedef std::map<InteractionType, EventHistogramCollection> InteractionEventHistogramMap;
@@ -670,16 +597,6 @@ bool PassFiducialCut(const SimpleMCEvent &simpleMCEvent, const Parameters &param
 InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters);
 
 /**
- *  @brief  Get the inclusive mode event interaction type
- * 
- *  @param  simpleMCEvent the simple mc event
- *  @param  parameters the parameters
- * 
- *  @return the interaction type
- */
-InteractionType GetInclusiveInteractionType(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters);
-
-/**
  *  @brief  Work out which of the primary particles (expected for a given interaction types) corresponds to the provided priamry id
  *          ATTN: Relies on fact that primary list is sorted by number of true hits
  * 
@@ -690,6 +607,31 @@ InteractionType GetInclusiveInteractionType(const SimpleMCEvent &simpleMCEvent, 
  *  @return the expected primary
  */
 ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryList &simpleMCPrimaryList, const Parameters &parameters);
+
+/**
+ *  @brief  Get the true opening angle between muon and proton in CCQEL_MU_P events, between two photons in CCRES_MU_P_PIZERO and
+ *          to the nearest-neighbour target mc particle in CCRES_MU_P_PIPLUS events
+ * 
+ *  @param  simpleMCEvent the simple mc event
+ *  @param  parameters the parameters
+ *  @param  interactionType the interaction type
+ *  @param  expectedPrimary the expected primary
+ * 
+ *  @return the true angle
+ */
+float GetTrueAngle(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters, const InteractionType interactionType, const ExpectedPrimary expectedPrimary);
+
+/**
+ *  @brief  Get the true and reco distances from neutrino interaction vertex to shower start position, for relevant interaction types
+ * 
+ *  @param  simpleMCEvent the simple mc event
+ *  @param  parameters the parameters
+ *  @param  interactionType the interaction type
+ *  @param  pfoMatchingMap the pfo matching map
+ *  @param  eventResult the event result, to receive the vertex to shower distance parameters
+ */
+void GetVtxShwDistance(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters, const InteractionType interactionType, const PfoMatchingMap &pfoMatchingMap,
+    EventResult &eventResult);
 
 /**
  *  @brief  Print details to screen for a provided interaction type to counting map
@@ -756,7 +698,6 @@ Parameters::Parameters() :
     m_minPrimaryHitsFraction(0.9f),
     m_vertexXCorrection(0.495694f),
     m_histogramOutput(false),
-    m_inclusiveMode(false),
     m_minFractionOfAllHits(0.9f)
 {
 }
@@ -787,6 +728,11 @@ CountingDetails::CountingDetails() :
 
 PrimaryResult::PrimaryResult() :
     m_nPfoMatches(0),
+    m_nTrueHits(0),
+    m_trueMomentum(std::numeric_limits<float>::max()),
+    m_trueAngle(std::numeric_limits<float>::max()),
+    m_nBestMatchedHits(0),
+    m_nBestRecoHits(0),
     m_bestCompleteness(0.f),
     m_bestMatchPurity(0.f)
 {
@@ -803,7 +749,9 @@ EventResult::EventResult() :
     m_nTrueNeutrinos(0),
     m_neutrinoPurity(-1.f),
     m_neutrinoCompleteness(-1.f),
-    m_vertexOffset(-999.f, -999.f, -999.f)
+    m_vertexOffset(-999.f, -999.f, -999.f),
+    m_trueVtxShwDistance(std::numeric_limits<float>::max()),
+    m_recoVtxShwDistance(std::numeric_limits<float>::max())
 {
 }
 
@@ -837,7 +785,10 @@ EventHistogramCollection::EventHistogramCollection() :
     m_hCosmicFraction(NULL),
     m_hNeutrinoCompleteness(NULL),
     m_hNuCompletenessCorrect(NULL),
-    m_hNRecoNeutrinos(NULL)
+    m_hNRecoNeutrinos(NULL),
+    m_hTrueVtxShwDistance(NULL),
+    m_hRecoVtxShwDistance(NULL),
+    m_hVtxShwResolution(NULL)
 {
 }
 
@@ -1005,84 +956,6 @@ std::string ToString(const InteractionType interactionType)
     case NCDIS_P_P_P_P_P_PIZERO: return "NCDIS_P_P_P_P_P_PIZERO";
     case CCCOH: return "CCCOH";
     case NCCOH: return "NCCOH";
-    // Inclusive mode
-    case CC_MU: return "CC_MU";
-    case CC_MU_P: return "CC_MU_P";
-    case CC_MU_P_P: return "CC_MU_P_P";
-    case CC_MU_P_P_P: return "CC_MU_P_P_P";
-    case CC_MU_P_P_P_P: return "CC_MU_P_P_P_P";
-    case CC_MU_P_P_P_P_P: return "CC_MU_P_P_P_P_P";
-    case CC_MU_PIPLUS: return "CC_MU_PIPLUS";
-    case CC_MU_P_PIPLUS: return "CC_MU_P_PIPLUS";
-    case CC_MU_P_P_PIPLUS: return "CC_MU_P_P_PIPLUS";
-    case CC_MU_P_P_P_PIPLUS: return "CC_MU_P_P_P_PIPLUS";
-    case CC_MU_P_P_P_P_PIPLUS: return "CC_MU_P_P_P_P_PIPLUS";
-    case CC_MU_P_P_P_P_P_PIPLUS: return "CC_MU_P_P_P_P_P_PIPLUS";
-    case CC_MU_PHOTON: return "CC_MU_PHOTON";
-    case CC_MU_P_PHOTON: return "CC_MU_P_PHOTON";
-    case CC_MU_P_P_PHOTON: return "CC_MU_P_P_PHOTON";
-    case CC_MU_P_P_P_PHOTON: return "CC_MU_P_P_P_PHOTON";
-    case CC_MU_P_P_P_P_PHOTON: return "CC_MU_P_P_P_P_PHOTON";
-    case CC_MU_P_P_P_P_P_PHOTON: return "CC_MU_P_P_P_P_P_PHOTON";
-    case CC_MU_PIZERO: return "CC_MU_PIZERO";
-    case CC_MU_P_PIZERO: return "CC_MU_P_PIZERO";
-    case CC_MU_P_P_PIZERO: return "CC_MU_P_P_PIZERO";
-    case CC_MU_P_P_P_PIZERO: return "CC_MU_P_P_P_PIZERO";
-    case CC_MU_P_P_P_P_PIZERO: return "CC_MU_P_P_P_P_PIZERO";
-    case CC_MU_P_P_P_P_P_PIZERO: return "CC_MU_P_P_P_P_P_PIZERO";
-    case CC_E: return "CC_E";
-    case CC_E_P: return "CC_E_P";
-    case CC_E_P_P: return "CC_E_P_P";
-    case CC_E_P_P_P: return "CC_E_P_P_P";
-    case CC_E_P_P_P_P: return "CC_E_P_P_P_P";
-    case CC_E_P_P_P_P_P: return "CC_E_P_P_P_P_P";
-    case CC_E_PIPLUS: return "CC_E_PIPLUS";
-    case CC_E_P_PIPLUS: return "CC_E_P_PIPLUS";
-    case CC_E_P_P_PIPLUS: return "CC_E_P_P_PIPLUS";
-    case CC_E_P_P_P_PIPLUS: return "CC_E_P_P_P_PIPLUS";
-    case CC_E_P_P_P_P_PIPLUS: return "CC_E_P_P_P_P_PIPLUS";
-    case CC_E_P_P_P_P_P_PIPLUS: return "CC_E_P_P_P_P_P_PIPLUS";
-    case CC_E_PHOTON: return "CC_E_PHOTON";
-    case CC_E_P_PHOTON: return "CC_E_P_PHOTON";
-    case CC_E_P_P_PHOTON: return "CC_E_P_P_PHOTON";
-    case CC_E_P_P_P_PHOTON: return "CC_E_P_P_P_PHOTON";
-    case CC_E_P_P_P_P_PHOTON: return "CC_E_P_P_P_P_PHOTON";
-    case CC_E_P_P_P_P_P_PHOTON: return "CC_E_P_P_P_P_P_PHOTON";
-    case CC_E_PIZERO: return "CC_E_PIZERO";
-    case CC_E_P_PIZERO: return "CC_E_P_PIZERO";
-    case CC_E_P_P_PIZERO: return "CC_E_P_P_PIZERO";
-    case CC_E_P_P_P_PIZERO: return "CC_E_P_P_P_PIZERO";
-    case CC_E_P_P_P_P_PIZERO: return "CC_E_P_P_P_P_PIZERO";
-    case CC_E_P_P_P_P_P_PIZERO: return "CC_E_P_P_P_P_P_PIZERO";
-    case NC_P: return "NC_P";
-    case NC_P_P: return "NC_P_P";
-    case NC_P_P_P: return "NC_P_P_P";
-    case NC_P_P_P_P: return "NC_P_P_P_P";
-    case NC_P_P_P_P_P: return "NC_P_P_P_P_P";
-    case NC_PIPLUS: return "NC_PIPLUS";
-    case NC_P_PIPLUS: return "NC_P_PIPLUS";
-    case NC_P_P_PIPLUS: return "NC_P_P_PIPLUS";
-    case NC_P_P_P_PIPLUS: return "NC_P_P_P_PIPLUS";
-    case NC_P_P_P_P_PIPLUS: return "NC_P_P_P_P_PIPLUS";
-    case NC_P_P_P_P_P_PIPLUS: return "NC_P_P_P_P_P_PIPLUS";
-    case NC_PIMINUS: return "NC_PIMINUS";
-    case NC_P_PIMINUS: return "NC_P_PIMINUS";
-    case NC_P_P_PIMINUS: return "NC_P_P_PIMINUS";
-    case NC_P_P_P_PIMINUS: return "NC_P_P_P_PIMINUS";
-    case NC_P_P_P_P_PIMINUS: return "NC_P_P_P_P_PIMINUS";
-    case NC_P_P_P_P_P_PIMINUS: return "NC_P_P_P_P_P_PIMINUS";
-    case NC_PHOTON: return "NC_PHOTON";
-    case NC_P_PHOTON: return "NC_P_PHOTON";
-    case NC_P_P_PHOTON: return "NC_P_P_PHOTON";
-    case NC_P_P_P_PHOTON: return "NC_P_P_P_PHOTON";
-    case NC_P_P_P_P_PHOTON: return "NC_P_P_P_P_PHOTON";
-    case NC_P_P_P_P_P_PHOTON: return "NC_P_P_P_P_P_PHOTON";
-    case NC_PIZERO: return "NC_PIZERO";
-    case NC_P_PIZERO: return "NC_P_PIZERO";
-    case NC_P_P_PIZERO: return "NC_P_P_PIZERO";
-    case NC_P_P_P_PIZERO: return "NC_P_P_P_PIZERO";
-    case NC_P_P_P_P_PIZERO: return "NC_P_P_P_P_PIZERO";
-    case NC_P_P_P_P_P_PIZERO: return "NC_P_P_P_P_P_PIZERO";
     case OTHER_INTERACTION: return "OTHER_INTERACTION";
     case ALL_INTERACTIONS: return "ALL_INTERACTIONS";
     default: return "UNKNOWN";

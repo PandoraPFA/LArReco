@@ -186,8 +186,7 @@ void PopulateInteractionTypeMap(const std::string inputFiles, const Parameters &
         if (parameters.m_applyFiducialCut && !PassFiducialCut(simpleMCEvent, parameters))
             continue;
 
-        const InteractionType interactionType(!parameters.m_inclusiveMode ? GetInteractionType(simpleMCEvent, parameters) :
-            GetInclusiveInteractionType(simpleMCEvent, parameters));
+        const InteractionType interactionType(GetInteractionType(simpleMCEvent, parameters));
 
         if (interactionTypeMap.count(simpleMCEvent.m_fileIdentifier) && interactionTypeMap[simpleMCEvent.m_fileIdentifier].count(simpleMCEvent.m_eventNumber))
             std::cout << "File id and event number already present " << simpleMCEvent.m_fileIdentifier << ", " << simpleMCEvent.m_eventNumber << std::endl;
@@ -218,8 +217,7 @@ bool PassesInteractionTypeCheck(const SimpleMCEvent &simpleMCEvent, const Parame
     InteractionType originalInteractionType(origEIter->second.first);
     const int nOriginalPrimaryHits(origEIter->second.second);
 
-    const InteractionType newInteractionType(!parameters.m_inclusiveMode ? GetInteractionType(simpleMCEvent, parameters) :
-        GetInclusiveInteractionType(simpleMCEvent, parameters));
+    const InteractionType newInteractionType(GetInteractionType(simpleMCEvent, parameters));
 
     int nNewPrimaryHits(0);
 
@@ -424,6 +422,15 @@ bool HasMatch(const SimpleMCPrimary &simpleMCPrimary, const PfoMatchingMap &pfoM
 
 bool IsGoodMatch(const SimpleMCPrimary &simpleMCPrimary, const SimpleMatchedPfo &simpleMatchedPfo, const Parameters &parameters)
 {
+    const unsigned int absMCPdgCode(std::abs(simpleMCPrimary.m_pdgCode));
+
+    if (parameters.m_correctTrackShowerId && (
+        ((absMCPdgCode == 13 || absMCPdgCode == 2212 || absMCPdgCode == 211) && (13 != simpleMatchedPfo.m_pdgCode)) ||
+        ((absMCPdgCode == 22 || absMCPdgCode == 11) && (11 != simpleMatchedPfo.m_pdgCode)) ))
+    {
+        return false;
+    }
+
     const float purity((simpleMatchedPfo.m_nPfoHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMatchedPfo.m_nPfoHitsTotal) : 0.f);
     const float completeness((simpleMCPrimary.m_nMCHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMCPrimary.m_nMCHitsTotal) : 0.f);
 
@@ -504,7 +511,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
         return;
 
     bool hasTargetPrimary(false);
-    const InteractionType interactionType(!parameters.m_inclusiveMode ? GetInteractionType(simpleMCEvent, parameters) : GetInclusiveInteractionType(simpleMCEvent, parameters));
+    const InteractionType interactionType(GetInteractionType(simpleMCEvent, parameters));
 
     EventResult eventResult;
     eventResult.m_fileIdentifier = simpleMCEvent.m_fileIdentifier;
@@ -542,15 +549,6 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
                 if (!IsGoodMatch(simpleMCPrimary, simpleMatchedPfo, parameters))
                     continue;
 
-                const unsigned int absMCPdgCode(std::abs(simpleMCPrimary.m_pdgCode));
-
-                if (parameters.m_correctTrackShowerId && (
-                    ((absMCPdgCode == 13 || absMCPdgCode == 2212 || absMCPdgCode == 211) && (13 != simpleMatchedPfo.m_pdgCode)) ||
-                    ((absMCPdgCode == 22 || absMCPdgCode == 11) && (11 != simpleMatchedPfo.m_pdgCode)) ))
-                {
-                    continue;
-                }
-
                 ++nMatches;
                 const float purity((simpleMatchedPfo.m_nPfoHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMatchedPfo.m_nPfoHitsTotal) : 0);
                 const float completeness((simpleMCPrimary.m_nMCHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMCPrimary.m_nMCHitsTotal) : 0);
@@ -577,84 +575,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
 
         const float pTot(std::sqrt(simpleMCPrimary.m_momentum.m_x * simpleMCPrimary.m_momentum.m_x + simpleMCPrimary.m_momentum.m_y * simpleMCPrimary.m_momentum.m_y + simpleMCPrimary.m_momentum.m_z * simpleMCPrimary.m_momentum.m_z));
         primaryResult.m_trueMomentum = pTot;
-
-        primaryResult.m_trueAngle = -1;//std::acos(simpleMCPrimary.m_momentum.m_z / pTot);
-
-        if (CCQEL_MU_P == interactionType)
-        {
-            const SimpleMCPrimary *pPrimary0(nullptr);
-            const SimpleMCPrimary *pPrimary1(nullptr);
-
-            for (SimpleMCPrimaryList::const_iterator pIter2 = simpleMCEvent.m_mcPrimaryList.begin(); pIter2 != simpleMCEvent.m_mcPrimaryList.end(); ++pIter2)
-            {
-                const SimpleMCPrimary &thisSimpleMCPrimary(*pIter2);
-                const ExpectedPrimary thisExpectedPrimary(GetExpectedPrimary(thisSimpleMCPrimary.m_id, simpleMCEvent.m_mcPrimaryList, parameters));
-                if (thisExpectedPrimary == MUON) pPrimary0 = &thisSimpleMCPrimary;
-                if (thisExpectedPrimary == PROTON1) pPrimary1 = &thisSimpleMCPrimary;
-            }
-
-            if (pPrimary0 && pPrimary1)
-            {
-                const float pTot0(std::sqrt(pPrimary0->m_momentum.m_x * pPrimary0->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary0->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary0->m_momentum.m_z));
-                const float pTot1(std::sqrt(pPrimary1->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary1->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary1->m_momentum.m_z * pPrimary1->m_momentum.m_z));
-                primaryResult.m_trueAngle = std::acos((pPrimary0->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary1->m_momentum.m_z) / (pTot0 * pTot1));
-            }
-        }
-
-        if (CCRES_MU_P_PIZERO == interactionType)
-        {
-            const SimpleMCPrimary *pPrimary0(nullptr);
-            const SimpleMCPrimary *pPrimary1(nullptr);
-
-            for (SimpleMCPrimaryList::const_iterator pIter2 = simpleMCEvent.m_mcPrimaryList.begin(); pIter2 != simpleMCEvent.m_mcPrimaryList.end(); ++pIter2)
-            {
-                const SimpleMCPrimary &thisSimpleMCPrimary(*pIter2);
-                const ExpectedPrimary thisExpectedPrimary(GetExpectedPrimary(thisSimpleMCPrimary.m_id, simpleMCEvent.m_mcPrimaryList, parameters));
-                if (thisExpectedPrimary == PHOTON1) pPrimary0 = &thisSimpleMCPrimary;
-                if (thisExpectedPrimary == PHOTON2) pPrimary1 = &thisSimpleMCPrimary;
-            }
-
-            if (pPrimary0 && pPrimary1)
-            {
-                const float pTot0(std::sqrt(pPrimary0->m_momentum.m_x * pPrimary0->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary0->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary0->m_momentum.m_z));
-                const float pTot1(std::sqrt(pPrimary1->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary1->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary1->m_momentum.m_z * pPrimary1->m_momentum.m_z));
-                primaryResult.m_trueAngle = std::acos((pPrimary0->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary1->m_momentum.m_z) / (pTot0 * pTot1));
-            }
-        }
-
-        if (CCRES_MU_P_PIPLUS == interactionType)
-        {
-            const SimpleMCPrimary *pPrimary0(nullptr);
-            const SimpleMCPrimary *pPrimary1(nullptr);
-            const SimpleMCPrimary *pPrimary2(nullptr);
-
-            for (SimpleMCPrimaryList::const_iterator pIter2 = simpleMCEvent.m_mcPrimaryList.begin(); pIter2 != simpleMCEvent.m_mcPrimaryList.end(); ++pIter2)
-            {
-                const SimpleMCPrimary &thisSimpleMCPrimary(*pIter2);
-                const ExpectedPrimary thisExpectedPrimary(GetExpectedPrimary(thisSimpleMCPrimary.m_id, simpleMCEvent.m_mcPrimaryList, parameters));
-                if (thisExpectedPrimary == MUON) pPrimary0 = &thisSimpleMCPrimary;
-                if (thisExpectedPrimary == PROTON1) pPrimary1 = &thisSimpleMCPrimary;
-                if (thisExpectedPrimary == PIPLUS) pPrimary2 = &thisSimpleMCPrimary;
-            }
-
-            if (pPrimary0 && pPrimary1 && pPrimary2)
-            {
-                const float pTot0(std::sqrt(pPrimary0->m_momentum.m_x * pPrimary0->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary0->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary0->m_momentum.m_z));
-                const float pTot1(std::sqrt(pPrimary1->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary1->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary1->m_momentum.m_z * pPrimary1->m_momentum.m_z));
-                const float pTot2(std::sqrt(pPrimary2->m_momentum.m_x * pPrimary2->m_momentum.m_x + pPrimary2->m_momentum.m_y * pPrimary2->m_momentum.m_y + pPrimary2->m_momentum.m_z * pPrimary2->m_momentum.m_z));
-
-                const float angle01(std::acos((pPrimary0->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary1->m_momentum.m_z) / (pTot0 * pTot1)));
-                const float angle02(std::acos((pPrimary0->m_momentum.m_x * pPrimary2->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary2->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary2->m_momentum.m_z) / (pTot0 * pTot2)));
-                const float angle12(std::acos((pPrimary1->m_momentum.m_x * pPrimary2->m_momentum.m_x + pPrimary1->m_momentum.m_y * pPrimary2->m_momentum.m_y + pPrimary1->m_momentum.m_z * pPrimary2->m_momentum.m_z) / (pTot1 * pTot2)));
-
-                float chosenAngle(-1.f);
-                if (MUON == expectedPrimary) chosenAngle = std::min(angle01, angle02);
-                else if (PROTON1 == expectedPrimary) chosenAngle = std::min(angle01, angle12);
-                else if (PIPLUS == expectedPrimary) chosenAngle = std::min(angle02, angle12);
-
-                primaryResult.m_trueAngle = chosenAngle;
-            }
-        }
+        primaryResult.m_trueAngle = GetTrueAngle(simpleMCEvent, parameters, interactionType, expectedPrimary);
 
         primaryResult.m_nBestMatchedHits = nBestMatchedHits;
         primaryResult.m_nBestRecoHits = nBestRecoHits;
@@ -664,6 +585,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
     {
         eventResult.m_vertexOffset = simpleMCEvent.m_recoNeutrinoVtx - simpleMCEvent.m_mcNeutrinoVtx;
         eventResult.m_vertexOffset.m_x = eventResult.m_vertexOffset.m_x - parameters.m_vertexXCorrection;
+        GetVtxShwDistance(simpleMCEvent, parameters, interactionType, pfoMatchingMap, eventResult);
     }
 
     if (hasTargetPrimary)
@@ -930,136 +852,6 @@ InteractionType GetInteractionType(const SimpleMCEvent &simpleMCEvent, const Par
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-InteractionType GetInclusiveInteractionType(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters)
-{
-    unsigned int nNonNeutrons(0), nMuons(0), nElectrons(0), nProtons(0), nPiPlus(0), nPiMinus(0), nNeutrons(0), nPhotons(0);
-
-    for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
-    {
-        const SimpleMCPrimary &simpleMCPrimary(*pIter);
-
-        if (!IsGoodMCPrimary(simpleMCPrimary, parameters))
-            continue;
-
-        if (2112 != simpleMCPrimary.m_pdgCode)
-            ++nNonNeutrons;
-
-        if (13 == simpleMCPrimary.m_pdgCode) ++nMuons;
-        if (11 == simpleMCPrimary.m_pdgCode) ++nElectrons;
-        else if (2212 == simpleMCPrimary.m_pdgCode) ++nProtons;
-        else if (22 == simpleMCPrimary.m_pdgCode) ++nPhotons;
-        else if (211 == simpleMCPrimary.m_pdgCode) ++nPiPlus;
-        else if (-211 == simpleMCPrimary.m_pdgCode) ++nPiMinus;
-        else if (2112 == simpleMCPrimary.m_pdgCode) ++nNeutrons;
-    }
-
-    InteractionType interactionType(OTHER_INTERACTION);
-
-    const int nuance(simpleMCEvent.m_mcNeutrinoNuance);
-
-    const bool isCC(nuance == 1001 || nuance == 1003 || nuance == 1004 || nuance == 1005 || nuance == 1091 || nuance == 1097);
-    const bool isNC(nuance == 1002 || nuance == 1006 || nuance == 1007 || nuance == 1008 || nuance == 1009 || nuance == 1092 || nuance == 1096);
-//std::cout << " nuance " << nuance << " isCC " << isCC << " isNC " << isNC << " nNonNeutrons " << nNonNeutrons << " nMuons " << nMuons<< ", nElectrons " << nElectrons << " nProtons " << nProtons << " nPiPlus " << nPiPlus << ", nPiMinus " << nPiMinus << ", nPhotons " << nPhotons << std::endl;
-    if (isCC)
-    {
-        if ((1 == nNonNeutrons) && (1 == nMuons) && (0 == nProtons)) return CC_MU;
-        if ((2 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons)) return CC_MU_P;
-        if ((3 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons)) return CC_MU_P_P;
-        if ((4 == nNonNeutrons) && (1 == nMuons) && (3 == nProtons)) return CC_MU_P_P_P;
-        if ((5 == nNonNeutrons) && (1 == nMuons) && (4 == nProtons)) return CC_MU_P_P_P_P;
-        if ((6 == nNonNeutrons) && (1 == nMuons) && (5 == nProtons)) return CC_MU_P_P_P_P_P;
-
-        if ((2 == nNonNeutrons) && (1 == nMuons) && (0 == nProtons) && (1 == nPiPlus)) return CC_MU_PIPLUS;
-        if ((3 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons) && (1 == nPiPlus)) return CC_MU_P_PIPLUS;
-        if ((4 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons) && (1 == nPiPlus)) return CC_MU_P_P_PIPLUS;
-        if ((5 == nNonNeutrons) && (1 == nMuons) && (3 == nProtons) && (1 == nPiPlus)) return CC_MU_P_P_P_PIPLUS;
-        if ((6 == nNonNeutrons) && (1 == nMuons) && (4 == nProtons) && (1 == nPiPlus)) return CC_MU_P_P_P_P_PIPLUS;
-        if ((7 == nNonNeutrons) && (1 == nMuons) && (5 == nProtons) && (1 == nPiPlus)) return CC_MU_P_P_P_P_P_PIPLUS;
-
-        if ((2 == nNonNeutrons) && (1 == nMuons) && (0 == nProtons) && (1 == nPhotons)) return CC_MU_PHOTON;
-        if ((3 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons) && (1 == nPhotons)) return CC_MU_P_PHOTON;
-        if ((4 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons) && (1 == nPhotons)) return CC_MU_P_P_PHOTON;
-        if ((5 == nNonNeutrons) && (1 == nMuons) && (3 == nProtons) && (1 == nPhotons)) return CC_MU_P_P_P_PHOTON;
-        if ((6 == nNonNeutrons) && (1 == nMuons) && (4 == nProtons) && (1 == nPhotons)) return CC_MU_P_P_P_P_PHOTON;
-        if ((7 == nNonNeutrons) && (1 == nMuons) && (5 == nProtons) && (1 == nPhotons)) return CC_MU_P_P_P_P_P_PHOTON;
-
-        if ((3 == nNonNeutrons) && (1 == nMuons) && (0 == nProtons) && (2 == nPhotons)) return CC_MU_PIZERO;
-        if ((4 == nNonNeutrons) && (1 == nMuons) && (1 == nProtons) && (2 == nPhotons)) return CC_MU_P_PIZERO;
-        if ((5 == nNonNeutrons) && (1 == nMuons) && (2 == nProtons) && (2 == nPhotons)) return CC_MU_P_P_PIZERO;
-        if ((6 == nNonNeutrons) && (1 == nMuons) && (3 == nProtons) && (2 == nPhotons)) return CC_MU_P_P_P_PIZERO;
-        if ((7 == nNonNeutrons) && (1 == nMuons) && (4 == nProtons) && (2 == nPhotons)) return CC_MU_P_P_P_P_PIZERO;
-        if ((8 == nNonNeutrons) && (1 == nMuons) && (5 == nProtons) && (2 == nPhotons)) return CC_MU_P_P_P_P_P_PIZERO;
-
-        if ((1 == nNonNeutrons) && (1 == nElectrons) && (0 == nProtons)) return CC_E;
-        if ((2 == nNonNeutrons) && (1 == nElectrons) && (1 == nProtons)) return CC_E_P;
-        if ((3 == nNonNeutrons) && (1 == nElectrons) && (2 == nProtons)) return CC_E_P_P;
-        if ((4 == nNonNeutrons) && (1 == nElectrons) && (3 == nProtons)) return CC_E_P_P_P;
-        if ((5 == nNonNeutrons) && (1 == nElectrons) && (4 == nProtons)) return CC_E_P_P_P_P;
-        if ((6 == nNonNeutrons) && (1 == nElectrons) && (5 == nProtons)) return CC_E_P_P_P_P_P;
-
-        if ((2 == nNonNeutrons) && (1 == nElectrons) && (0 == nProtons) && (1 == nPiPlus)) return CC_E_PIPLUS;
-        if ((3 == nNonNeutrons) && (1 == nElectrons) && (1 == nProtons) && (1 == nPiPlus)) return CC_E_P_PIPLUS;
-        if ((4 == nNonNeutrons) && (1 == nElectrons) && (2 == nProtons) && (1 == nPiPlus)) return CC_E_P_P_PIPLUS;
-        if ((5 == nNonNeutrons) && (1 == nElectrons) && (3 == nProtons) && (1 == nPiPlus)) return CC_E_P_P_P_PIPLUS;
-        if ((6 == nNonNeutrons) && (1 == nElectrons) && (4 == nProtons) && (1 == nPiPlus)) return CC_E_P_P_P_P_PIPLUS;
-        if ((7 == nNonNeutrons) && (1 == nElectrons) && (5 == nProtons) && (1 == nPiPlus)) return CC_E_P_P_P_P_P_PIPLUS;
-
-        if ((2 == nNonNeutrons) && (1 == nElectrons) && (0 == nProtons) && (1 == nPhotons)) return CC_E_PHOTON;
-        if ((3 == nNonNeutrons) && (1 == nElectrons) && (1 == nProtons) && (1 == nPhotons)) return CC_E_P_PHOTON;
-        if ((4 == nNonNeutrons) && (1 == nElectrons) && (2 == nProtons) && (1 == nPhotons)) return CC_E_P_P_PHOTON;
-        if ((5 == nNonNeutrons) && (1 == nElectrons) && (3 == nProtons) && (1 == nPhotons)) return CC_E_P_P_P_PHOTON;
-        if ((6 == nNonNeutrons) && (1 == nElectrons) && (4 == nProtons) && (1 == nPhotons)) return CC_E_P_P_P_P_PHOTON;
-        if ((7 == nNonNeutrons) && (1 == nElectrons) && (5 == nProtons) && (1 == nPhotons)) return CC_E_P_P_P_P_P_PHOTON;
-
-        if ((3 == nNonNeutrons) && (1 == nElectrons) && (0 == nProtons) && (2 == nPhotons)) return CC_E_PIZERO;
-        if ((4 == nNonNeutrons) && (1 == nElectrons) && (1 == nProtons) && (2 == nPhotons)) return CC_E_P_PIZERO;
-        if ((5 == nNonNeutrons) && (1 == nElectrons) && (2 == nProtons) && (2 == nPhotons)) return CC_E_P_P_PIZERO;
-        if ((6 == nNonNeutrons) && (1 == nElectrons) && (3 == nProtons) && (2 == nPhotons)) return CC_E_P_P_P_PIZERO;
-        if ((7 == nNonNeutrons) && (1 == nElectrons) && (4 == nProtons) && (2 == nPhotons)) return CC_E_P_P_P_P_PIZERO;
-        if ((8 == nNonNeutrons) && (1 == nElectrons) && (5 == nProtons) && (2 == nPhotons)) return CC_E_P_P_P_P_P_PIZERO;
-    }
-    else if (isNC)
-    {
-        if ((1 == nNonNeutrons) && (1 == nProtons)) return NC_P;
-        if ((2 == nNonNeutrons) && (2 == nProtons)) return NC_P_P;
-        if ((3 == nNonNeutrons) && (3 == nProtons)) return NC_P_P_P;
-        if ((4 == nNonNeutrons) && (4 == nProtons)) return NC_P_P_P_P;
-        if ((5 == nNonNeutrons) && (5 == nProtons)) return NC_P_P_P_P_P;
-
-        if ((1 == nNonNeutrons) && (0 == nProtons) && (1 == nPiPlus)) return NC_PIPLUS;
-        if ((2 == nNonNeutrons) && (1 == nProtons) && (1 == nPiPlus)) return NC_P_PIPLUS;
-        if ((3 == nNonNeutrons) && (2 == nProtons) && (1 == nPiPlus)) return NC_P_P_PIPLUS;
-        if ((4 == nNonNeutrons) && (3 == nProtons) && (1 == nPiPlus)) return NC_P_P_P_PIPLUS;
-        if ((5 == nNonNeutrons) && (4 == nProtons) && (1 == nPiPlus)) return NC_P_P_P_P_PIPLUS;
-        if ((6 == nNonNeutrons) && (5 == nProtons) && (1 == nPiPlus)) return NC_P_P_P_P_P_PIPLUS;
-
-        if ((1 == nNonNeutrons) && (0 == nProtons) && (1 == nPiMinus)) return NC_PIMINUS;
-        if ((2 == nNonNeutrons) && (1 == nProtons) && (1 == nPiMinus)) return NC_P_PIMINUS;
-        if ((3 == nNonNeutrons) && (2 == nProtons) && (1 == nPiMinus)) return NC_P_P_PIMINUS;
-        if ((4 == nNonNeutrons) && (3 == nProtons) && (1 == nPiMinus)) return NC_P_P_P_PIMINUS;
-        if ((5 == nNonNeutrons) && (4 == nProtons) && (1 == nPiMinus)) return NC_P_P_P_P_PIMINUS;
-        if ((6 == nNonNeutrons) && (5 == nProtons) && (1 == nPiMinus)) return NC_P_P_P_P_P_PIMINUS;
-
-        if ((1 == nNonNeutrons) && (0 == nProtons) && (1 == nPhotons)) return NC_PHOTON;
-        if ((2 == nNonNeutrons) && (1 == nProtons) && (1 == nPhotons)) return NC_P_PHOTON;
-        if ((3 == nNonNeutrons) && (2 == nProtons) && (1 == nPhotons)) return NC_P_P_PHOTON;
-        if ((4 == nNonNeutrons) && (3 == nProtons) && (1 == nPhotons)) return NC_P_P_P_PHOTON;
-        if ((5 == nNonNeutrons) && (4 == nProtons) && (1 == nPhotons)) return NC_P_P_P_P_PHOTON;
-        if ((6 == nNonNeutrons) && (5 == nProtons) && (1 == nPhotons)) return NC_P_P_P_P_P_PHOTON;
-
-        if ((2 == nNonNeutrons) && (0 == nProtons) && (2 == nPhotons)) return NC_PIZERO;
-        if ((3 == nNonNeutrons) && (1 == nProtons) && (2 == nPhotons)) return NC_P_PIZERO;
-        if ((4 == nNonNeutrons) && (2 == nProtons) && (2 == nPhotons)) return NC_P_P_PIZERO;
-        if ((5 == nNonNeutrons) && (3 == nProtons) && (2 == nPhotons)) return NC_P_P_P_PIZERO;
-        if ((6 == nNonNeutrons) && (4 == nProtons) && (2 == nPhotons)) return NC_P_P_P_P_PIZERO;
-        if ((7 == nNonNeutrons) && (5 == nProtons) && (2 == nPhotons)) return NC_P_P_P_P_P_PIZERO;
-    }
-
-    return OTHER_INTERACTION;
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
 ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryList &simpleMCPrimaryList, const Parameters &parameters)
 {
     // ATTN: Relies on fact that primary list is sorted by number of good true hits
@@ -1097,6 +889,152 @@ ExpectedPrimary GetExpectedPrimary(const int primaryId, const SimpleMCPrimaryLis
     }
 
     return OTHER_PRIMARY;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+float GetTrueAngle(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters, const InteractionType interactionType, const ExpectedPrimary expectedPrimary)
+{
+    if (CCQEL_MU_P == interactionType)
+    {
+        const SimpleMCPrimary *pPrimary0(nullptr);
+        const SimpleMCPrimary *pPrimary1(nullptr);
+
+        for (SimpleMCPrimaryList::const_iterator pIter2 = simpleMCEvent.m_mcPrimaryList.begin(); pIter2 != simpleMCEvent.m_mcPrimaryList.end(); ++pIter2)
+        {
+            const SimpleMCPrimary &thisSimpleMCPrimary(*pIter2);
+            const ExpectedPrimary thisExpectedPrimary(GetExpectedPrimary(thisSimpleMCPrimary.m_id, simpleMCEvent.m_mcPrimaryList, parameters));
+            if (thisExpectedPrimary == MUON) pPrimary0 = &thisSimpleMCPrimary;
+            if (thisExpectedPrimary == PROTON1) pPrimary1 = &thisSimpleMCPrimary;
+        }
+
+        if (pPrimary0 && pPrimary1)
+        {
+            const float pTot0(std::sqrt(pPrimary0->m_momentum.m_x * pPrimary0->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary0->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary0->m_momentum.m_z));
+            const float pTot1(std::sqrt(pPrimary1->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary1->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary1->m_momentum.m_z * pPrimary1->m_momentum.m_z));
+            return std::acos((pPrimary0->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary1->m_momentum.m_z) / (pTot0 * pTot1));
+        }
+    }
+    else if (CCRES_MU_P_PIZERO == interactionType)
+    {
+        const SimpleMCPrimary *pPrimary0(nullptr);
+        const SimpleMCPrimary *pPrimary1(nullptr);
+
+        for (SimpleMCPrimaryList::const_iterator pIter2 = simpleMCEvent.m_mcPrimaryList.begin(); pIter2 != simpleMCEvent.m_mcPrimaryList.end(); ++pIter2)
+        {
+            const SimpleMCPrimary &thisSimpleMCPrimary(*pIter2);
+            const ExpectedPrimary thisExpectedPrimary(GetExpectedPrimary(thisSimpleMCPrimary.m_id, simpleMCEvent.m_mcPrimaryList, parameters));
+            if (thisExpectedPrimary == PHOTON1) pPrimary0 = &thisSimpleMCPrimary;
+            if (thisExpectedPrimary == PHOTON2) pPrimary1 = &thisSimpleMCPrimary;
+        }
+
+        if (pPrimary0 && pPrimary1)
+        {
+            const float pTot0(std::sqrt(pPrimary0->m_momentum.m_x * pPrimary0->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary0->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary0->m_momentum.m_z));
+            const float pTot1(std::sqrt(pPrimary1->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary1->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary1->m_momentum.m_z * pPrimary1->m_momentum.m_z));
+            return std::acos((pPrimary0->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary1->m_momentum.m_z) / (pTot0 * pTot1));
+        }
+    }
+    else if (CCRES_MU_P_PIPLUS == interactionType)
+    {
+        const SimpleMCPrimary *pPrimary0(nullptr);
+        const SimpleMCPrimary *pPrimary1(nullptr);
+        const SimpleMCPrimary *pPrimary2(nullptr);
+
+        for (SimpleMCPrimaryList::const_iterator pIter2 = simpleMCEvent.m_mcPrimaryList.begin(); pIter2 != simpleMCEvent.m_mcPrimaryList.end(); ++pIter2)
+        {
+            const SimpleMCPrimary &thisSimpleMCPrimary(*pIter2);
+            const ExpectedPrimary thisExpectedPrimary(GetExpectedPrimary(thisSimpleMCPrimary.m_id, simpleMCEvent.m_mcPrimaryList, parameters));
+            if (thisExpectedPrimary == MUON) pPrimary0 = &thisSimpleMCPrimary;
+            if (thisExpectedPrimary == PROTON1) pPrimary1 = &thisSimpleMCPrimary;
+            if (thisExpectedPrimary == PIPLUS) pPrimary2 = &thisSimpleMCPrimary;
+        }
+
+        if (pPrimary0 && pPrimary1 && pPrimary2)
+        {
+            const float pTot0(std::sqrt(pPrimary0->m_momentum.m_x * pPrimary0->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary0->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary0->m_momentum.m_z));
+            const float pTot1(std::sqrt(pPrimary1->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary1->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary1->m_momentum.m_z * pPrimary1->m_momentum.m_z));
+            const float pTot2(std::sqrt(pPrimary2->m_momentum.m_x * pPrimary2->m_momentum.m_x + pPrimary2->m_momentum.m_y * pPrimary2->m_momentum.m_y + pPrimary2->m_momentum.m_z * pPrimary2->m_momentum.m_z));
+
+            const float angle01(std::acos((pPrimary0->m_momentum.m_x * pPrimary1->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary1->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary1->m_momentum.m_z) / (pTot0 * pTot1)));
+            const float angle02(std::acos((pPrimary0->m_momentum.m_x * pPrimary2->m_momentum.m_x + pPrimary0->m_momentum.m_y * pPrimary2->m_momentum.m_y + pPrimary0->m_momentum.m_z * pPrimary2->m_momentum.m_z) / (pTot0 * pTot2)));
+            const float angle12(std::acos((pPrimary1->m_momentum.m_x * pPrimary2->m_momentum.m_x + pPrimary1->m_momentum.m_y * pPrimary2->m_momentum.m_y + pPrimary1->m_momentum.m_z * pPrimary2->m_momentum.m_z) / (pTot1 * pTot2)));
+
+            float chosenAngle(-1.f);
+            if (MUON == expectedPrimary) chosenAngle = std::min(angle01, angle02);
+            else if (PROTON1 == expectedPrimary) chosenAngle = std::min(angle01, angle12);
+            else if (PIPLUS == expectedPrimary) chosenAngle = std::min(angle02, angle12);
+
+            return chosenAngle;
+        }
+    }
+
+    return std::numeric_limits<float>::max();
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void GetVtxShwDistance(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters, const InteractionType interactionType,
+    const PfoMatchingMap &pfoMatchingMap, EventResult &eventResult)
+{
+    const bool isElectronShower((interactionType == CCQEL_E) || (interactionType == CCQEL_E_P) || (interactionType == CCQEL_E_P_P) ||
+        (interactionType == CCRES_E) || (interactionType == CCRES_E_P) || (interactionType == CCRES_E_P_P));
+    const bool isPhotonShower((interactionType == CCRES_MU_PHOTON) || (interactionType == CCRES_MU_P_PHOTON) || (interactionType == CCRES_MU_P_P_PHOTON) ||
+        (interactionType == NCRES_PHOTON) || (interactionType == NCRES_P_PHOTON) || (interactionType == NCRES_P_P_PHOTON));
+
+    if (!isElectronShower && !isPhotonShower)
+        return;
+
+    SimpleMCPrimary showerMCPrimary;
+    bool trueShowerVertexFound(false);
+    SimpleThreeVector trueShowerVertex;
+
+    for (SimpleMCPrimaryList::const_iterator pIter = simpleMCEvent.m_mcPrimaryList.begin(); pIter != simpleMCEvent.m_mcPrimaryList.end(); ++pIter)
+    {
+        showerMCPrimary = (*pIter);
+        const ExpectedPrimary expectedPrimary(GetExpectedPrimary(showerMCPrimary.m_id, simpleMCEvent.m_mcPrimaryList, parameters));
+
+        if (!IsGoodMCPrimary(showerMCPrimary, parameters) && (2112 != showerMCPrimary.m_pdgCode))
+            continue;
+
+        if ((isElectronShower && (ELECTRON == expectedPrimary)) || (isPhotonShower && (PHOTON1 == expectedPrimary)))
+        {
+            trueShowerVertex = (ELECTRON == expectedPrimary) ? showerMCPrimary.m_vertex : showerMCPrimary.m_endpoint;
+            trueShowerVertexFound = true;
+            break;
+        }
+    }
+
+    float bestCompleteness(0.f);
+    bool recoShowerVertexFound(false);
+    SimpleThreeVector recoShowerVertex;
+
+    for (SimpleMatchedPfoList::const_iterator mIter = showerMCPrimary.m_matchedPfoList.begin(); mIter != showerMCPrimary.m_matchedPfoList.end(); ++mIter)
+    {
+        const SimpleMatchedPfo &simpleMatchedPfo(*mIter);
+
+        if (pfoMatchingMap.count(simpleMatchedPfo.m_id) && (showerMCPrimary.m_id == pfoMatchingMap.at(simpleMatchedPfo.m_id).m_matchedPrimaryId))
+        {
+            if (!IsGoodMatch(showerMCPrimary, simpleMatchedPfo, parameters))
+                continue;
+
+            const float completeness((showerMCPrimary.m_nMCHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(showerMCPrimary.m_nMCHitsTotal) : 0);
+
+            if (completeness > bestCompleteness)
+            {
+                recoShowerVertex = simpleMatchedPfo.m_vertex;
+                recoShowerVertexFound = true;
+            }
+        }
+    }
+
+    if (trueShowerVertexFound && recoShowerVertexFound)
+    {
+        const SimpleThreeVector trueVector(trueShowerVertex - simpleMCEvent.m_mcNeutrinoVtx);
+        const SimpleThreeVector recoVector(recoShowerVertex - simpleMCEvent.m_recoNeutrinoVtx);
+        eventResult.m_trueVtxShwDistance = std::sqrt(trueVector.m_x * trueVector.m_x + trueVector.m_y * trueVector.m_y + trueVector.m_z * trueVector.m_z);
+        eventResult.m_recoVtxShwDistance = std::sqrt(recoVector.m_x * recoVector.m_x + recoVector.m_y * recoVector.m_y + recoVector.m_z * recoVector.m_z);
+    }
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -1320,11 +1258,38 @@ void FillEventHistogramCollection(const std::string &histPrefix, const bool isCo
         eventHistogramCollection.m_hNRecoNeutrinos->GetYaxis()->SetTitle("Number of Events");
     }
 
+    if (!eventHistogramCollection.m_hTrueVtxShwDistance)
+    {
+        eventHistogramCollection.m_hTrueVtxShwDistance = new TH1F((histPrefix + "TrueVtxShwDistance").c_str(), "", 200, 0., 1000.);
+        eventHistogramCollection.m_hTrueVtxShwDistance->GetXaxis()->SetRangeUser(0., +100.);
+        eventHistogramCollection.m_hTrueVtxShwDistance->GetXaxis()->SetTitle("True Vertex to Shower Distance");
+        eventHistogramCollection.m_hTrueVtxShwDistance->GetYaxis()->SetTitle("Number of Events");
+    }
+
+    if (!eventHistogramCollection.m_hRecoVtxShwDistance)
+    {
+        eventHistogramCollection.m_hRecoVtxShwDistance = new TH1F((histPrefix + "RecoVtxShwDistance").c_str(), "", 200, 0., 1000.);
+        eventHistogramCollection.m_hRecoVtxShwDistance->GetXaxis()->SetRangeUser(0., +100.);
+        eventHistogramCollection.m_hRecoVtxShwDistance->GetXaxis()->SetTitle("Reco Vertex to Shower Distance");
+        eventHistogramCollection.m_hRecoVtxShwDistance->GetYaxis()->SetTitle("Number of Events");
+    }
+
+    if (!eventHistogramCollection.m_hVtxShwResolution)
+    {
+        eventHistogramCollection.m_hVtxShwResolution = new TH1F((histPrefix + "VtxShwResolution").c_str(), "", 3200, -200., 200.);
+        eventHistogramCollection.m_hVtxShwResolution->GetXaxis()->SetTitle("Vertex to Shower Distance Resolution");
+        eventHistogramCollection.m_hVtxShwResolution->GetYaxis()->SetTitle("Number of Events");
+    }
+
     eventHistogramCollection.m_hVtxDeltaX->Fill(eventResult.m_vertexOffset.m_x);
     eventHistogramCollection.m_hVtxDeltaY->Fill(eventResult.m_vertexOffset.m_y);
     eventHistogramCollection.m_hVtxDeltaZ->Fill(eventResult.m_vertexOffset.m_z);
     eventHistogramCollection.m_hVtxDeltaR->Fill(std::sqrt(eventResult.m_vertexOffset.m_x * eventResult.m_vertexOffset.m_x + eventResult.m_vertexOffset.m_y * eventResult.m_vertexOffset.m_y + eventResult.m_vertexOffset.m_z * eventResult.m_vertexOffset.m_z));
     eventHistogramCollection.m_hNRecoNeutrinos->Fill(eventResult.m_nRecoNeutrinos);
+
+    eventHistogramCollection.m_hTrueVtxShwDistance->Fill(eventResult.m_trueVtxShwDistance);
+    eventHistogramCollection.m_hRecoVtxShwDistance->Fill(eventResult.m_recoVtxShwDistance);
+    eventHistogramCollection.m_hVtxShwResolution->Fill(eventResult.m_recoVtxShwDistance - eventResult.m_trueVtxShwDistance);
 
     eventHistogramCollection.m_hNeutrinoPurity->Fill(eventResult.m_neutrinoPurity);
     eventHistogramCollection.m_hCosmicFraction->Fill(1.f - eventResult.m_neutrinoPurity);
