@@ -80,7 +80,7 @@ if(PANDORA_MONITORING)
     include_directories(${ROOT_INCLUDE_DIRS})
     target_link_libraries(PandoraInterface ${ROOT_LIBRARIES})
 endif()
-target_link_libraries(PandoraInterface ${PROJECT_NAME})
+#target_link_libraries(PandoraInterface ${PROJECT_NAME})
 
 # - Optional documents
 option(LArReco_BUILD_DOCS "Build documentation for ${PROJECT_NAME}" OFF)
@@ -92,7 +92,7 @@ endif()
 # Install products
 
 # - library
-install(TARGETS ${PROJECT_NAME} DESTINATION lib COMPONENT Runtime)
+#install(TARGETS ${PROJECT_NAME} DESTINATION lib COMPONENT Runtime)
 
 # - headers
 install(DIRECTORY include/ DESTINATION include COMPONENT Development FILES_MATCHING PATTERN "*.h")
