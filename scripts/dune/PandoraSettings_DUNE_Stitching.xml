@@ -12,10 +12,11 @@
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArStitching">
         <StitchingTools>
-            <tool type = "LArStitchingObjectCreation"><RecreateTwoDContent>true</RecreateTwoDContent></tool>
+            <tool type = "LArStitchingObjectCreation"></tool>
             <tool type = "LArStitchingCosmicRayMerging"><ThreeDStitchingMode>true</ThreeDStitchingMode></tool>
             <tool type = "LArStitchingCosmicRayMerging"><ThreeDStitchingMode>false</ThreeDStitchingMode></tool>
         </StitchingTools>
+        <RecreateTwoDContent>true</RecreateTwoDContent>
         <NewPfoListName>RecreatedPfos</NewPfoListName>
         <NewVertexListName>RecreatedVertices</NewVertexListName>
         <NewClusterListName>RecreatedClusters</NewClusterListName>
