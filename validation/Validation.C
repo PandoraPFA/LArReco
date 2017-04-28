@@ -1154,7 +1154,7 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
                 ++nCorrectEvents;
 
                 if (!parameters.m_eventFileName.empty())
-                    eventFile << "Correct event: fileId: " << eIter->m_fileIdentifier << ", eventNumber: " << eIter->m_eventNumber << ", nuance: " << eIter->m_mcNeutrinoNuance << std::endl;
+                    eventFile << "Correct event: fileId: " << eIter->m_fileIdentifier << ", eventNumber: " << eIter->m_eventNumber << ", nuance: " << eIter->m_mcNeutrinoNuance << ", " << ToString(interactionType) << std::endl;
             }
         }
 
