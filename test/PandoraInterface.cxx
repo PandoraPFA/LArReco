@@ -7,6 +7,7 @@
  */
 
 #include "Api/PandoraApi.h"
+#include "Helpers/XmlHelper.h"
 #include "Xml/tinyxml.h"
 
 #include "larpandoracontent/LArContent.h"
