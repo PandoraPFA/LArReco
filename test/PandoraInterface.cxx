@@ -214,7 +214,9 @@ void CreatePrimaryPandoraInstance(const std::string &configFileName, const LArDr
             new lar_content::LArRotationalTransformationPlugin(driftVolume.GetWireAngleU(), driftVolume.GetWireAngleV(), driftVolume.GetSigmaUVZ())));
 
         MultiPandoraApi::SetVolumeInfo(pPrimaryPandora, new VolumeInfo(0, "driftVolume",
-            CartesianVector(driftVolume.GetCenterX(), driftVolume.GetCenterY(), driftVolume.GetCenterZ()), driftVolume.IsPositiveDrift()));
+            driftVolume.GetCenterX(), driftVolume.GetCenterY(), driftVolume.GetCenterZ(),
+            driftVolume.GetWidthX(), driftVolume.GetWidthY(), driftVolume.GetWidthZ(),
+            driftVolume.IsPositiveDrift()));
     }
 }
 
@@ -240,7 +242,9 @@ void CreateDaughterPandoraInstances(const std::string &configFileName, const LAr
 
         MultiPandoraApi::AddDaughterPandoraInstance(pPrimaryPandora, pPandora);
         MultiPandoraApi::SetVolumeInfo(pPandora, new VolumeInfo(driftVolume.GetVolumeID(), "driftVolume_" + volumeIdString.str(),
-            CartesianVector(driftVolume.GetCenterX(), driftVolume.GetCenterY(), driftVolume.GetCenterZ()), driftVolume.IsPositiveDrift()));
+            driftVolume.GetCenterX(), driftVolume.GetCenterY(), driftVolume.GetCenterZ(),
+            driftVolume.GetWidthX(), driftVolume.GetWidthY(), driftVolume.GetWidthZ(),
+            driftVolume.IsPositiveDrift()));
 
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
             new lar_content::LArPseudoLayerPlugin(driftVolume.GetWirePitchU(), driftVolume.GetWirePitchV(), driftVolume.GetWirePitchW())));
