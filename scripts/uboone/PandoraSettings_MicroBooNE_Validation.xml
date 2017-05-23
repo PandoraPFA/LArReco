@@ -238,12 +238,22 @@
                 <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
                 <EnableCrossingCandidates>true</EnableCrossingCandidates>
             </algorithm>
-            <algorithm type = "LArEnergyKickVertexSelection">
+            <algorithm type = "LArSvmVertexSelection">
                 <InputCaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</InputCaloHitListNames>
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
                 <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
                 <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-                <BeamMode>true</BeamMode>
+                <SvmFileName></SvmFileName>
+                <RegionSvmName>VertexSelectionRegion</RegionSvmName>
+                <VertexSvmName>VertexSelectionVertex</VertexSvmName>
+                <FeatureTools>
+                    <tool type = "LArEnergyKickFeature"/>
+                    <tool type = "LArLocalAsymmetryFeature"/>
+                    <tool type = "LArGlobalAsymmetryFeature"/>
+                    <tool type = "LArShowerAsymmetryFeature"/>
+                    <tool type = "LArRPhiFeature">
+                    </tool>
+                </FeatureTools>
             </algorithm>
             <algorithm type = "LArVertexSplitting">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
