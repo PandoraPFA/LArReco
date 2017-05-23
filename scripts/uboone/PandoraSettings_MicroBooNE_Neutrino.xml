@@ -258,8 +258,7 @@
                     <tool type = "LArLocalAsymmetryFeature"/>
                     <tool type = "LArGlobalAsymmetryFeature"/>
                     <tool type = "LArShowerAsymmetryFeature"/>
-                    <tool type = "LArRPhiFeature">
-                    </tool>
+                    <tool type = "LArRPhiFeature"/>
                 </FeatureTools>
             </algorithm>
             <algorithm type = "LArVertexSplitting">
