@@ -245,12 +245,21 @@
                 <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
                 <EnableCrossingCandidates>true</EnableCrossingCandidates>
             </algorithm>
-            <algorithm type = "LArEnergyKickVertexSelection">
+            <algorithm type = "LArSvmVertexSelection">
                 <InputCaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</InputCaloHitListNames>
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
                 <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
                 <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-                <BeamMode>true</BeamMode>
+                <SvmFileName>/r05/dune/MachineLearningData/SvmVertexSelection_uboone_mcc7.xml</SvmFileName>
+                <RegionSvmName>VertexSelectionRegion</RegionSvmName>
+                <VertexSvmName>VertexSelectionVertex</VertexSvmName>
+                <FeatureTools>
+                    <tool type = "LArEnergyKickFeature"/>
+                    <tool type = "LArLocalAsymmetryFeature"/>
+                    <tool type = "LArGlobalAsymmetryFeature"/>
+                    <tool type = "LArShowerAsymmetryFeature"/>
+                    <tool type = "LArRPhiFeature"/>
+                </FeatureTools>
             </algorithm>
             <algorithm type = "LArVertexSplitting">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
