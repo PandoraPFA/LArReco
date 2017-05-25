@@ -11,7 +11,7 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-        <EventFileName>/r05/dune/marshall/validation/dune10kt/v06_19_00/sample0/pndr/dune10kt_test_eventsVOLUMEID_100.pndr</EventFileName>
+        <EventFileName>/r05/dune/mcproduction_dune10kt_v06_26_00/pndr/dune10kt_test_events_0.pndr</EventFileName>
         <ShouldReadEvents>true</ShouldReadEvents>
         <SkipToEvent>0</SkipToEvent>
     </algorithm>
