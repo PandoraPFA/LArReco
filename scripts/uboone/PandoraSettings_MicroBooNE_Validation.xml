@@ -122,6 +122,7 @@
             </algorithm>
             <algorithm type = "LArClusterCharacterisation">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+                <OverwriteExistingId>true</OverwriteExistingId>
             </algorithm>
             <algorithm type = "LArShowerGrowing">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
@@ -238,6 +239,9 @@
                 <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
                 <EnableCrossingCandidates>true</EnableCrossingCandidates>
             </algorithm>
+            <algorithm type = "LArClusterCharacterisation">
+                <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+            </algorithm>
             <algorithm type = "LArSvmVertexSelection">
                 <InputCaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</InputCaloHitListNames>
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
@@ -253,6 +257,10 @@
                     <tool type = "LArShowerAsymmetryFeature"/>
                     <tool type = "LArRPhiFeature"/>
                 </FeatureTools>
+            </algorithm>
+            <algorithm type = "LArClusterCharacterisation">
+                <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+                <ZeroMode>true</ZeroMode>
             </algorithm>
             <algorithm type = "LArVertexSplitting">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
