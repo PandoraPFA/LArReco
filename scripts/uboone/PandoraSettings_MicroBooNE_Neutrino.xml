@@ -246,7 +246,7 @@
                 <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
                 <EnableCrossingCandidates>true</EnableCrossingCandidates>
             </algorithm>
-            <algorithm type = "LArClusterCharacterisation">
+            <algorithm type = "LArCutClusterCharacterisation">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
             </algorithm>
             <algorithm type = "LArSvmVertexSelection">
@@ -265,7 +265,7 @@
                     <tool type = "LArRPhiFeature"/>
                 </FeatureTools>
             </algorithm>
-            <algorithm type = "LArClusterCharacterisation">
+            <algorithm type = "LArCutClusterCharacterisation">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
                 <ZeroMode>true</ZeroMode>
             </algorithm>

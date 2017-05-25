@@ -115,15 +115,17 @@
             </algorithm>
 
             <!-- Shower reconstruction -->
-            <algorithm type = "LArPfoCharacterisation">
+            <algorithm type = "LArCutPfoCharacterisation">
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+                <MaxShowerLengthCut>6000.</MaxShowerLengthCut>
             </algorithm>
             <algorithm type = "LArListDeletion">
                 <PfoListNames>ShowerParticles3D</PfoListNames>
             </algorithm>
-            <algorithm type = "LArClusterCharacterisation">
+            <algorithm type = "LArCutClusterCharacterisation">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+                <MaxShowerLengthCut>6000.</MaxShowerLengthCut>
             </algorithm>
             <algorithm type = "LArShowerGrowing">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
@@ -202,10 +204,11 @@
         </ThreeDAlgorithms>
 
         <ThreeDHitAlgorithms>
-            <algorithm type = "LArPfoCharacterisation">
+            <algorithm type = "LArCutPfoCharacterisation">
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
                 <PostBranchAddition>true</PostBranchAddition>
+                <MaxShowerLengthCut>6000.</MaxShowerLengthCut>
             </algorithm>
             <algorithm type = "LArThreeDHitCreation">
                 <InputPfoListName>TrackParticles3D</InputPfoListName>
