@@ -120,14 +120,14 @@
             </algorithm>
 
             <!-- Shower reconstruction -->
-            <algorithm type = "LArPfoCharacterisation">
+            <algorithm type = "LArCutPfoCharacterisation">
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
             </algorithm>
             <algorithm type = "LArListDeletion">
                 <PfoListNames>ShowerParticles3D</PfoListNames>
             </algorithm>
-            <algorithm type = "LArClusterCharacterisation">
+            <algorithm type = "LArCutClusterCharacterisation">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
             </algorithm>
             <algorithm type = "LArShowerGrowing">
@@ -207,7 +207,7 @@
         </ThreeDAlgorithms>
 
         <ThreeDHitAlgorithms>
-            <algorithm type = "LArPfoCharacterisation">
+            <algorithm type = "LArCutPfoCharacterisation">
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
                 <PostBranchAddition>true</PostBranchAddition>
