@@ -327,6 +327,20 @@
     </algorithm>
 
     <!-- Decorate output particles -->
+    <algorithm type = "LArSVMPfoCharacterisation">
+      <TrackPfoListName>AllTrackParticles3D</TrackPfoListName>
+      <ShowerPfoListName>AllShowerParticles3D</ShowerPfoListName>
+      <VertexListName>AllNeutrinoVertices3D</VertexListName>
+      <RatioVariables>true</RatioVariables>
+      <SVMFileName>/var/clus/usera/escudero/LArSVM/LArSVM/SVM_model_uboone_pfoII_wo_failures.xml</SVMFileName>
+      <SVMName>FinalSVM</SVMName>
+      <ProduceSamplesMode>false</ProduceSamplesMode>
+      <FeatureTools>
+        <tool type = "LArLinearFitFeatureTool"/>
+	<tool type = "LArShowerFitFeatureTool"/>
+	<tool type = "LArVertexDistanceFeatureTool"/>
+      </FeatureTools>
+    </algorithm>
     <algorithm type = "LArTrackParticleBuilding">
         <PfoListName>AllTrackParticles3D</PfoListName>
         <VertexListName>AllDaughterVertices3D</VertexListName>
