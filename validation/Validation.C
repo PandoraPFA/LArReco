@@ -71,7 +71,7 @@ void Validation(const std::string &inputFiles, const Parameters &parameters, con
         PfoMatchingMap pfoMatchingMap;
         FinalisePfoMatching(simpleMCEvent, parameters, pfoMatchingMap);
 
-        if (parameters.m_displayMatchedEvents)
+	 if (parameters.m_displayMatchedEvents)
             DisplaySimpleMCEventMatches(simpleMCEvent, pfoMatchingMap, parameters);
 
         CountPfoMatches(simpleMCEvent, pfoMatchingMap, parameters, interactionCountingMap, interactionEventResultMap);
@@ -91,7 +91,6 @@ void WriteHitCountingMap(const std::string inputFiles, const std::string outputF
 
     HitCountingMap hitCountingMap;
     int nEvents(0);
-
     for (int iEntry = 0; iEntry < pTChain->GetEntries(); )
     {
         SimpleMCEvent simpleMCEvent;
@@ -452,6 +451,9 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
         const SimpleMCPrimary &simpleMCPrimary(*pIter);
         const bool hasMatch(HasMatch(simpleMCPrimary, pfoMatchingMap, parameters));
         const bool isTargetPrimary(IsGoodMCPrimary(simpleMCPrimary, parameters) && (2112 != simpleMCPrimary.m_pdgCode));
+        unsigned int absMCPdgCode(std::abs(simpleMCPrimary.m_pdgCode));                                                    
+        bool isTrackLike(((absMCPdgCode == 22 || absMCPdgCode == 11)) ? false : true);                                         
+        bool isMisID(false);                                                           
 
         if (!hasMatch && !isTargetPrimary)
             continue;
@@ -460,7 +462,7 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
                   << ", PDG " << simpleMCPrimary.m_pdgCode << ", nMCHits " << simpleMCPrimary.m_nMCHitsTotal
                   << " (" << simpleMCPrimary.m_nMCHitsU << ", " << simpleMCPrimary.m_nMCHitsV << ", " << simpleMCPrimary.m_nMCHitsW << "),"
                   << " [nGood " << simpleMCPrimary.m_nGoodMCHitsTotal << " (" << simpleMCPrimary.m_nGoodMCHitsU << ", " << simpleMCPrimary.m_nGoodMCHitsV
-                  << ", " << simpleMCPrimary.m_nGoodMCHitsW << ")]" << std::endl;
+                  << ", " << simpleMCPrimary.m_nGoodMCHitsW << ")]" << " and isTrackLike?" << isTrackLike << std::endl;
 
         if (2112 != simpleMCPrimary.m_pdgCode)
             isCalculable = true;
@@ -474,16 +476,20 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const PfoMa
             if (pfoMatchingMap.count(simpleMatchedPfo.m_id) && (simpleMCPrimary.m_id == pfoMatchingMap.at(simpleMatchedPfo.m_id).m_matchedPrimaryId))
             {
                 const bool isGoodMatch(IsGoodMatch(simpleMCPrimary, simpleMatchedPfo, parameters));
-
+		
                 if (isGoodMatch) ++nMatches;
                 std::cout << "-" << (!isGoodMatch ? "(Below threshold) " : "") << "MatchedPfo " << simpleMatchedPfo.m_id;
+
+		unsigned int absPfoPdgCode(std::abs(simpleMatchedPfo.m_pdgCode));                                                                       
+                bool isPfoTrackLike(((absPfoPdgCode == 22 || absPfoPdgCode == 11)) ? false : true);       
+		isMisID = ((isTrackLike!=isPfoTrackLike) ? true : false);
 
                 if (simpleMatchedPfo.m_parentId >= 0) std::cout << ", ParentPfo " << simpleMatchedPfo.m_parentId;
 
                 std::cout << ", PDG " << simpleMatchedPfo.m_pdgCode << ", nMatchedHits " << simpleMatchedPfo.m_nMatchedHitsTotal
                           << " (" << simpleMatchedPfo.m_nMatchedHitsU << ", " << simpleMatchedPfo.m_nMatchedHitsV << ", " << simpleMatchedPfo.m_nMatchedHitsW << ")"
                           << ", nPfoHits " << simpleMatchedPfo.m_nPfoHitsTotal
-                          << " (" << simpleMatchedPfo.m_nPfoHitsU << ", " << simpleMatchedPfo.m_nPfoHitsV << ", " << simpleMatchedPfo.m_nPfoHitsW << ")" << std::endl;
+                          << " (" << simpleMatchedPfo.m_nPfoHitsU << ", " << simpleMatchedPfo.m_nPfoHitsV << ", " << simpleMatchedPfo.m_nPfoHitsW << ")" << " and isPfoTrackLike^" << isPfoTrackLike << " and isMisID? " << isMisID << std::endl;
             }
         }
 
@@ -539,6 +545,9 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
         ++countingDetails.m_nTotal;
         unsigned int nMatches(0), nBestMatchedHits(0), nBestRecoHits(0);
         float bestMatchPurity(0.f), bestCompleteness(0.f);
+        unsigned int absMCPdgCode(std::abs(simpleMCPrimary.m_pdgCode));
+	bool isTrackLike(((absMCPdgCode == 22 || absMCPdgCode == 11)) ? false : true);
+	bool isMisID(false);
 
         for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
         {
@@ -553,13 +562,17 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
                 const float purity((simpleMatchedPfo.m_nPfoHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMatchedPfo.m_nPfoHitsTotal) : 0);
                 const float completeness((simpleMCPrimary.m_nMCHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMCPrimary.m_nMCHitsTotal) : 0);
 
+		unsigned int absPfoPdgCode(std::abs(simpleMatchedPfo.m_pdgCode));
+		bool isPfoTrackLike(((absPfoPdgCode == 22 || absPfoPdgCode == 11)) ? false : true);
+
                 if (completeness > bestCompleteness)
                 {
                     bestMatchPurity = purity;
                     bestCompleteness = completeness;
                     nBestMatchedHits = simpleMatchedPfo.m_nMatchedHitsTotal;
                     nBestRecoHits = simpleMatchedPfo.m_nPfoHitsTotal;
-                }
+		    isMisID = ((isTrackLike!=isPfoTrackLike) ? true : false);
+		}
             }
         }
 
@@ -567,6 +580,9 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
         else if (1 == nMatches) ++countingDetails.m_nMatch1;
         else if (2 == nMatches) ++countingDetails.m_nMatch2;
         else ++countingDetails.m_nMatch3Plus;
+
+	if(isMisID)
+	  ++countingDetails.m_misID;
 
         primaryResult.m_nPfoMatches = nMatches;
         primaryResult.m_bestCompleteness = bestCompleteness;
@@ -579,6 +595,9 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
 
         primaryResult.m_nBestMatchedHits = nBestMatchedHits;
         primaryResult.m_nBestRecoHits = nBestRecoHits;
+
+	primaryResult.m_isTrackLike = isTrackLike;
+	primaryResult.m_isMisID = isMisID;
     }
 
     if ((0 < simpleMCEvent.m_nRecoNeutrinos) && (1 == simpleMCEvent.m_nMCNeutrinos))
@@ -1074,7 +1093,8 @@ void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCoun
                       << "%|, |1: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch1) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
                       << "%|, |2: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch2) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
                       << "%|, |3+: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch3Plus) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
-                      << "%|" << std::endl;
+                      << "%|, misID " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_misID) / static_cast<float>(countingDetails.m_nTotal-countingDetails.m_nMatch0) : 0.f) <<  "%" << std::endl;
+					   
 
             if (!parameters.m_mapFileName.empty())
             {
@@ -1083,7 +1103,7 @@ void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCoun
                         << "%|, |1: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch1) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
                         << "%|, |2: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch2) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
                         << "%|, |3+: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch3Plus) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
-                        << "%|" << std::endl;
+			<< "%|, misID: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_misID) / static_cast<float>(countingDetails.m_nTotal-countingDetails.m_nMatch0) : 0.f) <<  "%" << std::endl;
             }
         }
     }
@@ -1111,12 +1131,14 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
         const InteractionType interactionType(iter->first);
         const EventResultList &eventResultList(iter->second);
 
-        unsigned int nCorrectEvents(0);
-
+	unsigned int nCorrectEvents(0);
         for (EventResultList::const_iterator eIter = eventResultList.begin(), eIterEnd = eventResultList.end(); eIter != eIterEnd; ++eIter)
         {
+
+	  unsigned int  nTracksMisID(0), nShowersMisID(0), nTracks(0), nShowers(0);
+
             const PrimaryResultMap &primaryResultMap(eIter->m_primaryResultMap);
-            bool isCorrect(!primaryResultMap.empty());
+            bool isCorrect(!primaryResultMap.empty()), isTrackLike(true), isMisID(false);
 
             for (PrimaryResultMap::const_iterator pIter = primaryResultMap.begin(), pIterEnd = primaryResultMap.end(); pIter != pIterEnd; ++pIter)
             {
@@ -1126,6 +1148,25 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
                 if (primaryResult.m_nPfoMatches != 1)
                     isCorrect = false;
 
+		if((primaryResult.m_isTrackLike)&&(primaryResult.m_nPfoMatches != 0))
+		  {
+		    ++nTracks;
+		    isTrackLike = true;
+		  }
+		if((!primaryResult.m_isTrackLike)&&(primaryResult.m_nPfoMatches != 0))
+		  {
+		    ++nShowers;
+		    isTrackLike = false;
+		  }
+
+		if(primaryResult.m_isMisID)
+		  {
+		    isMisID = true;
+		    if(primaryResult.m_isTrackLike)
+		      ++nTracksMisID;
+		    else
+		      ++nShowersMisID;
+		  }
                 if (parameters.m_histogramOutput)
                 {
                     const std::string histPrefix(parameters.m_histPrefix + ToString(interactionType) + "_" + ToString(expectedPrimary) + "_");
@@ -1139,17 +1180,17 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
             }
 
             if (parameters.m_histogramOutput)
-            {
+	      {
                 const std::string histPrefix(parameters.m_histPrefix + ToString(interactionType) + "_");
                 EventHistogramCollection &histogramCollection(interactionEventHistogramMap[interactionType]);
-                FillEventHistogramCollection(histPrefix, isCorrect, *eIter, histogramCollection);
-
+                FillEventHistogramCollection(histPrefix, isCorrect, *eIter, histogramCollection, nTracks, nShowers, nTracksMisID, nShowersMisID);
+		
                 const std::string histPrefixAll(parameters.m_histPrefix + ToString(ALL_INTERACTIONS) + "_");
                 EventHistogramCollection &histogramCollectionAll(interactionEventHistogramMap[ALL_INTERACTIONS]);
-                FillEventHistogramCollection(histPrefixAll, isCorrect, *eIter, histogramCollectionAll);
-            }
-
-            if (isCorrect)
+                FillEventHistogramCollection(histPrefixAll, isCorrect, *eIter, histogramCollectionAll, nTracks, nShowers, nTracksMisID, nShowersMisID);
+	      }
+	    
+	    if (isCorrect)
             {
                 ++nCorrectEvents;
 
@@ -1171,14 +1212,52 @@ void AnalyseInteractionEventResultMap(const InteractionEventResultMap &interacti
     if (parameters.m_histogramOutput)
         ProcessHistogramCollections(interactionPrimaryHistogramMap);
 
+    if (parameters.m_histogramOutput)
+      {
+	for (InteractionEventResultMap::const_iterator iter = interactionEventResultMap.begin(), iterEnd = interactionEventResultMap.end(); iter != iterEnd; ++iter)
+	  {
+	    const InteractionType interactionType(iter->first);
+	    EventHistogramCollection &histogramCollection(interactionEventHistogramMap[interactionType]);
+	    ProcessHistogramCollections(histogramCollection);
+	  }
+      }
+
+
     if (!parameters.m_mapFileName.empty()) mapFile.close();
     if (!parameters.m_eventFileName.empty()) eventFile.close();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void FillEventHistogramCollection(const std::string &histPrefix, const bool isCorrect, const EventResult &eventResult, EventHistogramCollection &eventHistogramCollection)
+void FillEventHistogramCollection(const std::string &histPrefix, const bool isCorrect, const EventResult &eventResult, EventHistogramCollection &eventHistogramCollection, const int nTracks, const int nShowers, const int nTracksMisID, const int nShowersMisID)
 {
+
+  if(!eventHistogramCollection.m_hNEvents)                                                                                                            
+    {                                                                                                                                                
+      eventHistogramCollection.m_hNEvents = new TH1F((histPrefix + "NEvents").c_str(), "", 1, 0., 1.0);                                               
+    }   
+  if(!eventHistogramCollection.m_hNCorrectEvents)                                                                                                   
+    {                                                                                                                                               
+      eventHistogramCollection.m_hNCorrectEvents = new TH1F((histPrefix + "NCorrectEvents").c_str(), "", 1, 0., 1.0);                               
+    }                                                                                                                                               
+  if(!eventHistogramCollection.m_hNTracks)                                                                                                   
+    {                                                                                                                                               
+      eventHistogramCollection.m_hNTracks = new TH1F((histPrefix + "NTracks").c_str(), "", 1, 0., 1.0);                               
+    }                                                                                                                                               
+  if(!eventHistogramCollection.m_hNShowers)                                                                                                   
+    {                                                                                                                                               
+      eventHistogramCollection.m_hNShowers = new TH1F((histPrefix + "NShowers").c_str(), "", 1, 0., 1.0);                               
+    }                                                                                                                                               
+  if(!eventHistogramCollection.m_hNTracksMisID)                                                                                                   
+    {                                                                                                                                               
+      eventHistogramCollection.m_hNTracksMisID = new TH1F((histPrefix + "NTracksMisID").c_str(), "", 1, 0., 1.0);                               
+    }                                                                                                                                               
+  if(!eventHistogramCollection.m_hNShowersMisID)                                                                                                   
+    {                                                                                                                                               
+      eventHistogramCollection.m_hNShowersMisID = new TH1F((histPrefix + "NShowersMisID").c_str(), "", 1, 0., 1.0);                               
+    }                                                                                                                                               
+
+
     if (!eventHistogramCollection.m_hVtxDeltaX)
     {
         eventHistogramCollection.m_hVtxDeltaX = new TH1F((histPrefix + "VtxDeltaX").c_str(), "", 40000, -2000., 2000.);
@@ -1281,6 +1360,7 @@ void FillEventHistogramCollection(const std::string &histPrefix, const bool isCo
         eventHistogramCollection.m_hVtxShwResolution->GetYaxis()->SetTitle("Number of Events");
     }
 
+    eventHistogramCollection.m_hNEvents->Fill(1.0);//LORENA   
     eventHistogramCollection.m_hVtxDeltaX->Fill(eventResult.m_vertexOffset.m_x);
     eventHistogramCollection.m_hVtxDeltaY->Fill(eventResult.m_vertexOffset.m_y);
     eventHistogramCollection.m_hVtxDeltaZ->Fill(eventResult.m_vertexOffset.m_z);
@@ -1295,11 +1375,23 @@ void FillEventHistogramCollection(const std::string &histPrefix, const bool isCo
     eventHistogramCollection.m_hCosmicFraction->Fill(1.f - eventResult.m_neutrinoPurity);
     eventHistogramCollection.m_hNeutrinoCompleteness->Fill(eventResult.m_neutrinoCompleteness);
 
+    for(int i=1; i<=nTracks; i++)
+      eventHistogramCollection.m_hNTracks->Fill(1.0);
+    for(int i=1; i<=nShowers; i++)
+      eventHistogramCollection.m_hNShowers->Fill(1.0);
+    for(int i=1; i<=nTracksMisID; i++)
+      eventHistogramCollection.m_hNTracksMisID->Fill(1.0);
+    for(int i=1; i<=nShowersMisID; i++)
+      eventHistogramCollection.m_hNShowersMisID->Fill(1.0);
+
+
     if (isCorrect)
     {
+        eventHistogramCollection.m_hNCorrectEvents->Fill(1.0);
         eventHistogramCollection.m_hNuPurityCorrect->Fill(eventResult.m_neutrinoPurity);
         eventHistogramCollection.m_hNuCompletenessCorrect->Fill(eventResult.m_neutrinoCompleteness);
     }
+
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -1325,6 +1417,15 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
         primaryHistogramCollection.m_hHitsEfficiency->GetXaxis()->SetTitle("Number of Hits");
         primaryHistogramCollection.m_hHitsEfficiency->GetYaxis()->SetRangeUser(0., +1.01);
         primaryHistogramCollection.m_hHitsEfficiency->GetYaxis()->SetTitle("Reconstruction Efficiency");
+    }
+
+    if (!primaryHistogramCollection.m_hHitsMisID)
+    {
+        primaryHistogramCollection.m_hHitsMisID = new TH1F((histPrefix + "HitsMisID").c_str(), "", nHitBins, hitsBinning);
+        primaryHistogramCollection.m_hHitsMisID->GetXaxis()->SetRangeUser(1., +6000);
+        primaryHistogramCollection.m_hHitsMisID->GetXaxis()->SetTitle("Number of Hits");
+        primaryHistogramCollection.m_hHitsMisID->GetYaxis()->SetRangeUser(0., +1.01);
+        primaryHistogramCollection.m_hHitsMisID->GetYaxis()->SetTitle("Reconstruction MisID");
     }
 
     const int nMomentumBins(20); const int nMomentumBinEdges(nMomentumBins + 1);
@@ -1408,6 +1509,9 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
     if (primaryResult.m_nPfoMatches > 0)
     {
         primaryHistogramCollection.m_hHitsEfficiency->Fill(primaryResult.m_nTrueHits);
+	if(primaryResult.m_isMisID)
+	  primaryHistogramCollection.m_hHitsMisID->Fill(primaryResult.m_nTrueHits);
+	  
         primaryHistogramCollection.m_hMomentumEfficiency->Fill(primaryResult.m_trueMomentum);
         primaryHistogramCollection.m_hAngleEfficiency->Fill(primaryResult.m_trueAngle);
         primaryHistogramCollection.m_hCompleteness->Fill(primaryResult.m_bestCompleteness);
@@ -1415,6 +1519,26 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
     }
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+
+void ProcessHistogramCollections(const EventHistogramCollection &histogramCollection)
+{
+	histogramCollection.m_hNEvents->Write();
+	histogramCollection.m_hNCorrectEvents->Write();
+	histogramCollection.m_hNTracks->Write();
+	histogramCollection.m_hNTracksMisID->Write();
+	histogramCollection.m_hNShowers->Write();
+	histogramCollection.m_hNShowersMisID->Write();
+	histogramCollection.m_hVtxDeltaX->Write();
+	histogramCollection.m_hVtxDeltaY->Write();
+	histogramCollection.m_hVtxDeltaZ->Write();
+	histogramCollection.m_hNeutrinoPurity->Write();
+	histogramCollection.m_hCosmicFraction->Write();
+	histogramCollection.m_hNeutrinoCompleteness->Write();
+	histogramCollection.m_hNRecoNeutrinos->Write();
+
+	}
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interactionPrimaryHistogramMap)
@@ -1438,8 +1562,8 @@ void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interacti
                 primaryHistogramCollection.m_hHitsEfficiency->SetBinContent(n + 1, efficiency);
                 primaryHistogramCollection.m_hHitsEfficiency->SetBinError(n + 1, error);
             }
-
-            for (int n = -1; n <= primaryHistogramCollection.m_hMomentumEfficiency->GetXaxis()->GetNbins(); ++n)
+	    
+	    for (int n = -1; n <= primaryHistogramCollection.m_hMomentumEfficiency->GetXaxis()->GetNbins(); ++n)
             {
                 const float found = primaryHistogramCollection.m_hMomentumEfficiency->GetBinContent(n + 1);
                 const float all = primaryHistogramCollection.m_hMomentumAll->GetBinContent(n + 1);
@@ -1461,6 +1585,17 @@ void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interacti
 
             primaryHistogramCollection.m_hCompleteness->Scale(1. / static_cast<double>(primaryHistogramCollection.m_hCompleteness->GetEntries()));
             primaryHistogramCollection.m_hPurity->Scale(1. / static_cast<double>(primaryHistogramCollection.m_hPurity->GetEntries()));
+
+	    primaryHistogramCollection.m_hHitsEfficiency->Write();
+	    primaryHistogramCollection.m_hHitsMisID->Write();
+	    primaryHistogramCollection.m_hMomentumEfficiency->Write();
+	    primaryHistogramCollection.m_hAngleEfficiency->Write();
+	    primaryHistogramCollection.m_hCompleteness->Write();
+	    primaryHistogramCollection.m_hPurity->Write();	
+
         }
+
     }
+
+
 }
