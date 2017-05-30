@@ -11,9 +11,9 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-        <EventFileName>/r05/dune/marshall/validation/dune10kt/v06_19_00/sample0/pndr/dune10kt_test_eventsVOLUMEID_100.pndr</EventFileName>
-        <ShouldReadEvents>true</ShouldReadEvents>
-        <SkipToEvent>0</SkipToEvent>
+      <EventFileName>/r05/dune/marshall/validation/dune10kt/v06_19_00/sample0/pndr/dune10kt_test_events0_0.pndr</EventFileName>
+      <ShouldReadEvents>true</ShouldReadEvents>
+      <SkipToEvent>0</SkipToEvent>
     </algorithm>
 
     <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION -->
@@ -118,12 +118,18 @@
             <algorithm type = "LArPfoCharacterisation">
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+		<MaxShowerLengthCut>500</MaxShowerLengthCut>
+		<VertexDistanceRatioCut>500</VertexDistanceRatioCut>
             </algorithm>
             <algorithm type = "LArListDeletion">
                 <PfoListNames>ShowerParticles3D</PfoListNames>
             </algorithm>
             <algorithm type = "LArClusterCharacterisation">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+		<MaxShowerLengthCut>500</MaxShowerLengthCut>
+		<VertexDistanceRatioCut>500</VertexDistanceRatioCut> 
+		<PathLengthRatioCut>1.012</PathLengthRatioCut>
+		<RTWidthRatioCut>0.08</RTWidthRatioCut>
             </algorithm>
             <algorithm type = "LArShowerGrowing">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
@@ -206,6 +212,9 @@
                 <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                 <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
                 <PostBranchAddition>true</PostBranchAddition>
+		<MaxShowerLengthCut>500</MaxShowerLengthCut>
+		<VertexDistanceRatioCut>500</VertexDistanceRatioCut> 
+		<DTDLWidthRatioCut>0.08</DTDLWidthRatioCut>
             </algorithm>
             <algorithm type = "LArThreeDHitCreation">
                 <InputPfoListName>TrackParticles3D</InputPfoListName>
@@ -353,9 +362,9 @@
         <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
         <MatchingMinSharedHits>5</MatchingMinSharedHits>
         <WriteToTree>false</WriteToTree>
-        <FileIdentifier>0</FileIdentifier>
         <OutputTree>Validation</OutputTree>
-        <OutputFile>ValidationVOLUMEID.root</OutputFile>
+	<FileIdentifier>0</FileIdentifier>
+	<OutputFile>Validation.root</OutputFile>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
