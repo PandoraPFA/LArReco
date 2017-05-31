@@ -332,7 +332,7 @@
         <PfoListName>AllTrackParticles3D</PfoListName>
         <VertexListName>AllDaughterVertices3D</VertexListName>
     </algorithm>
-    <algorithm type = "LArShowerParticleBuilding">
+    <algorithm type = "LArPcaShowerParticleBuilding">
         <PfoListName>AllShowerParticles3D</PfoListName>
         <VertexListName>AllDaughterVertices3D</VertexListName>
     </algorithm>
