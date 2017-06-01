@@ -325,8 +325,8 @@
                 <OutputVertexListName>DaughterVertices3D</OutputVertexListName>
             </algorithm>
             <algorithm type = "LArSvmPfoCharacterisation">
-                <TrackPfoListName>AllTrackParticles3D</TrackPfoListName>
-                <ShowerPfoListName>AllShowerParticles3D</ShowerPfoListName>
+                <TrackPfoListName>TrackParticles3D</TrackPfoListName>
+                <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
                 <SvmFileName>/r05/dune/MachineLearningData/SvmPfoCharacterisation_uboone_mcc7.xml</SvmFileName>
                 <SvmName>FinalPfoCharacterisation</SvmName>
                 <RatioVariables>true</RatioVariables>
