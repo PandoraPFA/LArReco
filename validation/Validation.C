@@ -422,19 +422,28 @@ bool HasMatch(const SimpleMCPrimary &simpleMCPrimary, const PfoMatchingMap &pfoM
 
 bool IsGoodMatch(const SimpleMCPrimary &simpleMCPrimary, const SimpleMatchedPfo &simpleMatchedPfo, const Parameters &parameters)
 {
-    const unsigned int absMCPdgCode(std::abs(simpleMCPrimary.m_pdgCode));
-
-    if (parameters.m_correctTrackShowerId && (
-        ((absMCPdgCode == 13 || absMCPdgCode == 2212 || absMCPdgCode == 211) && (13 != simpleMatchedPfo.m_pdgCode)) ||
-        ((absMCPdgCode == 22 || absMCPdgCode == 11) && (11 != simpleMatchedPfo.m_pdgCode)) ))
-    {
+    if (parameters.m_correctTrackShowerId && !IsGoodParticleIdMatch(simpleMCPrimary, simpleMatchedPfo))
         return false;
-    }
 
     const float purity((simpleMatchedPfo.m_nPfoHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMatchedPfo.m_nPfoHitsTotal) : 0.f);
     const float completeness((simpleMCPrimary.m_nMCHitsTotal > 0) ? static_cast<float>(simpleMatchedPfo.m_nMatchedHitsTotal) / static_cast<float>(simpleMCPrimary.m_nMCHitsTotal) : 0.f);
 
     return ((simpleMatchedPfo.m_nMatchedHitsTotal >= parameters.m_minSharedHits) && (purity >= parameters.m_minPurity) && (completeness >= parameters.m_minCompleteness));
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+bool IsGoodParticleIdMatch(const SimpleMCPrimary &simpleMCPrimary, const SimpleMatchedPfo &simpleMatchedPfo)
+{
+    const unsigned int absMCPdgCode(std::abs(simpleMCPrimary.m_pdgCode));
+
+    if (((absMCPdgCode == 13 || absMCPdgCode == 2212 || absMCPdgCode == 211) && (13 != simpleMatchedPfo.m_pdgCode)) ||
+        ((absMCPdgCode == 22 || absMCPdgCode == 11) && (11 != simpleMatchedPfo.m_pdgCode)) )
+    {
+        return false;
+    }
+
+    return true;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -539,6 +548,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
         ++countingDetails.m_nTotal;
         unsigned int nMatches(0), nBestMatchedHits(0), nBestRecoHits(0);
         float bestMatchPurity(0.f), bestCompleteness(0.f);
+        bool isCorrectParticleId(false);
 
         for (SimpleMatchedPfoList::const_iterator mIter = simpleMCPrimary.m_matchedPfoList.begin(); mIter != simpleMCPrimary.m_matchedPfoList.end(); ++mIter)
         {
@@ -559,6 +569,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
                     bestCompleteness = completeness;
                     nBestMatchedHits = simpleMatchedPfo.m_nMatchedHitsTotal;
                     nBestRecoHits = simpleMatchedPfo.m_nPfoHitsTotal;
+                    isCorrectParticleId = IsGoodParticleIdMatch(simpleMCPrimary, simpleMatchedPfo);
                 }
             }
         }
@@ -567,6 +578,9 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const PfoMatchingMap &p
         else if (1 == nMatches) ++countingDetails.m_nMatch1;
         else if (2 == nMatches) ++countingDetails.m_nMatch2;
         else ++countingDetails.m_nMatch3Plus;
+
+        if (isCorrectParticleId)
+            ++countingDetails.m_correctId;
 
         primaryResult.m_nPfoMatches = nMatches;
         primaryResult.m_bestCompleteness = bestCompleteness;
@@ -1074,7 +1088,8 @@ void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCoun
                       << "%|, |1: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch1) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
                       << "%|, |2: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch2) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
                       << "%|, |3+: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch3Plus) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
-                      << "%|" << std::endl;
+                      << "%|, correctId " << ((countingDetails.m_nTotal - countingDetails.m_nMatch0 > 0) ? 100.f * static_cast<float>(countingDetails.m_correctId) / static_cast<float>(countingDetails.m_nTotal - countingDetails.m_nMatch0) : 0.f)
+                      <<  "%" << std::endl;
 
             if (!parameters.m_mapFileName.empty())
             {
@@ -1083,7 +1098,8 @@ void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCoun
                         << "%|, |1: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch1) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
                         << "%|, |2: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch2) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
                         << "%|, |3+: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch3Plus) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
-                        << "%|" << std::endl;
+                        << "%|, correctId " << ((countingDetails.m_nTotal - countingDetails.m_nMatch0 > 0) ? 100.f * static_cast<float>(countingDetails.m_correctId) / static_cast<float>(countingDetails.m_nTotal - countingDetails.m_nMatch0) : 0.f)
+                        <<  "%" << std::endl;
             }
         }
     }
