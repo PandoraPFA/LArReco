@@ -95,6 +95,7 @@ public:
     unsigned int            m_nMatch1;                  ///< The number of times the primary has 1 pfo matches
     unsigned int            m_nMatch2;                  ///< The number of times the primary has 2 pfo matches
     unsigned int            m_nMatch3Plus;              ///< The number of times the primary has 3 or more pfo matches
+    unsigned int            m_correctId;                ///< The number of times the primary particle identifcation was correct
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -556,6 +557,16 @@ bool HasMatch(const SimpleMCPrimary &simpleMCPrimary, const PfoMatchingMap &pfoM
 bool IsGoodMatch(const SimpleMCPrimary &simpleMCPrimary, const SimpleMatchedPfo &simpleMatchedPfo, const Parameters &parameters);
 
 /**
+ *  @brief  Whether a provided mc primary and pfo are deemed to have a good particle id match
+ * 
+ *  @param  simpleMCPrimary the simple mc primary
+ *  @param  simpleMatchedPfo the simple matched pfo
+ * 
+ *  @return boolean
+ */
+bool IsGoodParticleIdMatch(const SimpleMCPrimary &simpleMCPrimary, const SimpleMatchedPfo &simpleMatchedPfo);
+
+/**
  *  @brief  Print matching details to screen for a simple mc event
  * 
  *  @param  simpleMCEvent the simple mc event
@@ -719,7 +730,8 @@ CountingDetails::CountingDetails() :
     m_nMatch0(0),
     m_nMatch1(0),
     m_nMatch2(0),
-    m_nMatch3Plus(0)
+    m_nMatch3Plus(0),
+    m_correctId(0)
 {
 }
 
