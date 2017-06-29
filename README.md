@@ -1,5 +1,6 @@
 # LArReco
 [![Build Status](https://travis-ci.org/PandoraPFA/LArReco.svg?branch=master)](https://travis-ci.org/PandoraPFA/LArReco)
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/13060/badge.svg)](https://scan.coverity.com/projects/pandorapfa-larreco)
 
 Standalone Pandora application for testing/developing LAr TPC reconstruction
 
