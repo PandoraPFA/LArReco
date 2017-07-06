@@ -29,7 +29,6 @@ install:
   - docker exec -it pandora /bin/bash -c "source pull_pandora_pfa.sh"
   - docker exec -it pandora /bin/bash -c "source install_pandora_sdk.sh"
   - docker exec -it pandora /bin/bash -c "source install_pandora_monitoring.sh"
-  - docker exec -it pandora /bin/bash -c "source install_eigen.sh"
   - docker exec -it pandora /bin/bash -c "source install_larcontent.sh"
 
 script:
