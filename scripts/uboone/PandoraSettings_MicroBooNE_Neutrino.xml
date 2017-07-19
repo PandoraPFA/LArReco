@@ -42,7 +42,7 @@
     </algorithm-->
 
     <!-- Reconstruction of individual neutrino interactions -->
-    <algorithm type = "LArNeutrinoParent">
+    <algorithm type = "LArParentNeutrino">
         <CaloHitListNameU>CaloHitListU</CaloHitListNameU>
         <CaloHitListNameV>CaloHitListV</CaloHitListNameV>
         <CaloHitListNameW>CaloHitListW</CaloHitListNameW>
