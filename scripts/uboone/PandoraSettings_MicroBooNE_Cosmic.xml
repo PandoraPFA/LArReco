@@ -80,7 +80,7 @@
                 <InputClusterListNameU>ClustersU</InputClusterListNameU>
                 <InputClusterListNameV>ClustersV</InputClusterListNameV>
                 <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                <OutputPfoListName>Particles3D</OutputPfoListName>
+                <OutputPfoListName>MuonParticles3D</OutputPfoListName>
                 <TrackTools>
                     <tool type = "LArClearTracks"/>
                     <tool type = "LArLongTracks"/>
@@ -99,7 +99,7 @@
                 <InputClusterListNameU>ClustersU</InputClusterListNameU>
                 <InputClusterListNameV>ClustersV</InputClusterListNameV>
                 <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                <OutputPfoListName>Particles3D</OutputPfoListName>
+                <OutputPfoListName>MuonParticles3D</OutputPfoListName>
                 <TrackTools>
                     <tool type = "LArClearLongitudinalTracks"/>
                     <tool type = "LArMatchedEndPoints"/>
@@ -110,7 +110,7 @@
                 <InputClusterListNameU>ClustersU</InputClusterListNameU>
                 <InputClusterListNameV>ClustersV</InputClusterListNameV>
                 <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                <OutputPfoListName>Particles3D</OutputPfoListName>
+                <OutputPfoListName>MuonParticles3D</OutputPfoListName>
                 <TrackTools>
                     <tool type = "LArClearTrackFragments"/>
                 </TrackTools>
@@ -120,39 +120,39 @@
                 <InputClusterListNameU>ClustersU</InputClusterListNameU>
                 <InputClusterListNameV>ClustersV</InputClusterListNameV>
                 <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                <OutputPfoListName>Particles3D</OutputPfoListName>
+                <OutputPfoListName>MuonParticles3D</OutputPfoListName>
             </algorithm>
             <algorithm type = "LArCosmicRayTrackRecovery"> 
                 <InputClusterListNameU>ClustersU</InputClusterListNameU>
                 <InputClusterListNameV>ClustersV</InputClusterListNameV>
                 <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                <OutputPfoListName>Particles3D</OutputPfoListName>
+                <OutputPfoListName>MuonParticles3D</OutputPfoListName>
             </algorithm>
         </ThreeDAlgorithms>
 
         <DeltaRayAlgorithms>
             <algorithm type = "LArDeltaRayIdentification">
-                <ParentPfoListName>Particles3D</ParentPfoListName>
-                <DaughterPfoListName>DaughterParticles3D</DaughterPfoListName>
+                <ParentPfoListName>MuonParticles3D</ParentPfoListName>
+                <DaughterPfoListName>DeltaRayParticles3D</DaughterPfoListName>
             </algorithm>
             <algorithm type = "LArDeltaRayGrowing">
                 <InputClusterListName>ClustersW</InputClusterListName>
-                <ParentPfoListName>Particles3D</ParentPfoListName>
-                <DaughterPfoListName>DaughterParticles3D</DaughterPfoListName>
+                <ParentPfoListName>MuonParticles3D</ParentPfoListName>
+                <DaughterPfoListName>DeltaRayParticles3D</DaughterPfoListName>
             </algorithm>
             <algorithm type = "LArDeltaRayGrowing">
                 <InputClusterListName>ClustersU</InputClusterListName>
-                <ParentPfoListName>Particles3D</ParentPfoListName>
-                <DaughterPfoListName>DaughterParticles3D</DaughterPfoListName>
+                <ParentPfoListName>MuonParticles3D</ParentPfoListName>
+                <DaughterPfoListName>DeltaRayParticles3D</DaughterPfoListName>
             </algorithm>
             <algorithm type = "LArDeltaRayGrowing">
                 <InputClusterListName>ClustersV</InputClusterListName>
-                <ParentPfoListName>Particles3D</ParentPfoListName>
-                <DaughterPfoListName>DaughterParticles3D</DaughterPfoListName>
+                <ParentPfoListName>MuonParticles3D</ParentPfoListName>
+                <DaughterPfoListName>DeltaRayParticles3D</DaughterPfoListName>
             </algorithm>
             <algorithm type = "LArDeltaRayMatching">
-                <ParentPfoListName>Particles3D</ParentPfoListName>
-                <DaughterPfoListName>DaughterParticles3D</DaughterPfoListName>
+                <ParentPfoListName>MuonParticles3D</ParentPfoListName>
+                <DaughterPfoListName>DeltaRayParticles3D</DaughterPfoListName>
                 <InputClusterListNameU>ClustersU</InputClusterListNameU>
                 <InputClusterListNameV>ClustersV</InputClusterListNameV>
                 <InputClusterListNameW>ClustersW</InputClusterListNameW>
@@ -174,7 +174,7 @@
                 <InputClusterListNameU>ClustersU</InputClusterListNameU>
                 <InputClusterListNameV>ClustersV</InputClusterListNameV>
                 <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                <OutputPfoListName>Particles3D</OutputPfoListName>
+                <OutputPfoListName>MuonParticles3D</OutputPfoListName>
                 <TrackTools>
                     <tool type = "LArClearRemnants"/>
                     <tool type = "LArConnectedRemnants"/>
@@ -185,7 +185,7 @@
                 <InputClusterListNameU>ClustersU</InputClusterListNameU>
                 <InputClusterListNameV>ClustersV</InputClusterListNameV>
                 <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                <OutputPfoListName>Particles3D</OutputPfoListName>
+                <OutputPfoListName>MuonParticles3D</OutputPfoListName>
                 <TrackTools>
                     <tool type = "LArClearRemnants"/>
                     <tool type = "LArConnectedRemnants"/>
@@ -197,10 +197,10 @@
                 <InputClusterListNameU>ClustersU</InputClusterListNameU>
                 <InputClusterListNameV>ClustersV</InputClusterListNameV>
                 <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                <OutputPfoListName>Particles3D</OutputPfoListName>
+                <OutputPfoListName>MuonParticles3D</OutputPfoListName>
             </algorithm>
             <algorithm type = "LArIsolatedClusterMopUp">
-                <PfoListNames>Particles3D DaughterParticles3D</PfoListNames>
+                <PfoListNames>MuonParticles3D DeltaRayParticles3D</PfoListNames>
                 <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
                 <ExcludePfosContainingTracks>false</ExcludePfosContainingTracks>
             </algorithm>
@@ -208,9 +208,9 @@
 
         <ThreeDHitAlgorithms>
             <algorithm type = "LArThreeDHitCreation">
-                <InputPfoListName>Particles3D</InputPfoListName>
-                <OutputCaloHitListName>CaloHitList3D</OutputCaloHitListName>
-                <OutputClusterListName>Clusters3D</OutputClusterListName>
+                <InputPfoListName>MuonParticles3D</InputPfoListName>
+                <OutputCaloHitListName>MuonCaloHits3D</OutputCaloHitListName>
+                <OutputClusterListName>MuonClusters3D</OutputClusterListName>
                 <HitCreationTools>
                     <tool type = "LArClearTransverseTrackHits"><MinViews>3</MinViews></tool>
                     <tool type = "LArClearLongitudinalTrackHits"><MinViews>3</MinViews></tool>
@@ -222,9 +222,9 @@
                 </HitCreationTools>
             </algorithm>
             <algorithm type = "LArThreeDHitCreation">
-                <InputPfoListName>Particles3D</InputPfoListName>
-                <OutputCaloHitListName>CaloHitList3D</OutputCaloHitListName>
-                <OutputClusterListName>Clusters3D</OutputClusterListName>
+                <InputPfoListName>MuonParticles3D</InputPfoListName>
+                <OutputCaloHitListName>MuonCaloHits3D</OutputCaloHitListName>
+                <OutputClusterListName>MuonClusters3D</OutputClusterListName>
                 <HitCreationTools>
                     <tool type = "LArThreeViewShowerHits">
                         <ChiSquaredCut>5.</ChiSquaredCut>
@@ -237,9 +237,9 @@
                 </HitCreationTools>
             </algorithm>
             <algorithm type = "LArThreeDHitCreation">
-                <InputPfoListName>DaughterParticles3D</InputPfoListName>
-                <OutputCaloHitListName>DaughterCaloHitList3D</OutputCaloHitListName>
-                <OutputClusterListName>DaughterClusters3D</OutputClusterListName>
+                <InputPfoListName>DeltaRayParticles3D</InputPfoListName>
+                <OutputCaloHitListName>DeltaRayCaloHits3D</OutputCaloHitListName>
+                <OutputClusterListName>DeltaRayClusters3D</OutputClusterListName>
                 <HitCreationTools>
                     <tool type = "LArThreeViewShowerHits"><ChiSquaredCut>5.</ChiSquaredCut><ZTolerance>3.</ZTolerance></tool>
                     <tool type = "LArTwoViewShowerHits"><ChiSquaredCut>5.</ChiSquaredCut><XTolerance>2.</XTolerance></tool>
@@ -250,46 +250,43 @@
 
         <VertexAlgorithms>
             <algorithm type = "LArCosmicRayVertexBuilding">
-                <InputPfoListName>Particles3D</InputPfoListName>
+                <InputPfoListName>MuonParticles3D</InputPfoListName>
                 <OutputVertexListName>Vertices3D</OutputVertexListName>
             </algorithm>
         </VertexAlgorithms>
 
         <algorithm type = "LArListPruning" description = "ListPruning">
-            <WarnIfClustersUnavailable>false</WarnIfClustersUnavailable>
+            <WarnIfObjectsUnavailable>false</WarnIfObjectsUnavailable>
             <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
         </algorithm>
 
         <algorithm type = "LArListMoving" description = "ListMoving">
-            <PfoListNames>Particles3D DaughterParticles3D</PfoListNames>
+            <PfoListNames>MuonParticles3D DeltaRayParticles3D</PfoListNames>
             <VertexListNames>Vertices3D</VertexListNames>
-            <ClusterListNames>ClustersU ClustersV ClustersW Clusters3D DaughterClusters3D</ClusterListNames>
+            <ClusterListNames>ClustersU ClustersV ClustersW MuonClusters3D DeltaRayClusters3D</ClusterListNames>
             <Prefix>All</Prefix>
         </algorithm>
     </algorithm>
 
     <!-- Decorate output particles -->
     <algorithm type = "LArTrackParticleBuilding">
-        <CosmicMode>true</CosmicMode>
-        <PfoListName>AllParticles3D</PfoListName>
+        <PfoListName>AllMuonParticles3D</PfoListName>
         <VertexListName>AllVertices3D</VertexListName>
     </algorithm>
-
     <algorithm type = "LArPcaShowerParticleBuilding">
-        <CosmicMode>true</CosmicMode>
-        <PfoListName>AllDaughterParticles3D</PfoListName>
+        <PfoListName>AllDeltaRayParticles3D</PfoListName>
         <VertexListName>AllVertices3D</VertexListName>
     </algorithm>
 
     <!-- Final output and validation -->
     <algorithm type = "LArListChanging">
-        <PfoListName>AllParticles3D</PfoListName>
+        <PfoListName>AllMuonParticles3D</PfoListName>
     </algorithm>
 
     <algorithm type = "LArEventValidation">
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>MCParticleList3D</MCParticleListName>
-        <PfoListName>AllParticles3D</PfoListName>
+        <PfoListName>AllMuonParticles3D</PfoListName>
         <ClusterListNames>AllClustersU AllClustersV AllClustersW</ClusterListNames>
         <UseRecoNeutrinosOnly>false</UseRecoNeutrinosOnly>
         <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
@@ -307,11 +304,11 @@
     </algorithm>
 
     <!--algorithm type = "LArVisualMonitoring">
-        <PfoListNames>Particles3D</PfoListNames>
+        <PfoListNames>MuonParticles3D</PfoListNames>
     </algorithm-->
 
     <!--algorithm type = "LArVisualMonitoring">
-        <ClusterListNames>Clusters3D DaughterClusters3D</ClusterListNames>
+        <ClusterListNames>MuonClusters3D DeltaRayClusters3D</ClusterListNames>
     </algorithm-->
 
     <!--algorithm type = "LArVisualMonitoring">

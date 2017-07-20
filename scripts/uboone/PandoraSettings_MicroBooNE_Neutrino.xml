@@ -215,7 +215,7 @@
             </algorithm>
             <algorithm type = "LArThreeDHitCreation">
                 <InputPfoListName>TrackParticles3D</InputPfoListName>
-                <OutputCaloHitListName>TrackCaloHitList3D</OutputCaloHitListName>
+                <OutputCaloHitListName>TrackCaloHits3D</OutputCaloHitListName>
                 <OutputClusterListName>TrackClusters3D</OutputClusterListName>
                 <HitCreationTools>
                     <tool type = "LArClearTransverseTrackHits"><MinViews>3</MinViews></tool>
@@ -229,7 +229,7 @@
             </algorithm>
             <algorithm type = "LArThreeDHitCreation">
                 <InputPfoListName>ShowerParticles3D</InputPfoListName>
-                <OutputCaloHitListName>ShowerCaloHitList3D</OutputCaloHitListName>
+                <OutputCaloHitListName>ShowerCaloHits3D</OutputCaloHitListName>
                 <OutputClusterListName>ShowerClusters3D</OutputClusterListName>
                 <HitCreationTools>
                     <tool type = "LArThreeViewShowerHits"/>
@@ -343,7 +343,6 @@
 
         <algorithm type = "LArListDeletion" description = "ListDeletion">
             <PfoListNames>NeutrinoParticles3D TrackParticles3D ShowerParticles3D</PfoListNames>
-            <VertexListNames>NeutrinoVertices3D DaughterVertices3D</VertexListNames>
             <ClusterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</ClusterListNames>
         </algorithm>
 
