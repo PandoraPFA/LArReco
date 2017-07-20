@@ -50,6 +50,8 @@
         <ClusterListNameV>ClustersV</ClusterListNameV>
         <ClusterListNameW>ClustersW</ClusterListNameW>
 
+        <ShouldPerformSlicing>false</ShouldPerformSlicing>
+
         <algorithm type = "LArTrackClusterCreation" description = "TwoDTrackClustering"/>
         <algorithm type = "LArSimpleClusterCreation" description = "TwoDDeltaRayClustering"/>
 
@@ -257,31 +259,38 @@
             <WarnIfClustersUnavailable>false</WarnIfClustersUnavailable>
             <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
         </algorithm>
+
+        <algorithm type = "LArListMoving" description = "ListMoving">
+            <PfoListNames>Particles3D DaughterParticles3D</PfoListNames>
+            <VertexListNames>Vertices3D</VertexListNames>
+            <ClusterListNames>ClustersU ClustersV ClustersW Clusters3D DaughterClusters3D</ClusterListNames>
+            <Prefix>All</Prefix>
+        </algorithm>
     </algorithm>
 
     <!-- Decorate output particles -->
     <algorithm type = "LArTrackParticleBuilding">
         <CosmicMode>true</CosmicMode>
-        <PfoListName>Particles3D</PfoListName>
-        <VertexListName>Vertices3D</VertexListName>
+        <PfoListName>AllParticles3D</PfoListName>
+        <VertexListName>AllVertices3D</VertexListName>
     </algorithm>
 
     <algorithm type = "LArPcaShowerParticleBuilding">
         <CosmicMode>true</CosmicMode>
-        <PfoListName>DaughterParticles3D</PfoListName>
-        <VertexListName>Vertices3D</VertexListName>
+        <PfoListName>AllDaughterParticles3D</PfoListName>
+        <VertexListName>AllVertices3D</VertexListName>
     </algorithm>
 
     <!-- Final output and validation -->
     <algorithm type = "LArListChanging">
-        <PfoListName>Particles3D</PfoListName>
+        <PfoListName>AllParticles3D</PfoListName>
     </algorithm>
 
     <algorithm type = "LArEventValidation">
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>MCParticleList3D</MCParticleListName>
-        <PfoListName>Particles3D</PfoListName>
-        <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+        <PfoListName>AllParticles3D</PfoListName>
+        <ClusterListNames>AllClustersU AllClustersV AllClustersW</ClusterListNames>
         <UseRecoNeutrinosOnly>false</UseRecoNeutrinosOnly>
         <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
         <PrintAllToScreen>true</PrintAllToScreen>
