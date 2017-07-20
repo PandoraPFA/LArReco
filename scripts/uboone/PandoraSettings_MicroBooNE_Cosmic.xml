@@ -51,6 +51,7 @@
         <ClusterListNameW>ClustersW</ClusterListNameW>
 
         <algorithm type = "LArTrackClusterCreation" description = "TwoDTrackClustering"/>
+        <algorithm type = "LArSimpleClusterCreation" description = "TwoDDeltaRayClustering"/>
 
         <TwoDAlgorithms>
             <algorithm type = "LArLayerSplitting"/>
@@ -126,8 +127,6 @@
                 <OutputPfoListName>Particles3D</OutputPfoListName>
             </algorithm>
         </ThreeDAlgorithms>
-
-        <algorithm type = "LArSimpleClusterCreation" description = "TwoDDeltaRayClustering"/>
 
         <DeltaRayAlgorithms>
             <algorithm type = "LArDeltaRayIdentification">
@@ -285,7 +284,7 @@
         <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
         <UseRecoNeutrinosOnly>false</UseRecoNeutrinosOnly>
         <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
-        <PrintAllToScreen>false</PrintAllToScreen>
+        <PrintAllToScreen>true</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <VisualizeMatching>false</VisualizeMatching>
         <VisualizeVertices>false</VisualizeVertices>
