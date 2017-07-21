@@ -263,7 +263,8 @@
 
             <algorithm type = "LArListPruning" description = "ListPruning">
                 <WarnIfObjectsUnavailable>false</WarnIfObjectsUnavailable>
-                <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+                <VertexListNames>CRVertices3D</VertexListNames>
+                <ClusterListNames>ClustersU ClustersV ClustersW MuonClusters3D DeltaRayClusters3D</ClusterListNames>
             </algorithm>
 
             <algorithm type = "LArListDeletion" description = "ListDeletion">
@@ -583,13 +584,6 @@
             <PfoListNames>NeutrinoParticles3D TrackParticles3D ShowerParticles3D</PfoListNames>
             <ClusterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</ClusterListNames>
         </algorithm>
-
-        <algorithm type = "LArListMoving" description = "ListMoving">
-            <PfoListNames>MuonParticles3D DeltaRayParticles3D</PfoListNames>
-            <VertexListNames>CRVertices3D</VertexListNames>
-            <ClusterListNames>ClustersU ClustersV ClustersW MuonClusters3D DeltaRayClusters3D</ClusterListNames>
-            <Prefix>All</Prefix>
-        </algorithm>
     </algorithm>
 
     <!-- Decorate output particles -->
@@ -649,11 +643,11 @@
     </algorithm>
 
     <!--algorithm type = "LArVisualMonitoring">
-        <PfoListNames>AllParticles3D</PfoListNames>
+        <PfoListNames>AllMuonParticles3D AllNeutrinoParticles3D</PfoListNames>
     </algorithm-->
 
     <!--algorithm type = "LArVisualMonitoring">
-        <ClusterListNames>AllClusters3D AllDaughterClusters3D</ClusterListNames>
+        <ClusterListNames>AllMuonClusters3D AllDeltaRayClusters3D AllTrackClusters3D AllShowerClusters3D</ClusterListNames>
     </algorithm-->
 
     <!--algorithm type = "LArVisualMonitoring">

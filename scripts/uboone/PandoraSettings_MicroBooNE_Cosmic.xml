@@ -304,15 +304,15 @@
     </algorithm>
 
     <!--algorithm type = "LArVisualMonitoring">
-        <PfoListNames>MuonParticles3D</PfoListNames>
+        <PfoListNames>AllMuonParticles3D</PfoListNames>
     </algorithm-->
 
     <!--algorithm type = "LArVisualMonitoring">
-        <ClusterListNames>MuonClusters3D DeltaRayClusters3D</ClusterListNames>
+        <ClusterListNames>AllMuonClusters3D AllDeltaRayClusters3D</ClusterListNames>
     </algorithm-->
 
     <!--algorithm type = "LArVisualMonitoring">
-        <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+        <ClusterListNames>AllClustersU AllClustersV AllClustersW</ClusterListNames>
         <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
         <ShowOnlyAvailable>true</ShowOnlyAvailable>
     </algorithm-->
