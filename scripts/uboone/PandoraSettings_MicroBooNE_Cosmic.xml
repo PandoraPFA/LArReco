@@ -251,7 +251,7 @@
         <VertexAlgorithms>
             <algorithm type = "LArCosmicRayVertexBuilding">
                 <InputPfoListName>MuonParticles3D</InputPfoListName>
-                <OutputVertexListName>Vertices3D</OutputVertexListName>
+                <OutputVertexListName>CRVertices3D</OutputVertexListName>
             </algorithm>
         </VertexAlgorithms>
 
@@ -262,7 +262,7 @@
 
         <algorithm type = "LArListMoving" description = "ListMoving">
             <PfoListNames>MuonParticles3D DeltaRayParticles3D</PfoListNames>
-            <VertexListNames>Vertices3D</VertexListNames>
+            <VertexListNames>CRVertices3D</VertexListNames>
             <ClusterListNames>ClustersU ClustersV ClustersW MuonClusters3D DeltaRayClusters3D</ClusterListNames>
             <Prefix>All</Prefix>
         </algorithm>
@@ -271,11 +271,11 @@
     <!-- Decorate output particles -->
     <algorithm type = "LArTrackParticleBuilding">
         <PfoListName>AllMuonParticles3D</PfoListName>
-        <VertexListName>AllVertices3D</VertexListName>
+        <VertexListName>AllCRVertices3D</VertexListName>
     </algorithm>
     <algorithm type = "LArPcaShowerParticleBuilding">
         <PfoListName>AllDeltaRayParticles3D</PfoListName>
-        <VertexListName>AllVertices3D</VertexListName>
+        <VertexListName>AllCRVertices3D</VertexListName>
     </algorithm>
 
     <!-- Final output and validation -->

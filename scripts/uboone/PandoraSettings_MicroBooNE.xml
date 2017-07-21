@@ -257,13 +257,26 @@
             <VertexAlgorithms>
                 <algorithm type = "LArCosmicRayVertexBuilding">
                     <InputPfoListName>MuonParticles3D</InputPfoListName>
-                    <OutputVertexListName>Vertices3D</OutputVertexListName>
+                    <OutputVertexListName>CRVertices3D</OutputVertexListName>
                 </algorithm>
             </VertexAlgorithms>
 
             <algorithm type = "LArListPruning" description = "ListPruning">
                 <WarnIfObjectsUnavailable>false</WarnIfObjectsUnavailable>
                 <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
+            </algorithm>
+
+            <algorithm type = "LArListDeletion" description = "ListDeletion">
+                <PfoListNames>MuonParticles3D DeltaRayParticles3D</PfoListNames>
+                <VertexListNames>CRVertices3D</VertexListNames>
+                <ClusterListNames>ClustersU ClustersV ClustersW MuonClusters3D DeltaRayClusters3D</ClusterListNames>
+            </algorithm>
+
+            <algorithm type = "LArListMoving" description = "ListMoving">
+                <PfoListNames>MuonParticles3D DeltaRayParticles3D</PfoListNames>
+                <VertexListNames>CRVertices3D</VertexListNames>
+                <ClusterListNames>ClustersU ClustersV ClustersW MuonClusters3D DeltaRayClusters3D</ClusterListNames>
+                <Prefix>All</Prefix>
             </algorithm>
         </CosmicRayReconstruction>
 
@@ -453,7 +466,7 @@
             <VertexAlgorithms>
                 <algorithm type = "LArCandidateVertexCreation">
                     <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
-                    <OutputVertexListName>CandidateVertices</OutputVertexListName>
+                    <OutputVertexListName>CandidateVertices3D</OutputVertexListName>
                     <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
                     <EnableCrossingCandidates>true</EnableCrossingCandidates>
                 </algorithm>
@@ -551,18 +564,30 @@
                     <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
                 </algorithm>
             </NeutrinoAlgorithms>
+
+            <algorithm type = "LArListDeletion" description = "ListDeletion">
+                <PfoListNames>NeutrinoParticles3D TrackParticles3D ShowerParticles3D</PfoListNames>
+                <VertexListNames>NeutrinoVertices3D DaughterVertices3D CandidateVertices3D</VertexListNames>
+                <ClusterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</ClusterListNames>
+            </algorithm>
+
+            <algorithm type = "LArListMoving" description = "ListMoving">
+                <PfoListNames>NeutrinoParticles3D TrackParticles3D ShowerParticles3D</PfoListNames>
+                <VertexListNames>NeutrinoVertices3D DaughterVertices3D CandidateVertices3D</VertexListNames>
+                <ClusterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</ClusterListNames>
+                <Prefix>All</Prefix>
+            </algorithm>
         </NeutrinoReconstruction>
 
-        <algorithm type = "LArListDeletion" description = "ListDeletion">
-            <PfoListNames>MuonParticles3D DeltaRayParticles3D</PfoListNames>
-            <VertexListNames>Vertices3D</VertexListNames>
-            <ClusterListNames>ClustersU ClustersV ClustersW MuonClusters3D DeltaRayClusters3D</ClusterListNames>
+        <algorithm type = "LArListDeletion" description = "SlicingListDeletion">
+            <PfoListNames>NeutrinoParticles3D TrackParticles3D ShowerParticles3D</PfoListNames>
+            <ClusterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</ClusterListNames>
         </algorithm>
 
         <algorithm type = "LArListMoving" description = "ListMoving">
-            <PfoListNames>NeutrinoParticles3D TrackParticles3D ShowerParticles3D</PfoListNames>
-            <VertexListNames>NeutrinoVertices3D DaughterVertices3D</VertexListNames>
-            <ClusterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</ClusterListNames>
+            <PfoListNames>MuonParticles3D DeltaRayParticles3D</PfoListNames>
+            <VertexListNames>CRVertices3D</VertexListNames>
+            <ClusterListNames>ClustersU ClustersV ClustersW MuonClusters3D DeltaRayClusters3D</ClusterListNames>
             <Prefix>All</Prefix>
         </algorithm>
     </algorithm>
@@ -570,11 +595,11 @@
     <!-- Decorate output particles -->
     <algorithm type = "LArTrackParticleBuilding">
         <PfoListName>AllMuonParticles3D</PfoListName>
-        <VertexListName>AllVertices3D</VertexListName>
+        <VertexListName>AllCRVertices3D</VertexListName>
     </algorithm>
     <algorithm type = "LArPcaShowerParticleBuilding">
         <PfoListName>AllDeltaRayParticles3D</PfoListName>
-        <VertexListName>AllVertices3D</VertexListName>
+        <VertexListName>AllCRVertices3D</VertexListName>
     </algorithm>
 
     <!-- Final output and validation -->

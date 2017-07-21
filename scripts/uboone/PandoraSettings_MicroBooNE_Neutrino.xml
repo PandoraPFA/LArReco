@@ -242,7 +242,7 @@
         <VertexAlgorithms>
             <algorithm type = "LArCandidateVertexCreation">
                 <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
-                <OutputVertexListName>CandidateVertices</OutputVertexListName>
+                <OutputVertexListName>CandidateVertices3D</OutputVertexListName>
                 <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
                 <EnableCrossingCandidates>true</EnableCrossingCandidates>
             </algorithm>
@@ -341,14 +341,15 @@
             </algorithm>
         </NeutrinoAlgorithms>
 
-        <algorithm type = "LArListDeletion" description = "ListDeletion">
+        <algorithm type = "LArListDeletion" description = "SlicingListDeletion">
             <PfoListNames>NeutrinoParticles3D TrackParticles3D ShowerParticles3D</PfoListNames>
+            <VertexListNames>NeutrinoVertices3D DaughterVertices3D CandidateVertices3D</VertexListNames>
             <ClusterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</ClusterListNames>
         </algorithm>
 
         <algorithm type = "LArListMoving" description = "ListMoving">
             <PfoListNames>NeutrinoParticles3D TrackParticles3D ShowerParticles3D</PfoListNames>
-            <VertexListNames>NeutrinoVertices3D DaughterVertices3D CandidateVertices</VertexListNames>
+            <VertexListNames>NeutrinoVertices3D DaughterVertices3D CandidateVertices3D</VertexListNames>
             <ClusterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</ClusterListNames>
             <Prefix>All</Prefix>
         </algorithm>
