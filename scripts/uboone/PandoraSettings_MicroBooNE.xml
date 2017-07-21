@@ -3,7 +3,7 @@
 <pandora>
     <!-- GLOBAL SETTINGS -->
     <IsMonitoringEnabled>true</IsMonitoringEnabled>
-    <ShouldDisplayAlgorithmInfo>true</ShouldDisplayAlgorithmInfo>
+    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
     <!-- PLUGIN SETTINGS -->
@@ -53,8 +53,8 @@
         <ShouldPerformSlicing>true</ShouldPerformSlicing>
 
         <tool type = "LArEventSlicing" description = "Slicing">
-            <TrackPfoListName>MuonParticles3D</TrackPfoListName>
-            <ShowerPfoListName>DeltaRayParticles3D</ShowerPfoListName>
+            <TrackPfoListName>TrackParticles3D</TrackPfoListName>
+            <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
         </tool>
 
         <CosmicRayReconstruction>
@@ -614,7 +614,7 @@
         <ClusterListNames>AllClustersU AllClustersV AllClustersW</ClusterListNames>
         <UseRecoNeutrinosOnly>false</UseRecoNeutrinosOnly>
         <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
-        <PrintAllToScreen>true</PrintAllToScreen>
+        <PrintAllToScreen>false</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <VisualizeMatching>false</VisualizeMatching>
         <VisualizeVertices>false</VisualizeVertices>
@@ -635,7 +635,7 @@
         <IntegrateOverRecoNeutrinos>false</IntegrateOverRecoNeutrinos>
         <UseRecoNeutrinosOnly>true</UseRecoNeutrinosOnly>
         <UseTrueNeutrinosOnly>true</UseTrueNeutrinosOnly>
-        <PrintAllToScreen>true</PrintAllToScreen>
+        <PrintAllToScreen>false</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <VisualizeMatching>false</VisualizeMatching>
         <VisualizeVertices>false</VisualizeVertices>
