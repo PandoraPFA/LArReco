@@ -50,6 +50,10 @@
         <ClusterListNameV>ClustersV</ClusterListNameV>
         <ClusterListNameW>ClustersW</ClusterListNameW>
 
+        <CRParentListName>MuonParticles3D</CRParentListName>
+        <CRDaughterListName>DeltaRayParticles3D</CRDaughterListName>
+        <OutputListPrefix>All</OutputListPrefix>
+
         <ShouldPerformSlicing>true</ShouldPerformSlicing>
 
         <tool type = "LArEventSlicing" description = "Slicing">
@@ -583,6 +587,12 @@
         <algorithm type = "LArListDeletion" description = "SlicingListDeletion">
             <PfoListNames>NeutrinoParticles3D TrackParticles3D ShowerParticles3D</PfoListNames>
             <ClusterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</ClusterListNames>
+        </algorithm>
+
+        <algorithm type = "LArListPruning" description = "OutputListPruning">
+            <WarnIfObjectsUnavailable>false</WarnIfObjectsUnavailable>
+            <VertexListNames>AllCRVertices3D</VertexListNames>
+            <ClusterListNames>AllClustersU AllClustersV AllClustersW AllMuonClusters3D AllDeltaRayClusters3D</ClusterListNames>
         </algorithm>
     </algorithm>
 
