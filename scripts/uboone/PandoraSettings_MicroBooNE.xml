@@ -52,6 +52,7 @@
 
         <CRParentListName>MuonParticles3D</CRParentListName>
         <CRDaughterListName>DeltaRayParticles3D</CRDaughterListName>
+        <NuParentListName>NeutrinoParticles3D</NuParentListName>
         <OutputListPrefix>All</OutputListPrefix>
 
         <ShouldPerformSlicing>true</ShouldPerformSlicing>
@@ -652,9 +653,9 @@
         <OutputFile>Validation_nu.root</OutputFile>
     </algorithm>
 
-    <!--algorithm type = "LArVisualMonitoring">
+    <algorithm type = "LArVisualMonitoring">
         <PfoListNames>AllMuonParticles3D AllNeutrinoParticles3D</PfoListNames>
-    </algorithm-->
+    </algorithm>
 
     <!--algorithm type = "LArVisualMonitoring">
         <ClusterListNames>AllMuonClusters3D AllDeltaRayClusters3D AllTrackClusters3D AllShowerClusters3D</ClusterListNames>
