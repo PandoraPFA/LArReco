@@ -39,11 +39,13 @@
     </algorithm-->
 
     <algorithm type = "LArParent">
+        <PrintStatus>true</PrintStatus>
+
         <ShouldRunAllHitsCosmicReco>true</ShouldRunAllHitsCosmicReco>
         <ShouldRunCosmicHitRemoval>true</ShouldRunCosmicHitRemoval>
         <ShouldRunSlicing>true</ShouldRunSlicing>
-        <ShouldRunSliceNeutrinoReco>true</ShouldRunSliceNeutrinoReco>
-        <ShouldRunSliceCosmicReco>true</ShouldRunSliceCosmicReco>
+        <ShouldRunNeutrinoRecoOption>true</ShouldRunNeutrinoRecoOption>
+        <ShouldRunCosmicRecoOption>true</ShouldRunCosmicRecoOption>
         <ShouldIdentifyNeutrinoSlice>true</ShouldIdentifyNeutrinoSlice>
 
         <CaloHitListNameU>CaloHitListU</CaloHitListNameU>
@@ -606,6 +608,14 @@
     <algorithm type = "LArPcaShowerParticleBuilding">
         <PfoListName>AllDeltaRayParticles3D</PfoListName>
         <VertexListName>AllCRVertices3D</VertexListName>
+    </algorithm>
+    <algorithm type = "LArTrackParticleBuilding">
+        <PfoListName>AllTrackParticles3D</PfoListName>
+        <VertexListName>AllDaughterVertices3D</VertexListName>
+    </algorithm>
+    <algorithm type = "LArPcaShowerParticleBuilding">
+        <PfoListName>AllShowerParticles3D</PfoListName>
+        <VertexListName>AllDaughterVertices3D</VertexListName>
     </algorithm>
 
     <!-- Final output and validation -->
