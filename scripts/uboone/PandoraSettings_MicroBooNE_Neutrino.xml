@@ -53,12 +53,12 @@
 
         <ShouldPerformSlicing>true</ShouldPerformSlicing>
 
-        <algorithm type = "LArTrackClusterCreation" description = "TwoDClustering"/>
-
         <tool type = "LArEventSlicing" description = "Slicing">
             <TrackPfoListName>TrackParticles3D</TrackPfoListName>
             <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
         </tool>
+
+        <algorithm type = "LArTrackClusterCreation" description = "TwoDClustering"/>
 
         <TwoDAlgorithms>
             <algorithm type = "LArLayerSplitting"/>
