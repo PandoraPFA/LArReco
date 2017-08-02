@@ -50,7 +50,7 @@
         <ClusterListNameV>ClustersV</ClusterListNameV>
         <ClusterListNameW>ClustersW</ClusterListNameW>
 
-        <ShouldPerformSlicing>false</ShouldPerformSlicing>
+        <ShouldRunSlicing>false</ShouldRunSlicing>
 
         <tool type = "LArEventSlicing" description = "Slicing">
             <TrackPfoListName>TrackParticles3D</TrackPfoListName>

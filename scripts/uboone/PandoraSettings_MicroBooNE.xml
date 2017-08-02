@@ -26,9 +26,6 @@
         <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
         <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
         <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
-        <OutputMCParticleListNameU>MCParticleListU</OutputMCParticleListNameU>
-        <OutputMCParticleListNameV>MCParticleListV</OutputMCParticleListNameV>
-        <OutputMCParticleListNameW>MCParticleListW</OutputMCParticleListNameW>
         <OutputMCParticleListName3D>MCParticleList3D</OutputMCParticleListName3D>
         <CurrentMCParticleListReplacement>MCParticleList3D</CurrentMCParticleListReplacement>
         <MipEquivalentCut>0.</MipEquivalentCut>
@@ -42,10 +39,16 @@
     </algorithm-->
 
     <algorithm type = "LArParent">
+        <ShouldRunAllHitsCosmicReco>true</ShouldRunAllHitsCosmicReco>
+        <ShouldRunCosmicHitRemoval>true</ShouldRunCosmicHitRemoval>
+        <ShouldRunSlicing>true</ShouldRunSlicing>
+        <ShouldRunSliceNeutrinoReco>true</ShouldRunSliceNeutrinoReco>
+        <ShouldRunSliceCosmicReco>true</ShouldRunSliceCosmicReco>
+        <ShouldIdentifyNeutrinoSlice>true</ShouldIdentifyNeutrinoSlice>
+
         <CaloHitListNameU>CaloHitListU</CaloHitListNameU>
         <CaloHitListNameV>CaloHitListV</CaloHitListNameV>
         <CaloHitListNameW>CaloHitListW</CaloHitListNameW>
-
         <ClusterListNameU>ClustersU</ClusterListNameU>
         <ClusterListNameV>ClustersV</ClusterListNameV>
         <ClusterListNameW>ClustersW</ClusterListNameW>
@@ -54,8 +57,6 @@
         <CRDaughterListName>DeltaRayParticles3D</CRDaughterListName>
         <NuParentListName>NeutrinoParticles3D</NuParentListName>
         <OutputListPrefix>All</OutputListPrefix>
-
-        <ShouldPerformSlicing>true</ShouldPerformSlicing>
 
         <tool type = "LArEventSlicing" description = "Slicing">
             <TrackPfoListName>TrackParticles3D</TrackPfoListName>
@@ -624,9 +625,6 @@
         <VisualizeMatching>false</VisualizeMatching>
         <VisualizeVertices>false</VisualizeVertices>
         <VisualizeRemnants>false</VisualizeRemnants>
-        <VisualizeGaps>false</VisualizeGaps>
-        <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
-        <MatchingMinSharedHits>5</MatchingMinSharedHits>
         <WriteToTree>false</WriteToTree>
         <OutputTree>Validation</OutputTree>
         <OutputFile>Validation_cr.root</OutputFile>
@@ -645,9 +643,6 @@
         <VisualizeMatching>false</VisualizeMatching>
         <VisualizeVertices>false</VisualizeVertices>
         <VisualizeRemnants>false</VisualizeRemnants>
-        <VisualizeGaps>false</VisualizeGaps>
-        <MatchingMinPrimaryHits>15</MatchingMinPrimaryHits>
-        <MatchingMinSharedHits>5</MatchingMinSharedHits>
         <WriteToTree>false</WriteToTree>
         <OutputTree>Validation</OutputTree>
         <OutputFile>Validation_nu.root</OutputFile>
