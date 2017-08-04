@@ -673,4 +673,14 @@
         <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
         <ShowOnlyAvailable>true</ShowOnlyAvailable>
     </algorithm-->
+
+    <!-- For extraction in client application -->
+    <algorithm type = "LArListMerging">
+        <SourcePfoListNames>AllMuonParticles3D AllNeutrinoParticles3D</SourcePfoListNames>
+        <TargetPfoListNames>OutputParticles3D OutputParticles3D</TargetPfoListNames>
+    </algorithm>
+
+    <algorithm type = "LArListChanging">
+        <PfoListName>OutputParticles3D</PfoListName>
+    </algorithm>
 </pandora>
