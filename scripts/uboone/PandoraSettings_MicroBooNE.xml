@@ -60,7 +60,7 @@
         <NuParentListName>NeutrinoParticles3D</NuParentListName>
         <OutputListPrefix>All</OutputListPrefix>
 
-        <tool type = "LArCheatingCosmicRayTagging" description = "CosmicRayTagging"/>
+        <tool type = "LArCosmicRayTagging" description = "CosmicRayTagging"/>
         <tool type = "LArEventSlicing" description = "Slicing">
             <TrackPfoListName>TrackParticles3D</TrackPfoListName>
             <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
