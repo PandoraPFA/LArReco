@@ -28,10 +28,15 @@ public:
      */
     Parameters();
 
-    std::string     m_detectorDescriptionFile;      ///< The detector description file (mandatory parameter)
+    std::string     m_driftVolumeDescriptionFile;   ///< The drift volume description file (mandatory parameter)
     std::string     m_pandoraSettingsFile;          ///< The path to the pandora settings file (mandatory parameter)
     std::string     m_stitchingSettingsFile;        ///< The path to the stitching settings file (required only if multiple drift volumes)
+
+    std::string     m_eventFileName;                ///< Name of the file containing event information
+    std::string     m_geometryFileName;             ///< Name of the file containing geometry information
     int             m_nEventsToProcess;             ///< The number of events to process (default all events in file)
+    int             m_nEventsToSkip;                ///< The number of events to skip
+
     bool            m_shouldDisplayEventTime;       ///< Whether event times should be calculated and displayed (default false)
     bool            m_shouldDisplayEventNumber;     ///< Whether event numbers should be displayed (default false)
 };
@@ -66,20 +71,20 @@ void LoadGeometry(const Parameters &parameters, LArDriftVolumeList &driftVolumeL
 /**
  *  @brief  Create primary pandora instance
  *
- *  @param  configFileName the pandora settings config file name
+ *  @param  parameters the parameters
  *  @param  driftVolumeList the drift volume list
  *  @param  pPrimaryPandora to receive the address of the primary pandora instance
  */
-void CreatePrimaryPandoraInstance(const std::string &configFileName, const LArDriftVolumeList &driftVolumeList, const pandora::Pandora *&pPrimaryPandora);
+void CreatePrimaryPandoraInstance(const Parameters &parameters, const LArDriftVolumeList &driftVolumeList, const pandora::Pandora *&pPrimaryPandora);
 
 /**
  *  @brief  Create daughter pandora instances
  *
- *  @param  configFileName the pandora settings config file name
+ *  @param  parameters the parameters
  *  @param  driftVolumeList the drift volume list
  *  @param  pPrimaryPandora the address of the primary pandora instance
  */
-void CreateDaughterPandoraInstances(const std::string &configFileName, const LArDriftVolumeList &driftVolumeList, const pandora::Pandora *const pPrimaryPandora);
+void CreateDaughterPandoraInstances(const Parameters &parameters, const LArDriftVolumeList &driftVolumeList, const pandora::Pandora *const pPrimaryPandora);
 
 /**
  *  @brief  Create a new Pandora instance and register lar content algs and plugins
@@ -148,6 +153,7 @@ pandora::StatusCode SetParticleX0Values(const pandora::Pandora *const pPandora);
 
 inline Parameters::Parameters() :
     m_nEventsToProcess(-1),
+    m_nEventsToSkip(0),
     m_shouldDisplayEventTime(false),
     m_shouldDisplayEventNumber(false)
 {

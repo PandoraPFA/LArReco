@@ -12,6 +12,7 @@
 
 #include "larpandoracontent/LArContent.h"
 #include "larpandoracontent/LArHelpers/LArPfoHelper.h"
+#include "larpandoracontent/LArPersistency/EventReadingAlgorithm.h"
 #include "larpandoracontent/LArPlugins/LArPseudoLayerPlugin.h"
 #include "larpandoracontent/LArPlugins/LArRotationalTransformationPlugin.h"
 #include "larpandoracontent/LArStitching/MultiPandoraApi.h"
@@ -70,21 +71,30 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
 {
     int c(0);
 
-    while ((c = getopt(argc, argv, "d:i:s:n:t::N::h")) != -1)
+    while ((c = getopt(argc, argv, "d:i:v:s:e:g:n:t::N::h")) != -1)
     {
         switch (c)
         {
         case 'd':
-            parameters.m_detectorDescriptionFile = optarg;
+            parameters.m_driftVolumeDescriptionFile = optarg;
             break;
         case 'i':
             parameters.m_pandoraSettingsFile = optarg;
             break;
-        case 's':
+        case 'v':
             parameters.m_stitchingSettingsFile = optarg;
+            break;
+        case 'e':
+            parameters.m_eventFileName = optarg;
+            break;
+        case 'g':
+            parameters.m_geometryFileName = optarg;
             break;
         case 'n':
             parameters.m_nEventsToProcess = atoi(optarg);
+            break;
+        case 's':
+            parameters.m_nEventsToSkip = atoi(optarg);
             break;
         case 't':
             parameters.m_shouldDisplayEventTime = true;
@@ -95,12 +105,15 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
         case 'h':
         default:
             std::cout << std::endl << "./bin/PandoraInterface " << std::endl
-                      << "    -d Detector.xml          (mandatory)" << std::endl
-                      << "    -i PandoraSettings.xml   (mandatory)" << std::endl
-                      << "    -s StitchingSettings.xml (use-case dependent)" << std::endl
-                      << "    -n NEventsToProcess      (optional)" << std::endl
-                      << "    -N                       (optional, display event numbers)" << std::endl
-                      << "    -t                       (optional, display event times)" << std::endl << std::endl;
+                      << "    -d DriftVolumeDescription   (mandatory)" << std::endl
+                      << "    -i PandoraSettings.xml      (mandatory)" << std::endl
+                      << "    -v StitchingSettings.xml    (use-case dependent)" << std::endl
+                      << "    -e PandoraEventFile         " << std::endl
+                      << "    -g PandoraGeometryFile      " << std::endl
+                      << "    -n NEventsToProcess         (optional)" << std::endl
+                      << "    -s NEventsToSkip            (optional)" << std::endl
+                      << "    -N                          (optional, display event numbers)" << std::endl
+                      << "    -t                          (optional, display event times)" << std::endl << std::endl;
             return false;
         }
     }
@@ -122,32 +135,27 @@ void CreatePandoraInstances(const Parameters &parameters, const Pandora *&pPrima
     }
 
     // Single volume: one Pandora instance. Multiple volumes: one Pandora for each volume and additional instance for stitching volumes
-    if (driftVolumeList.size() > 1)
+    if ((driftVolumeList.size() > 1) && parameters.m_stitchingSettingsFile.empty())
     {
-        if (parameters.m_stitchingSettingsFile.empty())
-        {
-            std::cout << "Multiple drift volumes present - must provide a stitching settings file." << std::endl;
-            throw StatusCodeException(STATUS_CODE_INVALID_PARAMETER);
-        }
+        std::cout << "Multiple drift volumes present - must provide a stitching settings file." << std::endl;
+        throw StatusCodeException(STATUS_CODE_INVALID_PARAMETER);
+    }
 
-        CreatePrimaryPandoraInstance(parameters.m_stitchingSettingsFile, driftVolumeList, pPrimaryPandora);
-        CreateDaughterPandoraInstances(parameters.m_pandoraSettingsFile, driftVolumeList, pPrimaryPandora);
-    }
-    else
-    {
-        CreatePrimaryPandoraInstance(parameters.m_pandoraSettingsFile, driftVolumeList, pPrimaryPandora);
-    }
+    CreatePrimaryPandoraInstance(parameters, driftVolumeList, pPrimaryPandora);
+
+    if (driftVolumeList.size() > 1)
+        CreateDaughterPandoraInstances(parameters, driftVolumeList, pPrimaryPandora);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 void LoadGeometry(const Parameters &parameters, LArDriftVolumeList &driftVolumeList)
 {
-    TiXmlDocument xmlDocument(parameters.m_detectorDescriptionFile);
+    TiXmlDocument xmlDocument(parameters.m_driftVolumeDescriptionFile);
 
     if (!xmlDocument.LoadFile())
     {
-        std::cout << "LArReco, LoadGeometry - Invalid xml file: " << parameters.m_detectorDescriptionFile << std::endl;
+        std::cout << "LArReco, LoadGeometry - Invalid xml file: " << parameters.m_driftVolumeDescriptionFile << std::endl;
         throw StatusCodeException(STATUS_CODE_FAILURE);
     }
 
@@ -193,16 +201,28 @@ void LoadGeometry(const Parameters &parameters, LArDriftVolumeList &driftVolumeL
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void CreatePrimaryPandoraInstance(const std::string &configFileName, const LArDriftVolumeList &driftVolumeList, const Pandora *&pPrimaryPandora)
+void CreatePrimaryPandoraInstance(const Parameters &parameters, const LArDriftVolumeList &driftVolumeList, const Pandora *&pPrimaryPandora)
 {
     pPrimaryPandora = CreateNewPandora();
 
     if (!pPrimaryPandora)
         throw StatusCodeException(STATUS_CODE_FAILURE);
 
+    const std::string configFileName((driftVolumeList.size() > 1) ? parameters.m_stitchingSettingsFile : parameters.m_pandoraSettingsFile);
     const LArDriftVolume &driftVolume(driftVolumeList.front());
 
     MultiPandoraApi::AddPrimaryPandoraInstance(pPrimaryPandora);
+
+    // For single volume cases only - pass commandline parameters to algorithms
+    if (1 == driftVolumeList.size())
+    {
+        auto *const pEventReadingParameters = new lar_content::EventReadingAlgorithm::ExternalEventReadingParameters;
+        pEventReadingParameters->m_geometryFileName = parameters.m_geometryFileName;
+        pEventReadingParameters->m_eventFileName = parameters.m_eventFileName;
+        pEventReadingParameters->m_skipToEvent = parameters.m_nEventsToSkip;
+        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, lar_content::EventReadingAlgorithm::SetExternalParameters(*pPrimaryPandora, pEventReadingParameters));
+    }
+
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPrimaryPandora, configFileName));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPrimaryPandora,
         new lar_content::LArPseudoLayerPlugin(driftVolume.GetWirePitchU(), driftVolume.GetWirePitchV(), driftVolume.GetWirePitchW())));
@@ -222,7 +242,7 @@ void CreatePrimaryPandoraInstance(const std::string &configFileName, const LArDr
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void CreateDaughterPandoraInstances(const std::string &configFileName, const LArDriftVolumeList &driftVolumeList, const Pandora *const pPrimaryPandora)
+void CreateDaughterPandoraInstances(const Parameters &parameters, const LArDriftVolumeList &driftVolumeList, const Pandora *const pPrimaryPandora)
 {
     if (!pPrimaryPandora)
     {
@@ -251,7 +271,7 @@ void CreateDaughterPandoraInstances(const std::string &configFileName, const LAr
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
             new lar_content::LArRotationalTransformationPlugin(driftVolume.GetWireAngleU(), driftVolume.GetWireAngleV(), driftVolume.GetSigmaUVZ())));
 
-        std::string thisConfigFileName(configFileName);
+        std::string thisConfigFileName(parameters.m_pandoraSettingsFile);
         const size_t insertPosition((thisConfigFileName.length() < 4) ? 0 : thisConfigFileName.length() - std::string(".xml").length());
             thisConfigFileName = thisConfigFileName.insert(insertPosition, volumeIdString.str());
 
