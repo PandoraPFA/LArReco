@@ -10,13 +10,7 @@
     <MuonPlugin>LArMuonId</MuonPlugin>
 
     <!-- ALGORITHM SETTINGS -->
-    <algorithm type = "LArEventReading">
-        <EventFileName>INPUT_FILE_NAME</EventFileName>
-        <GeometryFileName>GEOMETRY_FILE_NAME</GeometryFileName>
-        <ShouldReadEvents>true</ShouldReadEvents>
-        <ShouldReadGeometry>READ_GEOMETRY</ShouldReadGeometry>
-        <SkipToEvent>0</SkipToEvent>
-    </algorithm>
+    <algorithm type = "LArEventReading"/>
 
     <!-- COSMIC RAY RECONSTRUCTION -->
     <algorithm type = "LArListPreparation">
@@ -32,15 +26,6 @@
     </algorithm>
 
     <algorithm type = "LArParent">
-        <PrintStatus>true</PrintStatus>
-
-        <ShouldRunAllHitsCosmicReco>false</ShouldRunAllHitsCosmicReco>
-        <ShouldRunCosmicHitRemoval>false</ShouldRunCosmicHitRemoval>
-        <ShouldRunSlicing>false</ShouldRunSlicing>
-        <ShouldRunNeutrinoRecoOption>true</ShouldRunNeutrinoRecoOption>
-        <ShouldRunCosmicRecoOption>false</ShouldRunCosmicRecoOption>
-        <ShouldIdentifyNeutrinoSlice>false</ShouldIdentifyNeutrinoSlice>
-
         <CaloHitListNameU>CaloHitListU</CaloHitListNameU>
         <CaloHitListNameV>CaloHitListV</CaloHitListNameV>
         <CaloHitListNameW>CaloHitListW</CaloHitListNameW>
@@ -48,239 +33,8 @@
         <ClusterListNameV>ClustersV</ClusterListNameV>
         <ClusterListNameW>ClustersW</ClusterListNameW>
 
-        <CRParentListName>MuonParticles3D</CRParentListName>
-        <CRDaughterListName>DeltaRayParticles3D</CRDaughterListName>
         <NuParentListName>NeutrinoParticles3D</NuParentListName>
         <OutputListPrefix>All</OutputListPrefix>
-
-        <tool type = "LArEventSlicing" description = "Slicing">
-            <TrackPfoListName>TrackParticles3D</TrackPfoListName>
-            <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
-        </tool>
-
-        <CosmicRayReconstruction>
-            <algorithm type = "LArTrackClusterCreation" description = "TwoDTrackClustering"/>
-            <algorithm type = "LArSimpleClusterCreation" description = "TwoDDeltaRayClustering"/>
-
-            <TwoDAlgorithms>
-                <algorithm type = "LArLayerSplitting"/>
-                <algorithm type = "LArKinkSplitting"/>
-                <algorithm type = "LArTransverseAssociation"/>
-                <algorithm type = "LArLongitudinalAssociation"/>
-                <algorithm type = "LArTransverseExtension"/>
-                <algorithm type = "LArLongitudinalExtension"/>
-                <algorithm type = "LArCrossGapsAssociation"/>
-                <algorithm type = "LArCrossGapsExtension"/>
-                <algorithm type = "LArBranchSplitting"><CosmicMode>true</CosmicMode></algorithm>
-                <algorithm type = "LArDeltaRaySplitting"><CosmicMode>true</CosmicMode></algorithm>
-                <algorithm type = "LArCrossedTrackSplitting"/>
-                <algorithm type = "LArCosmicRaySplitting"/>
-                <algorithm type = "LArCosmicRayExtension"/>
-                <algorithm type = "LArDeltaRayExtension"/>
-                <algorithm type = "LArTrackConsolidation">
-                    <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
-                </algorithm>
-            </TwoDAlgorithms>
-
-            <ThreeDAlgorithms>
-                <algorithm type = "LArThreeDTransverseTracks">
-                    <InputClusterListNameU>ClustersU</InputClusterListNameU>
-                    <InputClusterListNameV>ClustersV</InputClusterListNameV>
-                    <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                    <OutputPfoListName>MuonParticles3D</OutputPfoListName>
-                    <TrackTools>
-                        <tool type = "LArClearTracks"/>
-                        <tool type = "LArLongTracks"/>
-                        <tool type = "LArOvershootTracks"><SplitMode>true</SplitMode></tool>
-                        <tool type = "LArUndershootTracks"><SplitMode>true</SplitMode></tool>
-                        <tool type = "LArOvershootTracks"><SplitMode>false</SplitMode></tool>
-                        <tool type = "LArUndershootTracks"><SplitMode>false</SplitMode></tool>
-                        <tool type = "LArMissingTrackSegment"/>
-                        <tool type = "LArTrackSplitting"/>
-                        <tool type = "LArLongTracks"><MinMatchedFraction>0.75</MinMatchedFraction><MinXOverlapFraction>0.75</MinXOverlapFraction></tool>
-                        <tool type = "LArTracksCrossingGaps"><MinMatchedFraction>0.75</MinMatchedFraction><MinXOverlapFraction>0.75</MinXOverlapFraction></tool>
-                        <tool type = "LArMissingTrack"/>
-                    </TrackTools>
-                </algorithm>
-                <algorithm type = "LArThreeDLongitudinalTracks">
-                    <InputClusterListNameU>ClustersU</InputClusterListNameU>
-                    <InputClusterListNameV>ClustersV</InputClusterListNameV>
-                    <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                    <OutputPfoListName>MuonParticles3D</OutputPfoListName>
-                    <TrackTools>
-                        <tool type = "LArClearLongitudinalTracks"/>
-                        <tool type = "LArMatchedEndPoints"/>
-                    </TrackTools>
-                </algorithm>
-                <algorithm type = "LArThreeDTrackFragments">
-                    <MinClusterLength>10.</MinClusterLength>
-                    <InputClusterListNameU>ClustersU</InputClusterListNameU>
-                    <InputClusterListNameV>ClustersV</InputClusterListNameV>
-                    <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                    <OutputPfoListName>MuonParticles3D</OutputPfoListName>
-                    <TrackTools>
-                        <tool type = "LArClearTrackFragments"/>
-                    </TrackTools>
-                    <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
-                </algorithm>
-                <algorithm type = "LArCosmicRayTrackMatching">
-                    <InputClusterListNameU>ClustersU</InputClusterListNameU>
-                    <InputClusterListNameV>ClustersV</InputClusterListNameV>
-                    <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                    <OutputPfoListName>MuonParticles3D</OutputPfoListName>
-                </algorithm>
-                <algorithm type = "LArCosmicRayTrackRecovery"> 
-                    <InputClusterListNameU>ClustersU</InputClusterListNameU>
-                    <InputClusterListNameV>ClustersV</InputClusterListNameV>
-                    <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                    <OutputPfoListName>MuonParticles3D</OutputPfoListName>
-                </algorithm>
-            </ThreeDAlgorithms>
-
-            <DeltaRayAlgorithms>
-                <algorithm type = "LArDeltaRayIdentification">
-                    <ParentPfoListName>MuonParticles3D</ParentPfoListName>
-                    <DaughterPfoListName>DeltaRayParticles3D</DaughterPfoListName>
-                </algorithm>
-                <algorithm type = "LArDeltaRayGrowing">
-                    <InputClusterListName>ClustersW</InputClusterListName>
-                    <ParentPfoListName>MuonParticles3D</ParentPfoListName>
-                    <DaughterPfoListName>DeltaRayParticles3D</DaughterPfoListName>
-                </algorithm>
-                <algorithm type = "LArDeltaRayGrowing">
-                    <InputClusterListName>ClustersU</InputClusterListName>
-                    <ParentPfoListName>MuonParticles3D</ParentPfoListName>
-                    <DaughterPfoListName>DeltaRayParticles3D</DaughterPfoListName>
-                </algorithm>
-                <algorithm type = "LArDeltaRayGrowing">
-                    <InputClusterListName>ClustersV</InputClusterListName>
-                    <ParentPfoListName>MuonParticles3D</ParentPfoListName>
-                    <DaughterPfoListName>DeltaRayParticles3D</DaughterPfoListName>
-                </algorithm>
-                <algorithm type = "LArDeltaRayMatching">
-                    <ParentPfoListName>MuonParticles3D</ParentPfoListName>
-                    <DaughterPfoListName>DeltaRayParticles3D</DaughterPfoListName>
-                    <InputClusterListNameU>ClustersU</InputClusterListNameU>
-                    <InputClusterListNameV>ClustersV</InputClusterListNameV>
-                    <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                </algorithm>
-            </DeltaRayAlgorithms>
-
-            <TwoDRemnantAlgorithms>
-                <algorithm type = "LArSimpleClusterGrowing">
-                    <MinCaloHitsPerCluster>5</MinCaloHitsPerCluster>
-                </algorithm>
-                <algorithm type = "LArSimpleClusterMerging">
-                    <MinCaloHitsPerCluster>5</MinCaloHitsPerCluster>
-                </algorithm>
-            </TwoDRemnantAlgorithms>
-
-            <ThreeDRemnantAlgorithms>
-                <algorithm type = "LArThreeDRemnants">
-                    <MinClusterCaloHits>5</MinClusterCaloHits>
-                    <InputClusterListNameU>ClustersU</InputClusterListNameU>
-                    <InputClusterListNameV>ClustersV</InputClusterListNameV>
-                    <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                    <OutputPfoListName>MuonParticles3D</OutputPfoListName>
-                    <TrackTools>
-                        <tool type = "LArClearRemnants"/>
-                        <tool type = "LArConnectedRemnants"/>
-                    </TrackTools>
-                </algorithm>
-                <algorithm type = "LArThreeDRemnants">
-                    <MinClusterCaloHits>2</MinClusterCaloHits>
-                    <InputClusterListNameU>ClustersU</InputClusterListNameU>
-                    <InputClusterListNameV>ClustersV</InputClusterListNameV>
-                    <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                    <OutputPfoListName>MuonParticles3D</OutputPfoListName>
-                    <TrackTools>
-                        <tool type = "LArClearRemnants"/>
-                        <tool type = "LArConnectedRemnants"/>
-                        <tool type = "LArMopUpRemnants"/>
-                    </TrackTools>
-                </algorithm>
-                <algorithm type = "LArCosmicRayShowerMatching">
-                    <MinCaloHitsPerCluster>1</MinCaloHitsPerCluster>
-                    <InputClusterListNameU>ClustersU</InputClusterListNameU>
-                    <InputClusterListNameV>ClustersV</InputClusterListNameV>
-                    <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                    <OutputPfoListName>MuonParticles3D</OutputPfoListName>
-                </algorithm>
-                <algorithm type = "LArIsolatedClusterMopUp">
-                    <PfoListNames>MuonParticles3D DeltaRayParticles3D</PfoListNames>
-                    <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
-                    <ExcludePfosContainingTracks>false</ExcludePfosContainingTracks>
-                </algorithm>
-            </ThreeDRemnantAlgorithms>
-
-            <ThreeDHitAlgorithms>
-                <algorithm type = "LArThreeDHitCreation">
-                    <InputPfoListName>MuonParticles3D</InputPfoListName>
-                    <OutputCaloHitListName>MuonCaloHits3D</OutputCaloHitListName>
-                    <OutputClusterListName>MuonClusters3D</OutputClusterListName>
-                    <HitCreationTools>
-                        <tool type = "LArClearTransverseTrackHits"><MinViews>3</MinViews></tool>
-                        <tool type = "LArClearLongitudinalTrackHits"><MinViews>3</MinViews></tool>
-                        <tool type = "LArMultiValuedLongitudinalTrackHits"><MinViews>3</MinViews></tool>
-                        <tool type = "LArMultiValuedTransverseTrackHits"><MinViews>3</MinViews></tool>
-                        <tool type = "LArClearTransverseTrackHits"><MinViews>2</MinViews></tool>
-                        <tool type = "LArClearLongitudinalTrackHits"><MinViews>2</MinViews></tool>
-                        <tool type = "LArMultiValuedLongitudinalTrackHits"><MinViews>2</MinViews></tool>
-                    </HitCreationTools>
-                </algorithm>
-                <algorithm type = "LArThreeDHitCreation">
-                    <InputPfoListName>MuonParticles3D</InputPfoListName>
-                    <OutputCaloHitListName>MuonCaloHits3D</OutputCaloHitListName>
-                    <OutputClusterListName>MuonClusters3D</OutputClusterListName>
-                    <HitCreationTools>
-                        <tool type = "LArThreeViewShowerHits">
-                            <ChiSquaredCut>5.</ChiSquaredCut>
-                            <ZTolerance>3.</ZTolerance>
-                        </tool>
-                        <tool type = "LArTwoViewShowerHits">
-                            <ChiSquaredCut>5.</ChiSquaredCut>
-                            <XTolerance>2.</XTolerance> 
-                        </tool>
-                    </HitCreationTools>
-                </algorithm>
-                <algorithm type = "LArThreeDHitCreation">
-                    <InputPfoListName>DeltaRayParticles3D</InputPfoListName>
-                    <OutputCaloHitListName>DeltaRayCaloHits3D</OutputCaloHitListName>
-                    <OutputClusterListName>DeltaRayClusters3D</OutputClusterListName>
-                    <HitCreationTools>
-                        <tool type = "LArThreeViewShowerHits"><ChiSquaredCut>5.</ChiSquaredCut><ZTolerance>3.</ZTolerance></tool>
-                        <tool type = "LArTwoViewShowerHits"><ChiSquaredCut>5.</ChiSquaredCut><XTolerance>2.</XTolerance></tool>
-                        <tool type = "LArDeltaRayShowerHits"/>
-                    </HitCreationTools>
-                </algorithm>
-            </ThreeDHitAlgorithms>
-
-            <VertexAlgorithms>
-                <algorithm type = "LArCosmicRayVertexBuilding">
-                    <InputPfoListName>MuonParticles3D</InputPfoListName>
-                    <OutputVertexListName>CRVertices3D</OutputVertexListName>
-                </algorithm>
-            </VertexAlgorithms>
-
-            <algorithm type = "LArListPruning" description = "ListPruning">
-                <WarnIfObjectsUnavailable>false</WarnIfObjectsUnavailable>
-                <VertexListNames>CRVertices3D</VertexListNames>
-                <ClusterListNames>ClustersU ClustersV ClustersW MuonClusters3D DeltaRayClusters3D</ClusterListNames>
-            </algorithm>
-
-            <algorithm type = "LArListDeletion" description = "ListDeletion">
-                <PfoListNames>MuonParticles3D DeltaRayParticles3D</PfoListNames>
-                <VertexListNames>CRVertices3D</VertexListNames>
-                <ClusterListNames>ClustersU ClustersV ClustersW MuonClusters3D DeltaRayClusters3D</ClusterListNames>
-            </algorithm>
-
-            <algorithm type = "LArListMoving" description = "ListMoving">
-                <PfoListNames>MuonParticles3D DeltaRayParticles3D</PfoListNames>
-                <VertexListNames>CRVertices3D</VertexListNames>
-                <ClusterListNames>ClustersU ClustersV ClustersW MuonClusters3D DeltaRayClusters3D</ClusterListNames>
-                <Prefix>All</Prefix>
-            </algorithm>
-        </CosmicRayReconstruction>
 
         <!-- Reconstruction of individual neutrino interactions -->
         <NeutrinoReconstruction>
@@ -302,8 +56,7 @@
                 </algorithm>
             </TwoDAlgorithms>
 
-            <ThreeDAlgorithms>
-                <!-- Track reconstruction -->
+            <ThreeDTrackAlgorithms>
                 <algorithm type = "LArThreeDTransverseTracks">
                     <InputClusterListNameU>ClustersU</InputClusterListNameU>
                     <InputClusterListNameV>ClustersV</InputClusterListNameV>
@@ -344,8 +97,9 @@
                     </TrackTools>
                     <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
                 </algorithm>
+            </ThreeDTrackAlgorithms>
 
-                <!-- Shower reconstruction -->
+            <ThreeDShowerAlgorithms>
                 <algorithm type = "LArCutPfoCharacterisation">
                     <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                     <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
@@ -371,50 +125,9 @@
                         <tool type = "LArSimpleShowers"/>
                     </ShowerTools>
                 </algorithm>
+            </ThreeDShowerAlgorithms>
 
-                <!-- Repeat track reconstruction -->
-                <algorithm type = "LArThreeDTransverseTracks">
-                    <InputClusterListNameU>ClustersU</InputClusterListNameU>
-                    <InputClusterListNameV>ClustersV</InputClusterListNameV>
-                    <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                    <OutputPfoListName>TrackParticles3D</OutputPfoListName>
-                    <TrackTools>
-                        <tool type = "LArClearTracks"/>
-                        <tool type = "LArLongTracks"/>
-                        <tool type = "LArOvershootTracks"><SplitMode>true</SplitMode></tool>
-                        <tool type = "LArUndershootTracks"><SplitMode>true</SplitMode></tool>
-                        <tool type = "LArOvershootTracks"><SplitMode>false</SplitMode></tool>
-                        <tool type = "LArUndershootTracks"><SplitMode>false</SplitMode></tool>
-                        <tool type = "LArMissingTrackSegment"/>
-                        <tool type = "LArTrackSplitting"/>
-                        <tool type = "LArLongTracks"><MinMatchedFraction>0.75</MinMatchedFraction><MinXOverlapFraction>0.75</MinXOverlapFraction></tool>
-                        <tool type = "LArTracksCrossingGaps"><MinMatchedFraction>0.75</MinMatchedFraction><MinXOverlapFraction>0.75</MinXOverlapFraction></tool>
-                        <tool type = "LArMissingTrack"/>
-                    </TrackTools>
-                </algorithm>
-                <algorithm type = "LArThreeDLongitudinalTracks">
-                    <InputClusterListNameU>ClustersU</InputClusterListNameU>
-                    <InputClusterListNameV>ClustersV</InputClusterListNameV>
-                    <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                    <OutputPfoListName>TrackParticles3D</OutputPfoListName>
-                    <TrackTools>
-                        <tool type = "LArClearLongitudinalTracks"/>
-                        <tool type = "LArMatchedEndPoints"/>
-                    </TrackTools>
-                </algorithm>
-                <algorithm type = "LArThreeDTrackFragments">
-                    <MinClusterLength>5.</MinClusterLength>
-                    <InputClusterListNameU>ClustersU</InputClusterListNameU>
-                    <InputClusterListNameV>ClustersV</InputClusterListNameV>
-                    <InputClusterListNameW>ClustersW</InputClusterListNameW>
-                    <OutputPfoListName>TrackParticles3D</OutputPfoListName>
-                    <TrackTools>
-                        <tool type = "LArClearTrackFragments"/>
-                    </TrackTools>
-                    <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
-                </algorithm>
-
-                <!-- Obscured particle recovery -->
+            <ThreeDRecoveryAlgorithms>
                 <algorithm type = "LArVertexBasedPfoRecovery">
                     <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
                     <OutputPfoListName>TrackParticles3D</OutputPfoListName>
@@ -431,7 +144,7 @@
                     <MinClusterCaloHits>5</MinClusterCaloHits>
                     <MinClusterLength>1.</MinClusterLength>
                 </algorithm>
-            </ThreeDAlgorithms>
+            </ThreeDRecoveryAlgorithms>
 
             <ThreeDHitAlgorithms>
                 <algorithm type = "LArCutPfoCharacterisation">
@@ -580,28 +293,9 @@
                 <Prefix>All</Prefix>
             </algorithm>
         </NeutrinoReconstruction>
-
-        <algorithm type = "LArListDeletion" description = "SlicingListDeletion">
-            <PfoListNames>NeutrinoParticles3D TrackParticles3D ShowerParticles3D</PfoListNames>
-            <ClusterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</ClusterListNames>
-        </algorithm>
-
-        <algorithm type = "LArListPruning" description = "OutputListPruning">
-            <WarnIfObjectsUnavailable>false</WarnIfObjectsUnavailable>
-            <VertexListNames>AllCRVertices3D</VertexListNames>
-            <ClusterListNames>AllClustersU AllClustersV AllClustersW AllMuonClusters3D AllDeltaRayClusters3D</ClusterListNames>
-        </algorithm>
     </algorithm>
 
     <!-- Decorate output particles -->
-    <algorithm type = "LArTrackParticleBuilding">
-        <PfoListName>AllMuonParticles3D</PfoListName>
-        <VertexListName>AllCRVertices3D</VertexListName>
-    </algorithm>
-    <algorithm type = "LArPcaShowerParticleBuilding">
-        <PfoListName>AllDeltaRayParticles3D</PfoListName>
-        <VertexListName>AllCRVertices3D</VertexListName>
-    </algorithm>
     <algorithm type = "LArTrackParticleBuilding">
         <PfoListName>AllTrackParticles3D</PfoListName>
         <VertexListName>AllDaughterVertices3D</VertexListName>
@@ -612,27 +306,6 @@
     </algorithm>
 
     <!-- Final output and validation -->
-    <algorithm type = "LArListChanging">
-        <PfoListName>AllMuonParticles3D</PfoListName>
-    </algorithm>
-
-    <!--algorithm type = "LArEventValidation">
-        <CaloHitListName>CaloHitList2D</CaloHitListName>
-        <MCParticleListName>MCParticleList3D</MCParticleListName>
-        <PfoListName>AllMuonParticles3D</PfoListName>
-        <ClusterListNames>AllClustersU AllClustersV AllClustersW</ClusterListNames>
-        <UseRecoNeutrinosOnly>false</UseRecoNeutrinosOnly>
-        <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
-        <PrintAllToScreen>true</PrintAllToScreen>
-        <PrintMatchingToScreen>true</PrintMatchingToScreen>
-        <VisualizeMatching>false</VisualizeMatching>
-        <VisualizeVertices>false</VisualizeVertices>
-        <VisualizeRemnants>false</VisualizeRemnants>
-        <WriteToTree>false</WriteToTree>
-        <OutputTree>Validation</OutputTree>
-        <OutputFile>Validation_cr.root</OutputFile>
-    </algorithm-->
-
     <algorithm type = "LArEventValidation">
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>MCParticleList3D</MCParticleListName>
@@ -653,12 +326,7 @@
     </algorithm>
 
     <!-- For extraction in client application -->
-    <algorithm type = "LArListMerging">
-        <SourcePfoListNames>AllMuonParticles3D AllNeutrinoParticles3D</SourcePfoListNames>
-        <TargetPfoListNames>OutputParticles3D OutputParticles3D</TargetPfoListNames>
-    </algorithm>
-
     <algorithm type = "LArListChanging">
-        <PfoListName>OutputParticles3D</PfoListName>
+        <PfoListName>AllNeutrinoParticles3D</PfoListName>
     </algorithm>
 </pandora>

@@ -565,10 +565,6 @@
     </algorithm>
 
     <!-- Final output and validation -->
-    <algorithm type = "LArListChanging">
-        <PfoListName>AllMuonParticles3D</PfoListName>
-    </algorithm>
-
     <algorithm type = "LArEventValidation">
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>MCParticleList3D</MCParticleListName>
@@ -610,12 +606,6 @@
 
     <!--algorithm type = "LArVisualMonitoring">
         <ClusterListNames>AllMuonClusters3D AllDeltaRayClusters3D AllTrackClusters3D AllShowerClusters3D</ClusterListNames>
-    </algorithm-->
-
-    <!--algorithm type = "LArVisualMonitoring">
-        <ClusterListNames>AllClustersU AllClustersV AllClustersW</ClusterListNames>
-        <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
-        <ShowOnlyAvailable>true</ShowOnlyAvailable>
     </algorithm-->
 
     <!-- For extraction in client application -->
