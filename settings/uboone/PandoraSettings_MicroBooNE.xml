@@ -33,15 +33,6 @@
     </algorithm-->
 
     <algorithm type = "LArParent">
-        <PrintStatus>true</PrintStatus>
-
-        <ShouldRunAllHitsCosmicReco>true</ShouldRunAllHitsCosmicReco>
-        <ShouldRunCosmicHitRemoval>true</ShouldRunCosmicHitRemoval>
-        <ShouldRunSlicing>true</ShouldRunSlicing>
-        <ShouldRunNeutrinoRecoOption>true</ShouldRunNeutrinoRecoOption>
-        <ShouldRunCosmicRecoOption>true</ShouldRunCosmicRecoOption>
-        <ShouldIdentifyNeutrinoSlice>true</ShouldIdentifyNeutrinoSlice>
-
         <CaloHitListNameU>CaloHitListU</CaloHitListNameU>
         <CaloHitListNameV>CaloHitListV</CaloHitListNameV>
         <CaloHitListNameW>CaloHitListW</CaloHitListNameW>
