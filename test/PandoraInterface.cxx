@@ -55,8 +55,13 @@ int main(int argc, char *argv[])
     }
     catch (const StatusCodeException &statusCodeException)
     {
-        std::cerr << "Pandora exception: " << statusCodeException.ToString() << std::endl;
+        std::cerr << "Pandora StatusCodeException: " << statusCodeException.ToString() << std::endl;
         return 1;
+    }
+    catch (const StopProcessingException &)
+    {
+        // Exit gracefully
+        return 0;
     }
     catch (...)
     {
@@ -170,7 +175,7 @@ void CreatePrimaryPandoraInstance(const Parameters &parameters, const LArDriftVo
     if (!pPrimaryPandora)
         throw StatusCodeException(STATUS_CODE_FAILURE);
 
-    const std::string configFileName((driftVolumeList.size() > 1) ? parameters.m_stitchingSettingsFile : parameters.m_pandoraSettingsFile);
+    const std::string configFileName((driftVolumeList.size() > 1) ? parameters.m_stitchingSettingsFile : parameters.m_settingsFile);
     const LArDriftVolume &driftVolume(driftVolumeList.front());
 
     MultiPandoraApi::AddPrimaryPandoraInstance(pPrimaryPandora);
@@ -236,7 +241,7 @@ void CreateDaughterPandoraInstances(const Parameters &parameters, const LArDrift
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
             new lar_content::LArRotationalTransformationPlugin(driftVolume.GetWireAngleU(), driftVolume.GetWireAngleV(), driftVolume.GetSigmaUVZ())));
 
-        std::string thisConfigFileName(parameters.m_pandoraSettingsFile);
+        std::string thisConfigFileName(parameters.m_settingsFile);
         const size_t insertPosition((thisConfigFileName.length() < 4) ? 0 : thisConfigFileName.length() - std::string(".xml").length());
             thisConfigFileName = thisConfigFileName.insert(insertPosition, volumeIdString.str());
 
@@ -265,21 +270,21 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
     int c(0);
     std::string recoOption;
 
-    while ((c = getopt(argc, argv, "i:e:v:r:g:t:n:s:p::N::h")) != -1)
+    while ((c = getopt(argc, argv, "r:i:e:v:g:t:n:s:p::N::h")) != -1)
     {
         switch (c)
         {
+        case 'r':
+            recoOption = optarg;
+            break;
         case 'i':
-            parameters.m_pandoraSettingsFile = optarg;
+            parameters.m_settingsFile = optarg;
             break;
         case 'e':
-            parameters.m_eventFileName = optarg;
+            parameters.m_eventFileNameList = optarg;
             break;
         case 'v':
             parameters.m_driftVolumeDescriptionFile = optarg;
-            break;
-        case 'r':
-            recoOption = optarg;
             break;
         case 'g':
             parameters.m_geometryFileName = optarg;
@@ -313,16 +318,16 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
 bool PrintOptions()
 {
     std::cout << std::endl << "./bin/PandoraInterface " << std::endl
-              << "    -i PandoraSettings.xml      (mandatory)" << std::endl
-              << "    -e PandoraEventFile         (mandatory)" << std::endl
-              << "    -v DriftVolumeDescription   (mandatory)" << std::endl
-              << "    -r RecoOption               (mandatory) [Full, AllHitsCR, AllHitsNu, CRRemHitsSliceCR, CRRemHitsSliceNu, AllHitsSliceCR, AllHitsSliceNu]" << std::endl
-              << "    -g PandoraGeometryFile      (usage dependent)" << std::endl
-              << "    -t StitchingSettings.xml    (usage dependent)" << std::endl
-              << "    -n NEventsToProcess         (optional)" << std::endl
-              << "    -s NEventsToSkip            (optional)" << std::endl
-              << "    -p                          (optional, print reconstruction status)" << std::endl
-              << "    -N                          (optional, print event numbers)" << std::endl << std::endl;
+              << "    -r RecoOption          (required) [Full, AllHitsCR, AllHitsNu, CRRemHitsSliceCR, CRRemHitsSliceNu, AllHitsSliceCR, AllHitsSliceNu]" << std::endl
+              << "    -i Settings            (required) [algorithm description: xml]" << std::endl
+              << "    -e EventFileList       (required) [colon-separated list of files: xml/pndr]" << std::endl
+              << "    -v DriftVolumeFile     (required) [drift volume description: xml]" << std::endl
+              << "    -g GeometryFile        (optional) [detector gap description: xml/pndr]" << std::endl
+              << "    -t StitchingSettings   (optional) [stitching algorithm description: xml]" << std::endl
+              << "    -n NEventsToProcess    (optional) [no. of events to process]" << std::endl
+              << "    -s NEventsToSkip       (optional) [no. of events to skip in first file]" << std::endl
+              << "    -p                     (optional) [print status]" << std::endl
+              << "    -N                     (optional) [print event numbers]" << std::endl << std::endl;
 
     return false;
 }
@@ -412,7 +417,7 @@ void ProcessExternalParameters(const Parameters &parameters, const Pandora *cons
 {
     auto *const pEventReadingParameters = new lar_content::EventReadingAlgorithm::ExternalEventReadingParameters;
     pEventReadingParameters->m_geometryFileName = parameters.m_geometryFileName;
-    pEventReadingParameters->m_eventFileName = parameters.m_eventFileName;
+    pEventReadingParameters->m_eventFileNameList = parameters.m_eventFileNameList;
     pEventReadingParameters->m_skipToEvent = parameters.m_nEventsToSkip;
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, pandora::ExternallyConfiguredAlgorithm::SetExternalParameters(*pPrimaryPandora, "LArEventReading", pEventReadingParameters));
 
