@@ -33,6 +33,9 @@ using namespace lar_reco;
 
 int main(int argc, char *argv[])
 {
+    int errorNo(0);
+    const Pandora *pPrimaryPandora(nullptr);
+
     try
     {
         Parameters parameters;
@@ -44,32 +47,31 @@ int main(int argc, char *argv[])
         TApplication *pTApplication = new TApplication("LArReco", &argc, argv);
         pTApplication->SetReturnFromRun(kTRUE);
 #endif
-        const Pandora *pPrimaryPandora(nullptr);
         CreatePandoraInstances(parameters, pPrimaryPandora);
 
         if (!pPrimaryPandora)
             throw StatusCodeException(STATUS_CODE_FAILURE);
 
         ProcessEvents(parameters, pPrimaryPandora);
-        MultiPandoraApi::DeletePandoraInstances(pPrimaryPandora);
     }
     catch (const StatusCodeException &statusCodeException)
     {
         std::cerr << "Pandora StatusCodeException: " << statusCodeException.ToString() << std::endl;
-        return 1;
+        errorNo = 1;
     }
     catch (const StopProcessingException &)
     {
         // Exit gracefully
-        return 0;
+        errorNo = 0;
     }
     catch (...)
     {
         std::cerr << "Unknown exception: " << std::endl;
-        return 1;
+        errorNo = 1;
     }
 
-    return 0;
+    MultiPandoraApi::DeletePandoraInstances(pPrimaryPandora);
+    return errorNo;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
