@@ -12,7 +12,6 @@
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading"/>
 
-    <!-- COSMIC RAY RECONSTRUCTION -->
     <algorithm type = "LArListPreparation">
         <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
         <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
@@ -158,6 +157,9 @@
                     <InputClusterListNameV>ClustersV</InputClusterListNameV>
                     <InputClusterListNameW>ClustersW</InputClusterListNameW>
                 </algorithm>
+                <algorithm type = "LArUnattachedDeltaRays">
+                    <PfoListName>DeltaRayParticles3D</PfoListName>
+                </algorithm>
             </DeltaRayAlgorithms>
 
             <TwoDRemnantAlgorithms>
@@ -276,7 +278,6 @@
             </algorithm>
         </CosmicRayReconstruction>
 
-        <!-- Reconstruction of individual neutrino interactions -->
         <NeutrinoReconstruction>
             <algorithm type = "LArTrackClusterCreation" description = "TwoDClustering"/>
 
@@ -600,9 +601,9 @@
         <OutputFile>Validation_nu.root</OutputFile>
     </algorithm>
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <PfoListNames>AllMuonParticles3D AllNeutrinoParticles3D</PfoListNames>
-    </algorithm>
+    </algorithm-->
 
     <!--algorithm type = "LArVisualMonitoring">
         <ClusterListNames>AllMuonClusters3D AllDeltaRayClusters3D AllTrackClusters3D AllShowerClusters3D</ClusterListNames>
