@@ -24,7 +24,7 @@
 #include "TApplication.h"
 #endif
 
-#include <cstdlib>
+#include <getopt.h>
 #include <iostream>
 #include <string>
 
@@ -272,7 +272,7 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
     int c(0);
     std::string recoOption;
 
-    while ((c = getopt(argc, argv, "r:i:e:v:g:t:n:s:p::N::h")) != -1)
+    while ((c = getopt(argc, argv, "r:i:e:v:g:n:s:pNh")) != -1)
     {
         switch (c)
         {
