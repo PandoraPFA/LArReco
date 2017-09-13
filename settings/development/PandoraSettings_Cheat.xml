@@ -12,7 +12,7 @@
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading"/>
 
-    <!-- COSMIC RAY RECONSTRUCTION -->
+    <!-- Cosmic-ray muon reconstruction -->
     <algorithm type = "LArListPreparation">
         <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
         <OutputCaloHitListNameW>CRCaloHitListW</OutputCaloHitListNameW>
@@ -34,7 +34,7 @@
         <ShowDetector>false</ShowDetector>
     </algorithm-->
 
-    <!-- 2D cosmic ray reconstruction, U View -->
+    <!-- 2D cosmic-ray muon reconstruction, U View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation">
             <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
@@ -46,7 +46,7 @@
         <ReplaceCurrentClusterList>true</ReplaceCurrentClusterList>
     </algorithm>
 
-    <!-- 2D cosmic ray reconstruction, V View -->
+    <!-- 2D cosmic-ray muon reconstruction, V View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation">
             <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
@@ -58,7 +58,7 @@
         <ReplaceCurrentClusterList>true</ReplaceCurrentClusterList>
     </algorithm>
 
-    <!-- 2D cosmic ray reconstruction, W View -->
+    <!-- 2D cosmic-ray muon reconstruction, W View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation">
             <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
@@ -70,7 +70,7 @@
         <ReplaceCurrentClusterList>true</ReplaceCurrentClusterList>
     </algorithm>
 
-    <!-- 3D cosmic ray reconstruction -->
+    <!-- 3D cosmic-ray muon reconstruction -->
     <algorithm type = "LArCheatingPfoCreation">
         <InputClusterListNames>CRClustersU CRClustersV CRClustersW</InputClusterListNames>
         <OutputPfoListName>CRParticles3D</OutputPfoListName>
@@ -78,13 +78,7 @@
         <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
     </algorithm>
 
-    <!-- Cosmic ray tidy-up -->
-    <algorithm type = "LArCheatingCosmicRayShowerMatching">
-        <InputPfoListName>CRParticles3D</InputPfoListName>
-        <InputClusterListNames>CRClustersU CRClustersV CRClustersW</InputClusterListNames>
-    </algorithm>
-
-    <!-- 3D cosmic ray identification and removal -->
+    <!-- 3D cosmic-ray muon identification, and removal of any other interactions -->
     <algorithm type = "LArCheatingCosmicRayIdentification">
         <InputPfoListName>CRParticles3D</InputPfoListName>
         <OutputPfoListName>CRParentParticles3D</OutputPfoListName>
@@ -95,7 +89,7 @@
         <ClusterListNames>CRClustersU CRClustersV CRClustersW</ClusterListNames>
     </algorithm>
 
-    <!-- 3D cosmic-ray hit creation -->
+    <!-- 3D cosmic-ray muon hit creation -->
     <algorithm type = "LArThreeDHitCreation">
         <InputPfoListName>CRParentParticles3D</InputPfoListName>
         <OutputCaloHitListName>CRCaloHitList3D</OutputCaloHitListName>
@@ -115,7 +109,7 @@
     </algorithm>
 
 
-    <!-- NEUTRINO-INDUCED EVENT RECONSTRUCTION -->
+    <!-- Neutrino-induced event reconstruction -->
     <algorithm type = "LArListPreparation">
         <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
         <OutputCaloHitListNameW>NCaloHitListW</OutputCaloHitListNameW>
@@ -173,7 +167,7 @@
         <ReplaceCurrentClusterList>true</ReplaceCurrentClusterList>
     </algorithm>
 
-    <!-- 3D vertex reconstruction -->
+    <!-- 3D neutrino vertex reconstruction -->
     <algorithm type = "LArCheatingVertexCreation">
         <OutputVertexListName>NVertices</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
@@ -187,6 +181,8 @@
         <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
         <MCParticleListName>NMCParticleList3D</MCParticleListName>
     </algorithm>
+
+    <!-- 3D neutrino-induced hit creation -->
     <algorithm type = "LArThreeDHitCreation">
         <InputPfoListName>NParticles3D</InputPfoListName>
         <OutputCaloHitListName>NCaloHitList3D</OutputCaloHitListName>
@@ -205,7 +201,7 @@
         </HitCreationTools>
     </algorithm>
 
-    <!-- Construct neutrino and daughter pfo hierarchy -->
+    <!-- 3D neutrino event hierarchy -->
     <algorithm type = "LArCheatingNeutrinoCreation">
         <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
         <MCParticleListName>NMCParticleList3D</MCParticleListName>
@@ -220,7 +216,7 @@
         <OutputVertexListName>NDaughterVertices3D</OutputVertexListName>
     </algorithm>
 
-    <!-- VALIDATION -->
+    <!-- Final output and validation -->
     <algorithm type = "LArEventValidation">
         <CaloHitListName>CRCaloHitList2D</CaloHitListName>
         <MCParticleListName>CRMCParticleList3D</MCParticleListName>
@@ -233,10 +229,9 @@
         <VisualizeMatching>false</VisualizeMatching>
         <VisualizeVertices>false</VisualizeVertices>
         <VisualizeRemnants>false</VisualizeRemnants>
-        <VisualizeGaps>false</VisualizeGaps>
         <WriteToTree>false</WriteToTree>
         <OutputTree>Validation</OutputTree>
-        <OutputFile>Validation.root</OutputFile>
+        <OutputFile>Validation_cr.root</OutputFile>
     </algorithm>
 
     <algorithm type = "LArEventValidation">
@@ -252,24 +247,17 @@
         <VisualizeMatching>false</VisualizeMatching>
         <VisualizeVertices>false</VisualizeVertices>
         <VisualizeRemnants>false</VisualizeRemnants>
-        <VisualizeGaps>false</VisualizeGaps>
         <WriteToTree>false</WriteToTree>
         <OutputTree>Validation</OutputTree>
-        <OutputFile>Validation.root</OutputFile>
-    </algorithm>
-
-    <algorithm type = "LArVisualMonitoring">
-        <PfoListNames>CRParentParticles3D NParentParticles3D</PfoListNames>
+        <OutputFile>Validation_nu.root</OutputFile>
     </algorithm>
 
     <!--algorithm type = "LArVisualMonitoring">
-        <ClusterListNames>CRClusters3D NClusters3D</ClusterListNames>
+        <PfoListNames>CRParentParticles3D NParentParticles3D</PfoListNames>
     </algorithm-->
 
     <!--algorithm type = "LArVisualMonitoring">
-        <ClusterListNames>NClustersU NClustersV NClustersW</ClusterListNames>
-        <CaloHitListNames>NCaloHitListU NCaloHitListV NCaloHitListW</CaloHitListNames>
-        <ShowOnlyAvailable>true</ShowOnlyAvailable>
+        <ClusterListNames>CRClusters3D NClusters3D</ClusterListNames>
     </algorithm-->
 
     <!-- For extraction in client application -->
