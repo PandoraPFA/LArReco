@@ -246,11 +246,8 @@ void CreateDaughterPandoraInstances(const Parameters &parameters, const LArDrift
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
             new lar_content::LArRotationalTransformationPlugin(driftVolume.GetWireAngleU(), driftVolume.GetWireAngleV(), driftVolume.GetSigmaUVZ())));
 
-//        std::string thisConfigFileName(parameters.m_settingsFile);
-//        const size_t insertPosition((thisConfigFileName.length() < 4) ? 0 : thisConfigFileName.length() - std::string(".xml").length());
-//            thisConfigFileName = thisConfigFileName.insert(insertPosition, volumeIdString);
-
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPandora, parameters.m_settingsFile));
+        const std::string thisConfigFileName(!parameters.m_uniqueInstanceSettings ? parameters.m_settingsFile : ReplaceString(parameters.m_settingsFile, ".", volumeIdString + "."));
+        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPandora, thisConfigFileName));
     }
 }
 
@@ -275,7 +272,7 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
     int c(0);
     std::string recoOption;
 
-    while ((c = getopt(argc, argv, "r:i:e:v:g:t:n:s:pNh")) != -1)
+    while ((c = getopt(argc, argv, "r:i:v:e:g:t:n:s:upNh")) != -1)
     {
         switch (c)
         {
@@ -285,11 +282,11 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
         case 'i':
             parameters.m_settingsFile = optarg;
             break;
-        case 'e':
-            parameters.m_eventFileNameList = optarg;
-            break;
         case 'v':
             parameters.m_driftVolumeDescriptionFile = optarg;
+            break;
+        case 'e':
+            parameters.m_eventFileNameList = optarg;
             break;
         case 'g':
             parameters.m_geometryFileName = optarg;
@@ -302,6 +299,9 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
             break;
         case 's':
             parameters.m_nEventsToSkip = atoi(optarg);
+            break;
+        case 'u':
+            parameters.m_uniqueInstanceSettings = true;
             break;
         case 'p':
             parameters.m_printOverallRecoStatus = true;
@@ -325,12 +325,13 @@ bool PrintOptions()
     std::cout << std::endl << "./bin/PandoraInterface " << std::endl
               << "    -r RecoOption          (required) [Full, AllHitsCR, AllHitsNu, CRRemHitsSliceCR, CRRemHitsSliceNu, AllHitsSliceCR, AllHitsSliceNu]" << std::endl
               << "    -i Settings            (required) [algorithm description: xml]" << std::endl
-              << "    -e EventFileList       (required) [colon-separated list of files: xml/pndr]" << std::endl
               << "    -v DriftVolumeFile     (required) [drift volume description: xml]" << std::endl
+              << "    -e EventFileList       (optional) [colon-separated list of files: xml/pndr]" << std::endl
               << "    -g GeometryFile        (optional) [detector gap description: xml/pndr]" << std::endl
               << "    -t StitchingSettings   (optional) [stitching algorithm description: xml]" << std::endl
               << "    -n NEventsToProcess    (optional) [no. of events to process]" << std::endl
               << "    -s NEventsToSkip       (optional) [no. of events to skip in first file]" << std::endl
+              << "    -u                     (optional) [use unique settings file for each pandora instance]" << std::endl
               << "    -p                     (optional) [print status]" << std::endl
               << "    -N                     (optional) [print event numbers]" << std::endl << std::endl;
 
@@ -421,7 +422,7 @@ bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters)
 void ProcessExternalParameters(const Parameters &parameters, const Pandora *const pPandora, const std::string volumeIdString)
 {
     auto *const pEventReadingParameters = new lar_content::EventReadingAlgorithm::ExternalEventReadingParameters;
-    pEventReadingParameters->m_geometryFileName = parameters.m_geometryFileName;
+    pEventReadingParameters->m_geometryFileName = (volumeIdString.empty() ? parameters.m_geometryFileName : ReplaceString(parameters.m_geometryFileName, ".", volumeIdString + "."));
     pEventReadingParameters->m_eventFileNameList = (volumeIdString.empty() ? parameters.m_eventFileNameList : ReplaceString(parameters.m_eventFileNameList, ".", volumeIdString + "."));
     pEventReadingParameters->m_skipToEvent = parameters.m_nEventsToSkip;
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, pandora::ExternallyConfiguredAlgorithm::SetExternalParameters(*pPandora, "LArEventReading", pEventReadingParameters));

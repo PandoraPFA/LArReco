@@ -36,6 +36,7 @@ public:
 
     int             m_nEventsToProcess;             ///< The number of events to process (default all events in file)
     int             m_nEventsToSkip;                ///< The number of events to skip
+    bool            m_uniqueInstanceSettings;       ///< Whether to enable unique configuration of each Pandora instance
     bool            m_shouldDisplayEventNumber;     ///< Whether event numbers should be displayed (default false)
 
     bool            m_shouldRunAllHitsCosmicReco;   ///< Whether to run all hits cosmic-ray reconstruction
@@ -155,6 +156,7 @@ inline Parameters::Parameters() :
     m_stitchingSettingsFile(""),
     m_nEventsToProcess(-1),
     m_nEventsToSkip(0),
+    m_uniqueInstanceSettings(false),
     m_shouldDisplayEventNumber(false),
     m_shouldRunAllHitsCosmicReco(true),
     m_shouldRunCosmicHitRemoval(true),
