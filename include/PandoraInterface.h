@@ -128,9 +128,21 @@ bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters);
  *  @brief  Process list of external, commandline parameters to be passed to specific algorithms
  *
  *  @param  parameters the parameters
- *  @param  pPrimaryPandora the address of the primary pandora instance
+ *  @param  pPandora the address of the pandora instance
+ *  @param  volumeIdString the volume id string, if any
  */
-void ProcessExternalParameters(const Parameters &parameters, const pandora::Pandora *const pPrimaryPandora);
+void ProcessExternalParameters(const Parameters &parameters, const pandora::Pandora *const pPandora, const std::string volumeIdString = "");
+
+/**
+ *  @brief  Replace all instances of a specified "search" with a "replacement", in a given "subject" string
+ *
+ *  @param  subject the subject string
+ *  @param  search the search string
+ *  @param  replacement the replacement string
+ *
+ *  @return the modified subject
+ */
+std::string ReplaceString(std::string subject, const std::string &search, const std::string &replacement);
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------

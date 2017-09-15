@@ -185,7 +185,7 @@ void CreatePrimaryPandoraInstance(const Parameters &parameters, const LArDriftVo
     // If only single drift volume, primary pandora instance will do all pattern recognition, rather than perform a particle stitching role
     if (1 == driftVolumeList.size())
     {
-        // For single volume cases only - pass commandline parameters to algorithms
+        // For single volume cases only - pass commandline parameters to primary pandora instance
         ProcessExternalParameters(parameters, pPrimaryPandora);
 
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPrimaryPandora,
@@ -229,11 +229,14 @@ void CreateDaughterPandoraInstances(const Parameters &parameters, const LArDrift
         if (!pPandora)
             throw StatusCodeException(STATUS_CODE_FAILURE);
 
-        std::ostringstream volumeIdString;
-        volumeIdString << driftVolume.GetVolumeID();
+        std::ostringstream volumeIdStringStream;
+        volumeIdStringStream << driftVolume.GetVolumeID();
+        const std::string volumeIdString(volumeIdStringStream.str());
+
+        ProcessExternalParameters(parameters, pPandora, volumeIdString);
 
         MultiPandoraApi::AddDaughterPandoraInstance(pPrimaryPandora, pPandora);
-        MultiPandoraApi::SetVolumeInfo(pPandora, new VolumeInfo(driftVolume.GetVolumeID(), "driftVolume_" + volumeIdString.str(),
+        MultiPandoraApi::SetVolumeInfo(pPandora, new VolumeInfo(driftVolume.GetVolumeID(), "driftVolume_" + volumeIdString,
             driftVolume.GetCenterX(), driftVolume.GetCenterY(), driftVolume.GetCenterZ(),
             driftVolume.GetWidthX(), driftVolume.GetWidthY(), driftVolume.GetWidthZ(),
             driftVolume.IsPositiveDrift()));
@@ -243,11 +246,11 @@ void CreateDaughterPandoraInstances(const Parameters &parameters, const LArDrift
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
             new lar_content::LArRotationalTransformationPlugin(driftVolume.GetWireAngleU(), driftVolume.GetWireAngleV(), driftVolume.GetSigmaUVZ())));
 
-        std::string thisConfigFileName(parameters.m_settingsFile);
-        const size_t insertPosition((thisConfigFileName.length() < 4) ? 0 : thisConfigFileName.length() - std::string(".xml").length());
-            thisConfigFileName = thisConfigFileName.insert(insertPosition, volumeIdString.str());
+//        std::string thisConfigFileName(parameters.m_settingsFile);
+//        const size_t insertPosition((thisConfigFileName.length() < 4) ? 0 : thisConfigFileName.length() - std::string(".xml").length());
+//            thisConfigFileName = thisConfigFileName.insert(insertPosition, volumeIdString);
 
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPandora, thisConfigFileName));
+        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPandora, parameters.m_settingsFile));
     }
 }
 
@@ -272,7 +275,7 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
     int c(0);
     std::string recoOption;
 
-    while ((c = getopt(argc, argv, "r:i:e:v:g:n:s:pNh")) != -1)
+    while ((c = getopt(argc, argv, "r:i:e:v:g:t:n:s:pNh")) != -1)
     {
         switch (c)
         {
@@ -415,13 +418,13 @@ bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters)
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void ProcessExternalParameters(const Parameters &parameters, const Pandora *const pPrimaryPandora)
+void ProcessExternalParameters(const Parameters &parameters, const Pandora *const pPandora, const std::string volumeIdString)
 {
     auto *const pEventReadingParameters = new lar_content::EventReadingAlgorithm::ExternalEventReadingParameters;
     pEventReadingParameters->m_geometryFileName = parameters.m_geometryFileName;
-    pEventReadingParameters->m_eventFileNameList = parameters.m_eventFileNameList;
+    pEventReadingParameters->m_eventFileNameList = (volumeIdString.empty() ? parameters.m_eventFileNameList : ReplaceString(parameters.m_eventFileNameList, ".", volumeIdString + "."));
     pEventReadingParameters->m_skipToEvent = parameters.m_nEventsToSkip;
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, pandora::ExternallyConfiguredAlgorithm::SetExternalParameters(*pPrimaryPandora, "LArEventReading", pEventReadingParameters));
+    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, pandora::ExternallyConfiguredAlgorithm::SetExternalParameters(*pPandora, "LArEventReading", pEventReadingParameters));
 
     auto *const pEventSteeringParameters = new lar_content::ParentAlgorithm::ExternalSteeringParameters;
     pEventSteeringParameters->m_shouldRunAllHitsCosmicReco = parameters.m_shouldRunAllHitsCosmicReco;
@@ -431,7 +434,22 @@ void ProcessExternalParameters(const Parameters &parameters, const Pandora *cons
     pEventSteeringParameters->m_shouldRunCosmicRecoOption = parameters.m_shouldRunCosmicRecoOption;
     pEventSteeringParameters->m_shouldIdentifyNeutrinoSlice = parameters.m_shouldIdentifyNeutrinoSlice;
     pEventSteeringParameters->m_printOverallRecoStatus = parameters.m_printOverallRecoStatus;
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, pandora::ExternallyConfiguredAlgorithm::SetExternalParameters(*pPrimaryPandora, "LArParent", pEventSteeringParameters));
+    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, pandora::ExternallyConfiguredAlgorithm::SetExternalParameters(*pPandora, "LArParent", pEventSteeringParameters));
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+std::string ReplaceString(std::string subject, const std::string &search, const std::string &replacement)
+{
+    size_t pos(0);
+
+    while ((pos = subject.find(search, pos)) != std::string::npos)
+    {
+         subject.replace(pos, search.length(), replacement);
+         pos += replacement.length();
+    }
+
+    return subject;
 }
 
 } // namespace lar_reco
