@@ -36,6 +36,7 @@ public:
 
     int             m_nEventsToProcess;             ///< The number of events to process (default all events in file)
     int             m_nEventsToSkip;                ///< The number of events to skip
+    bool            m_uniqueInstanceSettings;       ///< Whether to enable unique configuration of each Pandora instance
     bool            m_shouldDisplayEventNumber;     ///< Whether event numbers should be displayed (default false)
 
     bool            m_shouldRunAllHitsCosmicReco;   ///< Whether to run all hits cosmic-ray reconstruction
@@ -128,9 +129,21 @@ bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters);
  *  @brief  Process list of external, commandline parameters to be passed to specific algorithms
  *
  *  @param  parameters the parameters
- *  @param  pPrimaryPandora the address of the primary pandora instance
+ *  @param  pPandora the address of the pandora instance
+ *  @param  volumeIdString the volume id string, if any
  */
-void ProcessExternalParameters(const Parameters &parameters, const pandora::Pandora *const pPrimaryPandora);
+void ProcessExternalParameters(const Parameters &parameters, const pandora::Pandora *const pPandora, const std::string volumeIdString = "");
+
+/**
+ *  @brief  Replace all instances of a specified "search" with a "replacement", in a given "subject" string
+ *
+ *  @param  subject the subject string
+ *  @param  search the search string
+ *  @param  replacement the replacement string
+ *
+ *  @return the modified subject
+ */
+std::string ReplaceString(std::string subject, const std::string &search, const std::string &replacement);
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -143,6 +156,7 @@ inline Parameters::Parameters() :
     m_stitchingSettingsFile(""),
     m_nEventsToProcess(-1),
     m_nEventsToSkip(0),
+    m_uniqueInstanceSettings(false),
     m_shouldDisplayEventNumber(false),
     m_shouldRunAllHitsCosmicReco(true),
     m_shouldRunCosmicHitRemoval(true),
