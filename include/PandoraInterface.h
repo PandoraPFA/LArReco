@@ -8,8 +8,6 @@
 #ifndef PANDORA_INTERFACE_H
 #define PANDORA_INTERFACE_H 1
 
-#include "LArDriftVolume.h"
-
 namespace pandora {class Pandora;}
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -30,12 +28,12 @@ public:
 
     std::string     m_settingsFile;                 ///< The path to the pandora settings file (mandatory parameter)
     std::string     m_eventFileNameList;            ///< Colon-separated list of file names to be processed
-    std::string     m_driftVolumeDescriptionFile;   ///< The drift volume description file (mandatory parameter)
     std::string     m_geometryFileName;             ///< Name of the file containing geometry information
     std::string     m_stitchingSettingsFile;        ///< The path to the stitching settings file (required only if multiple drift volumes)
 
     int             m_nEventsToProcess;             ///< The number of events to process (default all events in file)
     int             m_nEventsToSkip;                ///< The number of events to skip
+    int             m_nDriftVolumes;                ///< The number of drift volumes
     bool            m_uniqueInstanceSettings;       ///< Whether to enable unique configuration of each Pandora instance
     bool            m_shouldDisplayEventNumber;     ///< Whether event numbers should be displayed (default false)
 
@@ -65,30 +63,20 @@ void CreatePandoraInstances(const Parameters &parameters, const pandora::Pandora
 void ProcessEvents(const Parameters &parameters, const pandora::Pandora *const pPrimaryPandora);
 
 /**
- *  @brief  Load the drift volume information needed to run the Pandora reconstruction
- * 
- *  @param  parameters the parameters
- *  @param  driftVolumeList to receive the populated drift volume list
- */
-void LoadDriftVolumes(const Parameters &parameters, LArDriftVolumeList &driftVolumeList);
-
-/**
  *  @brief  Create primary pandora instance
  *
  *  @param  parameters the parameters
- *  @param  driftVolumeList the drift volume list
  *  @param  pPrimaryPandora to receive the address of the primary pandora instance
  */
-void CreatePrimaryPandoraInstance(const Parameters &parameters, const LArDriftVolumeList &driftVolumeList, const pandora::Pandora *&pPrimaryPandora);
+void CreatePrimaryPandoraInstance(const Parameters &parameters, const pandora::Pandora *&pPrimaryPandora);
 
 /**
  *  @brief  Create daughter pandora instances
  *
  *  @param  parameters the parameters
- *  @param  driftVolumeList the drift volume list
  *  @param  pPrimaryPandora the address of the primary pandora instance
  */
-void CreateDaughterPandoraInstances(const Parameters &parameters, const LArDriftVolumeList &driftVolumeList, const pandora::Pandora *const pPrimaryPandora);
+void CreateDaughterPandoraInstances(const Parameters &parameters, const pandora::Pandora *const pPrimaryPandora);
 
 /**
  *  @brief  Create a new Pandora instance and register lar content algs and plugins
@@ -151,11 +139,11 @@ std::string ReplaceString(std::string subject, const std::string &search, const 
 inline Parameters::Parameters() :
     m_settingsFile(""),
     m_eventFileNameList(""),
-    m_driftVolumeDescriptionFile(""),
     m_geometryFileName(""),
     m_stitchingSettingsFile(""),
     m_nEventsToProcess(-1),
     m_nEventsToSkip(0),
+    m_nDriftVolumes(1),
     m_uniqueInstanceSettings(false),
     m_shouldDisplayEventNumber(false),
     m_shouldRunAllHitsCosmicReco(true),

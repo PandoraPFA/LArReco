@@ -81,12 +81,10 @@ namespace lar_reco
 
 void CreatePandoraInstances(const Parameters &parameters, const Pandora *&pPrimaryPandora)
 {
-    LArDriftVolumeList driftVolumeList;
-    LoadDriftVolumes(parameters, driftVolumeList);
+    CreatePrimaryPandoraInstance(parameters, pPrimaryPandora);
 
-    // Single volume: one Pandora instance. Multiple volumes: one Pandora for each volume and additional instance for stitching volumes
-    CreatePrimaryPandoraInstance(parameters, driftVolumeList, pPrimaryPandora);
-    CreateDaughterPandoraInstances(parameters, driftVolumeList, pPrimaryPandora);
+    if (parameters.m_nDriftVolumes > 1)
+        CreateDaughterPandoraInstances(parameters, pPrimaryPandora);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -112,100 +110,31 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void LoadDriftVolumes(const Parameters &parameters, LArDriftVolumeList &driftVolumeList)
-{
-    TiXmlDocument xmlDocument(parameters.m_driftVolumeDescriptionFile);
-
-    if (!xmlDocument.LoadFile())
-    {
-        std::cout << "LArReco, LoadDriftVolumes - Invalid xml file: " << parameters.m_driftVolumeDescriptionFile << std::endl;
-        throw StatusCodeException(STATUS_CODE_FAILURE);
-    }
-
-    for (TiXmlElement *pXmlElement = TiXmlHandle(&xmlDocument).FirstChild("LArDriftVolume").Element(); nullptr != pXmlElement;
-        pXmlElement = pXmlElement->NextSiblingElement("LArDriftVolume"))
-    {
-        const TiXmlHandle xmlHandle(pXmlElement);
-
-        unsigned int volumeID(std::numeric_limits<unsigned int>::max());
-        bool isPositiveDrift(true);
-        double wirePitchU(std::numeric_limits<double>::max());
-        double wirePitchV(std::numeric_limits<double>::max());
-        double wirePitchW(std::numeric_limits<double>::max());
-        double wireAngleU(std::numeric_limits<double>::max());
-        double wireAngleV(std::numeric_limits<double>::max());
-        double centerX(std::numeric_limits<double>::max());
-        double centerY(std::numeric_limits<double>::max());
-        double centerZ(std::numeric_limits<double>::max());
-        double widthX(std::numeric_limits<double>::max());
-        double widthY(std::numeric_limits<double>::max());
-        double widthZ(std::numeric_limits<double>::max());
-        double sigmaUVZ(std::numeric_limits<double>::max());
-
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, XmlHelper::ReadValue(xmlHandle, "VolumeID", volumeID));
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, XmlHelper::ReadValue(xmlHandle, "IsPositiveDrift", isPositiveDrift));
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, XmlHelper::ReadValue(xmlHandle, "WirePitchU", wirePitchU));
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, XmlHelper::ReadValue(xmlHandle, "WirePitchV", wirePitchV));
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, XmlHelper::ReadValue(xmlHandle, "WirePitchW", wirePitchW));
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, XmlHelper::ReadValue(xmlHandle, "WireAngleU", wireAngleU));
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, XmlHelper::ReadValue(xmlHandle, "WireAngleV", wireAngleV));
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, XmlHelper::ReadValue(xmlHandle, "CenterX", centerX));
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, XmlHelper::ReadValue(xmlHandle, "CenterY", centerY));
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, XmlHelper::ReadValue(xmlHandle, "CenterZ", centerZ));
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, XmlHelper::ReadValue(xmlHandle, "WidthX", widthX));
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, XmlHelper::ReadValue(xmlHandle, "WidthY", widthY));
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, XmlHelper::ReadValue(xmlHandle, "WidthZ", widthZ));
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, XmlHelper::ReadValue(xmlHandle, "SigmaUVZ", sigmaUVZ));
-
-        driftVolumeList.emplace_back(LArDriftVolume(volumeID, isPositiveDrift, wirePitchU, wirePitchV, wirePitchW, wireAngleU, wireAngleV,
-            centerX, centerY, centerZ, widthX, widthY, widthZ, sigmaUVZ));
-    }
-
-    if (driftVolumeList.empty())
-    {
-        std::cout << "LArReco, LoadDriftVolumes - List of drift volumes is empty." << std::endl;
-        throw StatusCodeException(STATUS_CODE_INVALID_PARAMETER);
-    }
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-void CreatePrimaryPandoraInstance(const Parameters &parameters, const LArDriftVolumeList &driftVolumeList, const Pandora *&pPrimaryPandora)
+void CreatePrimaryPandoraInstance(const Parameters &parameters, const Pandora *&pPrimaryPandora)
 {
     pPrimaryPandora = CreateNewPandora();
 
     if (!pPrimaryPandora)
         throw StatusCodeException(STATUS_CODE_FAILURE);
 
-    const std::string configFileName((driftVolumeList.size() > 1) ? parameters.m_stitchingSettingsFile : parameters.m_settingsFile);
-    const LArDriftVolume &driftVolume(driftVolumeList.front());
-
     MultiPandoraApi::AddPrimaryPandoraInstance(pPrimaryPandora);
 
     // If only single drift volume, primary pandora instance will do all pattern recognition, rather than perform a particle stitching role
-    if (1 == driftVolumeList.size())
+    if (1 == parameters.m_nDriftVolumes)
     {
-        // For single volume cases only - pass commandline parameters to primary pandora instance
         ProcessExternalParameters(parameters, pPrimaryPandora);
-
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPrimaryPandora,
-            new lar_content::LArRotationalTransformationPlugin(driftVolume.GetWireAngleU(), driftVolume.GetWireAngleV(), driftVolume.GetSigmaUVZ())));
-
-        MultiPandoraApi::SetVolumeInfo(pPrimaryPandora, new VolumeInfo(0, "driftVolume",
-            driftVolume.GetCenterX(), driftVolume.GetCenterY(), driftVolume.GetCenterZ(),
-            driftVolume.GetWidthX(), driftVolume.GetWidthY(), driftVolume.GetWidthZ(),
-            driftVolume.IsPositiveDrift()));
+        MultiPandoraApi::SetVolumeInfo(pPrimaryPandora, new VolumeInfo(0));
+        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetPseudoLayerPlugin(*pPrimaryPandora, new lar_content::LArPseudoLayerPlugin));
+        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetLArTransformationPlugin(*pPrimaryPandora, new lar_content::LArRotationalTransformationPlugin));
     }
 
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPrimaryPandora,
-        new lar_content::LArPseudoLayerPlugin(driftVolume.GetWirePitchU(), driftVolume.GetWirePitchV(), driftVolume.GetWirePitchW())));
-
+    const std::string configFileName((parameters.m_nDriftVolumes > 1) ? parameters.m_stitchingSettingsFile : parameters.m_settingsFile);
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPrimaryPandora, configFileName));
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void CreateDaughterPandoraInstances(const Parameters &parameters, const LArDriftVolumeList &driftVolumeList, const Pandora *const pPrimaryPandora)
+void CreateDaughterPandoraInstances(const Parameters &parameters, const Pandora *const pPrimaryPandora)
 {
     if (!pPrimaryPandora)
     {
@@ -213,7 +142,7 @@ void CreateDaughterPandoraInstances(const Parameters &parameters, const LArDrift
         throw StatusCodeException(STATUS_CODE_FAILURE);
     }
 
-    if (driftVolumeList.size() < 2)
+    if (parameters.m_nDriftVolumes < 2)
         return;
 
     if (parameters.m_stitchingSettingsFile.empty())
@@ -222,29 +151,20 @@ void CreateDaughterPandoraInstances(const Parameters &parameters, const LArDrift
         throw StatusCodeException(STATUS_CODE_INVALID_PARAMETER);
     }
 
-    for (const LArDriftVolume &driftVolume : driftVolumeList)
+    for (int volumeId = 0; volumeId < parameters.m_nDriftVolumes; ++volumeId)
     {
+        const std::string volumeIdString(pandora::TypeToString(volumeIdString));
         const Pandora *const pPandora = CreateNewPandora();
 
         if (!pPandora)
             throw StatusCodeException(STATUS_CODE_FAILURE);
 
-        std::ostringstream volumeIdStringStream;
-        volumeIdStringStream << driftVolume.GetVolumeID();
-        const std::string volumeIdString(volumeIdStringStream.str());
-
         ProcessExternalParameters(parameters, pPandora, volumeIdString);
-
         MultiPandoraApi::AddDaughterPandoraInstance(pPrimaryPandora, pPandora);
-        MultiPandoraApi::SetVolumeInfo(pPandora, new VolumeInfo(driftVolume.GetVolumeID(), "driftVolume_" + volumeIdString,
-            driftVolume.GetCenterX(), driftVolume.GetCenterY(), driftVolume.GetCenterZ(),
-            driftVolume.GetWidthX(), driftVolume.GetWidthY(), driftVolume.GetWidthZ(),
-            driftVolume.IsPositiveDrift()));
+        MultiPandoraApi::SetVolumeInfo(pPandora, new VolumeInfo(volumeId));
 
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArPseudoLayerPlugin(*pPandora,
-            new lar_content::LArPseudoLayerPlugin(driftVolume.GetWirePitchU(), driftVolume.GetWirePitchV(), driftVolume.GetWirePitchW())));
-        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::SetLArTransformationPlugin(*pPandora,
-            new lar_content::LArRotationalTransformationPlugin(driftVolume.GetWireAngleU(), driftVolume.GetWireAngleV(), driftVolume.GetSigmaUVZ())));
+        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetPseudoLayerPlugin(*pPandora, new lar_content::LArPseudoLayerPlugin));
+        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetLArTransformationPlugin(*pPandora, new lar_content::LArRotationalTransformationPlugin));
 
         const std::string thisConfigFileName(!parameters.m_uniqueInstanceSettings ? parameters.m_settingsFile : ReplaceString(parameters.m_settingsFile, ".", volumeIdString + "."));
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPandora, thisConfigFileName));
@@ -272,7 +192,7 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
     int c(0);
     std::string recoOption;
 
-    while ((c = getopt(argc, argv, "r:i:v:e:g:t:n:s:upNh")) != -1)
+    while ((c = getopt(argc, argv, "r:i:e:g:v:t:n:s:upNh")) != -1)
     {
         switch (c)
         {
@@ -282,14 +202,14 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
         case 'i':
             parameters.m_settingsFile = optarg;
             break;
-        case 'v':
-            parameters.m_driftVolumeDescriptionFile = optarg;
-            break;
         case 'e':
             parameters.m_eventFileNameList = optarg;
             break;
         case 'g':
             parameters.m_geometryFileName = optarg;
+            break;
+        case 'v':
+            parameters.m_nDriftVolumes = atoi(optarg);
             break;
         case 't':
             parameters.m_stitchingSettingsFile = optarg;
@@ -425,7 +345,7 @@ void ProcessExternalParameters(const Parameters &parameters, const Pandora *cons
     pEventReadingParameters->m_geometryFileName = (volumeIdString.empty() ? parameters.m_geometryFileName : ReplaceString(parameters.m_geometryFileName, ".", volumeIdString + "."));
     pEventReadingParameters->m_eventFileNameList = (volumeIdString.empty() ? parameters.m_eventFileNameList : ReplaceString(parameters.m_eventFileNameList, ".", volumeIdString + "."));
     pEventReadingParameters->m_skipToEvent = parameters.m_nEventsToSkip;
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, pandora::ExternallyConfiguredAlgorithm::SetExternalParameters(*pPandora, "LArEventReading", pEventReadingParameters));
+    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetExternalParameters(*pPandora, "LArEventReading", pEventReadingParameters));
 
     auto *const pEventSteeringParameters = new lar_content::ParentAlgorithm::ExternalSteeringParameters;
     pEventSteeringParameters->m_shouldRunAllHitsCosmicReco = parameters.m_shouldRunAllHitsCosmicReco;
@@ -435,7 +355,7 @@ void ProcessExternalParameters(const Parameters &parameters, const Pandora *cons
     pEventSteeringParameters->m_shouldRunCosmicRecoOption = parameters.m_shouldRunCosmicRecoOption;
     pEventSteeringParameters->m_shouldIdentifyNeutrinoSlice = parameters.m_shouldIdentifyNeutrinoSlice;
     pEventSteeringParameters->m_printOverallRecoStatus = parameters.m_printOverallRecoStatus;
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, pandora::ExternallyConfiguredAlgorithm::SetExternalParameters(*pPandora, "LArParent", pEventSteeringParameters));
+    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetExternalParameters(*pPandora, "LArParent", pEventSteeringParameters));
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
