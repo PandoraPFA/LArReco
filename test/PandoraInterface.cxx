@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     }
     catch (const StatusCodeException &statusCodeException)
     {
-        std::cerr << "Pandora StatusCodeException: " << statusCodeException.ToString() << std::endl;
+        std::cerr << "Pandora StatusCodeException: " << statusCodeException.ToString() << statusCodeException.GetBackTrace() << std::endl;
         errorNo = 1;
     }
     catch (const StopProcessingException &)
@@ -123,7 +123,7 @@ void CreatePrimaryPandoraInstance(const Parameters &parameters, const Pandora *&
     if (1 == parameters.m_nDriftVolumes)
     {
         ProcessExternalParameters(parameters, pPrimaryPandora);
-        MultiPandoraApi::SetVolumeInfo(pPrimaryPandora, new VolumeInfo(0));
+        MultiPandoraApi::SetVolumeId(pPrimaryPandora, 0);
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetPseudoLayerPlugin(*pPrimaryPandora, new lar_content::LArPseudoLayerPlugin));
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetLArTransformationPlugin(*pPrimaryPandora, new lar_content::LArRotationalTransformationPlugin));
     }
@@ -151,7 +151,7 @@ void CreateDaughterPandoraInstances(const Parameters &parameters, const Pandora 
         throw StatusCodeException(STATUS_CODE_INVALID_PARAMETER);
     }
 
-    for (int volumeId = 0; volumeId < parameters.m_nDriftVolumes; ++volumeId)
+    for (unsigned int volumeId = 0; volumeId < parameters.m_nDriftVolumes; ++volumeId)
     {
         const std::string volumeIdString(pandora::TypeToString(volumeIdString));
         const Pandora *const pPandora = CreateNewPandora();
@@ -161,7 +161,7 @@ void CreateDaughterPandoraInstances(const Parameters &parameters, const Pandora 
 
         ProcessExternalParameters(parameters, pPandora, volumeIdString);
         MultiPandoraApi::AddDaughterPandoraInstance(pPrimaryPandora, pPandora);
-        MultiPandoraApi::SetVolumeInfo(pPandora, new VolumeInfo(volumeId));
+        MultiPandoraApi::SetVolumeId(pPandora, volumeId);
 
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetPseudoLayerPlugin(*pPandora, new lar_content::LArPseudoLayerPlugin));
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetLArTransformationPlugin(*pPandora, new lar_content::LArRotationalTransformationPlugin));
@@ -245,9 +245,9 @@ bool PrintOptions()
     std::cout << std::endl << "./bin/PandoraInterface " << std::endl
               << "    -r RecoOption          (required) [Full, AllHitsCR, AllHitsNu, CRRemHitsSliceCR, CRRemHitsSliceNu, AllHitsSliceCR, AllHitsSliceNu]" << std::endl
               << "    -i Settings            (required) [algorithm description: xml]" << std::endl
-              << "    -v DriftVolumeFile     (required) [drift volume description: xml]" << std::endl
               << "    -e EventFileList       (optional) [colon-separated list of files: xml/pndr]" << std::endl
               << "    -g GeometryFile        (optional) [detector gap description: xml/pndr]" << std::endl
+              << "    -v NDriftVolumes       (optional) [number of drift volumes: default 1]" << std::endl
               << "    -t StitchingSettings   (optional) [stitching algorithm description: xml]" << std::endl
               << "    -n NEventsToProcess    (optional) [no. of events to process]" << std::endl
               << "    -s NEventsToSkip       (optional) [no. of events to skip in first file]" << std::endl
