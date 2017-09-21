@@ -153,7 +153,7 @@ void CreateDaughterPandoraInstances(const Parameters &parameters, const Pandora 
 
     for (unsigned int volumeId = 0; volumeId < parameters.m_nDriftVolumes; ++volumeId)
     {
-        const std::string volumeIdString(pandora::TypeToString(volumeIdString));
+        const std::string volumeIdString(pandora::TypeToString(volumeId));
         const Pandora *const pPandora = CreateNewPandora();
 
         if (!pPandora)
