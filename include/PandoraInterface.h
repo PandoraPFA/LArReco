@@ -8,6 +8,8 @@
 #ifndef PANDORA_INTERFACE_H
 #define PANDORA_INTERFACE_H 1
 
+#include "Pandora/PandoraInputTypes.h"
+
 namespace pandora {class Pandora;}
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -26,24 +28,25 @@ public:
      */
     Parameters();
 
-    std::string     m_settingsFile;                 ///< The path to the pandora settings file (mandatory parameter)
-    std::string     m_eventFileNameList;            ///< Colon-separated list of file names to be processed
-    std::string     m_geometryFileName;             ///< Name of the file containing geometry information
-    std::string     m_stitchingSettingsFile;        ///< The path to the stitching settings file (required only if multiple drift volumes)
+    std::string         m_settingsFile;                 ///< The path to the pandora settings file (mandatory parameter)
+    std::string         m_eventFileNameList;            ///< Colon-separated list of file names to be processed
+    std::string         m_geometryFileName;             ///< Name of the file containing geometry information
+    std::string         m_stitchingSettingsFile;        ///< The path to the stitching settings file (required only if multiple drift volumes)
 
-    int             m_nEventsToProcess;             ///< The number of events to process (default all events in file)
-    int             m_nEventsToSkip;                ///< The number of events to skip
-    int             m_nDriftVolumes;                ///< The number of drift volumes
-    bool            m_uniqueInstanceSettings;       ///< Whether to enable unique configuration of each Pandora instance
-    bool            m_shouldDisplayEventNumber;     ///< Whether event numbers should be displayed (default false)
+    int                 m_nEventsToProcess;             ///< The number of events to process (default all events in file)
+    int                 m_nDriftVolumes;                ///< The number of drift volumes
+    bool                m_uniqueInstanceSettings;       ///< Whether to enable unique configuration of each Pandora instance
+    bool                m_shouldDisplayEventNumber;     ///< Whether event numbers should be displayed (default false)
 
-    bool            m_shouldRunAllHitsCosmicReco;   ///< Whether to run all hits cosmic-ray reconstruction
-    bool            m_shouldRunCosmicHitRemoval;    ///< Whether to remove hits from tagged cosmic-rays
-    bool            m_shouldRunSlicing;             ///< Whether to slice events into separate regions for processing
-    bool            m_shouldRunNeutrinoRecoOption;  ///< Whether to run neutrino reconstruction for each slice
-    bool            m_shouldRunCosmicRecoOption;    ///< Whether to run cosmic-ray reconstruction for each slice
-    bool            m_shouldIdentifyNeutrinoSlice;  ///< Whether to identify most appropriate neutrino slice
-    bool            m_printOverallRecoStatus;       ///< Whether to print current operation status messages
+    bool                m_shouldRunAllHitsCosmicReco;   ///< Whether to run all hits cosmic-ray reconstruction
+    bool                m_shouldRunCosmicHitRemoval;    ///< Whether to remove hits from tagged cosmic-rays
+    bool                m_shouldRunSlicing;             ///< Whether to slice events into separate regions for processing
+    bool                m_shouldRunNeutrinoRecoOption;  ///< Whether to run neutrino reconstruction for each slice
+    bool                m_shouldRunCosmicRecoOption;    ///< Whether to run cosmic-ray reconstruction for each slice
+    bool                m_shouldIdentifyNeutrinoSlice;  ///< Whether to identify most appropriate neutrino slice
+    bool                m_printOverallRecoStatus;       ///< Whether to print current operation status messages
+
+    pandora::InputInt   m_nEventsToSkip;                ///< The number of events to skip
 };
 
 /**
@@ -142,7 +145,6 @@ inline Parameters::Parameters() :
     m_geometryFileName(""),
     m_stitchingSettingsFile(""),
     m_nEventsToProcess(-1),
-    m_nEventsToSkip(0),
     m_nDriftVolumes(1),
     m_uniqueInstanceSettings(false),
     m_shouldDisplayEventNumber(false),

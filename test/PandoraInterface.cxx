@@ -235,6 +235,12 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
         }
     }
 
+    if ((parameters.m_nDriftVolumes > 1) && parameters.m_stitchingSettingsFile.empty())
+    {
+        std::cout << "LArReco, stitching settings file must be provided, number of drift volumes: " << parameters.m_nDriftVolumes << std::endl << std::endl;
+        return PrintOptions();
+    }
+
     return ProcessRecoOption(recoOption, parameters);
 }
 
@@ -344,7 +350,7 @@ void ProcessExternalParameters(const Parameters &parameters, const Pandora *cons
     auto *const pEventReadingParameters = new lar_content::EventReadingAlgorithm::ExternalEventReadingParameters;
     pEventReadingParameters->m_geometryFileName = (volumeIdString.empty() ? parameters.m_geometryFileName : ReplaceString(parameters.m_geometryFileName, ".", volumeIdString + "."));
     pEventReadingParameters->m_eventFileNameList = (volumeIdString.empty() ? parameters.m_eventFileNameList : ReplaceString(parameters.m_eventFileNameList, ".", volumeIdString + "."));
-    pEventReadingParameters->m_skipToEvent = parameters.m_nEventsToSkip;
+    if (parameters.m_nEventsToSkip.IsInitialized()) pEventReadingParameters->m_skipToEvent = parameters.m_nEventsToSkip.Get();
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetExternalParameters(*pPandora, "LArEventReading", pEventReadingParameters));
 
     auto *const pEventSteeringParameters = new lar_content::ParentAlgorithm::ExternalSteeringParameters;
