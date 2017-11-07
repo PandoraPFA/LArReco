@@ -507,14 +507,25 @@
                 <algorithm type = "LArSvmPfoCharacterisation">
                     <TrackPfoListName>TrackParticles3D</TrackPfoListName>
                     <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
-                    <SvmFileName>/r05/dune/MachineLearningData/PandoraSvm_PfoCharacterisation_MicroBooNE_mcc7.xml</SvmFileName>
+                    <UseThreeDInformation>true</UseThreeDInformation>
+                    <SvmFileName>/r05/dune/MachineLearningData/PandoraSvm_PfoCharacterisation_MicroBooNE_mcc7_3D.xml</SvmFileName>
                     <SvmName>FinalPfoCharacterisation</SvmName>
-                    <RatioVariables>true</RatioVariables>
+                    <SvmFileNameMissingW>/r05/dune/MachineLearningData/PandoraSvm_PfoCharacterisation_MicroBooNE_mcc7_3D_woCharge.xml</SvmFileNameMissingW>
+                    <SvmNameMissingW>FinalPfoCharacterisation</SvmNameMissingW>
+                    <EnableProbability>true</EnableProbability>
                     <FeatureTools>
-                        <tool type = "LArLinearFitFeatureTool"/>
-                        <tool type = "LArShowerFitFeatureTool"/>
-                        <tool type = "LArVertexDistanceFeatureTool"/>
-                    </FeatureTools>
+                    <tool type = "LArThreeDLinearFitFeatureTool"/>
+                    <tool type = "LArThreeDVertexDistanceFeatureTool"/>
+                    <tool type = "LArPCAFeatureTool"/>
+                    <tool type = "LArOpeningAngleFeatureTool"/>
+                    <tool type = "LArThreeDChargeFeatureTool"/>
+                  </FeatureTools>
+                  <FeatureToolsMissingW>
+                    <tool type = "LArThreeDLinearFitFeatureTool"/>
+                    <tool type = "LArThreeDVertexDistanceFeatureTool"/>
+                    <tool type = "LArPCAFeatureTool"/>
+                    <tool type = "LArOpeningAngleFeatureTool"/>
+                  </FeatureToolsMissingW>
                 </algorithm>
                 <algorithm type = "LArNeutrinoProperties">
                     <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
