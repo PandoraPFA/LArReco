@@ -1,0 +1,48 @@
+<pandora>
+    <!-- GLOBAL SETTINGS -->
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
+    <ShouldDisplayAlgorithmInfo>true</ShouldDisplayAlgorithmInfo>
+    <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
+
+    <!-- ALGORITHM SETTINGS -->
+    <algorithm type = "LArEventReading"/>
+
+    <algorithm type = "LArListPreparation">
+        <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
+        <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
+        <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
+        <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
+        <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
+        <OutputMCParticleListName3D>MCParticleList3D</OutputMCParticleListName3D>
+        <CurrentMCParticleListReplacement>MCParticleList3D</CurrentMCParticleListReplacement>
+    </algorithm>
+
+    <algorithm type = "LArMaster">
+        <CRSettingsFile>/usera/marshall/Test/github/LArReco/settings/uboone_new/PandoraSettings_MicroBooNE_Cosmic.xml</CRSettingsFile>
+        <NuSettingsFile>/usera/marshall/Test/github/LArReco/settings/uboone_new/PandoraSettings_MicroBooNE_Neutrino.xml</NuSettingsFile>
+        <FastSettingsFile>/usera/marshall/Test/github/LArReco/settings/uboone_new/PandoraSettings_MicroBooNE_FastReconstruction.xml</FastSettingsFile>
+    </algorithm>
+</pandora>
+
+<!--tool type = "LArCosmicRayTagging" description = "CosmicRayTagging"/>
+<tool type = "LArEventSlicing" description = "Slicing">
+    <TrackPfoListName>TrackParticles3D</TrackPfoListName>
+    <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+</tool>
+<tool type = "LArCheatingNeutrinoId" description = "NeutrinoId"/>
+<algorithm type = "LArTrackParticleBuilding">
+<PfoListName>AllMuonParticles3D</PfoListName>
+<VertexListName>AllCRVertices3D</VertexListName>
+</algorithm>
+<algorithm type = "LArPcaShowerParticleBuilding">
+<PfoListName>AllDeltaRayParticles3D</PfoListName>
+<VertexListName>AllCRVertices3D</VertexListName>
+</algorithm>
+<algorithm type = "LArTrackParticleBuilding">
+<PfoListName>AllTrackParticles3D</PfoListName>
+<VertexListName>AllDaughterVertices3D</VertexListName>
+</algorithm>
+<algorithm type = "LArPcaShowerParticleBuilding">
+<PfoListName>AllShowerParticles3D</PfoListName>
+<VertexListName>AllDaughterVertices3D</VertexListName>
+</algorithm-->
