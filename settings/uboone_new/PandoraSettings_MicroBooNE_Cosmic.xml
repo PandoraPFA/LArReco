@@ -6,7 +6,6 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArListPreparation">
-        <OnlyAvailableCaloHits>true</OnlyAvailableCaloHits>
         <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
         <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
         <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
@@ -14,7 +13,6 @@
         <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
         <OutputMCParticleListName3D>MCParticleList3D</OutputMCParticleListName3D>
         <CurrentMCParticleListReplacement>MCParticleList3D</CurrentMCParticleListReplacement>
-        <MipEquivalentCut>0.</MipEquivalentCut>
     </algorithm>
 
     <!-- TwoDReconstruction -->
