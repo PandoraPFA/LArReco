@@ -25,13 +25,9 @@
     <algorithm type = "LArMaster">
         <CRSettingsFile>/usera/marshall/Test/github/LArReco/settings/uboone_new/PandoraSettings_MicroBooNE_Cosmic.xml</CRSettingsFile>
         <NuSettingsFile>/usera/marshall/Test/github/LArReco/settings/uboone_new/PandoraSettings_MicroBooNE_Neutrino.xml</NuSettingsFile>
-        <FastSettingsFile>/usera/marshall/Test/github/LArReco/settings/uboone_new/PandoraSettings_MicroBooNE_FastReconstruction.xml</FastSettingsFile>
+        <SlicingSettingsFile>/usera/marshall/Test/github/LArReco/settings/uboone_new/PandoraSettings_MicroBooNE_Slicing.xml</SlicingSettingsFile>
 
         <tool type = "LArCosmicRayTagging" description = "CosmicRayTagging"/>
-        <tool type = "LArEventSlicing" description = "Slicing">
-            <TrackPfoListName>TrackParticles3D</TrackPfoListName>
-            <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
-        </tool>
         <tool type = "LArCheatingNeutrinoId" description = "NeutrinoId"/>
     </algorithm>
 </pandora>
