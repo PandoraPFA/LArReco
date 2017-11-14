@@ -258,4 +258,7 @@
             <ClusterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</ClusterListNames>
         </algorithm>
     </algorithm>
+    <algorithm type = "LArListChanging">
+        <PfoListName>SliceParticles</PfoListName>
+    </algorithm>
 </pandora>

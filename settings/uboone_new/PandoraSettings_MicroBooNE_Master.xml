@@ -27,16 +27,25 @@
         <NuSettingsFile>/usera/marshall/Test/github/LArReco/settings/uboone_new/PandoraSettings_MicroBooNE_Neutrino.xml</NuSettingsFile>
         <SlicingSettingsFile>/usera/marshall/Test/github/LArReco/settings/uboone_new/PandoraSettings_MicroBooNE_Slicing.xml</SlicingSettingsFile>
 
+        <StitchingTools>
+            <tool type = "LArStitchingCosmicRayMerging"><ThreeDStitchingMode>true</ThreeDStitchingMode></tool>
+            <tool type = "LArStitchingCosmicRayMerging"><ThreeDStitchingMode>false</ThreeDStitchingMode></tool>
+        </StitchingTools>
         <tool type = "LArCosmicRayTagging" description = "CosmicRayTagging"/>
         <tool type = "LArCheatingNeutrinoId" description = "NeutrinoId"/>
     </algorithm>
-</pandora>
 
-<!--algorithm type = "LArTrackParticleBuilding">
-<PfoListName>AllParticles3D</PfoListName>
-<VertexListName>AllVertices3D</VertexListName>
-</algorithm>
-<algorithm type = "LArPcaShowerParticleBuilding">
-<PfoListName>AllParticles3D</PfoListName>
-<VertexListName>AllVertices3D</VertexListName>
-</algorithm-->
+    <algorithm type = "LArVisualMonitoring">
+        <ShowCurrentPfos>true</ShowCurrentPfos>
+        <ShowDetector>true</ShowDetector>
+    </algorithm>
+
+    <!--algorithm type = "LArTrackParticleBuilding">
+        <PfoListName>AllParticles3D</PfoListName>
+        <VertexListName>AllVertices3D</VertexListName>
+    </algorithm>
+    <algorithm type = "LArPcaShowerParticleBuilding">
+        <PfoListName>AllParticles3D</PfoListName>
+        <VertexListName>AllVertices3D</VertexListName>
+    </algorithm-->
+</pandora>

@@ -311,8 +311,14 @@
     </algorithm>
 
     <!-- For extraction in client application -->
+    <algorithm type = "LArListMoving">
+        <PfoListNames>MuonParticles3D DeltaRayParticles3D</PfoListNames>
+        <VertexListNames>CRVertices3D</VertexListNames>
+        <ClusterListNames>ClustersU ClustersV ClustersW MuonClusters3D DeltaRayClusters3D</ClusterListNames>
+        <Prefix>All</Prefix>
+    </algorithm>
     <algorithm type = "LArListMerging">
-        <SourcePfoListNames>MuonParticles3D</SourcePfoListNames>
+        <SourcePfoListNames>AllMuonParticles3D</SourcePfoListNames>
         <TargetPfoListNames>OutputParticles3D</TargetPfoListNames>
     </algorithm>
 

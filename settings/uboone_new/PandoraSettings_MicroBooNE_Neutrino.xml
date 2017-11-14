@@ -338,8 +338,14 @@
     </algorithm>
 
     <!-- For extraction in client application -->
+    <algorithm type = "LArListMoving">
+        <PfoListNames>NeutrinoParticles3D TrackParticles3D ShowerParticles3D</PfoListNames>
+        <VertexListNames>NeutrinoVertices3D DaughterVertices3D CandidateVertices3D</VertexListNames>
+        <ClusterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</ClusterListNames>
+        <Prefix>All</Prefix>
+    </algorithm>
     <algorithm type = "LArListMerging">
-        <SourcePfoListNames>NeutrinoParticles3D</SourcePfoListNames>
+        <SourcePfoListNames>AllNeutrinoParticles3D</SourcePfoListNames>
         <TargetPfoListNames>OutputParticles3D</TargetPfoListNames>
     </algorithm>
 
