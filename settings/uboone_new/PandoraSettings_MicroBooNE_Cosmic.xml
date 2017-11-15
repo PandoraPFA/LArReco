@@ -5,14 +5,12 @@
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
     <!-- ALGORITHM SETTINGS -->
-    <algorithm type = "LArListPreparation">
-        <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
+    <algorithm type = "LArPreProcessing">
         <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
         <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
+        <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
         <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
         <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
-        <OutputMCParticleListName3D>MCParticleList3D</OutputMCParticleListName3D>
-        <CurrentMCParticleListReplacement>MCParticleList3D</CurrentMCParticleListReplacement>
     </algorithm>
 
     <!-- TwoDReconstruction -->
@@ -310,19 +308,12 @@
         <OutputVertexListName>CRVertices3D</OutputVertexListName>
     </algorithm>
 
-    <!-- For extraction in client application -->
-    <algorithm type = "LArListMoving">
+    <!-- Output list management -->
+    <algorithm type = "LArPostProcessing">
         <PfoListNames>MuonParticles3D DeltaRayParticles3D</PfoListNames>
         <VertexListNames>CRVertices3D</VertexListNames>
         <ClusterListNames>ClustersU ClustersV ClustersW MuonClusters3D DeltaRayClusters3D</ClusterListNames>
-        <Prefix>All</Prefix>
-    </algorithm>
-    <algorithm type = "LArListMerging">
-        <SourcePfoListNames>AllMuonParticles3D</SourcePfoListNames>
-        <TargetPfoListNames>OutputParticles3D</TargetPfoListNames>
-    </algorithm>
-
-    <algorithm type = "LArListChanging">
-        <PfoListName>OutputParticles3D</PfoListName>
+        <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW CaloHitList2D</CaloHitListNames>
+        <CurrentPfoListReplacement>MuonParticles3D</CurrentPfoListReplacement>
     </algorithm>
 </pandora>

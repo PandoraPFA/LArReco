@@ -7,14 +7,12 @@
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading"/>
 
-    <algorithm type = "LArListPreparation">
-        <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
+    <algorithm type = "LArPreProcessing">
         <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
         <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
+        <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
         <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
         <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
-        <OutputMCParticleListName3D>MCParticleList3D</OutputMCParticleListName3D>
-        <CurrentMCParticleListReplacement>MCParticleList3D</CurrentMCParticleListReplacement>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
