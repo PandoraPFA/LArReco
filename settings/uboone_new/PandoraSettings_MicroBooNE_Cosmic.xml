@@ -146,8 +146,7 @@
     <!-- PruneClusters -->
     <algorithm type = "LArListPruning" description = "ListPruning">
         <WarnIfObjectsUnavailable>false</WarnIfObjectsUnavailable>
-        <VertexListNames>CRVertices3D</VertexListNames>
-        <ClusterListNames>ClustersU ClustersV ClustersW MuonClusters3D DeltaRayClusters3D</ClusterListNames>
+        <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
     </algorithm>
 
     <!-- DeltaRayClustering -->
@@ -306,6 +305,16 @@
     <algorithm type = "LArCosmicRayVertexBuilding">
         <InputPfoListName>MuonParticles3D</InputPfoListName>
         <OutputVertexListName>CRVertices3D</OutputVertexListName>
+    </algorithm>
+
+    <!-- TrackShowerAlgorithms-->
+    <algorithm type = "LArTrackParticleBuilding">
+        <PfoListName>MuonParticles3D</PfoListName>
+        <VertexListName>CRVertices3D</VertexListName>
+    </algorithm>
+    <algorithm type = "LArPcaShowerParticleBuilding">
+        <PfoListName>DeltaRayParticles3D</PfoListName>
+        <VertexListName>CRVertices3D</VertexListName>
     </algorithm>
 
     <!-- Output list management -->
