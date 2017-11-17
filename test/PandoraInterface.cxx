@@ -11,12 +11,12 @@
 #include "Xml/tinyxml.h"
 
 #include "larpandoracontent/LArContent.h"
+#include "larpandoracontent/LArControlFlow/MasterAlgorithm.h"
+#include "larpandoracontent/LArControlFlow/MultiPandoraApi.h"
 #include "larpandoracontent/LArHelpers/LArPfoHelper.h"
 #include "larpandoracontent/LArPersistency/EventReadingAlgorithm.h"
 #include "larpandoracontent/LArPlugins/LArPseudoLayerPlugin.h"
 #include "larpandoracontent/LArPlugins/LArRotationalTransformationPlugin.h"
-#include "larpandoracontent/LArStitching/MultiPandoraApi.h"
-#include "larpandoracontent/LArUtility/MasterAlgorithm.h"
 
 #include "PandoraInterface.h"
 
