@@ -41,7 +41,7 @@ public:
     bool                m_shouldRunSlicing;             ///< Whether to slice events into separate regions for processing
     bool                m_shouldRunNeutrinoRecoOption;  ///< Whether to run neutrino reconstruction for each slice
     bool                m_shouldRunCosmicRecoOption;    ///< Whether to run cosmic-ray reconstruction for each slice
-    bool                m_shouldIdentifyNeutrinoSlice;  ///< Whether to identify most appropriate neutrino slice
+    bool                m_shouldPerformSliceId;         ///< Whether to identify slices and select most appropriate pfos
     bool                m_printOverallRecoStatus;       ///< Whether to print current operation status messages
 
     pandora::InputInt   m_nEventsToSkip;                ///< The number of events to skip
@@ -114,7 +114,7 @@ inline Parameters::Parameters() :
     m_shouldRunSlicing(true),
     m_shouldRunNeutrinoRecoOption(true),
     m_shouldRunCosmicRecoOption(true),
-    m_shouldIdentifyNeutrinoSlice(true),
+    m_shouldPerformSliceId(true),
     m_printOverallRecoStatus(false)
 {
 }

@@ -191,7 +191,7 @@ bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters)
         parameters.m_shouldRunSlicing = true;
         parameters.m_shouldRunNeutrinoRecoOption = true;
         parameters.m_shouldRunCosmicRecoOption = true;
-        parameters.m_shouldIdentifyNeutrinoSlice = true;
+        parameters.m_shouldPerformSliceId = true;
     }
     else if ("allhitscr" == chosenRecoOption)
     {
@@ -201,7 +201,7 @@ bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters)
         parameters.m_shouldRunSlicing = false;
         parameters.m_shouldRunNeutrinoRecoOption = false;
         parameters.m_shouldRunCosmicRecoOption = false;
-        parameters.m_shouldIdentifyNeutrinoSlice = false;
+        parameters.m_shouldPerformSliceId = false;
     }
     else if ("allhitsnu" == chosenRecoOption)
     {
@@ -211,7 +211,7 @@ bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters)
         parameters.m_shouldRunSlicing = false;
         parameters.m_shouldRunNeutrinoRecoOption = true;
         parameters.m_shouldRunCosmicRecoOption = false;
-        parameters.m_shouldIdentifyNeutrinoSlice = false;
+        parameters.m_shouldPerformSliceId = false;
     }
     else if ("crremhitsslicecr" == chosenRecoOption)
     {
@@ -221,7 +221,7 @@ bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters)
         parameters.m_shouldRunSlicing = true;
         parameters.m_shouldRunNeutrinoRecoOption = false;
         parameters.m_shouldRunCosmicRecoOption = true;
-        parameters.m_shouldIdentifyNeutrinoSlice = false;
+        parameters.m_shouldPerformSliceId = false;
     }
     else if ("crremhitsslicenu" == chosenRecoOption)
     {
@@ -231,7 +231,7 @@ bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters)
         parameters.m_shouldRunSlicing = true;
         parameters.m_shouldRunNeutrinoRecoOption = true;
         parameters.m_shouldRunCosmicRecoOption = false;
-        parameters.m_shouldIdentifyNeutrinoSlice = false;
+        parameters.m_shouldPerformSliceId = false;
     }
     else if ("allhitsslicecr" == chosenRecoOption)
     {
@@ -241,7 +241,7 @@ bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters)
         parameters.m_shouldRunSlicing = true;
         parameters.m_shouldRunNeutrinoRecoOption = false;
         parameters.m_shouldRunCosmicRecoOption = true;
-        parameters.m_shouldIdentifyNeutrinoSlice = false;
+        parameters.m_shouldPerformSliceId = false;
     }
     else if ("allhitsslicenu" == chosenRecoOption)
     {
@@ -251,7 +251,7 @@ bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters)
         parameters.m_shouldRunSlicing = true;
         parameters.m_shouldRunNeutrinoRecoOption = true;
         parameters.m_shouldRunCosmicRecoOption = false;
-        parameters.m_shouldIdentifyNeutrinoSlice = false;
+        parameters.m_shouldPerformSliceId = false;
     }
     else
     {
@@ -279,7 +279,7 @@ void ProcessExternalParameters(const Parameters &parameters, const Pandora *cons
     pEventSteeringParameters->m_shouldRunSlicing = parameters.m_shouldRunSlicing;
     pEventSteeringParameters->m_shouldRunNeutrinoRecoOption = parameters.m_shouldRunNeutrinoRecoOption;
     pEventSteeringParameters->m_shouldRunCosmicRecoOption = parameters.m_shouldRunCosmicRecoOption;
-    pEventSteeringParameters->m_shouldIdentifyNeutrinoSlice = parameters.m_shouldIdentifyNeutrinoSlice;
+    pEventSteeringParameters->m_shouldPerformSliceId = parameters.m_shouldPerformSliceId;
     pEventSteeringParameters->m_printOverallRecoStatus = parameters.m_printOverallRecoStatus;
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetExternalParameters(*pPandora, "LArMaster", pEventSteeringParameters));
 }
