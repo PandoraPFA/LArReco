@@ -5,7 +5,9 @@
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
     <!-- ALGORITHM SETTINGS -->
-    <algorithm type = "LArEventReading"/>
+    <algorithm type = "LArEventReading">
+        <UseLArCaloHits>false</UseLArCaloHits>
+    </algorithm>
 
     <algorithm type = "LArPreProcessing">
         <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
@@ -21,9 +23,9 @@
     </algorithm>
 
     <algorithm type = "LArMaster">
-        <CRSettingsFile>/usera/marshall/Test/github/LArReco/settings/uboone_new/PandoraSettings_MicroBooNE_Cosmic.xml</CRSettingsFile>
-        <NuSettingsFile>/usera/marshall/Test/github/LArReco/settings/uboone_new/PandoraSettings_MicroBooNE_Neutrino.xml</NuSettingsFile>
-        <SlicingSettingsFile>/usera/marshall/Test/github/LArReco/settings/uboone_new/PandoraSettings_MicroBooNE_Slicing.xml</SlicingSettingsFile>
+        <CRSettingsFile>/usera/marshall/Test/github/LArReco/settings/PandoraSettings_MicroBooNE_Cosmic.xml</CRSettingsFile>
+        <NuSettingsFile>/usera/marshall/Test/github/LArReco/settings/PandoraSettings_MicroBooNE_Neutrino.xml</NuSettingsFile>
+        <SlicingSettingsFile>/usera/marshall/Test/github/LArReco/settings/PandoraSettings_MicroBooNE_Slicing.xml</SlicingSettingsFile>
 
         <StitchingTools>
             <tool type = "LArStitchingCosmicRayMerging"><ThreeDStitchingMode>true</ThreeDStitchingMode></tool>

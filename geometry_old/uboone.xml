@@ -1,6 +1,6 @@
 <Geometry>
     <LArTPC>
-        <LArTPCVolumeId>0</LArTPCVolumeId>
+        <LArTPCName>LArTPC_0</LArTPCName>
         <CenterX>128.175003052</CenterX>
         <CenterY>0.970001220703</CenterY>
         <CenterZ>518.5</CenterZ>
