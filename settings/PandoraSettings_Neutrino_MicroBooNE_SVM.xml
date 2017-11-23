@@ -92,7 +92,7 @@
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-        <SvmFileName>/r05/dune/MachineLearningData/PandoraSvm_VertexSelection_MicroBooNE_mcc7.xml</SvmFileName>
+        <SvmFileName>PandoraSvm_VertexSelection_MicroBooNE_mcc7.xml</SvmFileName>
         <RegionSvmName>VertexSelectionRegion</RegionSvmName>
         <VertexSvmName>VertexSelectionVertex</VertexSvmName>
         <FeatureTools>
@@ -322,7 +322,7 @@
     <algorithm type = "LArSvmPfoCharacterisation">
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
-        <SvmFileName>/r05/dune/MachineLearningData/PandoraSvm_PfoCharacterisation_MicroBooNE_mcc7.xml</SvmFileName>
+        <SvmFileName>PandoraSvm_PfoCharacterisation_MicroBooNE_mcc7.xml</SvmFileName>
         <SvmName>FinalPfoCharacterisation</SvmName>
         <RatioVariables>true</RatioVariables>
         <FeatureTools>
