@@ -1,7 +1,7 @@
 <pandora>
     <!-- GLOBAL SETTINGS -->
-    <IsMonitoringEnabled>true</IsMonitoringEnabled>
-    <ShouldDisplayAlgorithmInfo>true</ShouldDisplayAlgorithmInfo>
+    <IsMonitoringEnabled>false</IsMonitoringEnabled>
+    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
     <!-- ALGORITHM SETTINGS -->
@@ -21,7 +21,7 @@
     </algorithm>
 
     <algorithm type = "LArMaster">
-        <CRSettingsFile>/usera/marshall/Test/github/LArReco/settings/PandoraSettings_Cosmic_MicroBooNE.xml</CRSettingsFile>
+        <CRSettingsFile>/usera/marshall/Test/github/LArReco/settings/PandoraSettings_Cosmic_Standard.xml</CRSettingsFile>
         <NuSettingsFile>/usera/marshall/Test/github/LArReco/settings/PandoraSettings_Neutrino_MicroBooNE_SVM.xml</NuSettingsFile>
         <SlicingSettingsFile>/usera/marshall/Test/github/LArReco/settings/PandoraSettings_Slicing_Standard.xml</SlicingSettingsFile>
         <StitchingTools>
@@ -38,7 +38,7 @@
         <RecreatedPfoListName>RecreatedPfos</RecreatedPfoListName>
         <RecreatedClusterListName>RecreatedClusters</RecreatedClusterListName>
         <RecreatedVertexListName>RecreatedVertices</RecreatedVertexListName>
-        <VisualizeOverallRecoStatus>true</VisualizeOverallRecoStatus>
+        <VisualizeOverallRecoStatus>false</VisualizeOverallRecoStatus>
     </algorithm>
 
     <algorithm type = "LArTrackParticleBuilding">
