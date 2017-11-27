@@ -167,7 +167,7 @@ bool PrintOptions()
               << "    -r RecoOption          (required) [Full, AllHitsCR, AllHitsNu, CRRemHitsSliceCR, CRRemHitsSliceNu, AllHitsSliceCR, AllHitsSliceNu]" << std::endl
               << "    -i Settings            (required) [algorithm description: xml]" << std::endl
               << "    -e EventFileList       (optional) [colon-separated list of files: xml/pndr]" << std::endl
-              << "    -g GeometryFile        (optional) [detector gap description: xml/pndr]" << std::endl
+              << "    -g GeometryFile        (optional) [detector geometry description: xml/pndr]" << std::endl
               << "    -n NEventsToProcess    (optional) [no. of events to process]" << std::endl
               << "    -s NEventsToSkip       (optional) [no. of events to skip in first file]" << std::endl
               << "    -p                     (optional) [print status]" << std::endl
