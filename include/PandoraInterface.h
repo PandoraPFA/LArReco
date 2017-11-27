@@ -31,19 +31,17 @@ public:
     std::string         m_settingsFile;                 ///< The path to the pandora settings file (mandatory parameter)
     std::string         m_eventFileNameList;            ///< Colon-separated list of file names to be processed
     std::string         m_geometryFileName;             ///< Name of the file containing geometry information
-    std::string         m_stitchingSettingsFile;        ///< The path to the stitching settings file (required only if multiple drift volumes)
 
     int                 m_nEventsToProcess;             ///< The number of events to process (default all events in file)
-    int                 m_nDriftVolumes;                ///< The number of drift volumes
-    bool                m_uniqueInstanceSettings;       ///< Whether to enable unique configuration of each Pandora instance
     bool                m_shouldDisplayEventNumber;     ///< Whether event numbers should be displayed (default false)
 
     bool                m_shouldRunAllHitsCosmicReco;   ///< Whether to run all hits cosmic-ray reconstruction
+    bool                m_shouldRunStitching;           ///< Whether to stitch cosmic-ray muons crossing between volumes
     bool                m_shouldRunCosmicHitRemoval;    ///< Whether to remove hits from tagged cosmic-rays
     bool                m_shouldRunSlicing;             ///< Whether to slice events into separate regions for processing
     bool                m_shouldRunNeutrinoRecoOption;  ///< Whether to run neutrino reconstruction for each slice
     bool                m_shouldRunCosmicRecoOption;    ///< Whether to run cosmic-ray reconstruction for each slice
-    bool                m_shouldIdentifyNeutrinoSlice;  ///< Whether to identify most appropriate neutrino slice
+    bool                m_shouldPerformSliceId;         ///< Whether to identify slices and select most appropriate pfos
     bool                m_printOverallRecoStatus;       ///< Whether to print current operation status messages
 
     pandora::InputInt   m_nEventsToSkip;                ///< The number of events to skip
@@ -64,29 +62,6 @@ void CreatePandoraInstances(const Parameters &parameters, const pandora::Pandora
  *  @param  pPrimaryPandora the address of the primary pandora instance
  */
 void ProcessEvents(const Parameters &parameters, const pandora::Pandora *const pPrimaryPandora);
-
-/**
- *  @brief  Create primary pandora instance
- *
- *  @param  parameters the parameters
- *  @param  pPrimaryPandora to receive the address of the primary pandora instance
- */
-void CreatePrimaryPandoraInstance(const Parameters &parameters, const pandora::Pandora *&pPrimaryPandora);
-
-/**
- *  @brief  Create daughter pandora instances
- *
- *  @param  parameters the parameters
- *  @param  pPrimaryPandora the address of the primary pandora instance
- */
-void CreateDaughterPandoraInstances(const Parameters &parameters, const pandora::Pandora *const pPrimaryPandora);
-
-/**
- *  @brief  Create a new Pandora instance and register lar content algs and plugins
- *
- *  @return the address of the new Pandora instance
- */
-const pandora::Pandora *CreateNewPandora();
 
 /**
  *  @brief  Parse the command line arguments, setting the application parameters
@@ -121,20 +96,8 @@ bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters);
  *
  *  @param  parameters the parameters
  *  @param  pPandora the address of the pandora instance
- *  @param  volumeIdString the volume id string, if any
  */
-void ProcessExternalParameters(const Parameters &parameters, const pandora::Pandora *const pPandora, const std::string volumeIdString = "");
-
-/**
- *  @brief  Replace all instances of a specified "search" with a "replacement", in a given "subject" string
- *
- *  @param  subject the subject string
- *  @param  search the search string
- *  @param  replacement the replacement string
- *
- *  @return the modified subject
- */
-std::string ReplaceString(std::string subject, const std::string &search, const std::string &replacement);
+void ProcessExternalParameters(const Parameters &parameters, const pandora::Pandora *const pPandora);
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -143,17 +106,15 @@ inline Parameters::Parameters() :
     m_settingsFile(""),
     m_eventFileNameList(""),
     m_geometryFileName(""),
-    m_stitchingSettingsFile(""),
     m_nEventsToProcess(-1),
-    m_nDriftVolumes(1),
-    m_uniqueInstanceSettings(false),
     m_shouldDisplayEventNumber(false),
     m_shouldRunAllHitsCosmicReco(true),
+    m_shouldRunStitching(true),
     m_shouldRunCosmicHitRemoval(true),
     m_shouldRunSlicing(true),
     m_shouldRunNeutrinoRecoOption(true),
     m_shouldRunCosmicRecoOption(true),
-    m_shouldIdentifyNeutrinoSlice(true),
+    m_shouldPerformSliceId(true),
     m_printOverallRecoStatus(false)
 {
 }
