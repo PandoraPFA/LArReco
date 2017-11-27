@@ -11,7 +11,7 @@ project(LArReco)
 
 # project version
 set(${PROJECT_NAME}_VERSION_MAJOR 03)
-set(${PROJECT_NAME}_VERSION_MINOR 08)
+set(${PROJECT_NAME}_VERSION_MINOR 09)
 set(${PROJECT_NAME}_VERSION_PATCH 00)
 set(${PROJECT_NAME}_VERSION "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}")
 
@@ -22,8 +22,8 @@ include(PandoraCMakeSettings)
 # Prefer local include directory to any paths to installed header files
 include_directories(include)
 
-find_package(PandoraSDK 03.01.00 REQUIRED)
-find_package(LArContent 03.08.00 REQUIRED)
+find_package(PandoraSDK 03.02.00 REQUIRED)
+find_package(LArContent 03.09.00 REQUIRED)
 
 foreach(package PandoraSDK LArContent)
     if(${package}_FOUND)
@@ -34,7 +34,7 @@ foreach(package PandoraSDK LArContent)
 endforeach()
 
 if(PANDORA_MONITORING)
-    find_package(PandoraMonitoring 03.02.00 REQUIRED)
+    find_package(PandoraMonitoring 03.04.00 REQUIRED)
     include_directories(${PandoraMonitoring_INCLUDE_DIRS})
     link_libraries(${PandoraMonitoring_LIBRARIES})
     add_definitions(${PandoraMonitoring_DEFINITIONS})
