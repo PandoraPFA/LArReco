@@ -92,7 +92,7 @@
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-	<SvmFileName>PandoraSvm_VertexSelection_MicroBooNE_mcc7.xml</SvmFileName>
+        <SvmFileName>PandoraSvm_VertexSelection_MicroBooNE_mcc7.xml</SvmFileName>
         <RegionSvmName>VertexSelectionRegion</RegionSvmName>
         <VertexSvmName>VertexSelectionVertex</VertexSvmName>
         <FeatureTools>
@@ -157,6 +157,7 @@
     <algorithm type = "LArCutPfoCharacterisation">
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+        <UseThreeDInformation>false</UseThreeDInformation>
     </algorithm>
     <algorithm type = "LArListDeletion">
         <PfoListNames>ShowerParticles3D</PfoListNames>
@@ -259,6 +260,7 @@
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
         <PostBranchAddition>true</PostBranchAddition>
+        <UseThreeDInformation>false</UseThreeDInformation>
     </algorithm>
     <algorithm type = "LArThreeDHitCreation">
         <InputPfoListName>TrackParticles3D</InputPfoListName>
@@ -322,9 +324,10 @@
     <algorithm type = "LArSvmPfoCharacterisation">
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+        <UseThreeDInformation>true</UseThreeDInformation>
 	<SvmFileName>PandoraSvm_PfoCharacterisation_MicroBooNE_mcc7_3D.xml</SvmFileName>
         <SvmName>FinalPfoCharacterisation</SvmName>
-        <SvmFileNameNoChargeInfo>PandoraSvm_PfoCharacterisation_MicroBooNE_mcc7_3D_noChargeInfo.xml</SvmFileNameNoChargeInfo>
+        <SvmFileNameNoChargeInfo>PandoraSvm_PfoCharacterisation_MicroBooNE_mcc7_3D_noChargeInfo.xml</SvmFileNameNoChargeInfo> 
         <SvmNameNoChargeInfo>FinalPfoCharacterisation</SvmNameNoChargeInfo>
 	<FeatureTools>
           <tool type = "LArThreeDLinearFitFeatureTool"/>
