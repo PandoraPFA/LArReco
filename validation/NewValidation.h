@@ -106,6 +106,7 @@ public:
 
     int                 m_nMatchedPfos;                 ///< The number of matched pfos
     int                 m_bestMatchPfoPdgCode;          ///< The best match pfo pdg code
+    int                 m_bestMatchPfoIsRecoNu;         ///< Whether best match pfo is reconstructed as part of a neutrino hierarchy
     int                 m_bestMatchPfoNHitsTotal;       ///< The best match pfo total number of pfo hits
     int                 m_bestMatchPfoNHitsU;           ///< The best match pfo number of u pfo hits
     int                 m_bestMatchPfoNHitsV;           ///< The best match pfo number of v pfo hits
@@ -179,27 +180,6 @@ typedef std::vector<SimpleMCEvent> SimpleMCEventList;
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
- * @brief   CountingDetails class
- */
-class CountingDetails
-{
-public:
-    /**
-     *  @brief  Default constructor  
-     */
-    CountingDetails();
-
-    unsigned int            m_nTotal;                   ///< The total number of occurences
-    unsigned int            m_nMatch0;                  ///< The number of times the primary has 0 pfo matches
-    unsigned int            m_nMatch1;                  ///< The number of times the primary has 1 pfo matches
-    unsigned int            m_nMatch2;                  ///< The number of times the primary has 2 pfo matches
-    unsigned int            m_nMatch3Plus;              ///< The number of times the primary has 3 or more pfo matches
-    unsigned int            m_correctId;                ///< The number of times the primary particle identifcation was correct
-};
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-/**
  * @brief   ExpectedPrimary enum
  */
 enum ExpectedPrimary : int
@@ -218,8 +198,6 @@ enum ExpectedPrimary : int
     PHOTON2,
     OTHER_PRIMARY
 };
-
-typedef std::map<ExpectedPrimary, CountingDetails> CountingMap;
 
 /**
  *  @brief  Get a string representation of an interaction type
@@ -341,8 +319,6 @@ enum InteractionType : int
     ALL_INTERACTIONS
 };
 
-typedef std::map<InteractionType, CountingMap> InteractionCountingMap;
-
 /**
  *  @brief  Get a string representation of an interaction type
  *
@@ -351,6 +327,30 @@ typedef std::map<InteractionType, CountingMap> InteractionCountingMap;
  *  @return string
  */
 std::string ToString(const InteractionType interactionType);
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+/**
+ * @brief   CountingDetails class
+ */
+class CountingDetails
+{
+public:
+    /**
+     *  @brief  Default constructor  
+     */
+    CountingDetails();
+
+    unsigned int            m_nTotal;                   ///< The total number of occurences
+    unsigned int            m_nMatch0;                  ///< The number of times the primary has 0 pfo matches
+    unsigned int            m_nMatch1;                  ///< The number of times the primary has 1 pfo matches
+    unsigned int            m_nMatch2;                  ///< The number of times the primary has 2 pfo matches
+    unsigned int            m_nMatch3Plus;              ///< The number of times the primary has 3 or more pfo matches
+    unsigned int            m_correctId;                ///< The number of times the primary particle identifcation was correct
+};
+
+typedef std::map<ExpectedPrimary, CountingDetails> CountingMap;
+typedef std::map<InteractionType, CountingMap> InteractionCountingMap;
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -366,12 +366,13 @@ public:
     PrimaryResult();
 
     unsigned int            m_nPfoMatches;              ///< The total number of pfo matches for a given primary
-    unsigned int            m_nTrueHits;                ///< The number of true hits
-    float                   m_trueMomentum;             ///< The true momentum
-    unsigned int            m_nBestMatchedHits;         ///< The best number of matched hits
-    unsigned int            m_nBestRecoHits;            ///< The number of hits in the best matched pfo
-    float                   m_bestCompleteness;         ///< The best match pfo is determined by the best completeness (most matched hits)
+    unsigned int            m_nMCHitsTotal;             ///< The number of mc hits
+    unsigned int            m_nBestMatchSharedHitsTotal;///< 
+    unsigned int            m_nBestMatchRecoHitsTotal;  ///< 
+    float                   m_bestMatchCompleteness;    ///< The best match pfo is determined by the best completeness (most matched hits)
     float                   m_bestMatchPurity;          ///< The purity of the best matched pfo
+    bool                    m_isCorrectParticleId;      ///< 
+    float                   m_trueMomentum;             ///< The true momentum
 };
 
 typedef std::map<ExpectedPrimary, PrimaryResult> PrimaryResultMap;
@@ -385,15 +386,13 @@ class TargetResult
 {
 public:
     /**
-     *  @brief  Default constructor  
+     *  @brief  Default constructor
      */
     TargetResult();
 
-    int                     m_fileIdentifier;           ///< The file identifier
-    int                     m_eventNumber;              ///< The event number
-    int                     m_mcNuance;                 ///< The mc nuance code (interaction type details)
+    bool                    m_isCorrect;                ///< 
     PrimaryResultMap        m_primaryResultMap;         ///< The primary result map
-    SimpleThreeVector       m_vertexOffset;             ///< The vertex offset
+    // TODO add vertex resolution again
 };
 
 typedef std::vector<TargetResult> TargetResultList; // ATTN Not terribly efficient, but that's not the main aim here
@@ -478,10 +477,12 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent);
  *  @brief  CountPfoMatches Relies on fact that primary list is sorted by number of true good hits
  * 
  *  @param  simpleMCEvent the simple mc event
+ *  @param  parameters the parameters
  *  @param  interactionCountingMap the interaction counting map, to be populated
  *  @param  interactionTargetResultMap the interaction target outcome map, to be populated
  */
-void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, InteractionCountingMap &interactionCountingMap, InteractionTargetResultMap &interactionTargetResultMap);
+void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters, InteractionCountingMap &interactionCountingMap,
+    InteractionTargetResultMap &interactionTargetResultMap);
 
 /**
  *  @brief  Whether a simple mc event passes uboone fiducial cut, applied to target vertices
@@ -501,7 +502,17 @@ bool PassUbooneFiducialCut(const SimpleMCTarget &simpleMCTarget);
  * 
  *  @return the expected primary
  */
-ExpectedPrimary GetExpectedPrimary(const SimpleMCPrimary &simpleMCPrimary, const SimpleMCPrimaryList &simpleMCPrimaryList, const Parameters &parameters);
+ExpectedPrimary GetExpectedPrimary(const SimpleMCPrimary &simpleMCPrimary, const SimpleMCPrimaryList &simpleMCPrimaryList);
+
+/**
+ *  @brief  Whether a provided mc primary and best matched pfo are deemed to have a good particle id match
+ * 
+ *  @param  simpleMCPrimary the simple mc primary
+ *  @param  bestMatchPfoPdgCode the best matched pfo pdg code
+ * 
+ *  @return boolean
+ */
+bool IsGoodParticleIdMatch(const SimpleMCPrimary &simpleMCPrimary, const int bestMatchPfoPdgCode);
 
 /**
  *  @brief  Print details to screen for a provided interaction type to counting map
@@ -511,39 +522,39 @@ ExpectedPrimary GetExpectedPrimary(const SimpleMCPrimary &simpleMCPrimary, const
  */
 void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCountingMap, const Parameters &parameters);
 
-/**
- *  @brief  Opportunity to fill histograms, perform post-processing of information collected in main loop over ntuple, etc.
- * 
- *  @param  interactionTargetResultMap the interaction target result map
- *  @param  parameters the parameters
- */
-void AnalyseInteractionTargetResultMap(const InteractionTargetResultMap &interactionTargetResultMap, const Parameters &parameters);
-
-/**
- *  @brief  Fill histograms in the provided histogram collection, using information in the provided primary result
- * 
- *  @param  histPrefix the histogram prefix
- *  @param  primaryResult the primary result
- *  @param  primaryHistogramCollection the primary histogram collection
- */
-void FillPrimaryHistogramCollection(const std::string &histPrefix, const PrimaryResult &primaryResult, PrimaryHistogramCollection &primaryHistogramCollection);
-
-/**
- *  @brief  Fill histograms in the provided target histogram collection, using information in the provided target result
- * 
- *  @param  histPrefix the histogram prefix
- *  @param  isCorrect whether the event is deemed correct
- *  @param  targetResult the target result
- *  @param  targetHistogramCollection the target histogram collection
- */
-void FillTargetHistogramCollection(const std::string &histPrefix, const bool isCorrect, const TargetResult &targetResult, TargetHistogramCollection &targetHistogramCollection);
-
-/**
- *  @brief  Process histograms stored in the provided map e.g. calculating final efficiencies, normalising, etc.
- * 
- *  @param  interactionPrimaryHistogramMap the interaction primary histogram map
- */
-void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interactionPrimaryHistogramMap);
+///**
+// *  @brief  Opportunity to fill histograms, perform post-processing of information collected in main loop over ntuple, etc.
+// * 
+// *  @param  interactionTargetResultMap the interaction target result map
+// *  @param  parameters the parameters
+// */
+//void AnalyseInteractionTargetResultMap(const InteractionTargetResultMap &interactionTargetResultMap, const Parameters &parameters);
+//
+///**
+// *  @brief  Fill histograms in the provided histogram collection, using information in the provided primary result
+// * 
+// *  @param  histPrefix the histogram prefix
+// *  @param  primaryResult the primary result
+// *  @param  primaryHistogramCollection the primary histogram collection
+// */
+//void FillPrimaryHistogramCollection(const std::string &histPrefix, const PrimaryResult &primaryResult, PrimaryHistogramCollection &primaryHistogramCollection);
+//
+///**
+// *  @brief  Fill histograms in the provided target histogram collection, using information in the provided target result
+// * 
+// *  @param  histPrefix the histogram prefix
+// *  @param  isCorrect whether the event is deemed correct
+// *  @param  targetResult the target result
+// *  @param  targetHistogramCollection the target histogram collection
+// */
+//void FillTargetHistogramCollection(const std::string &histPrefix, const bool isCorrect, const TargetResult &targetResult, TargetHistogramCollection &targetHistogramCollection);
+//
+///**
+// *  @brief  Process histograms stored in the provided map e.g. calculating final efficiencies, normalising, etc.
+// * 
+// *  @param  interactionPrimaryHistogramMap the interaction primary histogram map
+// */
+//void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interactionPrimaryHistogramMap);
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -552,7 +563,7 @@ Parameters::Parameters() :
     m_displayMatchedEvents(true),
     m_skipEvents(0),
     m_nEventsToProcess(std::numeric_limits<int>::max()),
-    m_applyUbooneFiducialCut(true),
+    m_applyUbooneFiducialCut(false),
     m_correctTrackShowerId(false),
     m_vertexXCorrection(0.495694f),
     m_histogramOutput(false)
@@ -607,6 +618,7 @@ SimpleMCPrimary::SimpleMCPrimary() :
     m_endpoint(-1.f, -1.f, -1.f),
     m_nMatchedPfos(0),
     m_bestMatchPfoPdgCode(0),
+    m_bestMatchPfoIsRecoNu(0),
     m_bestMatchPfoNHitsTotal(0),
     m_bestMatchPfoNHitsU(0),
     m_bestMatchPfoNHitsV(0),
@@ -669,12 +681,13 @@ CountingDetails::CountingDetails() :
 
 PrimaryResult::PrimaryResult() :
     m_nPfoMatches(0),
-    m_nTrueHits(0),
-    m_trueMomentum(std::numeric_limits<float>::max()),
-    m_nBestMatchedHits(0),
-    m_nBestRecoHits(0),
-    m_bestCompleteness(0.f),
-    m_bestMatchPurity(0.f)
+    m_nMCHitsTotal(0),
+    m_nBestMatchSharedHitsTotal(0),
+    m_nBestMatchRecoHitsTotal(0),
+    m_bestMatchCompleteness(0.f),
+    m_bestMatchPurity(0.f),
+    m_isCorrectParticleId(false),
+    m_trueMomentum(std::numeric_limits<float>::max())
 {
 }
 
@@ -682,10 +695,7 @@ PrimaryResult::PrimaryResult() :
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 TargetResult::TargetResult() :
-    m_fileIdentifier(-1),
-    m_eventNumber(-1),
-    m_mcNuance(-1),
-    m_vertexOffset(-999.f, -999.f, -999.f)
+    m_isCorrect(false)
 {
 }
 
