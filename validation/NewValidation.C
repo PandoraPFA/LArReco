@@ -17,7 +17,7 @@
 
 void Validation(const std::string &inputFiles, const Parameters &parameters)
 {
-    TChain *pTChain = new TChain("Validation", "pTChain");
+    TChain *pTChain = new TChain("NewValidation", "pTChain");
     pTChain->Add(inputFiles.c_str());
 
     InteractionCountingMap interactionCountingMap;
@@ -201,6 +201,12 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent)
                       << ", " << simpleMCPrimary.m_nMCHitsV 
                       << ", " << simpleMCPrimary.m_nMCHitsW << ")" << std::endl;
 
+            if (0 == simpleMCPrimary.m_nMatchedPfos)
+            {
+                std::cout << "-No matched Pfo" << std::endl;
+                continue;
+            }
+
             std::cout << "-RecoAsNu " << simpleMCPrimary.m_bestMatchPfoIsRecoNu
                       << ", nMatchedPfos " << simpleMCPrimary.m_nMatchedPfos
                       << ", BestPDG " << simpleMCPrimary.m_bestMatchPfoPdgCode
@@ -235,7 +241,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
             const ExpectedPrimary expectedPrimary(GetExpectedPrimary(simpleMCPrimary, simpleMCTarget.m_mcPrimaryList));
 
             CountingDetails &countingDetails = interactionCountingMap[interactionType][expectedPrimary];
-            const int nMatchedPfos((simpleMCTarget.m_isCosmicRay && simpleMCPrimary.m_bestMatchPfoIsRecoNu) ? 0 : simpleMCPrimary.m_nMatchedPfos);
+            const int nMatchedPfos(simpleMCPrimary.m_nMatchedPfos); // TODO
 
             ++countingDetails.m_nTotal;
             if (0 == nMatchedPfos) ++countingDetails.m_nMatch0;
@@ -743,12 +749,69 @@ std::string ToString(const InteractionType interactionType)
     case NCRES_P_P_P_PIZERO: return "NCRES_P_P_P_PIZERO";
     case NCRES_P_P_P_P_PIZERO: return "NCRES_P_P_P_P_PIZERO";
     case NCRES_P_P_P_P_P_PIZERO: return "NCRES_P_P_P_P_P_PIZERO";
-    case CCDIS: return "CCDIS";
-    case NCDIS: return "NCDIS";
+    case CCDIS_MU: return "CCDIS_MU";
+    case CCDIS_MU_P: return "CCDIS_MU_P";
+    case CCDIS_MU_P_P: return "CCDIS_MU_P_P";
+    case CCDIS_MU_P_P_P: return "CCDIS_MU_P_P_P";
+    case CCDIS_MU_P_P_P_P: return "CCDIS_MU_P_P_P_P";
+    case CCDIS_MU_P_P_P_P_P: return "CCDIS_MU_P_P_P_P_P";
+    case CCDIS_MU_PIPLUS: return "CCDIS_MU_PIPLUS";
+    case CCDIS_MU_P_PIPLUS: return "CCDIS_MU_P_PIPLUS";
+    case CCDIS_MU_P_P_PIPLUS: return "CCDIS_MU_P_P_PIPLUS";
+    case CCDIS_MU_P_P_P_PIPLUS: return "CCDIS_MU_P_P_P_PIPLUS";
+    case CCDIS_MU_P_P_P_P_PIPLUS: return "CCDIS_MU_P_P_P_P_PIPLUS";
+    case CCDIS_MU_P_P_P_P_P_PIPLUS: return "CCDIS_MU_P_P_P_P_P_PIPLUS";
+    case CCDIS_MU_PHOTON: return "CCDIS_MU_PHOTON";
+    case CCDIS_MU_P_PHOTON: return "CCDIS_MU_P_PHOTON";
+    case CCDIS_MU_P_P_PHOTON: return "CCDIS_MU_P_P_PHOTON";
+    case CCDIS_MU_P_P_P_PHOTON: return "CCDIS_MU_P_P_P_PHOTON";
+    case CCDIS_MU_P_P_P_P_PHOTON: return "CCDIS_MU_P_P_P_P_PHOTON";
+    case CCDIS_MU_P_P_P_P_P_PHOTON: return "CCDIS_MU_P_P_P_P_P_PHOTON";
+    case CCDIS_MU_PIZERO: return "CCDIS_MU_PIZERO";
+    case CCDIS_MU_P_PIZERO: return "CCDIS_MU_P_PIZERO";
+    case CCDIS_MU_P_P_PIZERO: return "CCDIS_MU_P_P_PIZERO";
+    case CCDIS_MU_P_P_P_PIZERO: return "CCDIS_MU_P_P_P_PIZERO";
+    case CCDIS_MU_P_P_P_P_PIZERO: return "CCDIS_MU_P_P_P_P_PIZERO";
+    case CCDIS_MU_P_P_P_P_P_PIZERO: return "CCDIS_MU_P_P_P_P_P_PIZERO";
+    case NCDIS_P: return "NCDIS_P";
+    case NCDIS_P_P: return "NCDIS_P_P";
+    case NCDIS_P_P_P: return "NCDIS_P_P_P";
+    case NCDIS_P_P_P_P: return "NCDIS_P_P_P_P";
+    case NCDIS_P_P_P_P_P: return "NCDIS_P_P_P_P_P";
+    case NCDIS_PIPLUS: return "NCDIS_PIPLUS";
+    case NCDIS_P_PIPLUS: return "NCDIS_P_PIPLUS";
+    case NCDIS_P_P_PIPLUS: return "NCDIS_P_P_PIPLUS";
+    case NCDIS_P_P_P_PIPLUS: return "NCDIS_P_P_P_PIPLUS";
+    case NCDIS_P_P_P_P_PIPLUS: return "NCDIS_P_P_P_P_PIPLUS";
+    case NCDIS_P_P_P_P_P_PIPLUS: return "NCDIS_P_P_P_P_P_PIPLUS";
+    case NCDIS_PIMINUS: return "NCDIS_PIMINUS";
+    case NCDIS_P_PIMINUS: return "NCDIS_P_PIMINUS";
+    case NCDIS_P_P_PIMINUS: return "NCDIS_P_P_PIMINUS";
+    case NCDIS_P_P_P_PIMINUS: return "NCDIS_P_P_P_PIMINUS";
+    case NCDIS_P_P_P_P_PIMINUS: return "NCDIS_P_P_P_P_PIMINUS";
+    case NCDIS_P_P_P_P_P_PIMINUS: return "NCDIS_P_P_P_P_P_PIMINUS";
+    case NCDIS_PHOTON: return "NCDIS_PHOTON";
+    case NCDIS_P_PHOTON: return "NCDIS_P_PHOTON";
+    case NCDIS_P_P_PHOTON: return "NCDIS_P_P_PHOTON";
+    case NCDIS_P_P_P_PHOTON: return "NCDIS_P_P_P_PHOTON";
+    case NCDIS_P_P_P_P_PHOTON: return "NCDIS_P_P_P_P_PHOTON";
+    case NCDIS_P_P_P_P_P_PHOTON: return "NCDIS_P_P_P_P_P_PHOTON";
+    case NCDIS_PIZERO: return "NCDIS_PIZERO";
+    case NCDIS_P_PIZERO: return "NCDIS_P_PIZERO";
+    case NCDIS_P_P_PIZERO: return "NCDIS_P_P_PIZERO";
+    case NCDIS_P_P_P_PIZERO: return "NCDIS_P_P_P_PIZERO";
+    case NCDIS_P_P_P_P_PIZERO: return "NCDIS_P_P_P_P_PIZERO";
+    case NCDIS_P_P_P_P_P_PIZERO: return "NCDIS_P_P_P_P_P_PIZERO";
     case CCCOH: return "CCCOH";
     case NCCOH: return "NCCOH";
-    case COSMIC_RAY: return "COSMIC_RAY";
-    case BEAM_PARTICLE: return "BEAM_PARTICLE";
+    case COSMIC_RAY_MU: return "COSMIC_RAY_MU";
+    case COSMIC_RAY_P: return "COSMIC_RAY_P";
+    case COSMIC_RAY_E: return "COSMIC_RAY_E";
+    case COSMIC_RAY_PHOTON: return "COSMIC_RAY_PHOTON";
+    case BEAM_PARTICLE_MU: return "BEAM_PARTICLE_MU";
+    case BEAM_PARTICLE_P: return "BEAM_PARTICLE_P";
+    case BEAM_PARTICLE_E: return "BEAM_PARTICLE_E";
+    case BEAM_PARTICLE_PHOTON: return "BEAM_PARTICLE_PHOTON";
     case OTHER_INTERACTION: return "OTHER_INTERACTION";
     case ALL_INTERACTIONS: return "ALL_INTERACTIONS";
     default: return "UNKNOWN";
