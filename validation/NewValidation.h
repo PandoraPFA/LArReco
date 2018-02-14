@@ -94,19 +94,24 @@ public:
      */
     SimpleMCPrimary();
 
+    int                 m_primaryId;                    ///< The identifier
     int                 m_pdgCode;                      ///< The pdg code
-    int                 m_nMCHitsTotal;                 ///< The total number of mc hits
-    int                 m_nMCHitsU;                     ///< The number of u mc hits
-    int                 m_nMCHitsV;                     ///< The number of v mc hits
-    int                 m_nMCHitsW;                     ///< The number of w mc hits
     float               m_energy;                       ///< The energy
     SimpleThreeVector   m_momentum;                     ///< The momentum
     SimpleThreeVector   m_vertex;                       ///< The vertex
     SimpleThreeVector   m_endpoint;                     ///< The endpoint
+    int                 m_nMCHitsTotal;                 ///< The total number of mc hits
+    int                 m_nMCHitsU;                     ///< The number of u mc hits
+    int                 m_nMCHitsV;                     ///< The number of v mc hits
+    int                 m_nMCHitsW;                     ///< The number of w mc hits
 
-    int                 m_nMatchedPfos;                 ///< The number of matched pfos
+    int                 m_nPrimaryMatchedPfos;          ///< The number of matched pfos
+    int                 m_nPrimaryMatchedNuPfos;        ///< The number of matched nu pfos
+    int                 m_nPrimaryMatchedCRPfos;        ///< The number of matched cr pfos
+    int                 m_bestMatchPfoId;               ///< The best match pfo identifier
     int                 m_bestMatchPfoPdgCode;          ///< The best match pfo pdg code
     int                 m_bestMatchPfoIsRecoNu;         ///< Whether best match pfo is reconstructed as part of a neutrino hierarchy
+    int                 m_bestMatchPfoRecoNuId;         ///< The identifier of the associated reco neutrino (if part of a neutrino hierarchy)
     int                 m_bestMatchPfoNHitsTotal;       ///< The best match pfo total number of pfo hits
     int                 m_bestMatchPfoNHitsU;           ///< The best match pfo number of u pfo hits
     int                 m_bestMatchPfoNHitsV;           ///< The best match pfo number of v pfo hits
@@ -142,12 +147,16 @@ public:
     int                 m_isCorrectTB;                  ///< 
     int                 m_isCorrectCR;                  ///< 
     int                 m_isFakeNu;                     ///< 
-    int                 m_isSplitCR;                    ///< 
-    int                 m_isLostCR;                     ///< 
     int                 m_isFakeCR;                     ///< 
-    int                 m_nNuMatches;                   ///< 
-    int                 m_nNuSplits;                    ///< 
-    int                 m_nCRMatches;                   ///< 
+    int                 m_isSplitNu;                    ///< 
+    int                 m_isSplitCR;                    ///< 
+    int                 m_isLost;                       ///< 
+
+    int                 m_nTargetMatches;               ///< 
+    int                 m_nTargetNuMatches;             ///< 
+    int                 m_nTargetCRMatches;             ///< 
+    int                 m_nTargetGoodNuMatches;         ///< 
+    int                 m_nTargetNuSplits;              ///< 
 
     int                 m_nTargetPrimaries;             ///< The number of target mc primaries
     SimpleMCPrimaryList m_mcPrimaryList;                ///< The list of mc primaries
@@ -664,18 +673,23 @@ SimpleThreeVector operator+(const SimpleThreeVector &lhs, const SimpleThreeVecto
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 SimpleMCPrimary::SimpleMCPrimary() :
+    m_primaryId(-1),
     m_pdgCode(0),
+    m_energy(0.f),
+    m_momentum(0.f, 0.f, 0.f),
+    m_vertex(-1.f, -1.f, -1.f),
+    m_endpoint(-1.f, -1.f, -1.f),
     m_nMCHitsTotal(0),
     m_nMCHitsU(0),
     m_nMCHitsV(0),
     m_nMCHitsW(0),
-    m_energy(0),
-    m_momentum(0.f, 0.f, 0.f),
-    m_vertex(-1.f, -1.f, -1.f),
-    m_endpoint(-1.f, -1.f, -1.f),
-    m_nMatchedPfos(0),
+    m_nPrimaryMatchedPfos(0),
+    m_nPrimaryMatchedNuPfos(0),
+    m_nPrimaryMatchedCRPfos(0),
+    m_bestMatchPfoId(-1),
     m_bestMatchPfoPdgCode(0),
     m_bestMatchPfoIsRecoNu(0),
+    m_bestMatchPfoRecoNuId(-1),
     m_bestMatchPfoNHitsTotal(0),
     m_bestMatchPfoNHitsU(0),
     m_bestMatchPfoNHitsV(0),
@@ -700,12 +714,15 @@ SimpleMCTarget::SimpleMCTarget() :
     m_isCorrectTB(false),
     m_isCorrectCR(false),
     m_isFakeNu(false),
-    m_isSplitCR(false),
-    m_isLostCR(false),
     m_isFakeCR(false),
-    m_nNuMatches(0),
-    m_nNuSplits(0),
-    m_nCRMatches(0),
+    m_isSplitNu(false),
+    m_isSplitCR(false),
+    m_isLost(false),
+    m_nTargetMatches(0),
+    m_nTargetNuMatches(0),
+    m_nTargetCRMatches(0),
+    m_nTargetGoodNuMatches(0),
+    m_nTargetNuSplits(0),
     m_nTargetPrimaries(0)
 {
 }

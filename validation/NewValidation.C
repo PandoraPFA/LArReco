@@ -54,12 +54,11 @@ void Validation(const std::string &inputFiles, const Parameters &parameters)
 
 int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simpleMCEvent)
 {
-    pTChain->SetBranchAddress("fileIdentifier", &simpleMCEvent.m_fileIdentifier);
-
     int thisEventNumber(0), iTarget(0);
     const int nChainEntries(pTChain->GetEntries());
 
     pTChain->SetBranchAddress("eventNumber", &thisEventNumber);
+    pTChain->SetBranchAddress("fileIdentifier", &simpleMCEvent.m_fileIdentifier);
     pTChain->GetEntry(iEntry);
     simpleMCEvent.m_eventNumber = thisEventNumber;
 
@@ -76,20 +75,26 @@ int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simple
         pTChain->SetBranchAddress("isCorrectTB", &simpleMCTarget.m_isCorrectTB);
         pTChain->SetBranchAddress("isCorrectCR", &simpleMCTarget.m_isCorrectCR);
         pTChain->SetBranchAddress("isFakeNu", &simpleMCTarget.m_isFakeNu);
-        pTChain->SetBranchAddress("isSplitCR", &simpleMCTarget.m_isSplitCR);
-        pTChain->SetBranchAddress("isLostCR", &simpleMCTarget.m_isLostCR);
         pTChain->SetBranchAddress("isFakeCR", &simpleMCTarget.m_isFakeCR);
-        pTChain->SetBranchAddress("nNuMatches", &simpleMCTarget.m_nNuMatches);
-        pTChain->SetBranchAddress("nNuSplits", &simpleMCTarget.m_nNuSplits);
-        pTChain->SetBranchAddress("nCRMatches", &simpleMCTarget.m_nCRMatches);
+        pTChain->SetBranchAddress("isSplitNu", &simpleMCTarget.m_isSplitNu);
+        pTChain->SetBranchAddress("isSplitCR", &simpleMCTarget.m_isSplitCR);
+        pTChain->SetBranchAddress("isLost", &simpleMCTarget.m_isLost);
+        pTChain->SetBranchAddress("nTargetMatches", &simpleMCTarget.m_nTargetMatches);
+        pTChain->SetBranchAddress("nTargetNuMatches", &simpleMCTarget.m_nTargetNuMatches);
+        pTChain->SetBranchAddress("nTargetCRMatches", &simpleMCTarget.m_nTargetCRMatches);
+        pTChain->SetBranchAddress("nTargetGoodNuMatches", &simpleMCTarget.m_nTargetGoodNuMatches);
+        pTChain->SetBranchAddress("nTargetNuSplits", &simpleMCTarget.m_nTargetNuSplits);
         pTChain->SetBranchAddress("nTargetPrimaries", &simpleMCTarget.m_nTargetPrimaries);
 
-        IntVector *pNMCHitsTotal(nullptr), *pNMCHitsU(nullptr), *pNMCHitsV(nullptr), *pNMCHitsW(nullptr), *pMCPrimaryPdg(nullptr);
+        IntVector *pMCPrimaryId(nullptr), *pMCPrimaryPdg(nullptr), *pNMCHitsTotal(nullptr), *pNMCHitsU(nullptr), *pNMCHitsV(nullptr), *pNMCHitsW(nullptr);
         FloatVector *pMCPrimaryE(nullptr), *pMCPrimaryPX(nullptr), *pMCPrimaryPY(nullptr), *pMCPrimaryPZ(nullptr);
         FloatVector *pMCPrimaryVtxX(nullptr), *pMCPrimaryVtxY(nullptr), *pMCPrimaryVtxZ(nullptr), *pMCPrimaryEndX(nullptr), *pMCPrimaryEndY(nullptr), *pMCPrimaryEndZ(nullptr);
-        IntVector *pNMatchedPfos(nullptr), *pBestMatchPfoNHitsTotal(nullptr), *pBestMatchPfoNHitsU(nullptr), *pBestMatchPfoNHitsV(nullptr), *pBestMatchPfoNHitsW(nullptr), *pBestMatchPfoPdg(nullptr), *pBestMatchPfoIsRecoNu(nullptr);
+        IntVector *pNPrimaryMatchedPfos(nullptr), *pNPrimaryMatchedNuPfos(nullptr), *pNPrimaryMatchedCRPfos(nullptr);
+        IntVector *pBestMatchPfoId(nullptr), *pBestMatchPfoPdg(nullptr), *pBestMatchPfoIsRecoNu(nullptr), *pBestMatchPfoRecoNuId(nullptr);
+        IntVector *pBestMatchPfoNHitsTotal(nullptr), *pBestMatchPfoNHitsU(nullptr), *pBestMatchPfoNHitsV(nullptr), *pBestMatchPfoNHitsW(nullptr);
         IntVector *pBestMatchPfoNSharedHitsTotal(nullptr), *pBestMatchPfoNSharedHitsU(nullptr), *pBestMatchPfoNSharedHitsV(nullptr), *pBestMatchPfoNSharedHitsW(nullptr);
 
+        pTChain->SetBranchAddress("mcPrimaryId", &pMCPrimaryId);
         pTChain->SetBranchAddress("mcPrimaryPdg", &pMCPrimaryPdg);
         pTChain->SetBranchAddress("mcPrimaryE", &pMCPrimaryE);
         pTChain->SetBranchAddress("mcPrimaryPX", &pMCPrimaryPX);
@@ -105,13 +110,17 @@ int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simple
         pTChain->SetBranchAddress("mcPrimaryNHitsU", &pNMCHitsU);
         pTChain->SetBranchAddress("mcPrimaryNHitsV", &pNMCHitsV);
         pTChain->SetBranchAddress("mcPrimaryNHitsW", &pNMCHitsW);
-        pTChain->SetBranchAddress("nMatchedPfos", &pNMatchedPfos);
+        pTChain->SetBranchAddress("nPrimaryMatchedPfos", &pNPrimaryMatchedPfos);
+        pTChain->SetBranchAddress("nPrimaryMatchedNuPfos", &pNPrimaryMatchedNuPfos);
+        pTChain->SetBranchAddress("nPrimaryMatchedCRPfos", &pNPrimaryMatchedCRPfos);
         pTChain->SetBranchAddress("bestMatchPfoNHitsTotal", &pBestMatchPfoNHitsTotal);
         pTChain->SetBranchAddress("bestMatchPfoNHitsU", &pBestMatchPfoNHitsU);
         pTChain->SetBranchAddress("bestMatchPfoNHitsV", &pBestMatchPfoNHitsV);
         pTChain->SetBranchAddress("bestMatchPfoNHitsW", &pBestMatchPfoNHitsW);
+        pTChain->SetBranchAddress("bestMatchPfoId", &pBestMatchPfoId);
         pTChain->SetBranchAddress("bestMatchPfoPdg", &pBestMatchPfoPdg);
         pTChain->SetBranchAddress("bestMatchPfoIsRecoNu", &pBestMatchPfoIsRecoNu);
+        pTChain->SetBranchAddress("bestMatchPfoRecoNuId", &pBestMatchPfoRecoNuId);
         pTChain->SetBranchAddress("bestMatchPfoNSharedHitsTotal", &pBestMatchPfoNSharedHitsTotal);
         pTChain->SetBranchAddress("bestMatchPfoNSharedHitsU", &pBestMatchPfoNSharedHitsU);
         pTChain->SetBranchAddress("bestMatchPfoNSharedHitsV", &pBestMatchPfoNSharedHitsV);
@@ -124,6 +133,7 @@ int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simple
         for (int iPrimary = 0; iPrimary < simpleMCTarget.m_nTargetPrimaries; ++iPrimary)
         {
             SimpleMCPrimary simpleMCPrimary;
+            simpleMCPrimary.m_primaryId = pMCPrimaryId->at(iPrimary);
             simpleMCPrimary.m_pdgCode = pMCPrimaryPdg->at(iPrimary);
             simpleMCPrimary.m_energy = pMCPrimaryE->at(iPrimary);
             simpleMCPrimary.m_momentum.m_x = pMCPrimaryPX->at(iPrimary);
@@ -139,9 +149,13 @@ int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simple
             simpleMCPrimary.m_nMCHitsU = pNMCHitsU->at(iPrimary);
             simpleMCPrimary.m_nMCHitsV = pNMCHitsV->at(iPrimary);
             simpleMCPrimary.m_nMCHitsW = pNMCHitsW->at(iPrimary);
-            simpleMCPrimary.m_nMatchedPfos = pNMatchedPfos->at(iPrimary);
+            simpleMCPrimary.m_nPrimaryMatchedPfos = pNPrimaryMatchedPfos->at(iPrimary);
+            simpleMCPrimary.m_nPrimaryMatchedNuPfos = pNPrimaryMatchedNuPfos->at(iPrimary);
+            simpleMCPrimary.m_nPrimaryMatchedCRPfos = pNPrimaryMatchedCRPfos->at(iPrimary);
+            simpleMCPrimary.m_bestMatchPfoId = pBestMatchPfoId->at(iPrimary);
             simpleMCPrimary.m_bestMatchPfoPdgCode = pBestMatchPfoPdg->at(iPrimary);
             simpleMCPrimary.m_bestMatchPfoIsRecoNu = pBestMatchPfoIsRecoNu->at(iPrimary);
+            simpleMCPrimary.m_bestMatchPfoRecoNuId = pBestMatchPfoRecoNuId->at(iPrimary);
             simpleMCPrimary.m_bestMatchPfoNHitsTotal = pBestMatchPfoNHitsTotal->at(iPrimary);
             simpleMCPrimary.m_bestMatchPfoNHitsU = pBestMatchPfoNHitsU->at(iPrimary);
             simpleMCPrimary.m_bestMatchPfoNHitsV = pBestMatchPfoNHitsV->at(iPrimary);
@@ -173,7 +187,7 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent)
 
     for (const SimpleMCTarget &simpleMCTarget : simpleMCEvent.m_mcTargetList)
     {
-        std::cout << std::endl << "TargetInteractionType " << ToString(static_cast<InteractionType>(simpleMCTarget.m_interactionType))
+        std::cout << std::endl << ToString(static_cast<InteractionType>(simpleMCTarget.m_interactionType))
                   << " (Nuance " << simpleMCTarget.m_mcNuanceCode << ", Nu " << simpleMCTarget.m_isNeutrino
                   << ", TB " << simpleMCTarget.m_isBeamParticle << ", CR " << simpleMCTarget.m_isCosmicRay << ")" << std::endl;
 
@@ -182,38 +196,52 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent)
         if (simpleMCTarget.m_isCorrectTB) ss << "IsCorrectTB ";
         if (simpleMCTarget.m_isCorrectCR) ss << "IsCorrectCR ";
         if (simpleMCTarget.m_isFakeNu) ss << "IsFakeNu ";
-        if (simpleMCTarget.m_isSplitCR) ss << "IsSplitCR ";
-        if (simpleMCTarget.m_isLostCR) ss << "IsLostCR ";
         if (simpleMCTarget.m_isFakeCR) ss << "IsFakeCR ";
-        if (simpleMCTarget.m_nNuMatches > 0) ss << "(NNuMatches: " << simpleMCTarget.m_nNuMatches << ") ";
-        if (simpleMCTarget.m_nNuSplits > 0) ss << "(NNuSplits: " << simpleMCTarget.m_nNuSplits << ") ";
-        if (simpleMCTarget.m_nCRMatches > 0) ss << "(NCRMatches: " << simpleMCTarget.m_nCRMatches << ") ";
-        std::cout << "Outcome: " << ss.str() << std::endl;
+        if (simpleMCTarget.m_isSplitNu) ss << "IsSplitNu ";
+        if (simpleMCTarget.m_isSplitCR) ss << "IsSplitCR ";
+        if (simpleMCTarget.m_isLost) ss << "IsLost ";
+        if (simpleMCTarget.m_nTargetNuMatches > 0) ss << "(NNuMatches: " << simpleMCTarget.m_nTargetNuMatches << ") ";
+        if (simpleMCTarget.m_nTargetNuSplits > 0) ss << "(NNuSplits: " << simpleMCTarget.m_nTargetNuSplits << ") ";
+        if (simpleMCTarget.m_nTargetCRMatches > 0) ss << "(NCRMatches: " << simpleMCTarget.m_nTargetCRMatches << ") ";
+        std::cout << ss.str() << std::endl;
 
         for (const SimpleMCPrimary &simpleMCPrimary : simpleMCTarget.m_mcPrimaryList)
         {
-            std::cout << "Primary " << primaryIndex++
+            std::cout << "PrimaryId " << simpleMCPrimary.m_primaryId
+                      << ", Nu " << simpleMCTarget.m_isNeutrino
+                      << ", TB " << simpleMCTarget.m_isBeamParticle
+                      << ", CR " << simpleMCTarget.m_isCosmicRay
                       << ", MCPDG " << simpleMCPrimary.m_pdgCode
                       << ", Energy " << simpleMCPrimary.m_energy
-                      //<< ", Dist. " << (pMCPrimary->GetEndpoint() - pMCPrimary->GetVertex()).GetMagnitude()
+                      << ", Dist. " << std::sqrt(
+                            (simpleMCPrimary.m_vertex.m_x - simpleMCPrimary.m_endpoint.m_x) * (simpleMCPrimary.m_vertex.m_x - simpleMCPrimary.m_endpoint.m_x) +
+                            (simpleMCPrimary.m_vertex.m_y - simpleMCPrimary.m_endpoint.m_y) * (simpleMCPrimary.m_vertex.m_y - simpleMCPrimary.m_endpoint.m_y) +
+                            (simpleMCPrimary.m_vertex.m_z - simpleMCPrimary.m_endpoint.m_z) * (simpleMCPrimary.m_vertex.m_z - simpleMCPrimary.m_endpoint.m_z))
                       << ", nMCHits " << simpleMCPrimary.m_nMCHitsTotal
                       << " (" << simpleMCPrimary.m_nMCHitsU 
                       << ", " << simpleMCPrimary.m_nMCHitsV 
                       << ", " << simpleMCPrimary.m_nMCHitsW << ")" << std::endl;
 
-            if (0 == simpleMCPrimary.m_nMatchedPfos)
+            if (0 == simpleMCPrimary.m_nPrimaryMatchedPfos)
             {
                 std::cout << "-No matched Pfo" << std::endl;
                 continue;
             }
 
-            std::cout << "-RecoAsNu " << simpleMCPrimary.m_bestMatchPfoIsRecoNu
-                      << ", nMatchedPfos " << simpleMCPrimary.m_nMatchedPfos
-                      << ", BestPDG " << simpleMCPrimary.m_bestMatchPfoPdgCode
-                      << ", nMatchedHits " << simpleMCPrimary.m_bestMatchPfoNSharedHitsTotal << " (" << simpleMCPrimary.m_bestMatchPfoNSharedHitsU
-                      << ", " << simpleMCPrimary.m_bestMatchPfoNSharedHitsV << ", " << simpleMCPrimary.m_bestMatchPfoNSharedHitsW << ")"
-                      << ", nPfoHits " << simpleMCPrimary.m_bestMatchPfoNHitsTotal << " (" << simpleMCPrimary.m_bestMatchPfoNHitsU
-                      << ", " << simpleMCPrimary.m_bestMatchPfoNHitsV << ", " << simpleMCPrimary.m_bestMatchPfoNHitsW << ")" << std::endl;
+            std::cout << "-MatchedPfoId " << simpleMCPrimary.m_bestMatchPfoId;
+            if (simpleMCPrimary.m_nPrimaryMatchedPfos > 1) std::cout << " (NMatches " << simpleMCPrimary.m_nPrimaryMatchedPfos << ")";
+            std::cout << ", Nu " << simpleMCPrimary.m_bestMatchPfoIsRecoNu;
+            if (simpleMCPrimary.m_bestMatchPfoIsRecoNu) std::cout << " [NuId: " << simpleMCPrimary.m_bestMatchPfoRecoNuId << "]";
+            std::cout << ", CR " << !simpleMCPrimary.m_bestMatchPfoIsRecoNu
+                      << ", PDG " << simpleMCPrimary.m_bestMatchPfoPdgCode
+                      << ", nMatchedHits " << simpleMCPrimary.m_bestMatchPfoNSharedHitsTotal
+                      << " (" << simpleMCPrimary.m_bestMatchPfoNSharedHitsU
+                      << ", " << simpleMCPrimary.m_bestMatchPfoNSharedHitsV
+                      << ", " << simpleMCPrimary.m_bestMatchPfoNSharedHitsW << ")"
+                      << ", nPfoHits " << simpleMCPrimary.m_bestMatchPfoNHitsTotal
+                      << " (" << simpleMCPrimary.m_bestMatchPfoNHitsU
+                      << ", " << simpleMCPrimary.m_bestMatchPfoNHitsV
+                      << ", " << simpleMCPrimary.m_bestMatchPfoNHitsW << ")" << std::endl;
         }
     }
     std::cout << "------------------------------------------------------------------------------------------------" << std::endl;
@@ -241,7 +269,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
             const ExpectedPrimary expectedPrimary(GetExpectedPrimary(simpleMCPrimary, simpleMCTarget.m_mcPrimaryList));
 
             CountingDetails &countingDetails = interactionCountingMap[interactionType][expectedPrimary];
-            const int nMatchedPfos(simpleMCPrimary.m_nMatchedPfos); // TODO
+            const int nMatchedPfos(simpleMCPrimary.m_nPrimaryMatchedPfos); // TODO
 
             ++countingDetails.m_nTotal;
             if (0 == nMatchedPfos) ++countingDetails.m_nMatch0;
@@ -250,7 +278,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
             else ++countingDetails.m_nMatch3Plus;
 
             PrimaryResult &primaryResult = targetResult.m_primaryResultMap[expectedPrimary];
-            primaryResult.m_nPfoMatches = simpleMCPrimary.m_nMatchedPfos;
+            primaryResult.m_nPfoMatches = simpleMCPrimary.m_nPrimaryMatchedPfos;
             primaryResult.m_nMCHitsTotal = simpleMCPrimary.m_nMCHitsTotal;
             primaryResult.m_nBestMatchSharedHitsTotal = simpleMCPrimary.m_bestMatchPfoNSharedHitsTotal;
             primaryResult.m_nBestMatchRecoHitsTotal = simpleMCPrimary.m_bestMatchPfoNHitsTotal;
