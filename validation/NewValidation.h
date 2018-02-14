@@ -457,6 +457,9 @@ public:
     TargetResult();
 
     bool                    m_isCorrect;                ///< 
+//    int                     m_fileIdentifier;           ///< The file identifier
+//    int                     m_eventNumber;              ///< The event number
+//    InteractionType         m_interactionType;          ///< The interaction type
     PrimaryResultMap        m_primaryResultMap;         ///< The primary result map
     // TODO add vertex resolution again
 };
@@ -588,23 +591,14 @@ bool IsGoodParticleIdMatch(const SimpleMCPrimary &simpleMCPrimary, const int bes
  */
 void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCountingMap, const Parameters &parameters);
 
-///**
-// *  @brief  Opportunity to fill histograms, perform post-processing of information collected in main loop over ntuple, etc.
-// * 
-// *  @param  interactionTargetResultMap the interaction target result map
-// *  @param  parameters the parameters
-// */
-//void AnalyseInteractionTargetResultMap(const InteractionTargetResultMap &interactionTargetResultMap, const Parameters &parameters);
-//
-///**
-// *  @brief  Fill histograms in the provided histogram collection, using information in the provided primary result
-// * 
-// *  @param  histPrefix the histogram prefix
-// *  @param  primaryResult the primary result
-// *  @param  primaryHistogramCollection the primary histogram collection
-// */
-//void FillPrimaryHistogramCollection(const std::string &histPrefix, const PrimaryResult &primaryResult, PrimaryHistogramCollection &primaryHistogramCollection);
-//
+/**
+ *  @brief  Opportunity to fill histograms, perform post-processing of information collected in main loop over ntuple, etc.
+ * 
+ *  @param  interactionTargetResultMap the interaction target result map
+ *  @param  parameters the parameters
+ */
+void AnalyseInteractionTargetResultMap(const InteractionTargetResultMap &interactionTargetResultMap, const Parameters &parameters);
+
 ///**
 // *  @brief  Fill histograms in the provided target histogram collection, using information in the provided target result
 // * 
@@ -614,13 +608,22 @@ void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCoun
 // *  @param  targetHistogramCollection the target histogram collection
 // */
 //void FillTargetHistogramCollection(const std::string &histPrefix, const bool isCorrect, const TargetResult &targetResult, TargetHistogramCollection &targetHistogramCollection);
-//
-///**
-// *  @brief  Process histograms stored in the provided map e.g. calculating final efficiencies, normalising, etc.
-// * 
-// *  @param  interactionPrimaryHistogramMap the interaction primary histogram map
-// */
-//void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interactionPrimaryHistogramMap);
+
+/**
+ *  @brief  Fill histograms in the provided histogram collection, using information in the provided primary result
+ * 
+ *  @param  histPrefix the histogram prefix
+ *  @param  primaryResult the primary result
+ *  @param  primaryHistogramCollection the primary histogram collection
+ */
+void FillPrimaryHistogramCollection(const std::string &histPrefix, const PrimaryResult &primaryResult, PrimaryHistogramCollection &primaryHistogramCollection);
+
+/**
+ *  @brief  Process histograms stored in the provided map e.g. calculating final efficiencies, normalising, etc.
+ * 
+ *  @param  interactionPrimaryHistogramMap the interaction primary histogram map
+ */
+void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interactionPrimaryHistogramMap);
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -632,7 +635,7 @@ Parameters::Parameters() :
     m_applyUbooneFiducialCut(false),
     m_correctTrackShowerId(false),
     m_vertexXCorrection(0.495694f),
-    m_histogramOutput(false)
+    m_histogramOutput(true)
 {
 }
 
@@ -761,7 +764,7 @@ PrimaryResult::PrimaryResult() :
     m_bestMatchCompleteness(0.f),
     m_bestMatchPurity(0.f),
     m_isCorrectParticleId(false),
-    m_trueMomentum(std::numeric_limits<float>::max())
+    m_trueMomentum(-1.f)
 {
 }
 
