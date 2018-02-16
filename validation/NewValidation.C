@@ -41,7 +41,7 @@ void Validation(const std::string &inputFiles, const Parameters &parameters)
             break;
 
         if (parameters.m_displayMatchedEvents)
-            DisplaySimpleMCEventMatches(simpleMCEvent);
+            DisplaySimpleMCEventMatches(simpleMCEvent, parameters);
 
         CountPfoMatches(simpleMCEvent, parameters, interactionCountingMap, interactionTargetResultMap);
     }
@@ -71,6 +71,12 @@ int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simple
         pTChain->SetBranchAddress("isNeutrino", &simpleMCTarget.m_isNeutrino);
         pTChain->SetBranchAddress("isBeamParticle", &simpleMCTarget.m_isBeamParticle);
         pTChain->SetBranchAddress("isCosmicRay", &simpleMCTarget.m_isCosmicRay);
+        pTChain->SetBranchAddress("targetVertexX", &simpleMCTarget.m_targetVertex.m_x);
+        pTChain->SetBranchAddress("targetVertexY", &simpleMCTarget.m_targetVertex.m_y);
+        pTChain->SetBranchAddress("targetVertexZ", &simpleMCTarget.m_targetVertex.m_z);
+        pTChain->SetBranchAddress("recoVertexX", &simpleMCTarget.m_recoVertex.m_x);
+        pTChain->SetBranchAddress("recoVertexY", &simpleMCTarget.m_recoVertex.m_y);
+        pTChain->SetBranchAddress("recoVertexZ", &simpleMCTarget.m_recoVertex.m_z);
         pTChain->SetBranchAddress("isCorrectNu", &simpleMCTarget.m_isCorrectNu);
         pTChain->SetBranchAddress("isCorrectTB", &simpleMCTarget.m_isCorrectTB);
         pTChain->SetBranchAddress("isCorrectCR", &simpleMCTarget.m_isCorrectCR);
@@ -178,7 +184,7 @@ int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simple
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent)
+void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &parameters)
 {
     std::cout << "---INTERPRETED-MATCHING-OUTPUT------------------------------------------------------------------" << std::endl;
     std::cout << "File " << simpleMCEvent.m_fileIdentifier << ", event " << simpleMCEvent.m_eventNumber << std::endl;
@@ -188,8 +194,9 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent)
     for (const SimpleMCTarget &simpleMCTarget : simpleMCEvent.m_mcTargetList)
     {
         std::cout << std::endl << ToString(static_cast<InteractionType>(simpleMCTarget.m_interactionType))
-                  << " (Nuance " << simpleMCTarget.m_mcNuanceCode << ", Nu " << simpleMCTarget.m_isNeutrino
-                  << ", TB " << simpleMCTarget.m_isBeamParticle << ", CR " << simpleMCTarget.m_isCosmicRay << ")" << std::endl;
+                  << " (Nuance " << simpleMCTarget.m_mcNuanceCode << ", Nu " << simpleMCTarget.m_isNeutrino;
+        if (parameters.m_applyUbooneFiducialCut && simpleMCTarget.m_isNeutrino && !PassUbooneFiducialCut(simpleMCTarget)) std::cout << " [NonFid]";
+        std::cout << ", TB " << simpleMCTarget.m_isBeamParticle << ", CR " << simpleMCTarget.m_isCosmicRay << ")" << std::endl;
 
         std::stringstream ss;
         if (simpleMCTarget.m_isCorrectNu) ss << "IsCorrectNu ";
@@ -279,13 +286,22 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
 {
     for (const SimpleMCTarget &simpleMCTarget : simpleMCEvent.m_mcTargetList)
     {
-        if (parameters.m_applyUbooneFiducialCut && !PassUbooneFiducialCut(simpleMCTarget))
+        if (parameters.m_applyUbooneFiducialCut && simpleMCTarget.m_isNeutrino && !PassUbooneFiducialCut(simpleMCTarget))
             continue;
 
         TargetResult targetResult;
+        targetResult.m_fileIdentifier = simpleMCEvent.m_fileIdentifier;
+        targetResult.m_eventNumber = simpleMCEvent.m_eventNumber;
         targetResult.m_isCorrect = (simpleMCTarget.m_isNeutrino && simpleMCTarget.m_isCorrectNu) ||
             (simpleMCTarget.m_isBeamParticle && simpleMCTarget.m_isCorrectTB) ||
             (simpleMCTarget.m_isCosmicRay && simpleMCTarget.m_isCorrectCR);
+
+        if (simpleMCTarget.m_nTargetMatches > 0)
+        {
+            targetResult.m_hasRecoVertex = true;
+            targetResult.m_vertexOffset = simpleMCTarget.m_recoVertex - simpleMCTarget.m_targetVertex;
+            targetResult.m_vertexOffset.m_x = targetResult.m_vertexOffset.m_x - parameters.m_vertexXCorrection;
+        }
 
         const InteractionType interactionType(static_cast<InteractionType>(simpleMCTarget.m_interactionType));
 
@@ -297,6 +313,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
             CountingDetails &countingDetails = interactionCountingMap[interactionType][expectedPrimary];
             ++countingDetails.m_nTotal;
 
+            // ATTN Fail cosmic ray matches to neutrinos (or beam particles) and vice versa
             if (simpleMCTarget.m_isCosmicRay == simpleMCPrimary.m_bestMatchPfoIsRecoNu)
             {
                 ++countingDetails.m_nMatch0;
@@ -312,7 +329,6 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
             primaryResult.m_nMCHitsTotal = simpleMCPrimary.m_nMCHitsTotal;
             primaryResult.m_nBestMatchSharedHitsTotal = simpleMCPrimary.m_bestMatchPfoNSharedHitsTotal;
             primaryResult.m_nBestMatchRecoHitsTotal = simpleMCPrimary.m_bestMatchPfoNHitsTotal;
-
             primaryResult.m_bestMatchCompleteness = (simpleMCPrimary.m_nMCHitsTotal > 0) ? static_cast<float>(simpleMCPrimary.m_bestMatchPfoNSharedHitsTotal) / static_cast<float>(simpleMCPrimary.m_nMCHitsTotal) : 0.f;
             primaryResult.m_bestMatchPurity = (simpleMCPrimary.m_bestMatchPfoNHitsTotal > 0) ? static_cast<float>(simpleMCPrimary.m_bestMatchPfoNSharedHitsTotal) / static_cast<float>(simpleMCPrimary.m_bestMatchPfoNHitsTotal) : 0.f;
             primaryResult.m_isCorrectParticleId = IsGoodParticleIdMatch(simpleMCPrimary, simpleMCPrimary.m_bestMatchPfoPdgCode);
@@ -330,21 +346,19 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-bool PassUbooneFiducialCut(const SimpleMCEvent &simpleMCEvent)
+bool PassUbooneFiducialCut(const SimpleMCTarget &simpleMCTarget)
 {
-    // TODO
+    const float eVx(256.35), eVy(233.), eVz(1036.8);
+    const float xBorder(10.), yBorder(20.), zBorder(10.);
+
+    if ((simpleMCTarget.m_targetVertex.m_x < (eVx - xBorder)) && (simpleMCTarget.m_targetVertex.m_x > xBorder) &&
+        (simpleMCTarget.m_targetVertex.m_y < (eVy / 2. - yBorder)) && (simpleMCTarget.m_targetVertex.m_y > (-eVy / 2. + yBorder)) &&
+        (simpleMCTarget.m_targetVertex.m_z < (eVz - zBorder)) && (simpleMCTarget.m_targetVertex.m_z > zBorder) )
+    {
+        return true;
+    }
+
     return false;
-//    const float eVx(256.35), eVy(233.), eVz(1036.8);
-//    const float xBorder(10.), yBorder(20.), zBorder(10.);
-//
-//    if ((simpleMCEvent.m_mcNeutrinoVtx.m_x < (eVx - xBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_x > xBorder) &&
-//        (simpleMCEvent.m_mcNeutrinoVtx.m_y < (eVy / 2. - yBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_y > (-eVy / 2. + yBorder)) &&
-//        (simpleMCEvent.m_mcNeutrinoVtx.m_z < (eVz - zBorder)) && (simpleMCEvent.m_mcNeutrinoVtx.m_z > zBorder) )
-//    {
-//        return true;
-//    }
-//
-//    return false;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -457,7 +471,7 @@ void AnalyseInteractionTargetResultMap(const InteractionTargetResultMap &interac
     if (!parameters.m_eventFileName.empty()) eventFile.open(parameters.m_eventFileName, ios::app);
 
     InteractionPrimaryHistogramMap interactionPrimaryHistogramMap;
-//    InteractionEventHistogramMap interactionEventHistogramMap;
+    InteractionTargetHistogramMap interactionTargetHistogramMap;
 
     for (const InteractionTargetResultMap::value_type &interactionMapEntry : interactionTargetResultMap)
     {
@@ -469,7 +483,12 @@ void AnalyseInteractionTargetResultMap(const InteractionTargetResultMap &interac
         for (const TargetResult &targetResult : targetResultList)
         {
             if (targetResult.m_isCorrect)
+            {
                 ++nCorrectEvents;
+
+                if (!parameters.m_eventFileName.empty())
+                    eventFile << "Correct event: fileId: " << targetResult.m_fileIdentifier << ", eventNumber: " << targetResult.m_eventNumber << ", interactionType " << ToString(interactionType) << std::endl;
+            }
 
             const PrimaryResultMap &primaryResultMap(targetResult.m_primaryResultMap);
 
@@ -485,36 +504,13 @@ void AnalyseInteractionTargetResultMap(const InteractionTargetResultMap &interac
                     FillPrimaryHistogramCollection(histPrefix, primaryResult, histogramCollection);
                 }
             }
-//                if (parameters.m_histogramOutput)
-//                {
-//                    const std::string histPrefix(parameters.m_histPrefix + ToString(interactionType) + "_" + ToString(expectedPrimary) + "_");
-//                    PrimaryHistogramCollection &histogramCollection(interactionPrimaryHistogramMap[interactionType][expectedPrimary]);
-//                    FillPrimaryHistogramCollection(histPrefix, primaryResult, histogramCollection);
-//
-//                    const std::string histPrefixAll(parameters.m_histPrefix + ToString(ALL_INTERACTIONS) + "_" + ToString(expectedPrimary) + "_");
-//                    PrimaryHistogramCollection &histogramCollectionAll(interactionPrimaryHistogramMap[ALL_INTERACTIONS][expectedPrimary]);
-//                    FillPrimaryHistogramCollection(histPrefixAll, primaryResult, histogramCollectionAll);
-//                }
-//            }
-//
-//            if (parameters.m_histogramOutput)
-//            {
-//                const std::string histPrefix(parameters.m_histPrefix + ToString(interactionType) + "_");
-//                EventHistogramCollection &histogramCollection(interactionEventHistogramMap[interactionType]);
-//                FillEventHistogramCollection(histPrefix, isCorrect, *eIter, histogramCollection);
-//
-//                const std::string histPrefixAll(parameters.m_histPrefix + ToString(ALL_INTERACTIONS) + "_");
-//                EventHistogramCollection &histogramCollectionAll(interactionEventHistogramMap[ALL_INTERACTIONS]);
-//                FillEventHistogramCollection(histPrefixAll, isCorrect, *eIter, histogramCollectionAll);
-//            }
-//
-//            if (isCorrect)
-//            {
-//                ++nCorrectEvents;
-//
-//                if (!parameters.m_eventFileName.empty())
-//                    eventFile << "Correct event: fileId: " << eIter->m_fileIdentifier << ", eventNumber: " << eIter->m_eventNumber << ", nuance: " << eIter->m_mcNeutrinoNuance << ", " << ToString(interactionType) << std::endl;
-//            }
+
+            if (parameters.m_histogramOutput)
+            {
+                const std::string histPrefix(parameters.m_histPrefix + ToString(interactionType) + "_");
+                TargetHistogramCollection &histogramCollection(interactionTargetHistogramMap[interactionType]);
+                FillTargetHistogramCollection(histPrefix, targetResult, histogramCollection);
+            }
         }
 
         std::cout << ToString(interactionType) << std::endl << "-nEvents " << targetResultList.size() << ", nCorrect " << nCorrectEvents
@@ -533,49 +529,49 @@ void AnalyseInteractionTargetResultMap(const InteractionTargetResultMap &interac
     if (!parameters.m_mapFileName.empty()) mapFile.close();
     if (!parameters.m_eventFileName.empty()) eventFile.close();
 }
-/*
+
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void FillEventHistogramCollection(const std::string &histPrefix, const EventResult &eventResult, EventHistogramCollection &eventHistogramCollection)
+void FillTargetHistogramCollection(const std::string &histPrefix, const TargetResult &targetResult, TargetHistogramCollection &targetHistogramCollection)
 {
-    if (!eventHistogramCollection.m_hVtxDeltaX)
+    if (!targetHistogramCollection.m_hVtxDeltaX)
     {
-        eventHistogramCollection.m_hVtxDeltaX = new TH1F((histPrefix + "VtxDeltaX").c_str(), "", 40000, -2000., 2000.);
-        eventHistogramCollection.m_hVtxDeltaX->GetXaxis()->SetRangeUser(-5., +5.);
-        eventHistogramCollection.m_hVtxDeltaX->GetXaxis()->SetTitle("Vertex #DeltaX [cm]");
-        eventHistogramCollection.m_hVtxDeltaX->GetYaxis()->SetTitle("Number of Events");
+        targetHistogramCollection.m_hVtxDeltaX = new TH1F((histPrefix + "VtxDeltaX").c_str(), "", 40000, -2000., 2000.);
+        targetHistogramCollection.m_hVtxDeltaX->GetXaxis()->SetRangeUser(-5., +5.);
+        targetHistogramCollection.m_hVtxDeltaX->GetXaxis()->SetTitle("Vertex #DeltaX [cm]");
+        targetHistogramCollection.m_hVtxDeltaX->GetYaxis()->SetTitle("Number of Events");
     }
 
-    if (!eventHistogramCollection.m_hVtxDeltaY)
+    if (!targetHistogramCollection.m_hVtxDeltaY)
     {
-        eventHistogramCollection.m_hVtxDeltaY = new TH1F((histPrefix + "VtxDeltaY").c_str(), "", 40000, -2000., 2000.);
-        eventHistogramCollection.m_hVtxDeltaY->GetXaxis()->SetRangeUser(-5., +5.);
-        eventHistogramCollection.m_hVtxDeltaY->GetXaxis()->SetTitle("Vertex #DeltaY [cm]");
-        eventHistogramCollection.m_hVtxDeltaY->GetYaxis()->SetTitle("Number of Events");
+        targetHistogramCollection.m_hVtxDeltaY = new TH1F((histPrefix + "VtxDeltaY").c_str(), "", 40000, -2000., 2000.);
+        targetHistogramCollection.m_hVtxDeltaY->GetXaxis()->SetRangeUser(-5., +5.);
+        targetHistogramCollection.m_hVtxDeltaY->GetXaxis()->SetTitle("Vertex #DeltaY [cm]");
+        targetHistogramCollection.m_hVtxDeltaY->GetYaxis()->SetTitle("Number of Events");
     }
 
-    if (!eventHistogramCollection.m_hVtxDeltaZ)
+    if (!targetHistogramCollection.m_hVtxDeltaZ)
     {
-        eventHistogramCollection.m_hVtxDeltaZ = new TH1F((histPrefix + "VtxDeltaZ").c_str(), "", 40000, -2000., 2000.);
-        eventHistogramCollection.m_hVtxDeltaZ->GetXaxis()->SetRangeUser(-5., +5.);
-        eventHistogramCollection.m_hVtxDeltaZ->GetXaxis()->SetTitle("Vertex #DeltaZ [cm]");
-        eventHistogramCollection.m_hVtxDeltaZ->GetYaxis()->SetTitle("Number of Events");
+        targetHistogramCollection.m_hVtxDeltaZ = new TH1F((histPrefix + "VtxDeltaZ").c_str(), "", 40000, -2000., 2000.);
+        targetHistogramCollection.m_hVtxDeltaZ->GetXaxis()->SetRangeUser(-5., +5.);
+        targetHistogramCollection.m_hVtxDeltaZ->GetXaxis()->SetTitle("Vertex #DeltaZ [cm]");
+        targetHistogramCollection.m_hVtxDeltaZ->GetYaxis()->SetTitle("Number of Events");
     }
 
-    if (!eventHistogramCollection.m_hVtxDeltaR)
+    if (!targetHistogramCollection.m_hVtxDeltaR)
     {
-        eventHistogramCollection.m_hVtxDeltaR = new TH1F((histPrefix + "VtxDeltaR").c_str(), "", 40000, -100., 1900.);
-        eventHistogramCollection.m_hVtxDeltaR->GetXaxis()->SetRangeUser(0., +5.);
-        eventHistogramCollection.m_hVtxDeltaR->GetXaxis()->SetTitle("Vertex #DeltaR [cm]");
-        eventHistogramCollection.m_hVtxDeltaR->GetYaxis()->SetTitle("Number of Events");
+        targetHistogramCollection.m_hVtxDeltaR = new TH1F((histPrefix + "VtxDeltaR").c_str(), "", 40000, -100., 1900.);
+        targetHistogramCollection.m_hVtxDeltaR->GetXaxis()->SetRangeUser(0., +5.);
+        targetHistogramCollection.m_hVtxDeltaR->GetXaxis()->SetTitle("Vertex #DeltaR [cm]");
+        targetHistogramCollection.m_hVtxDeltaR->GetYaxis()->SetTitle("Number of Events");
     }
 
-    eventHistogramCollection.m_hVtxDeltaX->Fill(eventResult.m_vertexOffset.m_x);
-    eventHistogramCollection.m_hVtxDeltaY->Fill(eventResult.m_vertexOffset.m_y);
-    eventHistogramCollection.m_hVtxDeltaZ->Fill(eventResult.m_vertexOffset.m_z);
-    eventHistogramCollection.m_hVtxDeltaR->Fill(std::sqrt(eventResult.m_vertexOffset.m_x * eventResult.m_vertexOffset.m_x + eventResult.m_vertexOffset.m_y * eventResult.m_vertexOffset.m_y + eventResult.m_vertexOffset.m_z * eventResult.m_vertexOffset.m_z));
+    targetHistogramCollection.m_hVtxDeltaX->Fill(targetResult.m_vertexOffset.m_x);
+    targetHistogramCollection.m_hVtxDeltaY->Fill(targetResult.m_vertexOffset.m_y);
+    targetHistogramCollection.m_hVtxDeltaZ->Fill(targetResult.m_vertexOffset.m_z);
+    targetHistogramCollection.m_hVtxDeltaR->Fill(std::sqrt(targetResult.m_vertexOffset.m_x * targetResult.m_vertexOffset.m_x + targetResult.m_vertexOffset.m_y * targetResult.m_vertexOffset.m_y + targetResult.m_vertexOffset.m_z * targetResult.m_vertexOffset.m_z));
 }
-*/
+
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 void FillPrimaryHistogramCollection(const std::string &histPrefix, const PrimaryResult &primaryResult, PrimaryHistogramCollection &primaryHistogramCollection)
