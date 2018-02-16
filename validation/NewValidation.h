@@ -160,6 +160,7 @@ public:
     int                 m_nTargetCRMatches;             ///< The number of cosmic ray pfo matches to the target
     int                 m_nTargetGoodNuMatches;         ///< The number of good neutrino pfo matches to the target (all from same parent neutrino)
     int                 m_nTargetNuSplits;              ///< The number of split neutrino pfo matches to the target (from different parent neutrinos)
+    int                 m_nTargetNuLosses;              ///< The number of neutrino primaries with no matches
 
     int                 m_nTargetPrimaries;             ///< The number of target mc primaries
     SimpleMCPrimaryList m_mcPrimaryList;                ///< The list of mc primaries
@@ -638,7 +639,7 @@ Parameters::Parameters() :
     m_applyUbooneFiducialCut(true),
     m_correctTrackShowerId(false),
     m_vertexXCorrection(0.495694f),
-    m_histogramOutput(true)
+    m_histogramOutput(false)
 {
 }
 
@@ -731,6 +732,7 @@ SimpleMCTarget::SimpleMCTarget() :
     m_nTargetCRMatches(0),
     m_nTargetGoodNuMatches(0),
     m_nTargetNuSplits(0),
+    m_nTargetNuLosses(0),
     m_nTargetPrimaries(0)
 {
 }

@@ -90,6 +90,7 @@ int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simple
         pTChain->SetBranchAddress("nTargetCRMatches", &simpleMCTarget.m_nTargetCRMatches);
         pTChain->SetBranchAddress("nTargetGoodNuMatches", &simpleMCTarget.m_nTargetGoodNuMatches);
         pTChain->SetBranchAddress("nTargetNuSplits", &simpleMCTarget.m_nTargetNuSplits);
+        pTChain->SetBranchAddress("nTargetNuLosses", &simpleMCTarget.m_nTargetNuLosses);
         pTChain->SetBranchAddress("nTargetPrimaries", &simpleMCTarget.m_nTargetPrimaries);
 
         IntVector *pMCPrimaryId(nullptr), *pMCPrimaryPdg(nullptr), *pNMCHitsTotal(nullptr), *pNMCHitsU(nullptr), *pNMCHitsV(nullptr), *pNMCHitsW(nullptr);
@@ -209,6 +210,7 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const Param
         if (simpleMCTarget.m_isLost) ss << "IsLost ";
         if (simpleMCTarget.m_nTargetNuMatches > 0) ss << "(NNuMatches: " << simpleMCTarget.m_nTargetNuMatches << ") ";
         if (simpleMCTarget.m_nTargetNuSplits > 0) ss << "(NNuSplits: " << simpleMCTarget.m_nTargetNuSplits << ") ";
+        if (simpleMCTarget.m_nTargetNuLosses > 0) ss << "(NNuLosses: " << simpleMCTarget.m_nTargetNuLosses << ") ";
         if (simpleMCTarget.m_nTargetCRMatches > 0) ss << "(NCRMatches: " << simpleMCTarget.m_nTargetCRMatches << ") ";
         std::cout << ss.str() << std::endl;
 
