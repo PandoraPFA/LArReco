@@ -1,6 +1,6 @@
 <pandora>
     <!-- GLOBAL SETTINGS -->
-    <IsMonitoringEnabled>false</IsMonitoringEnabled>
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
     <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
@@ -54,18 +54,12 @@
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>Input</MCParticleListName>
         <PfoListName>RecreatedPfos</PfoListName>
-        <ClusterListNames>RecreatedClusters</ClusterListNames>
-        <IntegrateOverRecoNeutrinos>false</IntegrateOverRecoNeutrinos>
-        <UseRecoNeutrinosOnly>true</UseRecoNeutrinosOnly>
-        <UseTrueNeutrinosOnly>true</UseTrueNeutrinosOnly>
+        <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
         <PrintAllToScreen>false</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
-        <VisualizeMatching>false</VisualizeMatching>
-        <VisualizeVertices>false</VisualizeVertices>
-        <VisualizeRemnants>false</VisualizeRemnants>
         <WriteToTree>false</WriteToTree>
         <OutputTree>Validation</OutputTree>
-        <OutputFile>Validation_nu.root</OutputFile>
+        <OutputFile>Validation.root</OutputFile>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
