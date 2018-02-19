@@ -325,36 +325,26 @@
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
         <UseThreeDInformation>true</UseThreeDInformation>
-	<SvmFileName>PandoraSvm_PfoCharacterisation_MicroBooNE_mcc7_3D.xml</SvmFileName>
+        <SvmFileName>PandoraSvm_PfoCharacterisation_MicroBooNE_mcc7_3D.xml</SvmFileName>
         <SvmName>FinalPfoCharacterisation</SvmName>
         <SvmFileNameNoChargeInfo>PandoraSvm_PfoCharacterisation_MicroBooNE_mcc7_3D_noChargeInfo.xml</SvmFileNameNoChargeInfo> 
         <SvmNameNoChargeInfo>FinalPfoCharacterisation</SvmNameNoChargeInfo>
-	<FeatureTools>
-          <tool type = "LArThreeDLinearFitFeatureTool"/>
-          <tool type = "LArThreeDVertexDistanceFeatureTool"/>
-          <tool type = "LArThreeDPCAFeatureTool"/>
-          <tool type = "LArThreeDOpeningAngleFeatureTool"/>
-          <tool type = "LArThreeDChargeFeatureTool"/>
+        <FeatureTools>
+            <tool type = "LArThreeDLinearFitFeatureTool"/>
+            <tool type = "LArThreeDVertexDistanceFeatureTool"/>
+            <tool type = "LArThreeDPCAFeatureTool"/>
+            <tool type = "LArThreeDOpeningAngleFeatureTool"/>
+            <tool type = "LArThreeDChargeFeatureTool"/>
         </FeatureTools>
-	<FeatureToolsNoChargeInfo>
-          <tool type = "LArThreeDLinearFitFeatureTool"/>
-          <tool type = "LArThreeDVertexDistanceFeatureTool"/>
-          <tool type = "LArThreeDPCAFeatureTool"/>
-          <tool type = "LArThreeDOpeningAngleFeatureTool"/>
-	</FeatureToolsNoChargeInfo>
+        <FeatureToolsNoChargeInfo>
+            <tool type = "LArThreeDLinearFitFeatureTool"/>
+            <tool type = "LArThreeDVertexDistanceFeatureTool"/>
+            <tool type = "LArThreeDPCAFeatureTool"/>
+            <tool type = "LArThreeDOpeningAngleFeatureTool"/>
+        </FeatureToolsNoChargeInfo>
     </algorithm>
     <algorithm type = "LArNeutrinoProperties">
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
-    </algorithm>
-
-    <!-- TrackShowerAlgorithms-->
-    <algorithm type = "LArTrackParticleBuilding">
-        <PfoListName>MuonParticles3D</PfoListName>
-        <VertexListName>CRVertices3D</VertexListName>
-    </algorithm>
-    <algorithm type = "LArPcaShowerParticleBuilding">
-        <PfoListName>DeltaRayParticles3D</PfoListName>
-        <VertexListName>CRVertices3D</VertexListName>
     </algorithm>
 
     <!-- Output list management -->
