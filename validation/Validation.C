@@ -8,7 +8,7 @@
 #include "TChain.h"
 #include "TH1F.h"
 
-#include "NewValidation.h"
+#include "Validation.h"
 
 #include <iomanip>
 #include <iostream>
