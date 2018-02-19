@@ -2,7 +2,7 @@
 
 <pandora>
     <!-- GLOBAL SETTINGS -->
-    <IsMonitoringEnabled>false</IsMonitoringEnabled>
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
     <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
@@ -206,57 +206,31 @@
         <OutputVertexListName>NDaughterVertices3D</OutputVertexListName>
     </algorithm>
 
-    <!-- Final output and validation -->
-    <algorithm type = "LArEventValidation">
-        <CaloHitListName>CRCaloHitList2D</CaloHitListName>
-        <MCParticleListName>Input</MCParticleListName>
-        <PfoListName>CRParentParticles3D</PfoListName>
-        <ClusterListNames>CRClustersU CRClustersV CRClustersW</ClusterListNames>
-        <UseRecoNeutrinosOnly>false</UseRecoNeutrinosOnly>
-        <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
-        <PrintAllToScreen>false</PrintAllToScreen>
-        <PrintMatchingToScreen>true</PrintMatchingToScreen>
-        <VisualizeMatching>false</VisualizeMatching>
-        <VisualizeVertices>false</VisualizeVertices>
-        <VisualizeRemnants>false</VisualizeRemnants>
-        <WriteToTree>false</WriteToTree>
-        <OutputTree>Validation</OutputTree>
-        <OutputFile>Validation_cr.root</OutputFile>
-    </algorithm>
-
-    <algorithm type = "LArEventValidation">
-        <CaloHitListName>NCaloHitList2D</CaloHitListName>
-        <MCParticleListName>Input</MCParticleListName>
-        <PfoListName>NParentParticles3D</PfoListName>
-        <ClusterListNames>NClustersU NClustersV NClustersW</ClusterListNames>
-        <IntegrateOverRecoNeutrinos>false</IntegrateOverRecoNeutrinos>
-        <UseRecoNeutrinosOnly>true</UseRecoNeutrinosOnly>
-        <UseTrueNeutrinosOnly>true</UseTrueNeutrinosOnly>
-        <PrintAllToScreen>false</PrintAllToScreen>
-        <PrintMatchingToScreen>true</PrintMatchingToScreen>
-        <VisualizeMatching>false</VisualizeMatching>
-        <VisualizeVertices>false</VisualizeVertices>
-        <VisualizeRemnants>false</VisualizeRemnants>
-        <WriteToTree>false</WriteToTree>
-        <OutputTree>Validation</OutputTree>
-        <OutputFile>Validation_nu.root</OutputFile>
-    </algorithm>
-
-    <algorithm type = "LArVisualMonitoring">
-        <PfoListNames>CRParentParticles3D NParentParticles3D</PfoListNames>
-    </algorithm>
-
-    <algorithm type = "LArVisualMonitoring">
-        <ClusterListNames>CRClusters3D NClusters3D</ClusterListNames>
-    </algorithm>
-
     <!-- For extraction in client application -->
     <algorithm type = "LArListMerging">
         <SourcePfoListNames>CRParentParticles3D NParentParticles3D</SourcePfoListNames>
         <TargetPfoListNames>OutputParticles3D OutputParticles3D</TargetPfoListNames>
     </algorithm>
-
     <algorithm type = "LArListChanging">
         <PfoListName>OutputParticles3D</PfoListName>
+    </algorithm>
+
+    <algorithm type = "LArEventValidation">
+        <CaloHitListName>CRCaloHitList2D</CaloHitListName>
+        <MCParticleListName>Input</MCParticleListName>
+        <PfoListName>OutputParticles3D</PfoListName>
+        <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
+        <PrintAllToScreen>false</PrintAllToScreen>
+        <PrintMatchingToScreen>true</PrintMatchingToScreen>
+        <WriteToTree>false</WriteToTree>
+        <OutputTree>Validation</OutputTree>
+        <OutputFile>Validation.root</OutputFile>
+    </algorithm>
+
+    <algorithm type = "LArVisualMonitoring">
+        <PfoListNames>OutputParticles3D</PfoListNames>
+    </algorithm>
+    <algorithm type = "LArVisualMonitoring">
+        <ClusterListNames>CRClusters3D NClusters3D</ClusterListNames>
     </algorithm>
 </pandora>
