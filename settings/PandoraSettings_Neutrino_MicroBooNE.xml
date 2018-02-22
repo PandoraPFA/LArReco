@@ -92,7 +92,7 @@
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-        <SvmFileName>PandoraSvm_VertexSelection_MicroBooNE_mcc7.xml</SvmFileName>
+        <SvmFileName>PandoraSvm_v1.xml</SvmFileName>
         <RegionSvmName>VertexSelectionRegion</RegionSvmName>
         <VertexSvmName>VertexSelectionVertex</VertexSvmName>
         <FeatureTools>
@@ -325,10 +325,10 @@
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
         <UseThreeDInformation>true</UseThreeDInformation>
-        <SvmFileName>PandoraSvm_PfoCharacterisation_MicroBooNE_mcc7_3D.xml</SvmFileName>
-        <SvmName>FinalPfoCharacterisation</SvmName>
-        <SvmFileNameNoChargeInfo>PandoraSvm_PfoCharacterisation_MicroBooNE_mcc7_3D_noChargeInfo.xml</SvmFileNameNoChargeInfo> 
-        <SvmNameNoChargeInfo>FinalPfoCharacterisation</SvmNameNoChargeInfo>
+        <SvmFileName>PandoraSvm_v1.xml</SvmFileName>
+        <SvmName>PfoCharacterisation</SvmName>
+        <SvmFileNameNoChargeInfo>PandoraSvm_v1.xml</SvmFileNameNoChargeInfo>
+        <SvmNameNoChargeInfo>PfoCharacterisationNoChargeInfo</SvmNameNoChargeInfo>
         <FeatureTools>
             <tool type = "LArThreeDLinearFitFeatureTool"/>
             <tool type = "LArThreeDVertexDistanceFeatureTool"/>
