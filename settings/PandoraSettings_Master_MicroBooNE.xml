@@ -67,10 +67,10 @@
         <OutputFile>Validation.root</OutputFile>
     </algorithm>
     
-    <algorithm type = "LArPfoValidation">
+    <!--algorithm type = "LArPfoValidation">
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <PfoListName>RecreatedPfos</PfoListName>
-    </algorithm>
+    </algorithm-->
 
     <!--algorithm type = "LArVisualMonitoring">
         <ShowCurrentPfos>true</ShowCurrentPfos>
