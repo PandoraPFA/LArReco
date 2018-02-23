@@ -15,10 +15,10 @@
         <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
         <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
     </algorithm>
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
         <ShowDetector>true</ShowDetector>
-    </algorithm>
+    </algorithm-->
 
     <algorithm type = "LArMaster">
         <CRSettingsFile>PandoraSettings_Cosmic_Standard.xml</CRSettingsFile>
@@ -35,7 +35,7 @@
             <tool type = "LArNeutrinoId">
                 <UseTrainingMode>false</UseTrainingMode> 
                 <TrainingOutputFileName>neutrinoId_training_examples.txt</TrainingOutputFileName> 
-                <SvmFileName>PandoraSvm_v1.xml</SvmFileName>
+                <SvmFileName>PandoraSvm_v03_11_00.xml</SvmFileName>
                 <SvmName>NeutrinoId</SvmName>
             </tool>
         </SliceIdTools>
@@ -66,9 +66,14 @@
         <OutputTree>Validation</OutputTree>
         <OutputFile>Validation.root</OutputFile>
     </algorithm>
+    
+    <algorithm type = "LArPfoValidation">
+        <CaloHitListName>CaloHitList2D</CaloHitListName>
+        <PfoListName>RecreatedPfos</PfoListName>
+    </algorithm>
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <ShowCurrentPfos>true</ShowCurrentPfos>
         <ShowDetector>true</ShowDetector>
-    </algorithm>
+    </algorithm-->
 </pandora>
