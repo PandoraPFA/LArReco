@@ -32,7 +32,10 @@
             <tool type = "LArCosmicRayTagging"/>
         </CosmicRayTaggingTools>
         <SliceIdTools>
-            <tool type = "LArNeutrinoId"/>
+            <tool type = "LArNeutrinoId">
+                <SvmFileName>PandoraSvm_v03_11_00.xml</SvmFileName>
+                <SvmName>NeutrinoId</SvmName>
+            </tool>
         </SliceIdTools>
         <InputHitListName>Input</InputHitListName>
         <RecreatedPfoListName>RecreatedPfos</RecreatedPfoListName>
