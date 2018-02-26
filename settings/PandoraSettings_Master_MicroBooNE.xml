@@ -33,8 +33,6 @@
         </CosmicRayTaggingTools>
         <SliceIdTools>
             <tool type = "LArNeutrinoId">
-                <UseTrainingMode>false</UseTrainingMode> 
-                <TrainingOutputFileName>neutrinoId_training_examples.txt</TrainingOutputFileName> 
                 <SvmFileName>PandoraSvm_v03_11_00.xml</SvmFileName>
                 <SvmName>NeutrinoId</SvmName>
             </tool>
