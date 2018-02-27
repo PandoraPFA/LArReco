@@ -418,9 +418,11 @@ bool IsGoodParticleIdMatch(const SimpleMCPrimary &simpleMCPrimary, const int bes
 
 void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCountingMap, const Parameters &parameters)
 {
-    std::ofstream mapFile;
     std::cout << std::fixed;
     std::cout << std::setprecision(1);
+
+    std::ofstream mapFile;
+    if (!parameters.m_mapFileName.empty()) mapFile.open(parameters.m_mapFileName, ios::app);
 
     for (const InteractionCountingMap::value_type &interactionTypeMapEntry : interactionCountingMap)
     {
@@ -466,11 +468,12 @@ void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCoun
 void AnalyseInteractionTargetResultMap(const InteractionTargetResultMap &interactionTargetResultMap, const Parameters &parameters)
 {
     // Intended for filling histograms, post-processing of information collected in main loop over ntuple, etc.
-    std::cout << std::endl << "EVENT INFO " << std::endl;
-
     std::ofstream mapFile, eventFile;
     if (!parameters.m_mapFileName.empty()) mapFile.open(parameters.m_mapFileName, ios::app);
     if (!parameters.m_eventFileName.empty()) eventFile.open(parameters.m_eventFileName, ios::app);
+
+    std::cout << std::endl << "EVENT INFO " << std::endl;
+    mapFile << std::endl << "EVENT INFO " << std::endl;
 
     InteractionPrimaryHistogramMap interactionPrimaryHistogramMap;
     InteractionTargetHistogramMap interactionTargetHistogramMap;
