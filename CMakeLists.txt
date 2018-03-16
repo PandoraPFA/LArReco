@@ -11,7 +11,7 @@ project(LArReco)
 
 # project version
 set(${PROJECT_NAME}_VERSION_MAJOR 03)
-set(${PROJECT_NAME}_VERSION_MINOR 10)
+set(${PROJECT_NAME}_VERSION_MINOR 11)
 set(${PROJECT_NAME}_VERSION_PATCH 00)
 set(${PROJECT_NAME}_VERSION "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}")
 
@@ -23,7 +23,7 @@ include(PandoraCMakeSettings)
 include_directories(include)
 
 find_package(PandoraSDK 03.02.00 REQUIRED)
-find_package(LArContent 03.10.00 REQUIRED)
+find_package(LArContent 03.11.00 REQUIRED)
 
 foreach(package PandoraSDK LArContent)
     if(${package}_FOUND)

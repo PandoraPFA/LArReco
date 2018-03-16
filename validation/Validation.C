@@ -405,8 +405,8 @@ bool IsGoodParticleIdMatch(const SimpleMCPrimary &simpleMCPrimary, const int bes
 {
     const unsigned int absMCPdgCode(std::fabs(simpleMCPrimary.m_pdgCode));
 
-    if (((absMCPdgCode == 13 || absMCPdgCode == 2212 || absMCPdgCode == 211) && (13 != bestMatchPfoPdgCode)) ||
-        ((absMCPdgCode == 22 || absMCPdgCode == 11) && (11 != bestMatchPfoPdgCode)) )
+    if (((absMCPdgCode == 13 || absMCPdgCode == 2212 || absMCPdgCode == 211) && (13 != std::fabs(bestMatchPfoPdgCode))) ||
+        ((absMCPdgCode == 22 || absMCPdgCode == 11) && (11 != std::fabs(bestMatchPfoPdgCode))) )
     {
         return false;
     }
