@@ -2,21 +2,21 @@
 
 <pandora>
     <!-- GLOBAL SETTINGS -->
-    <IsMonitoringEnabled>true</IsMonitoringEnabled>
+    <IsMonitoringEnabled>false</IsMonitoringEnabled>
     <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
-
-    <!-- PLUGIN SETTINGS -->
-    <MuonPlugin>LArMuonId</MuonPlugin>
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading"/>
 
-    <algorithm type = "LArEventWriting">
+     <algorithm type = "LArEventWriting">
         <EventFileName>Pandora_Events.xml</EventFileName>
         <ShouldWriteEvents>true</ShouldWriteEvents>
         <ShouldOverwriteEventFile>true</ShouldOverwriteEventFile>
         <ShouldWriteMCRelationships>true</ShouldWriteMCRelationships>
         <ShouldWriteTrackRelationships>true</ShouldWriteTrackRelationships>
+        <GeometryFileName>Pandora_Geometry.xml</GeometryFileName>
+        <ShouldWriteGeometry>true</ShouldWriteGeometry>
+        <ShouldOverwriteGeometryFile>true</ShouldOverwriteGeometryFile>
     </algorithm>
 </pandora>

@@ -144,6 +144,7 @@
     <algorithm type = "LArCutPfoCharacterisation">
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+	<UseThreeDInformation>false</UseThreeDInformation>
     </algorithm>
     <algorithm type = "LArListDeletion">
         <PfoListNames>ShowerParticles3D</PfoListNames>
@@ -246,6 +247,7 @@
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
         <PostBranchAddition>true</PostBranchAddition>
+	<UseThreeDInformation>false</UseThreeDInformation>
     </algorithm>
     <algorithm type = "LArThreeDHitCreation">
         <InputPfoListName>TrackParticles3D</InputPfoListName>
@@ -308,16 +310,6 @@
     </algorithm>
     <algorithm type = "LArNeutrinoProperties">
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
-    </algorithm>
-
-    <!-- TrackShowerAlgorithms-->
-    <algorithm type = "LArTrackParticleBuilding">
-        <PfoListName>MuonParticles3D</PfoListName>
-        <VertexListName>CRVertices3D</VertexListName>
-    </algorithm>
-    <algorithm type = "LArPcaShowerParticleBuilding">
-        <PfoListName>DeltaRayParticles3D</PfoListName>
-        <VertexListName>CRVertices3D</VertexListName>
     </algorithm>
 
     <!-- Output list management -->
