@@ -1,6 +1,6 @@
 <pandora>
     <!-- GLOBAL SETTINGS -->
-    <IsMonitoringEnabled>false</IsMonitoringEnabled>
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
     <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
@@ -31,12 +31,8 @@
         </CosmicRayTaggingTools>
         <SliceIdTools>
             <tool type = "LArBdtBeamParticleId">
-                <UseTrainingMode>false</UseTrainingMode>
-                <MinimumPurity>0.8</MinimumPurity>
-                <MinimumCompleteness>0.8</MinimumCompleteness>
                 <BdtName>BeamParticleId</BdtName>
                 <BdtFileName>BdtBeamParticleID_NTrees_200_TreeDepth_3.xml</BdtFileName>
-                <MaximumNeutrinos>10000</MaximumNeutrinos>
                 <MinAdaBDTScore>-0.2</MinAdaBDTScore>
             </tool>
         </SliceIdTools>
@@ -58,6 +54,19 @@
 
     <algorithm type = "LArTestBeamParticleCreation">
         <PfoListName>RecreatedPfos</PfoListName>
+    </algorithm>
+
+    <algorithm type = "LArEventValidation">
+        <CaloHitListName>CaloHitList2D</CaloHitListName>
+        <MCParticleListName>Input</MCParticleListName>
+        <PfoListName>RecreatedPfos</PfoListName>
+        <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
+        <PrintAllToScreen>false</PrintAllToScreen>
+        <PrintMatchingToScreen>true</PrintMatchingToScreen>
+        <WriteToTree>false</WriteToTree>
+        <OutputTree>Validation</OutputTree>
+        <OutputFile>Validation.root</OutputFile>
+        <TestBeamMode>true</TestBeamMode>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
