@@ -11,7 +11,8 @@
         <WirePitchV>0.46669998765</WirePitchV>
         <WirePitchW>0.479000002146</WirePitchW>
         <WireAngleU>0.623257100582</WireAngleU>
-        <WireAngleV>0.623257100582</WireAngleV>
+        <WireAngleV>-0.623257100582</WireAngleV>
+        <WireAngleW>0.</WireAngleW>
         <SigmaUVW>1.51240003109</SigmaUVW>
         <IsDriftInPositiveX>1</IsDriftInPositiveX>
     </LArTPC>
@@ -27,7 +28,8 @@
         <WirePitchV>0.46669998765</WirePitchV>
         <WirePitchW>0.479000002146</WirePitchW>
         <WireAngleU>0.623257100582</WireAngleU>
-        <WireAngleV>0.623257100582</WireAngleV>
+        <WireAngleV>-0.623257100582</WireAngleV>
+        <WireAngleW>0.</WireAngleW>
         <SigmaUVW>1.51240003109</SigmaUVW>
         <IsDriftInPositiveX>0</IsDriftInPositiveX>
     </LArTPC>
@@ -43,7 +45,8 @@
         <WirePitchV>0.46669998765</WirePitchV>
         <WirePitchW>0.479000002146</WirePitchW>
         <WireAngleU>0.623257100582</WireAngleU>
-        <WireAngleV>0.623257100582</WireAngleV>
+        <WireAngleV>-0.623257100582</WireAngleV>
+        <WireAngleW>0.</WireAngleW>
         <SigmaUVW>1.51240003109</SigmaUVW>
         <IsDriftInPositiveX>1</IsDriftInPositiveX>
     </LArTPC>
@@ -59,7 +62,8 @@
         <WirePitchV>0.46669998765</WirePitchV>
         <WirePitchW>0.479000002146</WirePitchW>
         <WireAngleU>0.623257100582</WireAngleU>
-        <WireAngleV>0.623257100582</WireAngleV>
+        <WireAngleV>-0.623257100582</WireAngleV>
+        <WireAngleW>0.</WireAngleW>
         <SigmaUVW>1.51240003109</SigmaUVW>
         <IsDriftInPositiveX>0</IsDriftInPositiveX>
     </LArTPC>
@@ -75,7 +79,8 @@
         <WirePitchV>0.46669998765</WirePitchV>
         <WirePitchW>0.479000002146</WirePitchW>
         <WireAngleU>0.623257100582</WireAngleU>
-        <WireAngleV>0.623257100582</WireAngleV>
+        <WireAngleV>-0.623257100582</WireAngleV>
+        <WireAngleW>0.</WireAngleW>
         <SigmaUVW>1.51240003109</SigmaUVW>
         <IsDriftInPositiveX>1</IsDriftInPositiveX>
     </LArTPC>
@@ -91,7 +96,8 @@
         <WirePitchV>0.46669998765</WirePitchV>
         <WirePitchW>0.479000002146</WirePitchW>
         <WireAngleU>0.623257100582</WireAngleU>
-        <WireAngleV>0.623257100582</WireAngleV>
+        <WireAngleV>-0.623257100582</WireAngleV>
+        <WireAngleW>0.</WireAngleW>
         <SigmaUVW>1.51240003109</SigmaUVW>
         <IsDriftInPositiveX>0</IsDriftInPositiveX>
     </LArTPC>

@@ -11,7 +11,8 @@
         <WirePitchV>0.300000011921</WirePitchV>
         <WirePitchW>0.300000011921</WirePitchW>
         <WireAngleU>1.04719758034</WireAngleU>
-        <WireAngleV>1.04719758034</WireAngleV>
+        <WireAngleV>-1.04719758034</WireAngleV>
+        <WireAngleW>0.</WireAngleW>
         <SigmaUVW>1</SigmaUVW>
         <IsDriftInPositiveX>0</IsDriftInPositiveX>
     </LArTPC>
