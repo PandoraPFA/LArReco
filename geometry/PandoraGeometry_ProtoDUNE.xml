@@ -11,7 +11,8 @@
         <WirePitchV>0.466899991035</WirePitchV>
         <WirePitchW>0.479200005531</WirePitchW>
         <WireAngleU>0.623204708099</WireAngleU>
-        <WireAngleV>0.623204708099</WireAngleV>
+        <WireAngleV>-0.623204708099</WireAngleV>
+        <WireAngleW>0.</WireAngleW>
         <SigmaUVW>1.51300001144</SigmaUVW>
         <IsDriftInPositiveX>1</IsDriftInPositiveX>
     </LArTPC>
@@ -27,7 +28,8 @@
         <WirePitchV>0.466899991035</WirePitchV>
         <WirePitchW>0.479200005531</WirePitchW>
         <WireAngleU>0.623204708099</WireAngleU>
-        <WireAngleV>0.623204708099</WireAngleV>
+        <WireAngleV>-0.623204708099</WireAngleV>
+        <WireAngleW>0.</WireAngleW>
         <SigmaUVW>1.51300001144</SigmaUVW>
         <IsDriftInPositiveX>0</IsDriftInPositiveX>
     </LArTPC>
@@ -43,7 +45,8 @@
         <WirePitchV>0.466899991035</WirePitchV>
         <WirePitchW>0.479200005531</WirePitchW>
         <WireAngleU>0.623204708099</WireAngleU>
-        <WireAngleV>0.623204708099</WireAngleV>
+        <WireAngleV>-0.623204708099</WireAngleV>
+        <WireAngleW>0.</WireAngleW>
         <SigmaUVW>1.51300001144</SigmaUVW>
         <IsDriftInPositiveX>1</IsDriftInPositiveX>
     </LArTPC>
@@ -59,7 +62,8 @@
         <WirePitchV>0.466899991035</WirePitchV>
         <WirePitchW>0.479200005531</WirePitchW>
         <WireAngleU>0.623204708099</WireAngleU>
-        <WireAngleV>0.623204708099</WireAngleV>
+        <WireAngleV>-0.623204708099</WireAngleV>
+        <WireAngleW>0.</WireAngleW>
         <SigmaUVW>1.51300001144</SigmaUVW>
         <IsDriftInPositiveX>0</IsDriftInPositiveX>
     </LArTPC>
