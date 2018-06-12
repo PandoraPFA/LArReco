@@ -69,6 +69,7 @@
     <algorithm type = "LArCheatingPfoCreation">
         <InputClusterListNames>CRClustersU CRClustersV CRClustersW</InputClusterListNames>
         <OutputPfoListName>CRParticles3D</OutputPfoListName>
+        <OutputVertexListName>CRVertices3D</OutputVertexListName>
         <MCParticleListName>Input</MCParticleListName>
         <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
     </algorithm>
@@ -168,6 +169,7 @@
     <algorithm type = "LArCheatingPfoCreation">
         <InputClusterListNames>NClustersU NClustersV NClustersW</InputClusterListNames>
         <OutputPfoListName>NParticles3D</OutputPfoListName>
+        <AddVertices>false</AddVertices>
         <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
         <MCParticleListName>Input</MCParticleListName>
     </algorithm>
