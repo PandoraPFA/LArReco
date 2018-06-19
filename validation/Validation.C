@@ -316,7 +316,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
             ++countingDetails.m_nTotal;
 
             // ATTN Fail cosmic ray matches to neutrinos (or beam particles) and vice versa
-            if ((simpleMCPrimary.m_bestMatchPfoId >= 0) && (simpleMCTarget.m_isCosmicRay == simpleMCPrimary.m_bestMatchPfoIsRecoNu))
+            if ((simpleMCPrimary.m_bestMatchPfoId >= 0) && (!simpleMCTarget.m_isBeamParticle && (simpleMCTarget.m_isCosmicRay == simpleMCPrimary.m_bestMatchPfoIsRecoNu)))
             {
                 ++countingDetails.m_nMatch0;
                 continue;
