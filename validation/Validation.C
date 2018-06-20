@@ -29,7 +29,7 @@ void Validation(const std::string &inputFiles, const Parameters &parameters)
     for (int iEntry = 0; iEntry < nChainEntries; )
     {
         SimpleMCEvent simpleMCEvent;
-        iEntry += ReadNextEvent(pTChain, iEntry, simpleMCEvent);
+        iEntry += ReadNextEvent(pTChain, iEntry, simpleMCEvent, parameters);
 
         if (nEvents++ < parameters.m_skipEvents)
             continue;
@@ -52,7 +52,7 @@ void Validation(const std::string &inputFiles, const Parameters &parameters)
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simpleMCEvent)
+int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simpleMCEvent, const Parameters &parameters)
 {
     int thisEventNumber(0), iTarget(0);
     const int nChainEntries(pTChain->GetEntries());
@@ -88,16 +88,13 @@ int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simple
         pTChain->SetBranchAddress("nTargetMatches", &simpleMCTarget.m_nTargetMatches);
         pTChain->SetBranchAddress("nTargetNuMatches", &simpleMCTarget.m_nTargetNuMatches);
         pTChain->SetBranchAddress("nTargetCRMatches", &simpleMCTarget.m_nTargetCRMatches);
-        pTChain->SetBranchAddress("nTargetGoodNuMatches", &simpleMCTarget.m_nTargetGoodNuMatches);
-        pTChain->SetBranchAddress("nTargetNuSplits", &simpleMCTarget.m_nTargetNuSplits);
-        pTChain->SetBranchAddress("nTargetNuLosses", &simpleMCTarget.m_nTargetNuLosses);
         pTChain->SetBranchAddress("nTargetPrimaries", &simpleMCTarget.m_nTargetPrimaries);
 
         IntVector *pMCPrimaryId(nullptr), *pMCPrimaryPdg(nullptr), *pNMCHitsTotal(nullptr), *pNMCHitsU(nullptr), *pNMCHitsV(nullptr), *pNMCHitsW(nullptr);
         FloatVector *pMCPrimaryE(nullptr), *pMCPrimaryPX(nullptr), *pMCPrimaryPY(nullptr), *pMCPrimaryPZ(nullptr);
         FloatVector *pMCPrimaryVtxX(nullptr), *pMCPrimaryVtxY(nullptr), *pMCPrimaryVtxZ(nullptr), *pMCPrimaryEndX(nullptr), *pMCPrimaryEndY(nullptr), *pMCPrimaryEndZ(nullptr);
         IntVector *pNPrimaryMatchedPfos(nullptr), *pNPrimaryMatchedNuPfos(nullptr), *pNPrimaryMatchedCRPfos(nullptr);
-        IntVector *pBestMatchPfoId(nullptr), *pBestMatchPfoPdg(nullptr), *pBestMatchPfoIsRecoNu(nullptr), *pBestMatchPfoRecoNuId(nullptr);
+        IntVector *pBestMatchPfoId(nullptr), *pBestMatchPfoPdg(nullptr), *pBestMatchPfoIsRecoNu(nullptr), *pBestMatchPfoRecoNuId(nullptr), *pBestMatchPfoIsTestBeam(nullptr);
         IntVector *pBestMatchPfoNHitsTotal(nullptr), *pBestMatchPfoNHitsU(nullptr), *pBestMatchPfoNHitsV(nullptr), *pBestMatchPfoNHitsW(nullptr);
         IntVector *pBestMatchPfoNSharedHitsTotal(nullptr), *pBestMatchPfoNSharedHitsU(nullptr), *pBestMatchPfoNSharedHitsV(nullptr), *pBestMatchPfoNSharedHitsW(nullptr);
 
@@ -132,6 +129,18 @@ int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simple
         pTChain->SetBranchAddress("bestMatchPfoNSharedHitsU", &pBestMatchPfoNSharedHitsU);
         pTChain->SetBranchAddress("bestMatchPfoNSharedHitsV", &pBestMatchPfoNSharedHitsV);
         pTChain->SetBranchAddress("bestMatchPfoNSharedHitsW", &pBestMatchPfoNSharedHitsW);
+
+        if (parameters.m_testBeamMode)
+        {
+            pTChain->SetBranchAddress("bestMatchPfoIsTestBeam", &pBestMatchPfoIsTestBeam);
+        }
+        else
+        {
+            pTChain->SetBranchAddress("nTargetGoodNuMatches", &simpleMCTarget.m_nTargetGoodNuMatches);
+            pTChain->SetBranchAddress("nTargetNuSplits", &simpleMCTarget.m_nTargetNuSplits);
+            pTChain->SetBranchAddress("nTargetNuLosses", &simpleMCTarget.m_nTargetNuLosses);
+        }
+
         pTChain->GetEntry(iEntry + iTarget++);
 
         if (simpleMCEvent.m_eventNumber != thisEventNumber)
@@ -171,6 +180,11 @@ int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simple
             simpleMCPrimary.m_bestMatchPfoNSharedHitsU = pBestMatchPfoNSharedHitsU->at(iPrimary);
             simpleMCPrimary.m_bestMatchPfoNSharedHitsV = pBestMatchPfoNSharedHitsV->at(iPrimary);
             simpleMCPrimary.m_bestMatchPfoNSharedHitsW = pBestMatchPfoNSharedHitsW->at(iPrimary);
+
+            if (parameters.m_testBeamMode)
+            {
+                simpleMCPrimary.m_bestMatchPfoIsTestBeam = pBestMatchPfoIsTestBeam->at(iPrimary);
+            }
 
             simpleMCTarget.m_mcPrimaryList.push_back(simpleMCPrimary);
         }
@@ -316,7 +330,9 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
             ++countingDetails.m_nTotal;
 
             // ATTN Fail cosmic ray matches to neutrinos (or beam particles) and vice versa
-            if ((simpleMCPrimary.m_bestMatchPfoId >= 0) && (simpleMCTarget.m_isCosmicRay == simpleMCPrimary.m_bestMatchPfoIsRecoNu))
+            bool incorrectMatchToCR(parameters.m_testBeamMode ? (simpleMCTarget.m_isCosmicRay == simpleMCPrimary.m_bestMatchPfoIsTestBeam) : (simpleMCTarget.m_isCosmicRay == simpleMCPrimary.m_bestMatchPfoIsRecoNu));
+
+            if ((simpleMCPrimary.m_bestMatchPfoId >= 0) && incorrectMatchToCR)
             {
                 ++countingDetails.m_nMatch0;
                 continue;

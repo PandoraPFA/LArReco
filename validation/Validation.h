@@ -31,6 +31,7 @@ public:
     bool                    m_correctTrackShowerId;     ///< Whether to demand that pfos are correctly flagged as tracks or showers
     float                   m_vertexXCorrection;        ///< The vertex x correction, added to reported mc neutrino endpoint x value, in cm
     bool                    m_histogramOutput;          ///< Whether to produce output histograms
+    bool                    m_testBeamMode;             ///< Whether running in test beam mode
     std::string             m_histPrefix;               ///< Histogram name prefix
     std::string             m_mapFileName;              ///< File name to which to write output ascii tables, etc.
     std::string             m_eventFileName;            ///< File name to which to write list of correct events
@@ -112,6 +113,7 @@ public:
     int                 m_bestMatchPfoPdgCode;          ///< The best match pfo pdg code
     int                 m_bestMatchPfoIsRecoNu;         ///< Whether best match pfo is reconstructed as part of a neutrino hierarchy
     int                 m_bestMatchPfoRecoNuId;         ///< The identifier of the associated reco neutrino (if part of a neutrino hierarchy)
+    int                 m_bestMatchPfoIsTestBeam;       ///< Whether best match pfo is reconstructed as a test beam particle
     int                 m_bestMatchPfoNHitsTotal;       ///< The best match pfo total number of pfo hits
     int                 m_bestMatchPfoNHitsU;           ///< The best match pfo number of u pfo hits
     int                 m_bestMatchPfoNHitsV;           ///< The best match pfo number of v pfo hits
@@ -540,10 +542,11 @@ void Validation(const std::string &inputFiles, const Parameters &parameters = Pa
  *  @param  pTChain the address of the chain
  *  @param  iEntry the first chain entry to read
  *  @param  simpleMCEvent the event to be populated
+ *  @param  parameters the parameters
  *
  *  @return the number of chain entries read
  */
-int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simpleMCEvent);
+int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simpleMCEvent, const Parameters &parameters);
 
 /**
  *  @brief  Print matching details to screen for a simple mc event
@@ -645,7 +648,8 @@ Parameters::Parameters() :
     m_applyUbooneFiducialCut(true),
     m_correctTrackShowerId(false),
     m_vertexXCorrection(0.495694f),
-    m_histogramOutput(false)
+    m_histogramOutput(false),
+    m_testBeamMode(false)
 {
 }
 
@@ -703,6 +707,7 @@ SimpleMCPrimary::SimpleMCPrimary() :
     m_bestMatchPfoPdgCode(0),
     m_bestMatchPfoIsRecoNu(0),
     m_bestMatchPfoRecoNuId(-1),
+    m_bestMatchPfoIsTestBeam(0),
     m_bestMatchPfoNHitsTotal(0),
     m_bestMatchPfoNHitsU(0),
     m_bestMatchPfoNHitsV(0),
