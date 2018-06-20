@@ -82,7 +82,10 @@ int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simple
         pTChain->SetBranchAddress("isCorrectCR", &simpleMCTarget.m_isCorrectCR);
         pTChain->SetBranchAddress("isFakeNu", &simpleMCTarget.m_isFakeNu);
         pTChain->SetBranchAddress("isFakeCR", &simpleMCTarget.m_isFakeCR);
-        pTChain->SetBranchAddress("isSplitNu", &simpleMCTarget.m_isSplitNu);
+        if (!parameters.m_testBeamMode)
+        {
+            pTChain->SetBranchAddress("isSplitNu", &simpleMCTarget.m_isSplitNu);
+        }
         pTChain->SetBranchAddress("isSplitCR", &simpleMCTarget.m_isSplitCR);
         pTChain->SetBranchAddress("isLost", &simpleMCTarget.m_isLost);
         pTChain->SetBranchAddress("nTargetMatches", &simpleMCTarget.m_nTargetMatches);
