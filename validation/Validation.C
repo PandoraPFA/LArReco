@@ -253,8 +253,8 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const Param
                             (simpleMCPrimary.m_vertex.m_y - simpleMCPrimary.m_endpoint.m_y) * (simpleMCPrimary.m_vertex.m_y - simpleMCPrimary.m_endpoint.m_y) +
                             (simpleMCPrimary.m_vertex.m_z - simpleMCPrimary.m_endpoint.m_z) * (simpleMCPrimary.m_vertex.m_z - simpleMCPrimary.m_endpoint.m_z))
                       << ", nMCHits " << simpleMCPrimary.m_nMCHitsTotal
-                      << " (" << simpleMCPrimary.m_nMCHitsU 
-                      << ", " << simpleMCPrimary.m_nMCHitsV 
+                      << " (" << simpleMCPrimary.m_nMCHitsU
+                      << ", " << simpleMCPrimary.m_nMCHitsV
                       << ", " << simpleMCPrimary.m_nMCHitsW << ")" << std::endl;
 
             if (0 == simpleMCPrimary.m_nPrimaryMatchedPfos)
@@ -267,7 +267,8 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const Param
             if (simpleMCPrimary.m_nPrimaryMatchedPfos > 1) std::cout << " (NMatches " << simpleMCPrimary.m_nPrimaryMatchedPfos << ")";
             std::cout << ", Nu " << simpleMCPrimary.m_bestMatchPfoIsRecoNu;
             if (simpleMCPrimary.m_bestMatchPfoIsRecoNu) std::cout << " [NuId: " << simpleMCPrimary.m_bestMatchPfoRecoNuId << "]";
-            std::cout << ", CR " << !simpleMCPrimary.m_bestMatchPfoIsRecoNu
+            std::cout << ", TB " << (simpleMCPrimary.m_bestMatchPfoIsTestBeam)
+                      << ", CR " << (!simpleMCPrimary.m_bestMatchPfoIsRecoNu && !simpleMCPrimary.m_bestMatchPfoIsTestBeam)
                       << ", PDG " << simpleMCPrimary.m_bestMatchPfoPdgCode
                       << ", nMatchedHits " << simpleMCPrimary.m_bestMatchPfoNSharedHitsTotal
                       << " (" << simpleMCPrimary.m_bestMatchPfoNSharedHitsU
@@ -421,7 +422,7 @@ bool IsGoodParticleIdMatch(const SimpleMCPrimary &simpleMCPrimary, const int bes
 {
     const unsigned int absMCPdgCode(std::fabs(simpleMCPrimary.m_pdgCode));
 
-    if (((absMCPdgCode == 13 || absMCPdgCode == 2212 || absMCPdgCode == 211) && (13 != std::fabs(bestMatchPfoPdgCode))) ||
+    if (((absMCPdgCode == 13 || absMCPdgCode == 2212 || absMCPdgCode == 211) && (13 != std::fabs(bestMatchPfoPdgCode) && 211 != std::fabs(bestMatchPfoPdgCode))) ||
         ((absMCPdgCode == 22 || absMCPdgCode == 11) && (11 != std::fabs(bestMatchPfoPdgCode))) )
     {
         return false;
