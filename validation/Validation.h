@@ -32,6 +32,7 @@ public:
     float                   m_vertexXCorrection;        ///< The vertex x correction, added to reported mc neutrino endpoint x value, in cm
     bool                    m_histogramOutput;          ///< Whether to produce output histograms
     bool                    m_testBeamMode;             ///< Whether running in test beam mode
+    bool                    m_triggeredBeamOnly;        ///< Whether to only consider triggered beam particles
     std::string             m_histPrefix;               ///< Histogram name prefix
     std::string             m_mapFileName;              ///< File name to which to write output ascii tables, etc.
     std::string             m_eventFileName;            ///< File name to which to write list of correct events
@@ -52,7 +53,7 @@ public:
 
     /**
      *  @brief  Constructor
-     * 
+     *
      *  @param  x the x value
      *  @param  y the y value
      *  @param  z the z value
@@ -68,7 +69,7 @@ typedef std::vector<SimpleThreeVector> SimpleThreeVectorList;
 
 /**
  *  @brief  Simple three vector subtraction operator
- * 
+ *
  *  @param  lhs first vector, from which the second is subtracted
  *  @param  rhs second vector, which is subtracted from the first
  */
@@ -76,7 +77,7 @@ SimpleThreeVector operator-(const SimpleThreeVector &lhs, const SimpleThreeVecto
 
 /**
  *  @brief  Simple three vector addition operator
- * 
+ *
  *  @param  lhs first vector, from which the second is added
  *  @param  rhs second vector, which is added to the first
  */
@@ -415,7 +416,7 @@ class CountingDetails
 {
 public:
     /**
-     *  @brief  Default constructor  
+     *  @brief  Default constructor
      */
     CountingDetails();
 
@@ -439,7 +440,7 @@ class PrimaryResult
 {
 public:
     /**
-     *  @brief  Default constructor  
+     *  @brief  Default constructor
      */
     PrimaryResult();
 
@@ -530,7 +531,7 @@ typedef std::map<InteractionType, PrimaryHistogramMap> InteractionPrimaryHistogr
 
 /**
  *  @brief  Validation - Main entry point for analysis
- * 
+ *
  *  @param  inputFiles the regex identifying the input root files
  *  @param  parameters the parameters
  */
@@ -538,7 +539,7 @@ void Validation(const std::string &inputFiles, const Parameters &parameters = Pa
 
 /**
  *  @brief  Read the next event from the chain
- * 
+ *
  *  @param  pTChain the address of the chain
  *  @param  iEntry the first chain entry to read
  *  @param  simpleMCEvent the event to be populated
@@ -550,7 +551,7 @@ int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simple
 
 /**
  *  @brief  Print matching details to screen for a simple mc event
- * 
+ *
  *  @param  simpleMCEvent the simple mc event
  *  @param  parameters the parameters
  */
@@ -558,7 +559,7 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const Param
 
 /**
  *  @brief  CountPfoMatches Relies on fact that primary list is sorted by number of true good hits
- * 
+ *
  *  @param  simpleMCEvent the simple mc event
  *  @param  parameters the parameters
  *  @param  interactionCountingMap the interaction counting map, to be populated
@@ -569,9 +570,9 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
 
 /**
  *  @brief  Whether a simple mc event passes uboone fiducial cut, applied to target vertices
- * 
+ *
  *  @param  simpleMCTarget the simple mc target
- * 
+ *
  *  @return boolean
  */
 bool PassUbooneFiducialCut(const SimpleMCTarget &simpleMCTarget);
@@ -579,27 +580,27 @@ bool PassUbooneFiducialCut(const SimpleMCTarget &simpleMCTarget);
 /**
  *  @brief  Work out which of the primary particles (expected for a given interaction types) corresponds to the provided primary id
  *          ATTN: Relies on fact that primary list is sorted by number of true hits
- * 
+ *
  *  @param  simpleMCPrimary the simple mc primary
  *  @param  simpleMCPrimaryList the simple mc primary list
- * 
+ *
  *  @return the expected primary
  */
 ExpectedPrimary GetExpectedPrimary(const SimpleMCPrimary &simpleMCPrimary, const SimpleMCPrimaryList &simpleMCPrimaryList);
 
 /**
  *  @brief  Whether a provided mc primary and best matched pfo are deemed to have a good particle id match
- * 
+ *
  *  @param  simpleMCPrimary the simple mc primary
  *  @param  bestMatchPfoPdgCode the best matched pfo pdg code
- * 
+ *
  *  @return boolean
  */
 bool IsGoodParticleIdMatch(const SimpleMCPrimary &simpleMCPrimary, const int bestMatchPfoPdgCode);
 
 /**
  *  @brief  Print details to screen for a provided interaction type to counting map
- * 
+ *
  *  @param  interactionCountingMap the interaction counting map
  *  @param  parameters the parameters
  */
@@ -607,7 +608,7 @@ void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCoun
 
 /**
  *  @brief  Opportunity to fill histograms, perform post-processing of information collected in main loop over ntuple, etc.
- * 
+ *
  *  @param  interactionTargetResultMap the interaction target result map
  *  @param  parameters the parameters
  */
@@ -615,7 +616,7 @@ void AnalyseInteractionTargetResultMap(const InteractionTargetResultMap &interac
 
 /**
  *  @brief  Fill histograms in the provided target histogram collection, using information in the provided target result
- * 
+ *
  *  @param  histPrefix the histogram prefix
  *  @param  targetResult the target result
  *  @param  targetHistogramCollection the target histogram collection
@@ -624,7 +625,7 @@ void FillTargetHistogramCollection(const std::string &histPrefix, const TargetRe
 
 /**
  *  @brief  Fill histograms in the provided histogram collection, using information in the provided primary result
- * 
+ *
  *  @param  histPrefix the histogram prefix
  *  @param  primaryResult the primary result
  *  @param  primaryHistogramCollection the primary histogram collection
@@ -633,7 +634,7 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
 
 /**
  *  @brief  Process histograms stored in the provided map e.g. calculating final efficiencies, normalising, etc.
- * 
+ *
  *  @param  interactionPrimaryHistogramMap the interaction primary histogram map
  */
 void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interactionPrimaryHistogramMap);
@@ -649,7 +650,8 @@ Parameters::Parameters() :
     m_correctTrackShowerId(false),
     m_vertexXCorrection(0.495694f),
     m_histogramOutput(false),
-    m_testBeamMode(false)
+    m_testBeamMode(false),
+    m_triggeredBeamOnly(true)
 {
 }
 
