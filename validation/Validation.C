@@ -306,7 +306,8 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
 {
     for (const SimpleMCTarget &simpleMCTarget : simpleMCEvent.m_mcTargetList)
     {
-        if (parameters.m_applyUbooneFiducialCut && simpleMCTarget.m_isNeutrino && !PassUbooneFiducialCut(simpleMCTarget))
+        if ((parameters.m_applyUbooneFiducialCut && simpleMCTarget.m_isNeutrino && !PassUbooneFiducialCut(simpleMCTarget)) ||
+            (parameters.m_triggeredBeamOnly && simpleMCTarget.m_isBeamParticle && simpleMCTarget.m_mcNuanceCode != 2001))
             continue;
 
         TargetResult targetResult;
