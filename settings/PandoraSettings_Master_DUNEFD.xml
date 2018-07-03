@@ -47,6 +47,19 @@
         <PfoListName>RecreatedPfos</PfoListName>
         <VertexListName>RecreatedVertices</VertexListName>
     </algorithm>
+
+    <algorithm type = "LArEventValidation">
+        <CaloHitListName>CaloHitList2D</CaloHitListName>
+        <MCParticleListName>Input</MCParticleListName>
+        <PfoListName>RecreatedPfos</PfoListName>
+        <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
+        <PrintAllToScreen>false</PrintAllToScreen>
+        <PrintMatchingToScreen>true</PrintMatchingToScreen>
+        <WriteToTree>false</WriteToTree>
+        <OutputTree>Validation</OutputTree>
+        <OutputFile>Validation.root</OutputFile>
+    </algorithm>
+
     <algorithm type = "LArVisualMonitoring">
         <ShowCurrentPfos>true</ShowCurrentPfos>
         <ShowDetector>true</ShowDetector>

@@ -20,8 +20,8 @@
 
     <algorithm type = "LArMaster">
         <CRSettingsFile>PandoraSettings_Cosmic_Standard.xml</CRSettingsFile>
-        <NuSettingsFile>PandoraSettings_Neutrino_Standard.xml</NuSettingsFile>
-        <SlicingSettingsFile>PandoraSettings_Slicing_Standard.xml</SlicingSettingsFile>
+        <NuSettingsFile>PandoraSettings_TestBeam_ProtoDUNE.xml</NuSettingsFile>
+        <SlicingSettingsFile>PandoraSettings_Slicing_ProtoDUNE.xml</SlicingSettingsFile>
         <StitchingTools>
             <tool type = "LArStitchingCosmicRayMerging"><ThreeDStitchingMode>true</ThreeDStitchingMode></tool>
             <tool type = "LArStitchingCosmicRayMerging"><ThreeDStitchingMode>false</ThreeDStitchingMode></tool>
@@ -55,6 +55,8 @@
     <algorithm type = "LArTestBeamParticleCreation">
         <PfoListName>RecreatedPfos</PfoListName>
         <VertexListName>RecreatedVertices</VertexListName>
+        <KeepStartVertex>false</KeepStartVertex>
+        <KeepInteractionVertex>true</KeepInteractionVertex>
     </algorithm>
 
     <algorithm type = "LArEventValidation">
