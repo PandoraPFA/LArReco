@@ -4,6 +4,10 @@
     <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
+    <LArTransformationPlugin>
+        <MaxAngularDiscrepancyW>1000.</MaxAngularDiscrepancyW>
+    </LArTransformationPlugin>
+
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading"/>
     <algorithm type = "LArPreProcessing">
@@ -30,7 +34,10 @@
             <tool type = "LArCosmicRayTagging"/>
         </CosmicRayTaggingTools>
         <SliceIdTools>
-            <tool type = "LArSimpleNeutrinoId"/>
+            <tool type = "LArSimpleNeutrinoId">
+                <SelectOnlyFirstSliceNeutrinos>false</SelectOnlyFirstSliceNeutrinos>
+                <SelectAllNeutrinos>true</SelectAllNeutrinos>
+            </tool>
         </SliceIdTools>
         <InputHitListName>Input</InputHitListName>
         <InputMCParticleListName>Input</InputMCParticleListName>
@@ -60,7 +67,6 @@
         <WriteToTree>false</WriteToTree>
         <OutputTree>Validation</OutputTree>
         <OutputFile>Validation.root</OutputFile>
-        <TestBeamMode>true</TestBeamMode>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
