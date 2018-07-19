@@ -317,11 +317,21 @@
     <algorithm type = "LArNeutrinoProperties">
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
     </algorithm>
-    
-    <!-- Track and shower building --> 
-    <algorithm type = "LArTrackParticleBuilding"> 
-        <PfoListName>TrackParticles3D</PfoListName> 
-        <VertexListName>DaughterVertices3D</VertexListName> 
+
+    <!-- Track and shower building -->
+    <algorithm type = "LArTrackParticleBuilding">
+        <PfoListName>TrackParticles3D</PfoListName>
+        <VertexListName>DaughterVertices3D</VertexListName>
+    </algorithm>
+
+    <algorithm type = "LArTestBeamParticleCreation">
+        <PfoListName>NeutrinoParticles3D</PfoListName>
+        <TrackPfoListName>TrackParticles3D</TrackPfoListName>
+        <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+        <VertexListName>NeutrinoVertices3D</VertexListName>
+        <DaughterVertexListName>DaughterVertices3D</DaughterVertexListName>
+        <KeepStartVertex>false</KeepStartVertex>
+        <KeepInteractionVertex>true</KeepInteractionVertex>
     </algorithm>
 
     <!-- Output list management -->
