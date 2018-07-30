@@ -325,13 +325,11 @@
     </algorithm>
 
     <algorithm type = "LArTestBeamParticleCreation">
-        <PfoListName>NeutrinoParticles3D</PfoListName>
+        <ParentPfoListName>NeutrinoParticles3D</ParentPfoListName>
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
-        <VertexListName>NeutrinoVertices3D</VertexListName>
+        <ParentVertexListName>NeutrinoVertices3D</ParentVertexListName>
         <DaughterVertexListName>DaughterVertices3D</DaughterVertexListName>
-        <KeepStartVertex>false</KeepStartVertex>
-        <KeepInteractionVertex>true</KeepInteractionVertex>
     </algorithm>
 
     <!-- Output list management -->
