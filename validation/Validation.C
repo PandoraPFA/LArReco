@@ -213,7 +213,7 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const Param
     {
         std::cout << std::endl << ToString(static_cast<InteractionType>(simpleMCTarget.m_interactionType))
                   << " (Nuance " << simpleMCTarget.m_mcNuanceCode << ", Nu " << simpleMCTarget.m_isNeutrino;
-        if (parameters.m_applyUbooneFiducialCut && simpleMCTarget.m_isNeutrino && !PassUbooneFiducialCut(simpleMCTarget)) std::cout << " [NonFid]";
+        if (!PassFiducialCut(simpleMCTarget, parameters) && simpleMCTarget.m_isNeutrino) std::cout << " [NonFid]";
         std::cout << ", TB " << simpleMCTarget.m_isBeamParticle << ", CR " << simpleMCTarget.m_isCosmicRay << ")" << std::endl;
 
         std::stringstream ss;
@@ -306,7 +306,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
 {
     for (const SimpleMCTarget &simpleMCTarget : simpleMCEvent.m_mcTargetList)
     {
-        if ((parameters.m_applyUbooneFiducialCut && simpleMCTarget.m_isNeutrino && !PassUbooneFiducialCut(simpleMCTarget)) ||
+        if ((!PassFiducialCut(simpleMCTarget, parameters) && simpleMCTarget.m_isNeutrino) ||
             (parameters.m_triggeredBeamOnly && simpleMCTarget.m_isBeamParticle && simpleMCTarget.m_mcNuanceCode != 2001))
             continue;
 
@@ -369,12 +369,46 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
+bool PassFiducialCut(const SimpleMCTarget &simpleMCTarget, const Parameters &parameters)
+{
+    if (parameters.m_applyUbooneFiducialCut && parameters.m_applySBNDFiducialCut)
+      throw std::invalid_argument("Parameters has fiducial cuts for uBooNE and SBND");
+
+    if (parameters.m_applyUbooneFiducialCut)
+        return PassUbooneFiducialCut(simpleMCTarget);
+
+    if (parameters.m_applySBNDFiducialCut)
+        return PassSBNDFiducialCut(simpleMCTarget);
+
+    return true;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
 bool PassUbooneFiducialCut(const SimpleMCTarget &simpleMCTarget)
 {
     const float eVx(256.35), eVy(233.), eVz(1036.8);
     const float xBorder(10.), yBorder(20.), zBorder(10.);
 
     if ((simpleMCTarget.m_targetVertex.m_x < (eVx - xBorder)) && (simpleMCTarget.m_targetVertex.m_x > xBorder) &&
+        (simpleMCTarget.m_targetVertex.m_y < (eVy / 2. - yBorder)) && (simpleMCTarget.m_targetVertex.m_y > (-eVy / 2. + yBorder)) &&
+        (simpleMCTarget.m_targetVertex.m_z < (eVz - zBorder)) && (simpleMCTarget.m_targetVertex.m_z > zBorder) )
+    {
+        return true;
+    }
+
+    return false;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+bool PassSBNDFiducialCut(const SimpleMCTarget &simpleMCTarget)
+{
+    const float eVx(400.f), eVy(400.f), eVz(500.f);
+    const float xBorder(10.f), yBorder(20.f), zBorder(10.f);
+
+    // ATTN origin definition is different in SBND to uBooNE. Both x & y are centered in the middle of the face
+    if ((simpleMCTarget.m_targetVertex.m_x < (eVx / 2. - xBorder)) && (simpleMCTarget.m_targetVertex.m_x > (-eVx / 2. + xBorder)) &&
         (simpleMCTarget.m_targetVertex.m_y < (eVy / 2. - yBorder)) && (simpleMCTarget.m_targetVertex.m_y > (-eVy / 2. + yBorder)) &&
         (simpleMCTarget.m_targetVertex.m_z < (eVz - zBorder)) && (simpleMCTarget.m_targetVertex.m_z > zBorder) )
     {

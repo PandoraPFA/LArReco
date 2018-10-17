@@ -28,6 +28,7 @@ public:
     int                     m_skipEvents;               ///< The number of events to skip
     int                     m_nEventsToProcess;         ///< The number of events to process
     bool                    m_applyUbooneFiducialCut;   ///< Whether to apply uboone fiducial volume cut to true neutrino vertex position
+    bool                    m_applySBNDFiducialCut;     ///< Whether to apply sbnd fiducial volume cut to true neutrino vertex position
     bool                    m_correctTrackShowerId;     ///< Whether to demand that pfos are correctly flagged as tracks or showers
     float                   m_vertexXCorrection;        ///< The vertex x correction, added to reported mc neutrino endpoint x value, in cm
     bool                    m_histogramOutput;          ///< Whether to produce output histograms
@@ -569,6 +570,16 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
     InteractionTargetResultMap &interactionTargetResultMap);
 
 /**
+ *  @brief  Whether a simple mc event passes the relevant fiducial cut, applied to target vertices
+ *
+ *  @param  simpleMCTarget the simple mc target
+ *  @param  parameters the parameters
+ *
+ *  @return boolean
+ */
+bool PassFiducialCut(const SimpleMCTarget &simpleMCTarget, const Parameters &parameters);
+
+/**
  *  @brief  Whether a simple mc event passes uboone fiducial cut, applied to target vertices
  *
  *  @param  simpleMCTarget the simple mc target
@@ -576,6 +587,15 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
  *  @return boolean
  */
 bool PassUbooneFiducialCut(const SimpleMCTarget &simpleMCTarget);
+
+/**
+ *  @brief  Whether a simple mc event passes sbnd fiducial cut, applied to target vertices
+ *
+ *  @param  simpleMCTarget the simple mc target
+ *
+ *  @return boolean
+ */
+bool PassSBNDFiducialCut(const SimpleMCTarget &simpleMCTarget);
 
 /**
  *  @brief  Work out which of the primary particles (expected for a given interaction types) corresponds to the provided primary id
@@ -647,6 +667,7 @@ Parameters::Parameters() :
     m_skipEvents(0),
     m_nEventsToProcess(std::numeric_limits<int>::max()),
     m_applyUbooneFiducialCut(true),
+    m_applySBNDFiducialCut(false),
     m_correctTrackShowerId(false),
     m_vertexXCorrection(0.495694f),
     m_histogramOutput(false),
