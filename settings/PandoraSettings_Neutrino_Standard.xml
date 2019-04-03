@@ -1,7 +1,7 @@
 <pandora>
     <!-- GLOBAL SETTINGS -->
     <IsMonitoringEnabled>true</IsMonitoringEnabled>
-    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
+    <ShouldDisplayAlgorithmInfo>true</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
     <!-- ALGORITHM SETTINGS -->
@@ -34,6 +34,9 @@
     <algorithm type = "LArTrackConsolidation">
         <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
     </algorithm>
+    <!-- Begin example new TwoDMopUp algorithm -->
+    <!--algorithm type = "LArExampleClusterMopUp"/-->
+    <!-- End example new TwoDMopUp algorithm -->
 
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArTrackClusterCreation" description = "ClusterFormation"/>
@@ -55,6 +58,9 @@
     <algorithm type = "LArTrackConsolidation">
         <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
     </algorithm>
+    <!-- Begin example new TwoDMopUp algorithm -->
+    <!--algorithm type = "LArExampleClusterMopUp"/-->
+    <!-- End example new TwoDMopUp algorithm -->
 
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArTrackClusterCreation" description = "ClusterFormation"/>
@@ -76,6 +82,9 @@
     <algorithm type = "LArTrackConsolidation">
         <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
     </algorithm>
+    <!-- Begin example new TwoDMopUp algorithm -->
+    <!--algorithm type = "LArExampleClusterMopUp"/-->
+    <!-- End example new TwoDMopUp algorithm -->
 
     <!-- VertexAlgorithms -->
     <algorithm type = "LArCandidateVertexCreation">
@@ -279,6 +288,12 @@
         <InputPfoListNames>TrackParticles3D ShowerParticles3D</InputPfoListNames>
         <DaughterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</DaughterListNames>
     </algorithm>
+    <!-- Begin example new ThreeDMopUp algorithm -->
+    <!--algorithm type = "LArExamplePfoMopUp">
+        <InputPfoListNames>TrackParticles3D ShowerParticles3D</InputPfoListNames>
+        <DaughterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</DaughterListNames>
+    </algorithm-->
+    <!-- End example new ThreeDMopUp algorithm -->
     <algorithm type = "LArSlidingConeClusterMopUp">
         <InputPfoListNames>TrackParticles3D ShowerParticles3D</InputPfoListNames>
         <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
