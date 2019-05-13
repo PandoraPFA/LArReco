@@ -17,7 +17,7 @@
 
 void Validation(const std::string &inputFiles, const Parameters &parameters)
 {
-    TChain *pTChain = new TChain("Validation", "pTChain");
+    TChain *pTChain = new TChain("Validation_nu_fullvar", "pTChain");
     pTChain->Add(inputFiles.c_str());
 
     InteractionCountingMap interactionCountingMap;
