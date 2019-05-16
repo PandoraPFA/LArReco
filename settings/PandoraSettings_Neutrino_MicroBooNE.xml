@@ -92,9 +92,9 @@
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-        <SvmFileName>PandoraSvm_v03_11_00.xml</SvmFileName>
-        <RegionSvmName>VertexSelectionRegion</RegionSvmName>
-        <VertexSvmName>VertexSelectionVertex</VertexSvmName>
+        <MvaFileName>PandoraSvm_v03_11_00.xml</MvaFileName>
+        <RegionMvaName>VertexSelectionRegion</RegionMvaName>
+        <VertexMvaName>VertexSelectionVertex</VertexMvaName>
         <FeatureTools>
             <tool type = "LArEnergyKickFeature"/>
             <tool type = "LArLocalAsymmetryFeature"/>
