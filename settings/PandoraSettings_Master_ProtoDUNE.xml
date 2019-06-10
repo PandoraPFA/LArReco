@@ -31,8 +31,8 @@
         </CosmicRayTaggingTools>
         <SliceIdTools>
             <tool type = "LArBdtBeamParticleId">
-                <BdtName>BeamParticleId</BdtName>
-                <BdtFileName>PandoraBdt_v03_14_00.xml</BdtFileName>
+                <BdtName>ProtoDUNESP_BeamParticleId</BdtName>
+                <BdtFileName>PandoraBdt_v03_15_00.xml</BdtFileName>
                 <MinAdaBDTScore>-0.225</MinAdaBDTScore>
             </tool>
         </SliceIdTools>
