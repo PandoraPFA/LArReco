@@ -5,9 +5,7 @@
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
     <!-- ALGORITHM SETTINGS -->
-    <algorithm type = "LArEventReading">
-        <UseLArCaloHits>false</UseLArCaloHits>
-    </algorithm>
+    <algorithm type = "LArEventReading"/>
     <algorithm type = "LArPreProcessing">
         <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
         <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
