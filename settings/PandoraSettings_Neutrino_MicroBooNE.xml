@@ -78,14 +78,14 @@
     </algorithm>
 
     <!-- VertexAlgorithms -->
+    <algorithm type = "LArCutClusterCharacterisation">
+        <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+    </algorithm>
     <algorithm type = "LArCandidateVertexCreation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <OutputVertexListName>CandidateVertices3D</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
         <EnableCrossingCandidates>true</EnableCrossingCandidates>
-    </algorithm>
-    <algorithm type = "LArCutClusterCharacterisation">
-        <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
     </algorithm>
     <algorithm type = "LArSvmVertexSelection">
         <InputCaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</InputCaloHitListNames>
