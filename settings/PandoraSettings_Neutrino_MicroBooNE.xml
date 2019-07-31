@@ -240,6 +240,15 @@
         <MinClusterCaloHits>5</MinClusterCaloHits>
         <MinClusterLength>1.</MinClusterLength>
     </algorithm>
+    <algorithm type = "LArParticleRecovery">
+        <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+        <OutputPfoListName>TrackParticles3D</OutputPfoListName>
+        <MinClusterCaloHits>1</MinClusterCaloHits>
+        <MinClusterLength>0.01</MinClusterLength>
+        <MinClusterXSpan>0.01</MinClusterXSpan>
+        <MinXOverlapFraction>0.5</MinXOverlapFraction>
+        <PseudoChi2Cut>5.</PseudoChi2Cut>
+    </algorithm>
 
     <!-- TwoDMopUpAlgorithms -->
     <algorithm type = "LArBoundedClusterMopUp">
