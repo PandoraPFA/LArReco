@@ -43,17 +43,15 @@
         <VisualizeOverallRecoStatus>false</VisualizeOverallRecoStatus>
     </algorithm>
 
-    <algorithm type = "LArEventValidation">
+    <algorithm type = "LArTestBeamEventValidation">
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>Input</MCParticleListName>
         <PfoListName>RecreatedPfos</PfoListName>
-        <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
         <PrintAllToScreen>false</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <WriteToTree>false</WriteToTree>
         <OutputTree>Validation</OutputTree>
         <OutputFile>Validation.root</OutputFile>
-        <TestBeamMode>true</TestBeamMode>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
