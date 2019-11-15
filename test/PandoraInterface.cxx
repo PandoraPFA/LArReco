@@ -28,6 +28,8 @@
 #include <iostream>
 #include <string>
 
+#include "../src/BScProjectInputsAlgorithm.h"
+
 using namespace pandora;
 using namespace lar_reco;
 
@@ -82,6 +84,11 @@ namespace lar_reco
 void CreatePandoraInstances(const Parameters &parameters, const Pandora *&pPrimaryPandora)
 {
     pPrimaryPandora = new Pandora();
+    
+    PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=,
+        PandoraApi::RegisterAlgorithmFactory(*pPrimaryPandora, "BScProjectInputs",
+        new bsc_project::BScProjectInputsAlgorithm::Factory));
+    
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::RegisterAlgorithms(*pPrimaryPandora));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::RegisterBasicPlugins(*pPrimaryPandora));
 

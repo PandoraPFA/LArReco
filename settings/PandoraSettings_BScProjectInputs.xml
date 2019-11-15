@@ -1,0 +1,31 @@
+<pandora>
+    <!-- GLOBAL SETTINGS -->
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
+    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
+    <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
+
+    <!-- ALGORITHM SETTINGS -->
+    <algorithm type = "LArEventReading">
+        <GeometryFileName>/home/epp/phrdqd/Pandora/LArReco/geometry/PandoraGeometry_DUNEFD_1x2x6.xml</GeometryFileName>
+        <ShouldReadEvents>true</ShouldReadEvents>
+        <ShouldReadGeometry>true</ShouldReadGeometry>
+        <SkipToEvent>0</SkipToEvent>
+        <UseLArCaloHits>true</UseLArCaloHits>
+    </algorithm>
+
+    <algorithm type = "LArPreProcessing">
+        <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
+        <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
+        <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
+        <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
+        <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
+    </algorithm>
+
+    <algorithm type = "BScProjectInputs">
+        <InputPfoListName>NeutrinoParticles3D</InputPfoListName>
+        <InputCaloHitListName>CaloHitList2D</InputCaloHitListName>
+        <InputCaloHitListNameW>CaloHitListW</InputCaloHitListNameW>
+        <OutputFile>track_shower.csv</OutputFile>
+    </algorithm>
+
+</pandora>
