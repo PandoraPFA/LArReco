@@ -6,7 +6,6 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-        <GeometryFileName>/home/epp/phrdqd/Pandora/LArReco/geometry/PandoraGeometry_DUNEFD_1x2x6.xml</GeometryFileName>
         <ShouldReadEvents>true</ShouldReadEvents>
         <ShouldReadGeometry>true</ShouldReadGeometry>
         <SkipToEvent>0</SkipToEvent>
