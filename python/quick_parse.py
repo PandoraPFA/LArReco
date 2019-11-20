@@ -6,19 +6,15 @@ def select_interaction_sample(df, interaction, n_samples=None):
         df_type = df_type.sample(n = n_samples)
     return df_type
 
-df = pd.read_csv("track_shower.csv")
+df = pd.read_csv("events.csv")
 print(df["interaction_type"].value_counts())
 print("Total events:", df["interaction_type"].value_counts().sum())
 
-df_ccqe_mu_p = select_interaction_sample(df, "CCQEL_MU_P", 20)
-df_ccres_mu_p_pi = select_interaction_sample(df, "CCRES_MU_P_PIPLUS", 20)
-df_ccqe_e_p = select_interaction_sample(df, "CCQEL_E_P", 20)
-df_ccres_e_p_pi = select_interaction_sample(df, "CCRES_E_P_PIPLUS", 20)
+df_ccqe_mu_p = select_interaction_sample(df, "CCQEL_MU_P", 5)
+df_ccres_mu_p_pi = select_interaction_sample(df, "CCRES_MU_P_PIPLUS", 5)
 
 df_ccqe_mu_p.to_csv("sample_ccqe_mu_p.csv", index=False)
 df_ccres_mu_p_pi.to_csv("sample_ccres_mu_p_pi.csv", index=False)
-df_ccqe_e_p.to_csv("sample_ccqe_e_p.csv", index=False)
-df_ccres_e_p_pi.to_csv("sample_ccres_e_p_pi.csv", index=False)
 
 """
 CCQEL_MU_P                   33399
