@@ -24,7 +24,7 @@
         <InputPfoListName>NeutrinoParticles3D</InputPfoListName>
         <InputCaloHitListName>CaloHitList2D</InputCaloHitListName>
         <InputCaloHitListNameW>CaloHitListW</InputCaloHitListNameW>
-        <OutputFile>track_shower.csv</OutputFile>
+        <OutputFile>events.csv</OutputFile>
     </algorithm>
 
 </pandora>
