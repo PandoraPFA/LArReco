@@ -30,9 +30,9 @@
             <tool type = "LArCosmicRayTagging"/>
         </CosmicRayTaggingTools>
         <SliceIdTools>
-            <tool type = "LArNeutrinoId">
-                <SvmFileName>PandoraSvm_v03_11_00.xml</SvmFileName>
-                <SvmName>NeutrinoId</SvmName>
+            <tool type = "LArSvmNeutrinoId">
+                <MvaFileName>PandoraSvm_v03_11_00.xml</MvaFileName>
+                <MvaName>NeutrinoId</MvaName>
             </tool>
         </SliceIdTools>
         <InputHitListName>Input</InputHitListName>
