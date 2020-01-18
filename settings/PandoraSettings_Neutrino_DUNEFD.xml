@@ -78,6 +78,12 @@
     </algorithm>
 
     <!-- VertexAlgorithms -->
+    <algorithm type = "LArMyDlVtx">
+        <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+        <OutputVertexListName>DlVertices3D</OutputVertexListName>
+        <ModelFileNamePrefix>torch_model</ModelFileNamePrefix>
+    </algorithm>
+
     <algorithm type = "LArCutClusterCharacterisation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <MaxShowerLengthCut>500.</MaxShowerLengthCut>
@@ -97,15 +103,16 @@
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-        <MvaFileName>PandoraBdt_v03_15_02.xml</MvaFileName>
-        <RegionMvaName>DUNEFD_VertexSelectionRegion</RegionMvaName>
-        <VertexMvaName>DUNEFD_VertexSelectionVertex</VertexMvaName>
+        <MvaFileName>PandoraBdtTorchvtx.xml</MvaFileName>
+        <RegionMvaName>VertexSelectionRegion</RegionMvaName>
+        <VertexMvaName>VertexSelectionVertex</VertexMvaName>
         <FeatureTools>
             <tool type = "LArEnergyKickFeature"/>
             <tool type = "LArLocalAsymmetryFeature"/>
             <tool type = "LArGlobalAsymmetryFeature"/>
             <tool type = "LArShowerAsymmetryFeature"/>
             <tool type = "LArRPhiFeature"/>
+            <tool type = "LArMyDlVtxFeature"/>
         </FeatureTools>
     </algorithm>
     <algorithm type = "LArCutClusterCharacterisation">
