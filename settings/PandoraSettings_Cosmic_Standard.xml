@@ -307,11 +307,11 @@
         <OutputVertexListName>CRVertices3D</OutputVertexListName>
     </algorithm>
 
-    <!-- Track and shower building --> 
-    <algorithm type = "LArTrackParticleBuilding"> 
-        <PfoListName>MuonParticles3D</PfoListName> 
-        <VertexListName>CRVertices3D</VertexListName> 
-    </algorithm> 
+    <!-- Track and shower building -->
+    <algorithm type = "LArTrackParticleBuilding">
+        <PfoListName>MuonParticles3D</PfoListName>
+        <VertexListName>CRVertices3D</VertexListName>
+    </algorithm>
 
     <!-- Output list management -->
     <algorithm type = "LArPostProcessing">
