@@ -1,7 +1,7 @@
 <pandora>
     <!-- GLOBAL SETTINGS -->
     <IsMonitoringEnabled>true</IsMonitoringEnabled>
-    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
+    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo> <!-- change -->
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
     <!-- ALGORITHM SETTINGS -->
@@ -74,26 +74,44 @@
     <algorithm type = "LArBranchSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
     <algorithm type = "LArTrackConsolidation">
-        <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
+    <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
     </algorithm>
 
     <!-- VertexAlgorithms -->
+    <algorithm type = "LArCutClusterCharacterisation">
+        <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+        <MaxShowerLengthCut>500.</MaxShowerLengthCut>
+        <VertexDistanceRatioCut>500.</VertexDistanceRatioCut>
+        <PathLengthRatioCut>1.012</PathLengthRatioCut>
+        <ShowerWidthRatioCut>0.2</ShowerWidthRatioCut>
+	</algorithm>
     <algorithm type = "LArCandidateVertexCreation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <OutputVertexListName>CandidateVertices3D</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
         <EnableCrossingCandidates>false</EnableCrossingCandidates>
+ 		<ReducedCandidates>true</ReducedCandidates>
     </algorithm>
-    <algorithm type = "LArEnergyKickVertexSelection">
+	<algorithm type = "LArBdtVertexSelection">
         <InputCaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</InputCaloHitListNames>
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
+        <MvaFileName>PandoraBdt_v03_15_02.xml</MvaFileName>
+        <RegionMvaName>DUNEFD_VertexSelectionRegion</RegionMvaName>
+        <VertexMvaName>DUNEFD_VertexSelectionVertex</VertexMvaName>
         <FeatureTools>
             <tool type = "LArEnergyKickFeature"/>
             <tool type = "LArLocalAsymmetryFeature"/>
+            <tool type = "LArGlobalAsymmetryFeature"/>
+            <tool type = "LArShowerAsymmetryFeature"/>
+            <tool type = "LArRPhiFeature"/>
         </FeatureTools>
-    </algorithm>
+	</algorithm>
+	<algorithm type = "LArCutClusterCharacterisation">
+        <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+        <ZeroMode>true</ZeroMode>
+	</algorithm>
     <algorithm type = "LArVertexSplitting">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
     </algorithm>
@@ -323,42 +341,29 @@
         <MCParticleListName>Input</MCParticleListName>
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <UseThreeDInformation>true</UseThreeDInformation>
-        <TrainingSetMode>true</TrainingSetMode>
-        <TrainingOutputFileName>PandoraSvm_TrainingOutput.xml</TrainingOutputFileName>
-	<!--WriteToTree>true</WriteToTree>
-        <OutputTree>Nick_TrueTrack</OutputTree>
-        <OutputFile>Nick_TrueTrack.root</OutputFile>
-        <SvmFileName>PandoraSvm_v03_11_00.xml</SvmFileName>
+        <SvmFileName>BdtExample_NTrees_800_TreeDepth_3.xml</SvmFileName>
         <SvmName>PfoCharacterisation</SvmName>
-        <SvmFileNameNoChargeInfo>PandoraSvm_v03_11_00.xml</SvmFileNameNoChargeInfo>
-        <SvmNameNoChargeInfo>PfoCharacterisationNoChargeInfo</SvmNameNoChargeInfo-->
+        <SvmFileNameNoChargeInfo>BdtExampleNoChargeInfo_NTrees_800_TreeDepth_3.xml</SvmFileNameNoChargeInfo>
+        <SvmNameNoChargeInfo>PfoCharacterisationNoChargeInfo</SvmNameNoChargeInfo>
+        <TrainingSetMode>false</TrainingSetMode>
+        <TrainingOutputFileName>PandoraBDT_TrainingOutput_Hierarchy_ML_version_two</TrainingOutputFileName>
         <FeatureTools>
-	    <!--tool type = "LArTwoDCurvatureFeatureTool"/-->
             <tool type = "LArThreeDLinearFitFeatureTool"/>
             <tool type = "LArThreeDVertexDistanceFeatureTool"/>
             <tool type = "LArThreeDPCAFeatureTool"/>
+			<tool type = "LArPfoHierarchyFeatureTool"/>
             <tool type = "LArThreeDOpeningAngleFeatureTool"><HitFraction>0.2</HitFraction></tool>
             <tool type = "LArThreeDChargeFeatureTool"/>
-	    <tool type = "LArThreeDPCAVariablesFeatureTool">
-	      <PfoFraction>0.2</PfoFraction>
-	      <MinHits>3</MinHits>
-	      <SegmentWidth>1.0</SegmentWidth>
-	      <MoliereFraction>0.05</MoliereFraction>
-	      <InputClusterListName> ClustersU ClusterV ClusterW </InputClusterListName>
-	    </tool>
         </FeatureTools>
         <FeatureToolsNoChargeInfo>
             <tool type = "LArThreeDLinearFitFeatureTool"/>
             <tool type = "LArThreeDVertexDistanceFeatureTool"/>
             <tool type = "LArThreeDPCAFeatureTool"/>
+			<tool type = "LArPfoHierarchyFeatureTool"/>
             <tool type = "LArThreeDOpeningAngleFeatureTool"><HitFraction>0.2</HitFraction></tool>
-	    <tool type = "LArThreeDPCAVariablesFeatureTool">
-	      <PfoFraction>0.2</PfoFraction>
-	      <MinHits>3</MinHits>
-	      <SegmentWidth>1.0</SegmentWidth>
-	      <MoliereFraction>0.05</MoliereFraction>
-	      <InputClusterListName> ClustersU ClusterV ClusterW </InputClusterListName>
-	    </tool>
+			<WriteToTree>true</WriteToTree>
+			<OutputTree>mousam</OutputTree>
+			<OutputFile>mousam.root</OutputFile>
         </FeatureToolsNoChargeInfo>
     </algorithm>
     <algorithm type = "LArNeutrinoProperties">

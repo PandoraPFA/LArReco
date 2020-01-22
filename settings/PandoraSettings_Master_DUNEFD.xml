@@ -1,7 +1,7 @@
 <pandora>
     <!-- GLOBAL SETTINGS -->
     <IsMonitoringEnabled>true</IsMonitoringEnabled>
-    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
+    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo> <!-- change -->
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
     <!-- ALGORITHM SETTINGS -->
@@ -13,11 +13,16 @@
         <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
         <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
     </algorithm>
-    <!--algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArMCParticleMonitoring">
+        <CaloHitListName>CaloHitList2D</CaloHitListName>
+        <MCParticleListName>Input</MCParticleListName>
+	<MinHitsForDisplay>1</MinHitsForDisplay>
+    </algorithm>
+    <algorithm type = "LArVisualMonitoring">
         <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
+	<MCParticleListNames>Input</MCParticleListNames>
         <ShowDetector>true</ShowDetector>
     </algorithm-->
-
     <algorithm type = "LArMaster">
         <CRSettingsFile>PandoraSettings_Cosmic_Standard.xml</CRSettingsFile>
         <NuSettingsFile>PandoraSettings_Neutrino_DUNEFD.xml</NuSettingsFile>
@@ -37,20 +42,19 @@
         <RecreatedClusterListName>RecreatedClusters</RecreatedClusterListName>
         <RecreatedVertexListName>RecreatedVertices</RecreatedVertexListName>
         <VisualizeOverallRecoStatus>false</VisualizeOverallRecoStatus>
-	<InputMCParticleListName>Input</InputMCParticleListName>
+		<InputMCParticleListName>Input</InputMCParticleListName>
         <PassMCParticlesToWorkerInstances>true</PassMCParticlesToWorkerInstances>
     </algorithm>
-
     <algorithm type = "LArEventValidation">
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>Input</MCParticleListName>
         <PfoListName>RecreatedPfos</PfoListName>
         <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
         <PrintAllToScreen>false</PrintAllToScreen>
-        <PrintMatchingToScreen>true</PrintMatchingToScreen>
-        <WriteToTree>true</WriteToTree>
-        <OutputTree>Validation_nu_fullvar</OutputTree>
-        <OutputFile>Validation_nu_fullvar.root</OutputFile>
+        <PrintMatchingToScreen>false</PrintMatchingToScreen>
+        <WriteToTree>false</WriteToTree> <!-- change -->
+        <OutputTree>test_mousam</OutputTree>
+        <OutputFile>test_mousam.root</OutputFile>
     </algorithm>
 
     <!--algorithm type = "LArVisualMonitoring">
