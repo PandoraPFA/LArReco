@@ -113,7 +113,7 @@
             <tool type = "LArGlobalAsymmetryFeature"/>
             <tool type = "LArShowerAsymmetryFeature"/>
             <tool type = "LArRPhiFeature"/>
-            <tool type = "LArMyDlVtxFeature"/><InputVertexListName>DlVertices3D</InputVertexListName></tool>
+            <tool type = "LArMyDlVtxFeature"><InputVertexListName>DlVertices3D</InputVertexListName></tool>
         </FeatureTools>
     </algorithm>
     <algorithm type = "LArCutClusterCharacterisation">
