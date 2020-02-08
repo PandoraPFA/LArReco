@@ -107,6 +107,7 @@
         <MvaFileName>PandoraBdtTorchvtx.xml</MvaFileName>
         <RegionMvaName>VertexSelectionRegion</RegionMvaName>
         <VertexMvaName>VertexSelectionVertex</VertexMvaName>
+        <UseMyDlVtxFeature>true</UseMyDlVtxFeature>
         <FeatureTools>
             <tool type = "LArEnergyKickFeature"/>
             <tool type = "LArLocalAsymmetryFeature"/>
