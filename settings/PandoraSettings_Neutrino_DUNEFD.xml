@@ -78,9 +78,9 @@
     </algorithm>
 
     <!-- VertexAlgorithms -->
-    <algorithm type = "LArMyDlVtx">
+    <algorithm type = "LArDLVertexCreation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
-        <OutputVertexListName>DlVertices3D</OutputVertexListName>
+        <OutputVertexListName>DLVertices3D</OutputVertexListName>
         <ModelFileNamePrefix>torch_model</ModelFileNamePrefix>
     </algorithm>
 
@@ -97,7 +97,7 @@
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
         <EnableCrossingCandidates>false</EnableCrossingCandidates>
         <ReducedCandidates>true</ReducedCandidates>
-        <InputVertexListName>DlVertices3D</InputVertexListName>
+        <InputVertexListName>DLVertices3D</InputVertexListName>
     </algorithm>
     <algorithm type = "LArBdtVertexSelection">
         <InputCaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</InputCaloHitListNames>
@@ -107,14 +107,14 @@
         <MvaFileName>PandoraBdtTorchvtx.xml</MvaFileName>
         <RegionMvaName>VertexSelectionRegion</RegionMvaName>
         <VertexMvaName>VertexSelectionVertex</VertexMvaName>
-        <UseMyDlVtxFeature>true</UseMyDlVtxFeature>
+        <UseDLVertexFeature>true</UseDLVertexFeature>
         <FeatureTools>
             <tool type = "LArEnergyKickFeature"/>
             <tool type = "LArLocalAsymmetryFeature"/>
             <tool type = "LArGlobalAsymmetryFeature"/>
             <tool type = "LArShowerAsymmetryFeature"/>
             <tool type = "LArRPhiFeature"/>
-            <tool type = "LArMyDlVtxFeature"><InputVertexListName>DlVertices3D</InputVertexListName></tool>
+            <tool type = "LArDLVertexFeature"><InputVertexListName>DLVertices3D</InputVertexListName></tool>
         </FeatureTools>
     </algorithm>
     <algorithm type = "LArCutClusterCharacterisation">
