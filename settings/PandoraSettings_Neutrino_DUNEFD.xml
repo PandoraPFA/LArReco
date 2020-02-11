@@ -1,7 +1,7 @@
 <pandora>
     <!-- GLOBAL SETTINGS -->
     <IsMonitoringEnabled>true</IsMonitoringEnabled>
-    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo> <!-- change -->
+    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
     <!-- ALGORITHM SETTINGS -->
@@ -32,7 +32,7 @@
     <algorithm type = "LArBranchSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
     <algorithm type = "LArTrackConsolidation">
-        <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
+    <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
     </algorithm>
 
     <algorithm type = "LArClusteringParent">
@@ -53,7 +53,7 @@
     <algorithm type = "LArBranchSplitting"/>
     <algorithm type = "LArKinkSplitting"/>
     <algorithm type = "LArTrackConsolidation">
-        <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
+	<algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
     </algorithm>
 
     <algorithm type = "LArClusteringParent">
@@ -131,8 +131,14 @@
             <tool type = "LArUndershootTracks"><SplitMode>false</SplitMode></tool>
             <tool type = "LArMissingTrackSegment"/>
             <tool type = "LArTrackSplitting"/>
-            <tool type = "LArLongTracks"><MinMatchedFraction>0.75</MinMatchedFraction><MinXOverlapFraction>0.75</MinXOverlapFraction></tool>
-            <tool type = "LArTracksCrossingGaps"><MinMatchedFraction>0.75</MinMatchedFraction><MinXOverlapFraction>0.75</MinXOverlapFraction></tool>
+            <tool type = "LArLongTracks">
+				<MinMatchedFraction>0.75</MinMatchedFraction>
+				<MinXOverlapFraction>0.75</MinXOverlapFraction>
+			</tool>
+            <tool type = "LArTracksCrossingGaps">
+				<MinMatchedFraction>0.75</MinMatchedFraction>
+				<MinXOverlapFraction>0.75</MinXOverlapFraction>
+			</tool>
             <tool type = "LArMissingTrack"/>
         </TrackTools>
     </algorithm>
@@ -352,7 +358,9 @@
             <tool type = "LArThreeDVertexDistanceFeatureTool"/>
             <tool type = "LArThreeDPCAFeatureTool"/>
 			<tool type = "LArPfoHierarchyFeatureTool"/>
-            <tool type = "LArThreeDOpeningAngleFeatureTool"><HitFraction>0.2</HitFraction></tool>
+            <tool type = "LArThreeDOpeningAngleFeatureTool">
+				<HitFraction>0.2</HitFraction>
+			</tool>
             <tool type = "LArThreeDChargeFeatureTool"/>
         </FeatureTools>
         <FeatureToolsNoChargeInfo>
@@ -360,10 +368,12 @@
             <tool type = "LArThreeDVertexDistanceFeatureTool"/>
             <tool type = "LArThreeDPCAFeatureTool"/>
 			<tool type = "LArPfoHierarchyFeatureTool"/>
-            <tool type = "LArThreeDOpeningAngleFeatureTool"><HitFraction>0.2</HitFraction></tool>
+            <tool type = "LArThreeDOpeningAngleFeatureTool">
+				<HitFraction>0.2</HitFraction>
+			</tool>
 			<WriteToTree>true</WriteToTree>
-			<OutputTree>mousam</OutputTree>
-			<OutputFile>mousam.root</OutputFile>
+			<OutputTree>Tree</OutputTree>
+			<OutputFile>Tree.root</OutputFile>
         </FeatureToolsNoChargeInfo>
     </algorithm>
     <algorithm type = "LArNeutrinoProperties">
