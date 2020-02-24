@@ -13,7 +13,7 @@
         <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
         <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
     </algorithm>
-    <algorithm type = "LArMCParticleMonitoring">
+    <!--algorithm type = "LArMCParticleMonitoring">
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>Input</MCParticleListName>
 	<MinHitsForDisplay>1</MinHitsForDisplay>
@@ -22,7 +22,7 @@
         <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
 		<MCParticleListNames>Input</MCParticleListNames>
         <ShowDetector>true</ShowDetector>
-    </algorithm>
+    </algorithm-->
     <algorithm type = "LArMaster">
         <CRSettingsFile>PandoraSettings_Cosmic_Standard.xml</CRSettingsFile>
         <NuSettingsFile>PandoraSettings_Neutrino_DUNEFD.xml</NuSettingsFile>
@@ -57,8 +57,8 @@
         <OutputFile>Validation.root</OutputFile>
     </algorithm>
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <ShowCurrentPfos>true</ShowCurrentPfos>
         <ShowDetector>true</ShowDetector>
-    </algorithm>
+    </algorithm-->
 </pandora>

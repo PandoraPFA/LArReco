@@ -347,9 +347,9 @@
         <MCParticleListName>Input</MCParticleListName>
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <UseThreeDInformation>true</UseThreeDInformation>
-        <SvmFileName>BdtExample_NTrees_800_TreeDepth_3.xml</SvmFileName>
+        <SvmFileName>/storage/epp2/phrwdg/Dune/newVarPandora/LArMachineLearningData/scripts/BdtExample_NTrees_800_TreeDepth_3.xml</SvmFileName>
         <SvmName>PfoCharacterisation</SvmName>
-        <SvmFileNameNoChargeInfo>BdtExampleNoChargeInfo_NTrees_800_TreeDepth_3.xml</SvmFileNameNoChargeInfo>
+        <SvmFileNameNoChargeInfo>/storage/epp2/phrwdg/Dune/newVarPandora/LArMachineLearningData/scripts/BdtExampleNoChargeInfo_NTrees_800_TreeDepth_3.xml</SvmFileNameNoChargeInfo>
         <SvmNameNoChargeInfo>PfoCharacterisationNoChargeInfo</SvmNameNoChargeInfo>
         <TrainingSetMode>false</TrainingSetMode>
         <TrainingOutputFileName>PandoraBDT_TrainingOutput_Hierarchy_ML_version_two</TrainingOutputFileName>
@@ -371,10 +371,10 @@
             <tool type = "LArThreeDOpeningAngleFeatureTool">
 				<HitFraction>0.2</HitFraction>
 			</tool>
-			<WriteToTree>true</WriteToTree>
-			<OutputTree>Tree</OutputTree>
-			<OutputFile>Tree.root</OutputFile>
         </FeatureToolsNoChargeInfo>
+		<WriteToTree>true</WriteToTree>
+		<OutputTree>Tree</OutputTree>
+		<OutputFile>Tree.root</OutputFile>
     </algorithm>
     <algorithm type = "LArNeutrinoProperties">
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
