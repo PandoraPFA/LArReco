@@ -13,6 +13,17 @@
         <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
         <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
     </algorithm>
+
+    <algorithm type = "LArDeepLearningTrackShowerId">
+        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
+        <NumberOfBins>1024</NumberOfBins>
+        <UseTrainingMode>false</UseTrainingMode>
+        <TrainingOutputFileName>DUNEFD_MC11</TrainingOutputFileName>
+        <ModelFileName>unet_9_PyT_v1.4.0.pt</ModelFileName>
+        <Visualize>false</Visualize>
+        <Profile>false</Profile>
+    </algorithm>
+
     <!--algorithm type = "LArMCParticleMonitoring">
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>Input</MCParticleListName>
