@@ -666,7 +666,7 @@ Parameters::Parameters() :
     m_displayMatchedEvents(true),
     m_skipEvents(0),
     m_nEventsToProcess(std::numeric_limits<int>::max()),
-    m_applyUbooneFiducialCut(true),
+    m_applyUbooneFiducialCut(false),
     m_applySBNDFiducialCut(false),
     m_correctTrackShowerId(false),
     m_vertexXCorrection(0.495694f),

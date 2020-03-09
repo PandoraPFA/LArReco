@@ -69,7 +69,6 @@ int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simple
         pTChain->SetBranchAddress("interactionType", &simpleMCTarget.m_interactionType);
         pTChain->SetBranchAddress("mcNuanceCode", &simpleMCTarget.m_mcNuanceCode);
         pTChain->SetBranchAddress("isNeutrino", &simpleMCTarget.m_isNeutrino);
-        pTChain->SetBranchAddress("isBeamParticle", &simpleMCTarget.m_isBeamParticle);
         pTChain->SetBranchAddress("isCosmicRay", &simpleMCTarget.m_isCosmicRay);
         pTChain->SetBranchAddress("targetVertexX", &simpleMCTarget.m_targetVertex.m_x);
         pTChain->SetBranchAddress("targetVertexY", &simpleMCTarget.m_targetVertex.m_y);
@@ -78,20 +77,25 @@ int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simple
         pTChain->SetBranchAddress("recoVertexY", &simpleMCTarget.m_recoVertex.m_y);
         pTChain->SetBranchAddress("recoVertexZ", &simpleMCTarget.m_recoVertex.m_z);
         pTChain->SetBranchAddress("isCorrectNu", &simpleMCTarget.m_isCorrectNu);
-        pTChain->SetBranchAddress("isCorrectTB", &simpleMCTarget.m_isCorrectTB);
         pTChain->SetBranchAddress("isCorrectCR", &simpleMCTarget.m_isCorrectCR);
         pTChain->SetBranchAddress("isFakeNu", &simpleMCTarget.m_isFakeNu);
         pTChain->SetBranchAddress("isFakeCR", &simpleMCTarget.m_isFakeCR);
-        if (!parameters.m_testBeamMode)
-        {
-            pTChain->SetBranchAddress("isSplitNu", &simpleMCTarget.m_isSplitNu);
-        }
         pTChain->SetBranchAddress("isSplitCR", &simpleMCTarget.m_isSplitCR);
         pTChain->SetBranchAddress("isLost", &simpleMCTarget.m_isLost);
         pTChain->SetBranchAddress("nTargetMatches", &simpleMCTarget.m_nTargetMatches);
         pTChain->SetBranchAddress("nTargetNuMatches", &simpleMCTarget.m_nTargetNuMatches);
         pTChain->SetBranchAddress("nTargetCRMatches", &simpleMCTarget.m_nTargetCRMatches);
         pTChain->SetBranchAddress("nTargetPrimaries", &simpleMCTarget.m_nTargetPrimaries);
+
+        if (!parameters.m_testBeamMode)
+        {
+            pTChain->SetBranchAddress("isSplitNu", &simpleMCTarget.m_isSplitNu);
+        }
+        else
+        {
+            pTChain->SetBranchAddress("isBeamParticle", &simpleMCTarget.m_isBeamParticle);
+            pTChain->SetBranchAddress("isCorrectTB", &simpleMCTarget.m_isCorrectTB);
+        }
 
         IntVector *pMCPrimaryId(nullptr), *pMCPrimaryPdg(nullptr), *pNMCHitsTotal(nullptr), *pNMCHitsU(nullptr), *pNMCHitsV(nullptr), *pNMCHitsW(nullptr);
         FloatVector *pMCPrimaryE(nullptr), *pMCPrimaryPX(nullptr), *pMCPrimaryPY(nullptr), *pMCPrimaryPZ(nullptr);
