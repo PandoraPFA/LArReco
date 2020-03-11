@@ -50,6 +50,8 @@
 
     <algorithm type = "LArNeutrinoEventValidation">
         <CaloHitListName>CaloHitListW</CaloHitListName>
+        <MinPrimaryGoodHits>5</MinPrimaryGoodHits>
+        <MinPrimaryGoodViews>1</MinPrimaryGoodViews>
         <MCParticleListName>Input</MCParticleListName>
         <PfoListName>RecreatedPfos</PfoListName>
         <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
