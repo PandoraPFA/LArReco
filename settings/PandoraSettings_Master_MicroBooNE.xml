@@ -42,14 +42,20 @@
         <VisualizeOverallRecoStatus>false</VisualizeOverallRecoStatus>
     </algorithm>
 
-    <algorithm type = "LArNeutrinoEventValidation">
+    <algorithm type = "LArMCParticleMonitoring">
         <CaloHitListName>CaloHitList2D</CaloHitListName>
+        <MCParticleListName>Input</MCParticleListName>
+        <MinHitsForDisplay>1</MinHitsForDisplay>
+    </algorithm>
+
+    <algorithm type = "LArNeutrinoEventValidation">
+        <CaloHitListName>CaloHitListW</CaloHitListName>
         <MCParticleListName>Input</MCParticleListName>
         <PfoListName>RecreatedPfos</PfoListName>
         <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
-        <PrintAllToScreen>false</PrintAllToScreen>
+        <PrintAllToScreen>true</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
-        <WriteToTree>false</WriteToTree>
+        <WriteToTree>true</WriteToTree>
         <OutputTree>Validation</OutputTree>
         <OutputFile>Validation.root</OutputFile>
     </algorithm>
