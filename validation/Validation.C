@@ -569,6 +569,10 @@ void AnalyseInteractionTargetResultMap(const InteractionTargetResultMap &interac
                     const std::string histPrefix(parameters.m_histPrefix + ToString(interactionType) + "_" + ToString(expectedPrimary) + "_");
                     PrimaryHistogramCollection &histogramCollection(interactionPrimaryHistogramMap[interactionType][expectedPrimary]);
                     FillPrimaryHistogramCollection(histPrefix, primaryResult, histogramCollection);
+
+                    const std::string histPrefixAll(parameters.m_histPrefix + ToString(ALL_INTERACTIONS) + "_" + ToString(expectedPrimary) + "_");
+                    PrimaryHistogramCollection &histogramCollectionAll(interactionPrimaryHistogramMap[ALL_INTERACTIONS][expectedPrimary]);
+                    FillPrimaryHistogramCollection(histPrefixAll, primaryResult, histogramCollectionAll);
                 }
             }
 
@@ -577,6 +581,10 @@ void AnalyseInteractionTargetResultMap(const InteractionTargetResultMap &interac
                 const std::string histPrefix(parameters.m_histPrefix + ToString(interactionType) + "_");
                 TargetHistogramCollection &histogramCollection(interactionTargetHistogramMap[interactionType]);
                 FillTargetHistogramCollection(histPrefix, targetResult, histogramCollection);
+
+                const std::string histPrefixAll(parameters.m_histPrefix + ToString(ALL_INTERACTIONS) + "_");
+                TargetHistogramCollection &histogramCollectionAll(interactionTargetHistogramMap[ALL_INTERACTIONS]);
+                FillTargetHistogramCollection(histPrefixAll, targetResult, histogramCollectionAll);
             }
         }
 
