@@ -79,7 +79,7 @@
 
     <!-- VertexAlgorithms -->
     <algorithm type = "LArDLVertexCreation">
-        <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+        <InputClusterListNames>ClustersW ClustersV ClustersU</InputClusterListNames>
         <OutputVertexListName>DLVertices3D</OutputVertexListName>
         <ModelFileNamePrefix>torch_model</ModelFileNamePrefix>
     </algorithm>
