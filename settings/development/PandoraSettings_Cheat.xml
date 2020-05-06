@@ -11,7 +11,7 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-        <UseLArCaloHits>false</UseLArCaloHits>
+        <UseLArCaloHits>true</UseLArCaloHits>
     </algorithm>
 
     <!-- Cosmic-ray muon reconstruction -->
@@ -32,7 +32,7 @@
     <!-- 2D cosmic-ray muon reconstruction, U View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation">
-            <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+            <CollapseToPrimaryMCParticles>false</CollapseToPrimaryMCParticles>
             <MCParticleListName>Input</MCParticleListName>
         </algorithm>
         <InputCaloHitListName>CRCaloHitListU</InputCaloHitListName>
@@ -44,7 +44,7 @@
     <!-- 2D cosmic-ray muon reconstruction, V View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation">
-            <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+            <CollapseToPrimaryMCParticles>false</CollapseToPrimaryMCParticles>
             <MCParticleListName>Input</MCParticleListName>
         </algorithm>
         <InputCaloHitListName>CRCaloHitListV</InputCaloHitListName>
@@ -56,7 +56,7 @@
     <!-- 2D cosmic-ray muon reconstruction, W View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation">
-            <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+            <CollapseToPrimaryMCParticles>false</CollapseToPrimaryMCParticles>
             <MCParticleListName>Input</MCParticleListName>
         </algorithm>
         <InputCaloHitListName>CRCaloHitListW</InputCaloHitListName>
@@ -71,7 +71,7 @@
         <OutputPfoListName>CRParticles3D</OutputPfoListName>
         <OutputVertexListName>CRVertices3D</OutputVertexListName>
         <MCParticleListName>Input</MCParticleListName>
-        <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+        <CollapseToPrimaryMCParticles>false</CollapseToPrimaryMCParticles>
     </algorithm>
 
     <!-- 3D cosmic-ray muon identification, and removal of any other interactions -->
@@ -125,7 +125,7 @@
     <!-- 2D neutrino-induced event reconstruction, U View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation">
-            <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+            <CollapseToPrimaryMCParticles>false</CollapseToPrimaryMCParticles>
             <MCParticleListName>Input</MCParticleListName>
         </algorithm>
         <InputCaloHitListName>NCaloHitListU</InputCaloHitListName>
@@ -137,7 +137,7 @@
     <!-- 2D neutrino-induced event reconstruction, V View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation">
-            <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+            <CollapseToPrimaryMCParticles>false</CollapseToPrimaryMCParticles>
             <MCParticleListName>Input</MCParticleListName>
         </algorithm>
         <InputCaloHitListName>NCaloHitListV</InputCaloHitListName>
@@ -149,7 +149,7 @@
     <!-- 2D neutrino-induced event reconstruction, W View -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArCheatingClusterCreation" description = "ClusterFormation">
-            <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+            <CollapseToPrimaryMCParticles>false</CollapseToPrimaryMCParticles>
             <MCParticleListName>Input</MCParticleListName>
         </algorithm>
         <InputCaloHitListName>NCaloHitListW</InputCaloHitListName>
@@ -162,7 +162,6 @@
     <algorithm type = "LArCheatingVertexCreation">
         <OutputVertexListName>NVertices</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-        <VertexXCorrection>0.495694</VertexXCorrection>
     </algorithm>
 
     <!-- 3D neutrino-induced event reconstruction -->
@@ -170,7 +169,7 @@
         <InputClusterListNames>NClustersU NClustersV NClustersW</InputClusterListNames>
         <OutputPfoListName>NParticles3D</OutputPfoListName>
         <AddVertices>false</AddVertices>
-        <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+        <CollapseToPrimaryMCParticles>false</CollapseToPrimaryMCParticles>
         <MCParticleListName>Input</MCParticleListName>
     </algorithm>
 
@@ -195,14 +194,14 @@
 
     <!-- 3D neutrino event hierarchy -->
     <algorithm type = "LArCheatingNeutrinoCreation">
-        <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+        <CollapseToPrimaryMCParticles>false</CollapseToPrimaryMCParticles>
         <MCParticleListName>Input</MCParticleListName>
         <NeutrinoPfoListName>NParentParticles3D</NeutrinoPfoListName>
         <VertexListName>NVertices</VertexListName>
         <DaughterPfoListNames>NParticles3D</DaughterPfoListNames>
     </algorithm>
     <algorithm type = "LArCheatingNeutrinoDaughterVertices">
-        <CollapseToPrimaryMCParticles>true</CollapseToPrimaryMCParticles>
+        <CollapseToPrimaryMCParticles>false</CollapseToPrimaryMCParticles>
         <MCParticleListName>Input</MCParticleListName>
         <NeutrinoPfoListName>NParentParticles3D</NeutrinoPfoListName>
         <OutputVertexListName>NDaughterVertices3D</OutputVertexListName>
