@@ -366,6 +366,9 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
             if ((simpleMCPrimary.m_nPrimaryMatchedPfos > 0) && primaryResult.m_isCorrectParticleId)
                 ++countingDetails.m_correctId;
 
+            if (parameters.m_correctTrackShowerId && !primaryResult.m_isCorrectParticleId)
+                targetResult.m_isCorrect = false;
+
             const float pTot(std::sqrt(simpleMCPrimary.m_momentum.m_x * simpleMCPrimary.m_momentum.m_x + simpleMCPrimary.m_momentum.m_y * simpleMCPrimary.m_momentum.m_y + simpleMCPrimary.m_momentum.m_z * simpleMCPrimary.m_momentum.m_z));
             primaryResult.m_trueMomentum = pTot;
         }
@@ -568,11 +571,11 @@ void AnalyseInteractionTargetResultMap(const InteractionTargetResultMap &interac
                 {
                     const std::string histPrefix(parameters.m_histPrefix + ToString(interactionType) + "_" + ToString(expectedPrimary) + "_");
                     PrimaryHistogramCollection &histogramCollection(interactionPrimaryHistogramMap[interactionType][expectedPrimary]);
-                    FillPrimaryHistogramCollection(histPrefix, primaryResult, histogramCollection);
+                    FillPrimaryHistogramCollection(histPrefix, parameters, primaryResult, histogramCollection);
 
                     const std::string histPrefixAll(parameters.m_histPrefix + ToString(ALL_INTERACTIONS) + "_" + ToString(expectedPrimary) + "_");
                     PrimaryHistogramCollection &histogramCollectionAll(interactionPrimaryHistogramMap[ALL_INTERACTIONS][expectedPrimary]);
-                    FillPrimaryHistogramCollection(histPrefixAll, primaryResult, histogramCollectionAll);
+                    FillPrimaryHistogramCollection(histPrefixAll, parameters, primaryResult, histogramCollectionAll);
                 }
             }
 
@@ -649,7 +652,7 @@ void FillTargetHistogramCollection(const std::string &histPrefix, const TargetRe
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void FillPrimaryHistogramCollection(const std::string &histPrefix, const PrimaryResult &primaryResult, PrimaryHistogramCollection &primaryHistogramCollection)
+void FillPrimaryHistogramCollection(const std::string &histPrefix, const Parameters &parameters, const PrimaryResult &primaryResult, PrimaryHistogramCollection &primaryHistogramCollection)
 {
     const int nHitBins(35); const int nHitBinEdges(nHitBins + 1);
     float hitsBinning[nHitBinEdges];
@@ -711,7 +714,8 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Primary
     primaryHistogramCollection.m_hHitsAll->Fill(primaryResult.m_nMCHitsTotal);
     primaryHistogramCollection.m_hMomentumAll->Fill(primaryResult.m_trueMomentum);
 
-    if (primaryResult.m_nPfoMatches > 0)
+    if ((primaryResult.m_nPfoMatches > 0) &&
+        (!parameters.m_correctTrackShowerId || primaryResult.m_isCorrectParticleId))
     {
         primaryHistogramCollection.m_hHitsEfficiency->Fill(primaryResult.m_nMCHitsTotal);
         primaryHistogramCollection.m_hMomentumEfficiency->Fill(primaryResult.m_trueMomentum);
