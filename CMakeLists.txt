@@ -41,7 +41,7 @@ if(PANDORA_MONITORING)
     add_definitions("-DMONITORING")
 
     list(APPEND CMAKE_MODULE_PATH "$ENV{ROOTSYS}/etc/cmake/")
-    find_package(ROOT 5.26.00 REQUIRED COMPONENTS Eve Geom RGL EG)
+    find_package(ROOT 6.18.04 REQUIRED COMPONENTS Eve Geom RGL EG)
 endif()
 
 #-------------------------------------------------------------------------------------------------------------------------------------------
