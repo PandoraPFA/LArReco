@@ -11,7 +11,7 @@ project(LArReco)
 
 # project version
 set(${PROJECT_NAME}_VERSION_MAJOR 03)
-set(${PROJECT_NAME}_VERSION_MINOR 16)
+set(${PROJECT_NAME}_VERSION_MINOR 17)
 set(${PROJECT_NAME}_VERSION_PATCH 00)
 set(${PROJECT_NAME}_VERSION "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}")
 
@@ -22,8 +22,8 @@ include(PandoraCMakeSettings)
 # Prefer local include directory to any paths to installed header files
 include_directories(include)
 
-find_package(PandoraSDK 03.03.00 REQUIRED)
-find_package(LArContent 03.16.00 REQUIRED)
+find_package(PandoraSDK 03.04.00 REQUIRED)
+find_package(LArContent 03.17.00 REQUIRED)
 
 foreach(package PandoraSDK LArContent)
     if(${package}_FOUND)
@@ -34,19 +34,19 @@ foreach(package PandoraSDK LArContent)
 endforeach()
 
 if(PANDORA_MONITORING)
-    find_package(PandoraMonitoring 03.04.00 REQUIRED)
+    find_package(PandoraMonitoring 03.05.00 REQUIRED)
     include_directories(${PandoraMonitoring_INCLUDE_DIRS})
     link_libraries(${PandoraMonitoring_LIBRARIES})
     add_definitions(${PandoraMonitoring_DEFINITIONS})
     add_definitions("-DMONITORING")
 
     list(APPEND CMAKE_MODULE_PATH "$ENV{ROOTSYS}/etc/cmake/")
-    find_package(ROOT 5.26.00 REQUIRED COMPONENTS Eve Geom RGL EG)
+    find_package(ROOT 6.18.04 REQUIRED COMPONENTS Eve Geom RGL EG)
 endif()
 
 #-------------------------------------------------------------------------------------------------------------------------------------------
 # Low level settings - compiler etc
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++17 ${CMAKE_CXX_FLAGS}")
 
 include(CheckCXXCompilerFlag)
 unset(COMPILER_SUPPORTS_CXX_FLAGS CACHE)
