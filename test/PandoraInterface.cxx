@@ -18,6 +18,10 @@
 #include "larpandoracontent/LArPlugins/LArPseudoLayerPlugin.h"
 #include "larpandoracontent/LArPlugins/LArRotationalTransformationPlugin.h"
 
+#ifdef DEEP_LEARNING
+    #include "larpandoradlcontent/LArDLContent.h"
+#endif
+
 #include "PandoraInterface.h"
 
 #ifdef MONITORING
@@ -83,6 +87,9 @@ void CreatePandoraInstances(const Parameters &parameters, const Pandora *&pPrima
 {
     pPrimaryPandora = new Pandora();
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::RegisterAlgorithms(*pPrimaryPandora));
+#ifdef DEEP_LEARNING
+    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArDLContent::RegisterAlgorithms(*pPrimaryPandora));
+#endif
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::RegisterBasicPlugins(*pPrimaryPandora));
 
     if (!pPrimaryPandora)

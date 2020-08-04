@@ -23,14 +23,17 @@ include(PandoraCMakeSettings)
 include_directories(include)
 
 find_package(PandoraSDK 03.04.01 REQUIRED)
-if(TORCHLIB)
-    set(LAR_CONTENT_LIBRARY_NAME "LArDLContent")
-else()
-    set(LAR_CONTENT_LIBRARY_NAME "LArContent")
-endif()
+
+set(LAR_CONTENT_LIBRARY_NAME "LArContent")
 find_package(${LAR_CONTENT_LIBRARY_NAME} 03.21.00 REQUIRED)
 
-foreach(package PandoraSDK ${LAR_CONTENT_LIBRARY_NAME})
+if(TORCHLIB)
+    set(LAR_DL_CONTENT_LIBRARY_NAME "LArDLContent")
+    find_package(${LAR_DL_CONTENT_LIBRARY_NAME} 03.21.00 REQUIRED)
+    add_definitions(-DDEEP_LEARNING=1)
+endif()
+
+foreach(package PandoraSDK ${LAR_CONTENT_LIBRARY_NAME} ${LAR_DL_CONTENT_LIBRARY_NAME})
     if(${package}_FOUND)
         include_directories(${${package}_INCLUDE_DIRS})
         link_libraries(${${package}_LIBRARIES})
