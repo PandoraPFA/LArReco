@@ -10,6 +10,8 @@
 #include "Helpers/XmlHelper.h"
 #include "Xml/tinyxml.h"
 
+#include "ParticleHierarchyValidationAlgorithm.h"
+
 #include "larpandoracontent/LArContent.h"
 #include "larpandoracontent/LArControlFlow/MasterAlgorithm.h"
 #include "larpandoracontent/LArControlFlow/MultiPandoraApi.h"
@@ -47,6 +49,7 @@ int main(int argc, char *argv[])
         TApplication *pTApplication = new TApplication("LArReco", &argc, argv);
         pTApplication->SetReturnFromRun(kTRUE);
 #endif
+
         CreatePandoraInstances(parameters, pPrimaryPandora);
 
         if (!pPrimaryPandora)
@@ -93,6 +96,10 @@ void CreatePandoraInstances(const Parameters &parameters, const Pandora *&pPrima
     ProcessExternalParameters(parameters, pPrimaryPandora);
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetPseudoLayerPlugin(*pPrimaryPandora, new lar_content::LArPseudoLayerPlugin));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetLArTransformationPlugin(*pPrimaryPandora, new lar_content::LArRotationalTransformationPlugin));
+    
+                    
+    PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::RegisterAlgorithmFactory(*pPrimaryPandora, "ParticleHierarchyValidation", new development_area::ParticleHierarchyValidationAlgorithm::Factory));
+    
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPrimaryPandora, parameters.m_settingsFile));
 }
 
