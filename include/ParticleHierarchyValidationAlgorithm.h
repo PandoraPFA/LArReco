@@ -1,5 +1,6 @@
 #include "Pandora/Algorithm.h"
 #include "larpandoracontent/LArHelpers/LArClusterHelper.h"
+#include "larpandoracontent/LArHelpers/LArMCParticleHelper.h"
 
 using namespace lar_content;
 
@@ -36,6 +37,8 @@ namespace development_area
         int eventNo;
         bool addAll;
         bool m_showAllPfoData;
+        
+        LArMCParticleHelper::PrimaryParameters m_primaryParameters;
         
         
     }; //PHVA class

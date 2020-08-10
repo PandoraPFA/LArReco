@@ -58,11 +58,16 @@ CMakeFiles/LArReco.dir/src/ParticleHierarchyValidationAlgorithm.cxx.o
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Xml/tinyxml.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArClusterHelper.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArGeometryHelper.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArInteractionTypeHelper.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArMCParticleHelper.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArMonitoringHelper.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArPfoHelper.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArPointingClusterHelper.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArMonitoring/EventValidationBaseAlgorithm.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArMonitoring/NeutrinoEventValidationAlgorithm.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArMonitoring/TestBeamEventValidationAlgorithm.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArMCParticle.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArPfoObjects.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArPointingCluster.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArThreeDSlidingFitResult.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArTwoDSlidingFitObjects.h

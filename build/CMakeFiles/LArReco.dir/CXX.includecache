@@ -11,6 +11,8 @@ Pandora/Algorithm.h
 ../include/Pandora/Algorithm.h
 larpandoracontent/LArHelpers/LArClusterHelper.h
 ../include/larpandoracontent/LArHelpers/LArClusterHelper.h
+larpandoracontent/LArHelpers/LArMCParticleHelper.h
+../include/larpandoracontent/LArHelpers/LArMCParticleHelper.h
 
 /storage/epp2/phupqr/Pandora.repos/Development/LArReco/src/ParticleHierarchyValidationAlgorithm.cxx
 Pandora/AlgorithmHeaders.h
@@ -27,6 +29,18 @@ larpandoracontent/LArObjects/LArTwoDSlidingFitResult.h
 /storage/epp2/phupqr/Pandora.repos/Development/LArReco/src/larpandoracontent/LArObjects/LArTwoDSlidingFitResult.h
 ParticleHierarchyValidationAlgorithm.h
 /storage/epp2/phupqr/Pandora.repos/Development/LArReco/src/ParticleHierarchyValidationAlgorithm.h
+larpandoracontent/LArHelpers/LArInteractionTypeHelper.h
+/storage/epp2/phupqr/Pandora.repos/Development/LArReco/src/larpandoracontent/LArHelpers/LArInteractionTypeHelper.h
+larpandoracontent/LArHelpers/LArMonitoringHelper.h
+/storage/epp2/phupqr/Pandora.repos/Development/LArReco/src/larpandoracontent/LArHelpers/LArMonitoringHelper.h
+larpandoracontent/LArHelpers/LArPfoHelper.h
+/storage/epp2/phupqr/Pandora.repos/Development/LArReco/src/larpandoracontent/LArHelpers/LArPfoHelper.h
+larpandoracontent/LArHelpers/LArMCParticleHelper.h
+/storage/epp2/phupqr/Pandora.repos/Development/LArReco/src/larpandoracontent/LArHelpers/LArMCParticleHelper.h
+larpandoracontent/LArMonitoring/EventValidationBaseAlgorithm.h
+/storage/epp2/phupqr/Pandora.repos/Development/LArReco/src/larpandoracontent/LArMonitoring/EventValidationBaseAlgorithm.h
+larpandoracontent/LArMonitoring/TestBeamEventValidationAlgorithm.h
+/storage/epp2/phupqr/Pandora.repos/Development/LArReco/src/larpandoracontent/LArMonitoring/TestBeamEventValidationAlgorithm.h
 
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Api/PandoraApi.h
 Pandora/ObjectCreation.h
@@ -510,6 +524,12 @@ Pandora/StatusCodes.h
 unordered_map
 -
 
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArInteractionTypeHelper.h
+larpandoracontent/LArHelpers/LArMCParticleHelper.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/larpandoracontent/LArHelpers/LArMCParticleHelper.h
+larpandoracontent/LArObjects/LArMCParticle.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/larpandoracontent/LArObjects/LArMCParticle.h
+
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArMCParticleHelper.h
 Pandora/PandoraInternal.h
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/Pandora/PandoraInternal.h
@@ -519,6 +539,22 @@ unordered_map
 -
 functional
 -
+
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArMonitoringHelper.h
+Pandora/PandoraInternal.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/Pandora/PandoraInternal.h
+larpandoracontent/LArHelpers/LArMCParticleHelper.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/larpandoracontent/LArHelpers/LArMCParticleHelper.h
+
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArPfoHelper.h
+Objects/Cluster.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/Objects/Cluster.h
+Objects/ParticleFlowObject.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/Objects/ParticleFlowObject.h
+Objects/Vertex.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/Objects/Vertex.h
+larpandoracontent/LArObjects/LArPfoObjects.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/larpandoracontent/LArObjects/LArPfoObjects.h
 
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArPointingClusterHelper.h
 Objects/Cluster.h
@@ -548,6 +584,18 @@ PandoraMonitoringApi.h
 map
 -
 
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArMonitoring/TestBeamEventValidationAlgorithm.h
+Pandora/Algorithm.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArMonitoring/Pandora/Algorithm.h
+larpandoracontent/LArHelpers/LArMCParticleHelper.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArMonitoring/larpandoracontent/LArHelpers/LArMCParticleHelper.h
+larpandoracontent/LArMonitoring/EventValidationBaseAlgorithm.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArMonitoring/larpandoracontent/LArMonitoring/EventValidationBaseAlgorithm.h
+PandoraMonitoringApi.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArMonitoring/PandoraMonitoringApi.h
+map
+-
+
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArMCParticle.h
 Objects/MCParticle.h
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/Objects/MCParticle.h
@@ -563,6 +611,14 @@ Persistency/XmlFileReader.h
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/Persistency/XmlFileReader.h
 Persistency/XmlFileWriter.h
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/Persistency/XmlFileWriter.h
+
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArPfoObjects.h
+Objects/TrackState.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/Objects/TrackState.h
+Objects/CartesianVector.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/Objects/CartesianVector.h
+vector
+-
 
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArPointingCluster.h
 larpandoracontent/LArObjects/LArTwoDSlidingFitResult.h

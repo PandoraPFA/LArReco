@@ -15,6 +15,8 @@ Pandora/Algorithm.h
 ../include/Pandora/Algorithm.h
 larpandoracontent/LArHelpers/LArClusterHelper.h
 ../include/larpandoracontent/LArHelpers/LArClusterHelper.h
+larpandoracontent/LArHelpers/LArMCParticleHelper.h
+../include/larpandoracontent/LArHelpers/LArMCParticleHelper.h
 
 /cvmfs/larsoft.opensciencegrid.org/products/root/v6_18_04d/Linux64bit+3.10-2.17-e19-prof/include/DllImport.h
 
@@ -506,6 +508,12 @@ Pandora/ObjectCreation.h
 Pandora/StatusCodes.h
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Objects/Pandora/StatusCodes.h
 
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Objects/MCParticle.h
+Pandora/ObjectCreation.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Objects/Pandora/ObjectCreation.h
+Pandora/StatusCodes.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Objects/Pandora/StatusCodes.h
+
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Objects/OrderedCaloHitList.h
 Objects/CaloHit.h
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Objects/Objects/CaloHit.h
@@ -780,6 +788,16 @@ vector
 Objects/Cluster.h
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/Objects/Cluster.h
 
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArMCParticleHelper.h
+Pandora/PandoraInternal.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/Pandora/PandoraInternal.h
+larpandoracontent/LArObjects/LArMCParticle.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/larpandoracontent/LArObjects/LArMCParticle.h
+unordered_map
+-
+functional
+-
+
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArPfoHelper.h
 Objects/Cluster.h
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/Objects/Cluster.h
@@ -793,6 +811,22 @@ larpandoracontent/LArObjects/LArPfoObjects.h
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArCaloHit.h
 Objects/CaloHit.h
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/Objects/CaloHit.h
+Pandora/ObjectCreation.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/Pandora/ObjectCreation.h
+Pandora/PandoraObjectFactories.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/Pandora/PandoraObjectFactories.h
+Persistency/BinaryFileReader.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/Persistency/BinaryFileReader.h
+Persistency/BinaryFileWriter.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/Persistency/BinaryFileWriter.h
+Persistency/XmlFileReader.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/Persistency/XmlFileReader.h
+Persistency/XmlFileWriter.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/Persistency/XmlFileWriter.h
+
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArMCParticle.h
+Objects/MCParticle.h
+/storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/Objects/MCParticle.h
 Pandora/ObjectCreation.h
 /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/Pandora/ObjectCreation.h
 Pandora/PandoraObjectFactories.h

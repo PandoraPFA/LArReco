@@ -55,6 +55,7 @@ CMakeFiles/PandoraInterface.dir/test/PandoraInterface.cxx.o
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Objects/CaloHit.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Objects/CartesianVector.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Objects/Cluster.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Objects/MCParticle.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Objects/OrderedCaloHitList.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Objects/ParticleFlowObject.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Objects/TrackState.h
@@ -87,8 +88,10 @@ CMakeFiles/PandoraInterface.dir/test/PandoraInterface.cxx.o
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArControlFlow/MasterAlgorithm.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArControlFlow/MultiPandoraApi.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArClusterHelper.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArMCParticleHelper.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArPfoHelper.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArCaloHit.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArMCParticle.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArPfoObjects.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArPersistency/EventReadingAlgorithm.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArPlugins/LArPseudoLayerPlugin.h
