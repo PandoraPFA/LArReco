@@ -202,7 +202,7 @@ namespace development_area
         //std::cout << "--Finding Overlap--" << std::endl;
             //Finding the calohits overlap
         for (const ParticleFlowObject *pPfo : *Pfos){ 
-            std::vector<float> result = ParticleHierarchyValidationAlgorithm::purityAndCompleteness(pPfo, MCParts, CaloHits, m_primaryParameters);
+            std::vector<float> result = ParticleHierarchyValidationAlgorithm::purityAndCompleteness(pPfo, MCParts, CaloHits);
             std::cout << "-Done-" << std::endl;
         }
         
@@ -210,7 +210,7 @@ namespace development_area
     }
     
     
-    LArMCParticleHelper::PrimaryParameters ParticleHierarchyValidationAlgorithm::CreatePrimaryParameters(int /*i*/){
+    LArMCParticleHelper::PrimaryParameters ParticleHierarchyValidationAlgorithm::CreatePrimaryParameters(int i){
         LArMCParticleHelper::PrimaryParameters primaryParameters = LArMCParticleHelper::PrimaryParameters();
         primaryParameters.m_minPrimaryGoodHits = 15;
         primaryParameters.m_minHitsForGoodView = 5;
@@ -219,11 +219,12 @@ namespace development_area
         primaryParameters.m_maxPhotonPropagation = 2.5f;
         primaryParameters.m_minHitSharingFraction = 0.9f;
         primaryParameters.m_foldBackHierarchy = true;
+        std::cout << i << std::endl;
         return primaryParameters;
     }
     
     
-    std::vector<float> ParticleHierarchyValidationAlgorithm::purityAndCompleteness(const ParticleFlowObject *const pPfo, const MCParticleList *const pMCParts, const CaloHitList *const CaloHits, LArMCParticleHelper::PrimaryParameters primaryParameters){
+    std::vector<float> ParticleHierarchyValidationAlgorithm::purityAndCompleteness(const ParticleFlowObject *const pPfo, const MCParticleList *const pMCParts, const CaloHitList *const CaloHits, LArMCParticleHelper::PrimaryParameters primaryParameters = ParticleHierarchyValidationAlgorithm::CreatePrimaryParameters(1)){
         const PfoList myPfoList(1, pPfo);
         
         //std::cout << "  --Entered for loop--" << std::endl;

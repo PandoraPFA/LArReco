@@ -33,9 +33,9 @@ namespace development_area
             pandora::Algorithm *CreateAlgorithm() const;
         };
         
-        LArMCParticleHelper::PrimaryParameters CreatePrimaryParameters(int i);
+        static LArMCParticleHelper::PrimaryParameters CreatePrimaryParameters(int i);
         
-        std::vector<float> purityAndCompleteness(const pandora::ParticleFlowObject *const pPfo, const pandora::MCParticleList *const pMCParts, const pandora::CaloHitList *const CaloHits, LArMCParticleHelper::PrimaryParameters primaryParameters /*= ParticleHierarchyValidationAlgorithm::CreatePrimaryParameters(1)*/);
+        std::vector<float> purityAndCompleteness(const pandora::ParticleFlowObject *const pPfo, const pandora::MCParticleList *const pMCParts, const pandora::CaloHitList *const CaloHits, LArMCParticleHelper::PrimaryParameters primaryParameters = ParticleHierarchyValidationAlgorithm::CreatePrimaryParameters(1));
         
             //Constructor and Destructor
         ParticleHierarchyValidationAlgorithm();
