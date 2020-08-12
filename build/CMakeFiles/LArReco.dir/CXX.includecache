@@ -13,6 +13,26 @@ larpandoracontent/LArHelpers/LArClusterHelper.h
 ../include/larpandoracontent/LArHelpers/LArClusterHelper.h
 larpandoracontent/LArHelpers/LArMCParticleHelper.h
 ../include/larpandoracontent/LArHelpers/LArMCParticleHelper.h
+larpandoracontent/LArHelpers/LArPointingClusterHelper.h
+../include/larpandoracontent/LArHelpers/LArPointingClusterHelper.h
+larpandoracontent/LArObjects/LArPointingCluster.h
+../include/larpandoracontent/LArObjects/LArPointingCluster.h
+larpandoracontent/LArMonitoring/NeutrinoEventValidationAlgorithm.h
+../include/larpandoracontent/LArMonitoring/NeutrinoEventValidationAlgorithm.h
+larpandoracontent/LArHelpers/LArGeometryHelper.h
+../include/larpandoracontent/LArHelpers/LArGeometryHelper.h
+larpandoracontent/LArObjects/LArTwoDSlidingFitResult.h
+../include/larpandoracontent/LArObjects/LArTwoDSlidingFitResult.h
+larpandoracontent/LArHelpers/LArInteractionTypeHelper.h
+../include/larpandoracontent/LArHelpers/LArInteractionTypeHelper.h
+larpandoracontent/LArHelpers/LArMonitoringHelper.h
+../include/larpandoracontent/LArHelpers/LArMonitoringHelper.h
+larpandoracontent/LArHelpers/LArPfoHelper.h
+../include/larpandoracontent/LArHelpers/LArPfoHelper.h
+larpandoracontent/LArMonitoring/EventValidationBaseAlgorithm.h
+../include/larpandoracontent/LArMonitoring/EventValidationBaseAlgorithm.h
+larpandoracontent/LArMonitoring/TestBeamEventValidationAlgorithm.h
+../include/larpandoracontent/LArMonitoring/TestBeamEventValidationAlgorithm.h
 
 /storage/epp2/phupqr/Pandora.repos/Development/LArReco/src/ParticleHierarchyValidationAlgorithm.cxx
 Pandora/AlgorithmHeaders.h

@@ -3399,3 +3399,435 @@ gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArR
 
 Source file was:
 int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec3447130291/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec3447130291.dir/build.make CMakeFiles/cmTryCompileExec3447130291.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec3447130291.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec3447130291.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec3447130291
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3447130291.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec3447130291.dir/src.cxx.o  -o cmTryCompileExec3447130291 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec3050493655/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec3050493655.dir/build.make CMakeFiles/cmTryCompileExec3050493655.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec3050493655.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec3050493655.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec3050493655
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3050493655.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec3050493655.dir/src.cxx.o  -o cmTryCompileExec3050493655 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec4123688144/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec4123688144.dir/build.make CMakeFiles/cmTryCompileExec4123688144.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec4123688144.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec4123688144.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec4123688144
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec4123688144.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec4123688144.dir/src.cxx.o  -o cmTryCompileExec4123688144 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec924528113/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec924528113.dir/build.make CMakeFiles/cmTryCompileExec924528113.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec924528113.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec924528113.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec924528113
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec924528113.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec924528113.dir/src.cxx.o  -o cmTryCompileExec924528113 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec3412086203/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec3412086203.dir/build.make CMakeFiles/cmTryCompileExec3412086203.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec3412086203.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec3412086203.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec3412086203
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3412086203.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec3412086203.dir/src.cxx.o  -o cmTryCompileExec3412086203 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec3683405138/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec3683405138.dir/build.make CMakeFiles/cmTryCompileExec3683405138.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec3683405138.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec3683405138.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec3683405138
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3683405138.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec3683405138.dir/src.cxx.o  -o cmTryCompileExec3683405138 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec2595889245/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec2595889245.dir/build.make CMakeFiles/cmTryCompileExec2595889245.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec2595889245.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec2595889245.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec2595889245
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2595889245.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec2595889245.dir/src.cxx.o  -o cmTryCompileExec2595889245 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec1670195559/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec1670195559.dir/build.make CMakeFiles/cmTryCompileExec1670195559.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec1670195559.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec1670195559.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec1670195559
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1670195559.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec1670195559.dir/src.cxx.o  -o cmTryCompileExec1670195559 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec2667770301/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec2667770301.dir/build.make CMakeFiles/cmTryCompileExec2667770301.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec2667770301.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec2667770301.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec2667770301
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2667770301.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec2667770301.dir/src.cxx.o  -o cmTryCompileExec2667770301 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec3819195775/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec3819195775.dir/build.make CMakeFiles/cmTryCompileExec3819195775.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec3819195775.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec3819195775.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec3819195775
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3819195775.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec3819195775.dir/src.cxx.o  -o cmTryCompileExec3819195775 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec2208339667/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec2208339667.dir/build.make CMakeFiles/cmTryCompileExec2208339667.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec2208339667.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec2208339667.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec2208339667
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2208339667.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec2208339667.dir/src.cxx.o  -o cmTryCompileExec2208339667 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec856786400/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec856786400.dir/build.make CMakeFiles/cmTryCompileExec856786400.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec856786400.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec856786400.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec856786400
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec856786400.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec856786400.dir/src.cxx.o  -o cmTryCompileExec856786400 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec3571092627/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec3571092627.dir/build.make CMakeFiles/cmTryCompileExec3571092627.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec3571092627.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec3571092627.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec3571092627
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3571092627.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec3571092627.dir/src.cxx.o  -o cmTryCompileExec3571092627 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec1126795119/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec1126795119.dir/build.make CMakeFiles/cmTryCompileExec1126795119.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec1126795119.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec1126795119.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec1126795119
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1126795119.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec1126795119.dir/src.cxx.o  -o cmTryCompileExec1126795119 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec2736505836/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec2736505836.dir/build.make CMakeFiles/cmTryCompileExec2736505836.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec2736505836.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec2736505836.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec2736505836
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2736505836.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec2736505836.dir/src.cxx.o  -o cmTryCompileExec2736505836 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec1935950659/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec1935950659.dir/build.make CMakeFiles/cmTryCompileExec1935950659.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec1935950659.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec1935950659.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec1935950659
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1935950659.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec1935950659.dir/src.cxx.o  -o cmTryCompileExec1935950659 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec2798445697/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec2798445697.dir/build.make CMakeFiles/cmTryCompileExec2798445697.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec2798445697.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec2798445697.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec2798445697
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2798445697.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec2798445697.dir/src.cxx.o  -o cmTryCompileExec2798445697 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec1924228162/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec1924228162.dir/build.make CMakeFiles/cmTryCompileExec1924228162.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec1924228162.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec1924228162.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec1924228162
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1924228162.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec1924228162.dir/src.cxx.o  -o cmTryCompileExec1924228162 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec1140851196/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec1140851196.dir/build.make CMakeFiles/cmTryCompileExec1140851196.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec1140851196.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec1140851196.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec1140851196
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1140851196.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec1140851196.dir/src.cxx.o  -o cmTryCompileExec1140851196 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec1606844590/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec1606844590.dir/build.make CMakeFiles/cmTryCompileExec1606844590.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec1606844590.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec1606844590.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec1606844590
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1606844590.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec1606844590.dir/src.cxx.o  -o cmTryCompileExec1606844590 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec3420261156/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec3420261156.dir/build.make CMakeFiles/cmTryCompileExec3420261156.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec3420261156.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec3420261156.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec3420261156
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3420261156.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec3420261156.dir/src.cxx.o  -o cmTryCompileExec3420261156 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec670340318/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec670340318.dir/build.make CMakeFiles/cmTryCompileExec670340318.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec670340318.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec670340318.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec670340318
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec670340318.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec670340318.dir/src.cxx.o  -o cmTryCompileExec670340318 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec3912007487/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec3912007487.dir/build.make CMakeFiles/cmTryCompileExec3912007487.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec3912007487.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec3912007487.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec3912007487
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3912007487.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec3912007487.dir/src.cxx.o  -o cmTryCompileExec3912007487 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec2330665005/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec2330665005.dir/build.make CMakeFiles/cmTryCompileExec2330665005.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec2330665005.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec2330665005.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec2330665005
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2330665005.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec2330665005.dir/src.cxx.o  -o cmTryCompileExec2330665005 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec1333295769/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec1333295769.dir/build.make CMakeFiles/cmTryCompileExec1333295769.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec1333295769.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec1333295769.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec1333295769
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1333295769.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec1333295769.dir/src.cxx.o  -o cmTryCompileExec1333295769 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec2804690970/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec2804690970.dir/build.make CMakeFiles/cmTryCompileExec2804690970.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec2804690970.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec2804690970.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec2804690970
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2804690970.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec2804690970.dir/src.cxx.o  -o cmTryCompileExec2804690970 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}
+Performing C++ SOURCE FILE Test COMPILER_SUPPORTS_CXX_FLAGS succeded with the following output:
+Change Dir: /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec16661777/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec16661777.dir/build.make CMakeFiles/cmTryCompileExec16661777.dir/build
+gmake[1]: Entering directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec16661777.dir/src.cxx.o
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++    -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -o CMakeFiles/cmTryCompileExec16661777.dir/src.cxx.o -c /storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTryCompileExec16661777
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec16661777.dir/link.txt --verbose=1
+/cvmfs/larsoft.opensciencegrid.org/products/gcc/v8_2_0/Linux64bit+3.10-2.17/bin/c++   -Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++11 -std=c++17 -DCOMPILER_SUPPORTS_CXX_FLAGS    CMakeFiles/cmTryCompileExec16661777.dir/src.cxx.o  -o cmTryCompileExec16661777 -rdynamic 
+gmake[1]: Leaving directory `/storage/epp2/phupqr/Pandora.repos/Development/LArReco/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0;}

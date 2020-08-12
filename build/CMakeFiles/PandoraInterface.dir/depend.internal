@@ -72,6 +72,7 @@ CMakeFiles/PandoraInterface.dir/test/PandoraInterface.cxx.o
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Pandora/PandoraObjectFactories.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Pandora/Process.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Pandora/StatusCodes.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/PandoraMonitoringApi.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Persistency/BinaryFileReader.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Persistency/BinaryFileWriter.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/Persistency/FileReader.h
@@ -88,11 +89,22 @@ CMakeFiles/PandoraInterface.dir/test/PandoraInterface.cxx.o
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArControlFlow/MasterAlgorithm.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArControlFlow/MultiPandoraApi.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArClusterHelper.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArGeometryHelper.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArInteractionTypeHelper.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArMCParticleHelper.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArMonitoringHelper.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArPfoHelper.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArHelpers/LArPointingClusterHelper.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArMonitoring/EventValidationBaseAlgorithm.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArMonitoring/NeutrinoEventValidationAlgorithm.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArMonitoring/TestBeamEventValidationAlgorithm.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArCaloHit.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArMCParticle.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArPfoObjects.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArPointingCluster.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArThreeDSlidingFitResult.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArTwoDSlidingFitObjects.h
+ /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArObjects/LArTwoDSlidingFitResult.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArPersistency/EventReadingAlgorithm.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArPlugins/LArPseudoLayerPlugin.h
  /storage/epp2/phupqr/Pandora.repos/Development/PandoraPFA/include/larpandoracontent/LArPlugins/LArRotationalTransformationPlugin.h
