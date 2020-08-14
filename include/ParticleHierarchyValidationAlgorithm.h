@@ -18,6 +18,7 @@
 #include "larpandoracontent/LArMonitoring/TestBeamEventValidationAlgorithm.h"
 
 using namespace lar_content;
+using namespace pandora;
 
 namespace development_area
 {
@@ -33,9 +34,11 @@ namespace development_area
             pandora::Algorithm *CreateAlgorithm() const;
         };
         
-        static LArMCParticleHelper::PrimaryParameters CreatePrimaryParameters(int i);
+        static LArMCParticleHelper::PrimaryParameters CreatePrimaryParameters();
         
-        std::vector<float> purityAndCompleteness(const pandora::ParticleFlowObject *const pPfo, const pandora::MCParticleList *const pMCParts, const pandora::CaloHitList *const CaloHits, LArMCParticleHelper::PrimaryParameters primaryParameters = ParticleHierarchyValidationAlgorithm::CreatePrimaryParameters(1));
+        void getPurityAndCompleteness(const pandora::PfoList *const Pfos, const pandora::MCParticleList *const MCParts, const pandora::CaloHitList *const CaloHits, std::vector<std::vector<float>> &pfoPurityCompleteness, LArMCParticleHelper::PrimaryParameters primaryParameters = ParticleHierarchyValidationAlgorithm::CreatePrimaryParameters());
+        
+        std::vector<float> purityAndCompleteness(const pandora::ParticleFlowObject *const pPfo, const pandora::MCParticleList *const pMCParts, const pandora::CaloHitList *const CaloHits, LArMCParticleHelper::PrimaryParameters &primaryParameters);
         
             //Constructor and Destructor
         ParticleHierarchyValidationAlgorithm();
@@ -44,6 +47,10 @@ namespace development_area
     private:
         pandora::StatusCode Run();
         pandora::StatusCode ReadSettings(const pandora::TiXmlHandle xmlHandle);
+        void getRelevantPfos(const PfoList *const Pfos, PfoList &relevantPfos, const bool f_addAll);
+        void getRelevantMCParts(const MCParticleList *const MCParts, MCParticleList &relevantMCParts, const bool f_addAll);
+        void getViewHits(const ParticleFlowObject *const c_Pfo, int &NUHits, int &NVHits, int &NWHits, const bool f_showAllPfoData);
+        
         
         std::string m_inputPfoListName;
         std::string m_inputMCParticleListName;
@@ -58,7 +65,6 @@ namespace development_area
         bool m_showAllPfoData;
         
         LArMCParticleHelper::PrimaryParameters m_primaryParameters;
-        
         
     }; //PHVA class
     
