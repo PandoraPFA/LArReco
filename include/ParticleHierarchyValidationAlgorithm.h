@@ -40,6 +40,8 @@ namespace development_area
         
         std::vector<float> purityAndCompleteness(const pandora::ParticleFlowObject *const pPfo, const pandora::MCParticleList *const pMCParts, const pandora::CaloHitList *const CaloHits, LArMCParticleHelper::PrimaryParameters &primaryParameters);
         
+        const pandora::MCParticle* findBestMatch(const ParticleFlowObject *const pPfo, const MCParticleList *const MCParts, const CaloHitList *const CaloHits, LArMCParticleHelper::PrimaryParameters &primaryParameters);
+        
             //Constructor and Destructor
         ParticleHierarchyValidationAlgorithm();
         ~ParticleHierarchyValidationAlgorithm();
@@ -47,9 +49,10 @@ namespace development_area
     private:
         pandora::StatusCode Run();
         pandora::StatusCode ReadSettings(const pandora::TiXmlHandle xmlHandle);
-        void getRelevantPfos(const PfoList *const Pfos, PfoList &relevantPfos, const bool f_addAll);
-        void getRelevantMCParts(const MCParticleList *const MCParts, MCParticleList &relevantMCParts, const bool f_addAll);
+        void getRelevantPfos(const PfoList *const Pfos, PfoList &relevantPfos, const bool f_addAll, bool &PfoElectronFound);
+        void getRelevantMCParts(const MCParticleList *const MCParts, MCParticleList &relevantMCParts, const bool f_addAll, bool &MCElectronFound);
         void getViewHits(const ParticleFlowObject *const c_Pfo, int &NUHits, int &NVHits, int &NWHits, const bool f_showAllPfoData);
+        void getMCParticleViewHits(const MCParticle *const c_MCPart, int &NUHits, int &NVHits, int &NWHits, const bool f_showAllMCPData, const MCParticleList *MCParts, const CaloHitList *CaloHits);
         
         
         std::string m_inputPfoListName;
@@ -61,8 +64,11 @@ namespace development_area
         std::string m_fileName;
               
         int eventNo;
+        //std::vector< std::pair<int, int> > totalPDGList;
+        //std::vector< std::pair<int, int> > missedPDGList;
         bool addAll;
         bool m_showAllPfoData;
+        bool m_showAllMCPData;
         
         LArMCParticleHelper::PrimaryParameters m_primaryParameters;
         

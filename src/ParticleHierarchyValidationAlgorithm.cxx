@@ -20,16 +20,20 @@
 #include "larpandoracontent/LArMonitoring/TestBeamEventValidationAlgorithm.h"
 
 using namespace pandora;
+using namespace std;
 
 namespace development_area
 { 
     ParticleHierarchyValidationAlgorithm::ParticleHierarchyValidationAlgorithm():
         m_writeToTree(true),
-        m_treeName("EventTree"),
-        m_fileName("FirstTree.root"),
+        m_treeName("ElectronEventTree"),
+        m_fileName("ElectronTree.root"),
         eventNo(0),
-        addAll(true),   //In future, add this as an optional in the xml (ReadSettings), this just decides whether or not to add all particles to the relevance list or just the ones that meet criteria
-        m_showAllPfoData(false)
+        //vector<pair<int,int>> totalPDGList,
+        //vector<pair<int,int>> missedPDGList,
+        addAll(false),   //In future, add this as an optional in the xml (ReadSettings), this just decides whether or not to add all particles to the relevance list or just the ones that meet criteria
+        m_showAllPfoData(false),
+        m_showAllMCPData(false)
     {
     }
     ParticleHierarchyValidationAlgorithm::~ParticleHierarchyValidationAlgorithm()
@@ -44,14 +48,17 @@ namespace development_area
     StatusCode ParticleHierarchyValidationAlgorithm::Run(){
         
         //std::cout << "1" << std::endl;
+        
+        //SET THE EVE DISPLAY PARAMETERS
+        PANDORA_MONITORING_API(SetEveDisplayParameters(this->GetPandora(), true, DETECTOR_VIEW_XZ, -1, 1, 1));
     
         m_primaryParameters.m_minPrimaryGoodHits = 15 /*15*/;
         m_primaryParameters.m_minHitsForGoodView = 5 /*5*/;
         m_primaryParameters.m_minPrimaryGoodViews = 2;
-        m_primaryParameters.m_selectInputHits = true;
+        m_primaryParameters.m_selectInputHits = false; /*true*/
         m_primaryParameters.m_maxPhotonPropagation = 2.5f;
-        m_primaryParameters.m_minHitSharingFraction = 0.9f/*0.9f*/;
-        m_primaryParameters.m_foldBackHierarchy = true;
+        m_primaryParameters.m_minHitSharingFraction = 0.9f /*0.9f*/;
+        m_primaryParameters.m_foldBackHierarchy = false;
     
             //For the root tree to know what event pfos and mcps came from
         eventNo+=1;
@@ -68,8 +75,8 @@ namespace development_area
             //(pointer to) List of MCParticles (might need name)
         const MCParticleList *MCParts(nullptr);
         PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraContentApi::GetList(*this, "Input" /*m_inputMCParticleListName*/, MCParts));
-        
-        
+
+
             //CaloHitLists
         const CaloHitList *CaloHitsU(nullptr);
         PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraContentApi::GetList(*this, "CaloHitListU", CaloHitsU));
@@ -83,64 +90,138 @@ namespace development_area
         const CaloHitList *CaloHits(nullptr);
         PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraContentApi::GetList(*this, "CaloHitList2D", CaloHits));
         
+        
         //std::cout << "2" << std::endl;
+        
+        
+        //totalPDGList  = { {11,0}, {12,0}, {13,0}, {14,0} };
+        //missedPDGList = { {11,0}, {12,0}, {13,0}, {14,0} };
+        
+        //vector<pair<int,int>> Pfo;
+        
+        bool MCElectronFound  = false;
+        bool PfoElectronFound = false;
         
             //At this point, relevance is decided by "is it either electron flavour or muon flavoured (but not neutrinos)"
         PfoList relevantPfos;
-        getRelevantPfos(Pfos, relevantPfos, addAll);
+        getRelevantPfos(Pfos, relevantPfos, addAll, PfoElectronFound);
         MCParticleList relevantMCParts;
-        getRelevantMCParts(MCParts, relevantMCParts, addAll);
-       
-                                        
+        getRelevantMCParts(MCParts, relevantMCParts, addAll, MCElectronFound);
+          
+        /*                            
+        if (MCElectronFound && !PfoElectronFound)
+        {
+            PANDORA_MONITORING_API(VisualizeParticleFlowObjects(this->GetPandora(), Pfos, "All Pfos", RED, true, true));
+            PANDORA_MONITORING_API(VisualizeMCParticles(this->GetPandora(), MCParts, "All MCParticles", BLUE));
+            PANDORA_MONITORING_API(ViewEvent(this->GetPandora()));
+        }   
+        */  
+
+        
             //Finding the number of hits in each PFO
+        MCParticleList matchedMCParticles;
         
         int PfoTempId(0);
+        int matched(0);
+        float c_PfoCompleteness(-1);
+        float c_PfoPurity(-1);
+        
         for (const ParticleFlowObject *const c_Pfo : relevantPfos)
         {
             PfoTempId++;  
-            int c_PfoPDG = c_Pfo->GetParticleId();
-                
-                //Looking through Pfo for all the hits in each view
+            
+                //Looking at the purity and completeness of c_Pfo 
+            const MCParticle* bestMatch(nullptr);
+            std::vector<float> CandP = ParticleHierarchyValidationAlgorithm::purityAndCompleteness(c_Pfo, MCParts, CaloHits, m_primaryParameters);
+            bestMatch = findBestMatch(c_Pfo, MCParts, CaloHits, m_primaryParameters);
+            c_PfoCompleteness = CandP[0];
+            c_PfoPurity       = CandP[1];
+            std::cout << "Purity      : " << c_PfoPurity << std::endl;
+            std::cout << "Completeness: " << c_PfoCompleteness << std::endl;
+            std::cout << "" << std::endl;
+            std::cout << "bestMatchId: " << abs(bestMatch->GetParticleId()) << endl;
+            std::cout << "PfoId      : " << abs(c_Pfo->GetParticleId()) << endl;
+            std::cout << "" << std::endl;
+            
+            int c_PfoPDG = abs(bestMatch->GetParticleId());     //Give the PDG Code as the code of the best macthing MCParticle, not the Pfo itself
+            
             int NUHits(0);
             int NVHits(0);
             int NWHits(0);
+            getMCParticleViewHits(bestMatch, NUHits, NVHits, NWHits, m_showAllMCPData, MCParts, CaloHits);
+            //getViewHits(c_Pfo, NUHits, NVHits, NWHits, m_showAllPfoData);
             
-            //std::cout << "3" << std::endl;
-             
-            getViewHits(c_Pfo, NUHits, NVHits, NWHits, m_showAllPfoData);
-            
-            //std::cout << "4" << std::endl;
-            
-                //Looking at the purity and completeness of c_Pfo 
-            
-            std::vector<float> CandP = ParticleHierarchyValidationAlgorithm::purityAndCompleteness(c_Pfo, &relevantMCParts, CaloHits, m_primaryParameters);
-            float c_PfoCompleteness = *CandP.begin();
-            auto ind = CandP.end();
-            ind = ind - 1;
-            float c_PfoPurity = *ind;
+            matchedMCParticles.push_back(bestMatch);
             
             //std::cout << "5" << std::endl;
             
-            if (m_writeToTree){
+            if (m_writeToTree && c_PfoCompleteness >= 0.1 && c_PfoPurity >= 0.5 && (NUHits >= 0 || NVHits >= 0 || NWHits >= 0)){
+                matched = 1;
                 PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "eventNo", eventNo);
-                PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "PfoTempId", PfoTempId);
-                PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "PfoPDG", c_PfoPDG);
+                //PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "PfoTempId", PfoTempId);
+                PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "MCPPDG", c_PfoPDG);  //PDG Code is note the be-all-end-all, need to also clarify if it has been given wrong code
+                PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "Matched", matched);
                 PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "UHits", NUHits);
                 PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "VHits", NVHits);
                 PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "WHits", NWHits);
-                PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "Purity", c_PfoPurity);
                 PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "Completeness", c_PfoCompleteness);
-            
+                PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "Purity", c_PfoPurity);
                 PandoraMonitoringApi::FillTree(this->GetPandora(), m_treeName.c_str());
+                
+                std::cout << "#  >>>PFO added to tree" << std::endl;
+            }else if (!(c_PfoCompleteness >= 0.1 && c_PfoPurity >= 0.5 && (NUHits >= 0 || NVHits >= 0 || NWHits >= 0))){
+                std::cout << "Particle Rejected: " << std::endl;
+                std::cout << "  C> " << c_PfoCompleteness << std::endl;
+                std::cout << "  P> " << c_PfoPurity << std::endl;
+                std::cout << "PDG> " << c_Pfo->GetParticleId() << std::endl;
+                std::cout << "     " << std::endl;
+                //PANDORA_MONITORING_API(VisualizeParticleFlowObjects(this->GetPandora(), Pfos, "Problematic Pfos", RED, true, true));
+                //PANDORA_MONITORING_API(ViewEvent(this->GetPandora()));
             }
         }
         
-        //std::cout << "6" << std::endl;
+        for (const MCParticle *const c_MCPart : *MCParts)
+        {
+            int NUHits(0);
+            int NVHits(0);
+            int NWHits(0);
+            getMCParticleViewHits(c_MCPart, NUHits, NVHits, NWHits, m_showAllMCPData, MCParts, CaloHits);
+            
+            int MCPId = abs(c_MCPart->GetParticleId());
+            //if (abs(MCPId) != 11)
+                //break;
+                
+            bool found(false);
+            for (const MCParticle *const c_matchedMCPart : matchedMCParticles)
+            {
+                if (c_matchedMCPart == c_MCPart)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (m_writeToTree && !found)
+            {
+                PfoTempId         = -1;
+                matched           =  0;
+                c_PfoCompleteness = -1;
+                c_PfoPurity       = -1;
+                std::cout << "  >Missed MCParticle: " << MCPId << std::endl;
+                PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "eventNo", eventNo);
+                //PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "PfoTempId", PfoTempId);
+                PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "MCPPDG", MCPId);
+                PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "Matched", matched);
+                PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "UHits", NUHits);
+                PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "VHits", NVHits);
+                PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "WHits", NWHits);
+                PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "Completeness", c_PfoCompleteness);
+                PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "Purity", c_PfoPurity);
+                PandoraMonitoringApi::FillTree(this->GetPandora(), m_treeName.c_str());
+            }
+
+        }
         
-        //std::cout << "--Finding Overlap--" << std::endl;
-            //Finding the calohits overlap
-        //std::vector<std::vector<float>> results;
-        //ParticleHierarchyValidationAlgorithm::getPurityAndCompleteness(Pfos, MCParts, CaloHits, results);
+        //std::cout << "6" << std::endl;
         
         return STATUS_CODE_SUCCESS;
     }
@@ -168,24 +249,25 @@ namespace development_area
     }
     
     
-    void ParticleHierarchyValidationAlgorithm::getRelevantPfos(const PfoList *const Pfos, PfoList &relevantPfos, const bool f_addAll){
+    void ParticleHierarchyValidationAlgorithm::getRelevantPfos(const PfoList *const Pfos, PfoList &relevantPfos, const bool f_addAll, bool &PfoElectronFound){
         for (const ParticleFlowObject *c_pfo : *Pfos)
         {
             if (!f_addAll){
-                if (c_pfo->GetParticleId() == 11){
+                if (abs(c_pfo->GetParticleId()) == 11){
                     //std::cout << "Found a Reco Electron" << std::endl;
                     relevantPfos.push_back(c_pfo);
-                    //std::cout << "Added Electron to 'relevantPfos'" << std::endl;
+                    std::cout << "Added Electron to 'relevantPfos'" << std::endl;
+                    PfoElectronFound = true;
                 }
-                else if (c_pfo->GetParticleId() == 12){
+                else if (abs(c_pfo->GetParticleId()) == 12){
                     //std::cout << "Found a Reco Electron-Neutrino" << std::endl;
                 }
-                else if (c_pfo->GetParticleId() == 13){
+                else if (abs(c_pfo->GetParticleId()) == 13){
                     //std::cout << "Found a Reco Muon" << std::endl;
-                    relevantPfos.push_back(c_pfo);
+                    //relevantPfos.push_back(c_pfo);
                     //std::cout << "Added Muon to 'relevantPfos'" << std::endl;
                 }
-                else if (c_pfo->GetParticleId() == 14){
+                else if (abs(c_pfo->GetParticleId()) == 14){
                     //std::cout << "Found a Reco Muon-Neutrino" << std::endl;
                 }else{
                     //std::cout << "Found PFO, Id: " << c_pfo->GetParticleId() << std::endl;
@@ -198,24 +280,25 @@ namespace development_area
         }
     }
     
-    void ParticleHierarchyValidationAlgorithm::getRelevantMCParts(const MCParticleList *const MCParts, MCParticleList &relevantMCParts, const bool f_addAll){
+    void ParticleHierarchyValidationAlgorithm::getRelevantMCParts(const MCParticleList *const MCParts, MCParticleList &relevantMCParts, const bool f_addAll, bool &MCElectronFound){
         for (const MCParticle *c_mcp : *MCParts)
         {   
             if (!f_addAll){
-                if (c_mcp->GetParticleId() == -11){
+                if (abs(c_mcp->GetParticleId()) == 11){
                     //std::cout << "Found a MC Electron" << std::endl;
                     relevantMCParts.push_back(c_mcp);
-                    //std::cout << "Added Electron to 'relevantMCParts'" << std::endl;
+                    std::cout << "Added Electron to 'relevantMCParts'" << std::endl;
+                    MCElectronFound = true;
                 }
-                else if (c_mcp->GetParticleId() == 12){
+                else if (abs(c_mcp->GetParticleId()) == 12){
                     //std::cout << "Found a MC Electron-Neutrino" << std::endl;
                 }
-                else if (c_mcp->GetParticleId() == -13){
+                else if (abs(c_mcp->GetParticleId()) == 13){
                     //std::cout << "Found a MC Muon" << std::endl;
-                    relevantMCParts.push_back(c_mcp);
+                    //relevantMCParts.push_back(c_mcp);
                     //std::cout << "Added Muon to 'relevantMCParts'" << std::endl;
                 }
-                else if (c_mcp->GetParticleId() == -14){
+                else if (abs(c_mcp->GetParticleId()) == 14){
                     //std::cout << "Found a MC Muon-Neutrino" << std::endl;
                 }else{
                     //std::cout << "Found MCP, Id: " << c_mcp->GetParticleId() << std::endl;
@@ -225,6 +308,7 @@ namespace development_area
                 //std::cout << "Found MCP, Id: " << c_mcp->GetParticleId() << std::endl;
                 relevantMCParts.push_back(c_mcp);
             }
+            
         }
     }
     
@@ -235,12 +319,15 @@ namespace development_area
                 
         for (const Cluster *const c_cluster : c_clusterList)
         {
-            const CaloHitList c_caloHitList = c_cluster->GetIsolatedCaloHitList();
+
+            CaloHitList c_caloHitList;
+            c_cluster->GetOrderedCaloHitList().FillCaloHitList(c_caloHitList);
             if (f_showAllPfoData)
-                std::cout << "     >" << "Number of hits in this cluster: " << c_caloHitList.size() << std::endl;
-                
+                std::cout << "     >" << "Number of hits in this cluster: " << c_cluster->GetNCaloHits() << std::endl;
+            
             for (const CaloHit *const c_hit : c_caloHitList)
             {
+                
                 switch(c_hit->GetHitType())
                 {
                     case 4:
@@ -260,10 +347,54 @@ namespace development_area
                         break;
                     default:
                         break;
-                }       
+                } 
+                     
             }
         }
     }
+    
+    
+    
+    //############################################
+    void ParticleHierarchyValidationAlgorithm::getMCParticleViewHits(const MCParticle *const c_MCPart, int &NUHits, int &NVHits, int &NWHits, const bool f_showAllMCPData, const MCParticleList *MCParts, const CaloHitList *CaloHits){
+                
+        LArMCParticleHelper::MCRelationMap mcToSelfMap;
+        LArMCParticleHelper::CaloHitToMCMap hitToMCMap;
+        LArMCParticleHelper::MCContributionMap mcToTrueHitListMap;
+        
+        LArMCParticleHelper::GetMCToSelfMap(MCParts, mcToSelfMap);
+        LArMCParticleHelper::GetMCParticleToCaloHitMatches(CaloHits, mcToSelfMap, hitToMCMap, mcToTrueHitListMap);
+        
+        for (std::pair c_pair : hitToMCMap)
+        {
+            if (c_pair.second == c_MCPart)
+            {
+                switch(c_pair.first->GetHitType())
+                {
+                    case 4:
+                        if (f_showAllMCPData)
+                            std::cout << "         >" << "(MCP) CaloHitView: U" << std::endl;
+                        NUHits = NUHits+1;
+                        break;
+                    case 5:
+                        if (f_showAllMCPData)
+                            std::cout << "         >" << "(MCP) CaloHitView: V" << std::endl;
+                        NVHits = NVHits+1;
+                        break;
+                    case 6:
+                        if (f_showAllMCPData)
+                            std::cout << "         >" << "(MCP) CaloHitView: W" << std::endl;
+                        NWHits = NWHits+1;
+                        break;
+                    default:
+                        break;
+                } 
+            }
+        }
+    }
+    
+    
+    
     
     std::vector<float> ParticleHierarchyValidationAlgorithm::purityAndCompleteness(const ParticleFlowObject *const pPfo, const MCParticleList *const MCParts, const CaloHitList *const CaloHits, LArMCParticleHelper::PrimaryParameters &primaryParameters){
         const PfoList myPfoList(1, pPfo);
@@ -304,13 +435,12 @@ namespace development_area
 	    const LArMCParticleHelper::MCParticleToSharedHitsVector &mcParticleToSharedHitsVector(pfoToMCParticleHitSharingMap.at(pPfo));
 	    
 	    //std::cout << "About to start the loop..." << std::endl;
-	    
+
 	    for (const LArMCParticleHelper::MCParticleCaloHitListPair &mcParticleCaloHitListPair : mcParticleToSharedHitsVector)
-	    {
+	    {     
+	        // std::cout << "      --In second for loop--" << std::endl;
 	            
-	       // std::cout << "      --In second for loop--" << std::endl;
-	            
-	        const pandora::MCParticle *const pAssociatedMCParticle(mcParticleCaloHitListPair.first);
+	        const pandora::MCParticle* pAssociatedMCParticle(mcParticleCaloHitListPair.first);  
 	        const CaloHitList &allMCHits(targetMCParticleToHitsMap.at(pAssociatedMCParticle));
 	        const CaloHitList &associatedMCHits(mcParticleCaloHitListPair.second);
 
@@ -320,8 +450,7 @@ namespace development_area
 	            //std::cout << "         --Entered if statement--" << std::endl;
 	            
 		        nHitsSharedWithBestMCParticleTotal = associatedMCHits.size();
-
-		        nHitsInBestMCParticleTotal = allMCHits.size();               
+		        nHitsInBestMCParticleTotal = allMCHits.size();  
 	        }
 	    }		
 
@@ -342,6 +471,72 @@ namespace development_area
         std::vector<float> return_vec = {completeness, purity};
         
         return return_vec;
+    }
+    
+    
+    
+    const pandora::MCParticle* ParticleHierarchyValidationAlgorithm::findBestMatch(const ParticleFlowObject *const pPfo, const MCParticleList *const MCParts, const CaloHitList *const CaloHits, LArMCParticleHelper::PrimaryParameters &primaryParameters)
+    {
+        const PfoList myPfoList(1, pPfo);
+        
+        //std::cout << "  --Entered for loop--" << std::endl;
+            
+        LArMCParticleHelper::MCContributionMap targetMCParticleToHitsMap;
+        LArMCParticleHelper::SelectReconstructableMCParticles(MCParts, CaloHits, primaryParameters, LArMCParticleHelper::IsVisible, targetMCParticleToHitsMap);
+            
+        //std::cout << "*Size 1: " << MCParts->size() << std::endl;
+        //std::cout << "*Size 2: " << CaloHits->size() << std::endl;
+        //std::cout << "*Size 3: " << primaryParameters << std::endl;
+        //std::cout << "*Size 4: " << LArMCParticleHelper::IsBeamNeutrinoFinalState << std::endl;
+        //std::cout << "*Size 5: " << targetMCParticleToHitsMap.size() << std::endl;
+
+        LArMCParticleHelper::MCContributionMapVector mcParticlesToGoodHitsMaps({targetMCParticleToHitsMap});
+
+        LArMCParticleHelper::PfoContributionMap pfoToReconstructable2DHitsMap;
+        LArMCParticleHelper::GetPfoToReconstructable2DHitsMap(myPfoList, mcParticlesToGoodHitsMaps, pfoToReconstructable2DHitsMap, primaryParameters.m_foldBackHierarchy);
+
+        LArMCParticleHelper::PfoToMCParticleHitSharingMap pfoToMCParticleHitSharingMap;
+        LArMCParticleHelper::MCParticleToPfoHitSharingMap mcParticleToPfoHitSharingMap;
+        LArMCParticleHelper::GetPfoMCParticleHitSharingMaps(pfoToReconstructable2DHitsMap, mcParticlesToGoodHitsMaps, pfoToMCParticleHitSharingMap, mcParticleToPfoHitSharingMap);  //#!!!!!#
+
+                        
+        //std::cout << "  --Finished Calling LArMCParticleHelper functions--" << std::endl;            
+            
+        //const CaloHitList &allHitsInPfo(pfoToReconstructable2DHitsMap.at(pPfo));
+	    //const int nHitsInPfoTotal(allHitsInPfo.size());
+	    int nHitsSharedWithBestMCParticleTotal(-1);
+	        
+	    //std::cout << "Size 1: " << pfoToReconstructable2DHitsMap.size() << std::endl;
+        //std::cout << "Size 2: " << mcParticlesToGoodHitsMaps.size() << std::endl;
+        //std::cout << "Size 3: " << pfoToMCParticleHitSharingMap.size() << std::endl;
+        //std::cout << "Size 4: " << mcParticleToPfoHitSharingMap.size() << std::endl;
+            
+	    const LArMCParticleHelper::MCParticleToSharedHitsVector &mcParticleToSharedHitsVector(pfoToMCParticleHitSharingMap.at(pPfo));
+	    
+	    //std::cout << "About to start the loop..." << std::endl;
+
+        const pandora::MCParticle* bestMCParticleMatch(nullptr);
+	    for (const LArMCParticleHelper::MCParticleCaloHitListPair &mcParticleCaloHitListPair : mcParticleToSharedHitsVector)
+	    {     
+	        // std::cout << "      --In second for loop--" << std::endl;
+	            
+	        //const pandora::MCParticle* pAssociatedMCParticle(mcParticleCaloHitListPair.first);  
+	        //const CaloHitList &allMCHits(targetMCParticleToHitsMap.at(pAssociatedMCParticle));
+	        const CaloHitList &associatedMCHits(mcParticleCaloHitListPair.second);
+	       
+	        //std::cout << bestMCParticleMatch << std::endl;
+
+	        if (static_cast<int>(associatedMCHits.size()) > nHitsSharedWithBestMCParticleTotal)
+	        {
+	            
+	            //std::cout << "         --Entered if statement--" << std::endl;
+	            
+		        nHitsSharedWithBestMCParticleTotal = associatedMCHits.size();
+		        bestMCParticleMatch = mcParticleCaloHitListPair.first; //### Issue with const here ###     
+	        }
+	    }		
+        
+        return bestMCParticleMatch;
     }
     
     
