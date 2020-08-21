@@ -64,8 +64,6 @@ namespace development_area
         std::string m_fileName;
               
         int eventNo;
-        //std::vector< std::pair<int, int> > totalPDGList;
-        //std::vector< std::pair<int, int> > missedPDGList;
         bool addAll;
         bool m_showAllPfoData;
         bool m_showAllMCPData;

@@ -25,12 +25,10 @@ using namespace std;
 namespace development_area
 { 
     ParticleHierarchyValidationAlgorithm::ParticleHierarchyValidationAlgorithm():
-        m_writeToTree(true),
+        m_writeToTree(false),
         m_treeName("ElectronEventTree"),
         m_fileName("ElectronTree.root"),
         eventNo(0),
-        //vector<pair<int,int>> totalPDGList,
-        //vector<pair<int,int>> missedPDGList,
         addAll(false),   //In future, add this as an optional in the xml (ReadSettings), this just decides whether or not to add all particles to the relevance list or just the ones that meet criteria
         m_showAllPfoData(false),
         m_showAllMCPData(false)
@@ -65,7 +63,6 @@ namespace development_area
         std::cout << "<--Event Number " << eventNo << "-->" << std::endl;
         
         
-        
                     //#---Defining and collecting all of the lists to do with the event---#
                     
             //(pointer to) List of PFOs (might need name)
@@ -93,12 +90,6 @@ namespace development_area
         
         //std::cout << "2" << std::endl;
         
-        
-        //totalPDGList  = { {11,0}, {12,0}, {13,0}, {14,0} };
-        //missedPDGList = { {11,0}, {12,0}, {13,0}, {14,0} };
-        
-        //vector<pair<int,int>> Pfo;
-        
         bool MCElectronFound  = false;
         bool PfoElectronFound = false;
         
@@ -117,7 +108,6 @@ namespace development_area
         }   
         */  
 
-        
             //Finding the number of hits in each PFO
         MCParticleList matchedMCParticles;
         
@@ -136,12 +126,62 @@ namespace development_area
             bestMatch = findBestMatch(c_Pfo, MCParts, CaloHits, m_primaryParameters);
             c_PfoCompleteness = CandP[0];
             c_PfoPurity       = CandP[1];
-            std::cout << "Purity      : " << c_PfoPurity << std::endl;
-            std::cout << "Completeness: " << c_PfoCompleteness << std::endl;
+            
+            //std::cout << "Purity      : " << c_PfoPurity << std::endl;
+            //std::cout << "Completeness: " << c_PfoCompleteness << std::endl;
+            //std::cout << "" << std::endl;
+            //std::cout << "bestMatchId: " << abs(bestMatch->GetParticleId()) << endl;
+            //std::cout << "PfoId      : " << abs(c_Pfo->GetParticleId()) << endl;
+            //std::cout << "" << std::endl;
+            
+            
+                    //by this point, we have found the relevant MCParticle and Pfo, so can find all the information to fill the table with
+                    //Lets now find the angle between the Muon and Michel Electron
+                //Origin and endpoint of the Electron
+            CartesianVector* resultant = new CartesianVector(0,0,0);
+            if (abs(bestMatch->GetParticleId()) == 11)
+            {    
+                const CartesianVector origin   = bestMatch->GetVertex();
+                const CartesianVector endpoint = bestMatch->GetEndpoint();
+                PANDORA_MONITORING_API(AddMarkerToVisualization(this->GetPandora(), &origin, "Electron Start", RED, 1));
+                PANDORA_MONITORING_API(AddMarkerToVisualization(this->GetPandora(), &endpoint, "Electron End", RED, 1));
+                resultant = new CartesianVector(endpoint.GetX() - origin.GetY(), endpoint.GetY() - origin.GetX(), endpoint.GetZ() - origin.GetZ());
+            }
+            std::cout << resultant->GetX() << std::endl;
+            
+            const MCParticleList parentList = bestMatch->GetParentList();
+            const MCParticle* parent(nullptr);
+            for (const MCParticle* const c_parent : parentList)
+            {
+                std::cout << "PDG:" << abs(c_parent->GetParticleId()) << std::endl;
+                if (abs(c_parent->GetParticleId()) == 13)
+                {
+                    parent = c_parent;
+                }
+            }
+            std::cout << "parent:" << abs(parent->GetParticleId()) << std::endl;
             std::cout << "" << std::endl;
-            std::cout << "bestMatchId: " << abs(bestMatch->GetParticleId()) << endl;
-            std::cout << "PfoId      : " << abs(c_Pfo->GetParticleId()) << endl;
-            std::cout << "" << std::endl;
+            
+            CartesianVector* parentResultant = new CartesianVector(0,0,0);
+            const CartesianVector origin   = parent->GetVertex();
+            const CartesianVector endpoint = parent->GetEndpoint();
+            PANDORA_MONITORING_API(AddMarkerToVisualization(this->GetPandora(), &origin, "Muon Start", BLUE, 1));
+            PANDORA_MONITORING_API(AddMarkerToVisualization(this->GetPandora(), &endpoint, "Muon End", BLUE, 1));
+            
+            parentResultant = new CartesianVector(endpoint.GetX() - origin.GetY(), endpoint.GetY() - origin.GetX(), endpoint.GetZ() - origin.GetZ());
+            std::cout << parentResultant->GetX() << std::endl;
+            
+            PANDORA_MONITORING_API(VisualizeParticleFlowObjects(this->GetPandora(), Pfos, "All Pfos", RED, true, true));
+            PANDORA_MONITORING_API(VisualizeMCParticles(this->GetPandora(), MCParts, "All MCParticles", BLUE));
+            
+            PANDORA_MONITORING_API(ViewEvent(this->GetPandora()));
+            
+            
+            
+            
+            
+            
+            
             
             int c_PfoPDG = abs(bestMatch->GetParticleId());     //Give the PDG Code as the code of the best macthing MCParticle, not the Pfo itself
             
@@ -188,9 +228,7 @@ namespace development_area
             getMCParticleViewHits(c_MCPart, NUHits, NVHits, NWHits, m_showAllMCPData, MCParts, CaloHits);
             
             int MCPId = abs(c_MCPart->GetParticleId());
-            //if (abs(MCPId) != 11)
-                //break;
-                
+            
             bool found(false);
             for (const MCParticle *const c_matchedMCPart : matchedMCParticles)
             {
