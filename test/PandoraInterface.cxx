@@ -299,6 +299,11 @@ void ProcessExternalParameters(const Parameters &parameters, const Pandora *cons
     pEventSteeringParameters->m_shouldPerformSliceId = parameters.m_shouldPerformSliceId;
     pEventSteeringParameters->m_printOverallRecoStatus = parameters.m_printOverallRecoStatus;
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetExternalParameters(*pPandora, "LArMaster", pEventSteeringParameters));
+
+    // ATTN Deep Learning-specific bit
+    auto *const pEventSettingsParametersCopy = new lar_content::MasterAlgorithm::ExternalSteeringParameters(*pEventSteeringParameters);
+    PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, pandora::ExternallyConfiguredAlgorithm::SetExternalParameters(*pPandora,
+        "LArDLMaster", pEventSettingsParametersCopy));
 }
 
 } // namespace lar_reco
