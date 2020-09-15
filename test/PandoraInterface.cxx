@@ -18,8 +18,8 @@
 #include "larpandoracontent/LArPlugins/LArPseudoLayerPlugin.h"
 #include "larpandoracontent/LArPlugins/LArRotationalTransformationPlugin.h"
 
-#ifdef DEEP_LEARNING
-    #include "larpandoradlcontent/LArDLContent.h"
+#ifdef LIBTORCH_DL
+#include "larpandoradlcontent/LArDLContent.h"
 #endif
 
 #include "PandoraInterface.h"
@@ -87,7 +87,7 @@ void CreatePandoraInstances(const Parameters &parameters, const Pandora *&pPrima
 {
     pPrimaryPandora = new Pandora();
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::RegisterAlgorithms(*pPrimaryPandora));
-#ifdef DEEP_LEARNING
+#ifdef LIBTORCH_DL
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArDLContent::RegisterAlgorithms(*pPrimaryPandora));
 #endif
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::RegisterBasicPlugins(*pPrimaryPandora));
@@ -300,10 +300,11 @@ void ProcessExternalParameters(const Parameters &parameters, const Pandora *cons
     pEventSteeringParameters->m_printOverallRecoStatus = parameters.m_printOverallRecoStatus;
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetExternalParameters(*pPandora, "LArMaster", pEventSteeringParameters));
 
-    // ATTN Deep Learning-specific bit
+#ifdef LIBTORCH_DL
     auto *const pEventSettingsParametersCopy = new lar_content::MasterAlgorithm::ExternalSteeringParameters(*pEventSteeringParameters);
     PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, pandora::ExternallyConfiguredAlgorithm::SetExternalParameters(*pPandora,
         "LArDLMaster", pEventSettingsParametersCopy));
+#endif
 }
 
 } // namespace lar_reco

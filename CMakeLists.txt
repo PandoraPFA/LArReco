@@ -27,10 +27,10 @@ find_package(PandoraSDK 03.04.01 REQUIRED)
 set(LAR_CONTENT_LIBRARY_NAME "LArContent")
 find_package(${LAR_CONTENT_LIBRARY_NAME} 03.21.00 REQUIRED)
 
-if(TORCHLIB)
+if(PANDORA_LIBTORCH)
     set(LAR_DL_CONTENT_LIBRARY_NAME "LArDLContent")
     find_package(${LAR_DL_CONTENT_LIBRARY_NAME} 03.21.00 REQUIRED)
-    add_definitions(-DDEEP_LEARNING=1)
+    add_definitions(-DLIBTORCH_DL=1)
 endif()
 
 foreach(package PandoraSDK ${LAR_CONTENT_LIBRARY_NAME} ${LAR_DL_CONTENT_LIBRARY_NAME})
