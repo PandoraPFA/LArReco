@@ -24,7 +24,7 @@
         <NumberOfBins>1024</NumberOfBins>
         <UseTrainingMode>false</UseTrainingMode>
         <TrainingOutputFileName>DUNEFD_MC11</TrainingOutputFileName>
-        <ModelFileName>UNet_TS_FD_v03_20_00.pt</ModelFileName>
+        <ModelFileName>PandoraUnet_TSID_DUNEFD_v03_21_00.pt</ModelFileName>
         <Visualize>false</Visualize>
         <Profile>false</Profile>
     </algorithm>
