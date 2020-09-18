@@ -25,8 +25,8 @@
         <UseTrainingMode>false</UseTrainingMode>
         <TrainingOutputFileName>DUNEFD_MC11</TrainingOutputFileName>
         <ModelFileName>PandoraUnet_TSID_DUNEFD_v03_21_00.pt</ModelFileName>
+        <PixelNorm>21.345078698407534</PixelNorm>
         <Visualize>false</Visualize>
-        <Profile>false</Profile>
     </algorithm>
 
 </pandora>
