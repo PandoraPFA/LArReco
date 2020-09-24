@@ -345,9 +345,9 @@
         <MCParticleListName>Input</MCParticleListName>
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <UseThreeDInformation>true</UseThreeDInformation>
-        <MvaFileName>/path/to/LArMachineLearningData/scripts/PandoraBDT_TrainingOutput.xml</MvaFileName>
+        <MvaFileName>PandoraBdt_v03_20_00.xml</MvaFileName>
         <MvaName>PfoCharacterisation</MvaName>
-        <MvaFileNameNoChargeInfo>/path/to/LArMachineLearningData/scripts/PandoraBDT_TrainingOutput_noChargeInfo.xml</MvaFileNameNoChargeInfo>
+        <MvaFileNameNoChargeInfo>PandoraBdt_v03_20_00.xml</MvaFileNameNoChargeInfo>
         <MvaNameNoChargeInfo>PfoCharacterisationNoChargeInfo</MvaNameNoChargeInfo>
         <TrainingSetMode>false</TrainingSetMode>
         <TrainingOutputFileName>training_output</TrainingOutputFileName>
