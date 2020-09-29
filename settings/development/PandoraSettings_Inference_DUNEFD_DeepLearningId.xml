@@ -1,6 +1,6 @@
 <pandora>
     <!-- GLOBAL SETTINGS -->
-    <IsMonitoringEnabled>false</IsMonitoringEnabled>
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
     <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
@@ -19,14 +19,19 @@
         <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
     </algorithm>
 
-    <algorithm type = "LArDeepLearningTrackShowerId">
+    <algorithm type = "LArDLHitTrackShowerId">
         <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
         <NumberOfBins>1024</NumberOfBins>
         <UseTrainingMode>false</UseTrainingMode>
         <TrainingOutputFileName>DUNEFD_MC11</TrainingOutputFileName>
-        <ModelFileName>PandoraUnet_TSID_DUNEFD_v03_21_00.pt</ModelFileName>
-        <PixelNorm>21.345078698407534</PixelNorm>
+        <ModelFileNameU>PandoraUnet_TSID_DUNEFD_U_v03_22_00.pt</ModelFileNameU>
+        <ModelFileNameV>PandoraUnet_TSID_DUNEFD_V_v03_22_00.pt</ModelFileNameV>
+        <ModelFileNameW>PandoraUnet_TSID_DUNEFD_W_v03_22_00.pt</ModelFileNameW>
         <Visualize>false</Visualize>
+    </algorithm>
+    
+    <algorithm type = "LArDLHitValidation">
+        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
     </algorithm>
 
 </pandora>
