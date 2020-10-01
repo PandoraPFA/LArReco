@@ -203,6 +203,16 @@ bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters)
         parameters.m_shouldRunCosmicRecoOption = false;
         parameters.m_shouldPerformSliceId = false;
     }
+    else if ("nostitchingcr" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = false;
+        parameters.m_shouldRunStitching = false;
+        parameters.m_shouldRunCosmicHitRemoval = false;
+        parameters.m_shouldRunSlicing = false;
+        parameters.m_shouldRunNeutrinoRecoOption = false;
+        parameters.m_shouldRunCosmicRecoOption = true;
+        parameters.m_shouldPerformSliceId = false;
+    } 
     else if ("allhitsnu" == chosenRecoOption)
     {
         parameters.m_shouldRunAllHitsCosmicReco = false;
