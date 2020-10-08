@@ -42,6 +42,8 @@
         <VisualizeOverallRecoStatus>false</VisualizeOverallRecoStatus>
     </algorithm>
 
+    <algorithm type = "MyTrackShowerId"/>
+
     <algorithm type = "LArNeutrinoEventValidation">
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>Input</MCParticleListName>
