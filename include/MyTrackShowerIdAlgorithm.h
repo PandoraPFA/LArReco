@@ -21,11 +21,24 @@ public:
         pandora::Algorithm *CreateAlgorithm() const;
     };
 
+    /**
+     *  @brief  Default constructor
+     */
+    MyTrackShowerIdAlgorithm();
+
+    ~MyTrackShowerIdAlgorithm();
+
 private:
     pandora::StatusCode Run();
     pandora::StatusCode ReadSettings(const pandora::TiXmlHandle xmlHandle);
 
     // Member variables here
+    bool m_writeToTree;
+    std::string m_treeName;
+    std::string m_fileName;
+    std::string m_mcParticleListName;
+    std::string m_caloHitListName;
+    std::string m_inputPfoListName;
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------

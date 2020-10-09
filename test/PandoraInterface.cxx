@@ -22,7 +22,7 @@
 #include "larpandoradlcontent/LArDLContent.h"
 #endif
 
-#include "larreco/include/MyTrackShowerIdAlgorithm.h"
+#include "MyTrackShowerIdAlgorithm.h"
 
 #include "PandoraInterface.h"
 

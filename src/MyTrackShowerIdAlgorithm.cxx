@@ -16,6 +16,19 @@
 #include "MyTrackShowerIdAlgorithm.h"
 using namespace pandora;
 using namespace lar_content;
+using namespace lar_reco;
+
+
+MyTrackShowerIdAlgorithm::MyTrackShowerIdAlgorithm():
+  m_writeToTree(),
+  m_treeName(),
+  m_fileName(),
+  m_mcParticleListName(),
+  m_caloHitListName(),
+  m_inputPfoListName()
+{
+}
+
 MyTrackShowerIdAlgorithm::~MyTrackShowerIdAlgorithm()
 {
     if (m_writeToTree)
@@ -50,11 +63,13 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
     }
     
     LArMCParticleHelper::PfoContributionMap pfoToHitsMap;
-    LArMCParticleHelper::GetPfoToReconstructable2DHitsMap(finalStatePfos, targetMCParticleToHitsMap, pfoToHitsMap);
+    const bool foldBackHierarchy(false);
+    LArMCParticleHelper::GetPfoToReconstructable2DHitsMap(finalStatePfos, targetMCParticleToHitsMap, pfoToHitsMap, foldBackHierarchy);
     
     // Matching step
     LArMCParticleHelper::PfoToMCParticleHitSharingMap pfoToMCHitSharingMap;
     LArMCParticleHelper::MCParticleToPfoHitSharingMap mcToPfoHitSharingMap;
+
     LArMCParticleHelper::GetPfoMCParticleHitSharingMaps(pfoToHitsMap, {targetMCParticleToHitsMap}, pfoToMCHitSharingMap, mcToPfoHitSharingMap);
     
     // PandoraMonitoringApi::SetEveDisplayParameters(this->GetPandora(), true, DETECTOR_VIEW_XZ, -1.f, -1.f, 1.f);
