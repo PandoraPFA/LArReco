@@ -42,7 +42,14 @@
         <VisualizeOverallRecoStatus>false</VisualizeOverallRecoStatus>
     </algorithm>
 
-    <algorithm type = "MyTrackShowerId"/>
+    <algorithm type = "MyTrackShowerId">
+        <WriteToTree>true</WriteToTree>
+        <TreeName>TestTree</TreeName>
+        <FileName>TestFile</FileName>
+        <MCParticleListName>Input</MCParticleListName>
+        <CaloHitListName>CaloHitList2D</CaloHitListName>
+        <InputPfoListName>RecreatedPfos</InputPfoListName>
+    </algorithm>
 
     <algorithm type = "LArNeutrinoEventValidation">
         <CaloHitListName>CaloHitList2D</CaloHitListName>
