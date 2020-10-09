@@ -45,7 +45,7 @@
     <algorithm type = "MyTrackShowerId">
         <WriteToTree>true</WriteToTree>
         <TreeName>TestTree</TreeName>
-        <FileName>TestFile</FileName>
+        <FileName>TestFile.root</FileName>
         <MCParticleListName>Input</MCParticleListName>
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <InputPfoListName>RecreatedPfos</InputPfoListName>
