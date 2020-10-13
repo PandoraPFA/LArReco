@@ -1,0 +1,37 @@
+<pandora>
+    <!-- GLOBAL SETTINGS -->
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
+    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
+    <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
+
+    <!-- ALGORITHM SETTINGS -->
+    <algorithm type = "LArEventReading">
+        <ShouldReadEvents>true</ShouldReadEvents>
+        <ShouldReadGeometry>true</ShouldReadGeometry>
+        <UseLArCaloHits>true</UseLArCaloHits>
+    </algorithm>
+
+    <algorithm type = "LArPreProcessing">
+        <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
+        <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
+        <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
+        <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
+        <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
+    </algorithm>
+
+    <algorithm type = "LArDLHitTrackShowerId">
+        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
+        <NumberOfBins>1024</NumberOfBins>
+        <UseTrainingMode>false</UseTrainingMode>
+        <TrainingOutputFileName>DUNEFD_MC11</TrainingOutputFileName>
+        <ModelFileNameU>PandoraUnet_TSID_DUNEFD_U_v03_22_00.pt</ModelFileNameU>
+        <ModelFileNameV>PandoraUnet_TSID_DUNEFD_V_v03_22_00.pt</ModelFileNameV>
+        <ModelFileNameW>PandoraUnet_TSID_DUNEFD_W_v03_22_00.pt</ModelFileNameW>
+        <Visualize>false</Visualize>
+    </algorithm>
+    
+    <algorithm type = "LArDLHitValidation">
+        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
+    </algorithm>
+
+</pandora>
