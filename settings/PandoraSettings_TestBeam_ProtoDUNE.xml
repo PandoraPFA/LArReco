@@ -333,16 +333,8 @@
     <algorithm type = "LArNeutrinoProperties">
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
     </algorithm>
-    <algorithm type = "LArTestBeamParticleCreation">
-        <ParentPfoListName>NeutrinoParticles3D</ParentPfoListName>
-        <TrackPfoListName>TrackParticles3D</TrackPfoListName>
-        <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
-        <ParentVertexListName>NeutrinoVertices3D</ParentVertexListName>
-        <DaughterVertexListName>DaughterVertices3D</DaughterVertexListName>
-        <KeepInteractionVertex>false</KeepInteractionVertex>
-        <KeepStartVertex>true</KeepStartVertex>
-    </algorithm>
-    
+
+    <!-- Neutrino to beam particle treatment -->
     <algorithm type = "LArBdtPfoCharacterisation">
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
@@ -374,9 +366,15 @@
                 <HitFraction>0.2</HitFraction>
             </tool>
         </FeatureToolsNoChargeInfo>
-        <WriteToTree>false</WriteToTree>
-        <OutputTree>tree</OutputTree>
-        <OutputFile>tree_ProtoDUNE.root</OutputFile>
+    </algorithm>
+    <algorithm type = "LArTestBeamParticleCreation">
+        <ParentPfoListName>NeutrinoParticles3D</ParentPfoListName>
+        <TrackPfoListName>TrackParticles3D</TrackPfoListName>
+        <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+        <ParentVertexListName>NeutrinoVertices3D</ParentVertexListName>
+        <DaughterVertexListName>DaughterVertices3D</DaughterVertexListName>
+        <KeepInteractionVertex>false</KeepInteractionVertex>
+        <KeepStartVertex>true</KeepStartVertex>
     </algorithm>
 
     <!-- Track and shower building -->
