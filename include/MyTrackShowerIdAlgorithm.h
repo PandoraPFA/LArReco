@@ -34,6 +34,7 @@ private:
 
     // Member variables here
     bool m_writeToTree;
+    int m_eventId;
     std::string m_treeName;
     std::string m_fileName;
     std::string m_mcParticleListName;
