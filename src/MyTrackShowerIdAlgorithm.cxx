@@ -20,23 +20,27 @@ using namespace lar_reco;
 
 
 MyTrackShowerIdAlgorithm::MyTrackShowerIdAlgorithm():
-  m_writeToTree(),
-  m_treeName(),
-  m_fileName(),
-  m_mcParticleListName(),
-  m_caloHitListName(),
-  m_inputPfoListName()
+    m_writeToTree(),
+    m_eventId(-1),
+    m_treeName(),
+    m_fileName(),
+    m_mcParticleListName(),
+    m_caloHitListName(),
+    m_inputPfoListName()
 {
 }
 
 MyTrackShowerIdAlgorithm::~MyTrackShowerIdAlgorithm()
 {
     if (m_writeToTree)
-        PandoraMonitoringApi::SaveTree(this->GetPandora(), m_treeName.c_str(), m_fileName.c_str(), "UPDATE");
+        PANDORA_MONITORING_API(SaveTree(this->GetPandora(), m_treeName.c_str(), m_fileName.c_str(), "UPDATE"));
 }
 //------------------------------------------------------------------------------------------------------------------------------------------
 StatusCode MyTrackShowerIdAlgorithm::Run()
 {
+    // ATTN - m_eventId is initialised to -1, so the first event is event zero
+    ++m_eventId;
+
     // Input lists
     const PfoList *pPfoList(nullptr);
     PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraContentApi::GetList(*this, m_inputPfoListName, pPfoList));
@@ -72,10 +76,11 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
 
     LArMCParticleHelper::GetPfoMCParticleHitSharingMaps(pfoToHitsMap, {targetMCParticleToHitsMap}, pfoToMCHitSharingMap, mcToPfoHitSharingMap);
     
-    // PandoraMonitoringApi::SetEveDisplayParameters(this->GetPandora(), true, DETECTOR_VIEW_XZ, -1.f, -1.f, 1.f);
-    // PandoraMonitoringApi::VisualizeParticleFlowObjects(this->GetPandora(), pPfoList, "GotThePfoList", RED);
-    // PandoraMonitoringApi::ViewEvent(this->GetPandora());
+    // PANDORA_MONITORING_API(SetEveDisplayParameters(this->GetPandora(), true, DETECTOR_VIEW_XZ, -1.f, -1.f, 1.f));
+    // PANDORA_MONITORING_API(VisualizeParticleFlowObjects(this->GetPandora(), pPfoList, "GotThePfoList", RED));
+    // PANDORA_MONITORING_API(ViewEvent(this->GetPandora()));
     // Write one tree entry for each Pfo
+    int pfoId(0);
     for (const Pfo *const pPfo : finalStatePfos)
     {
         const CaloHitList &allHitsInPfo(pfoToHitsMap.at(pPfo));
@@ -91,8 +96,8 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         CaloHitList wHitsInPfo;
         LArPfoHelper::GetCaloHits(pPfo, TPC_VIEW_W, wHitsInPfo);
         
-        // PandoraMonitoringApi::VisualizeCaloHits(this->GetPandora(), &wHitsInPfo, "WHitsInThisPfo", CYAN);
-        // PandoraMonitoringApi::ViewEvent(this->GetPandora());
+        // PANDORA_MONITORING_API(VisualizeCaloHits(this->GetPandora(), &wHitsInPfo, "WHitsInThisPfo", CYAN));
+        // PANDORA_MONITORING_API(ViewEvent(this->GetPandora()));
         
         int nHitsInBestMCParticleTotal(-1),
             nHitsInBestMCParticleU(-1),
@@ -144,8 +149,8 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
                 bestMCParticlePdgCode = pAssociatedMCParticle->GetParticleId();
                 bestMCParticleIsTrack = ((PHOTON != pAssociatedMCParticle->GetParticleId()) && (E_MINUS != std::abs(pAssociatedMCParticle->GetParticleId())) ? 1 : 0);
             }
-            // PandoraMonitoringApi::VisualizeCaloHits(this->GetPandora(), &associatedMCHitsW, "associatedMCHitsW", GREEN);
-            // PandoraMonitoringApi::ViewEvent(this->GetPandora());
+            // PANDORA_MONITORING_API(VisualizeCaloHits(this->GetPandora(), &associatedMCHitsW, "associatedMCHitsW", GREEN));
+            // PANDORA_MONITORING_API(ViewEvent(this->GetPandora()));
         }
         // Cache values here
         const float purity((nHitsInPfoTotal > 0) ? static_cast<float>(nHitsSharedWithBestMCParticleTotal) / static_cast<float>(nHitsInPfoTotal) : 0.f);
@@ -158,26 +163,30 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
             hitEnergiesW.push_back(pCaloHit->GetInputEnergy());
         }
         // Write to tree here
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInPfoTotal", nHitsInPfoTotal);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInPfoU", nHitsInPfoU);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInPfoV", nHitsInPfoV);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInPfoW", nHitsInPfoW);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInBestMCParticleTotal", nHitsInBestMCParticleTotal);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInBestMCParticleU", nHitsInBestMCParticleU);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInBestMCParticleV", nHitsInBestMCParticleV);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInBestMCParticleW", nHitsInBestMCParticleW);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsSharedWithBestMCParticleTotal", nHitsSharedWithBestMCParticleTotal);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsSharedWithBestMCParticleU", nHitsSharedWithBestMCParticleU);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsSharedWithBestMCParticleV", nHitsSharedWithBestMCParticleV);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsSharedWithBestMCParticleW", nHitsSharedWithBestMCParticleW);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "bestMCParticlePdgCode", bestMCParticlePdgCode);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "bestMCParticleIsTrack", bestMCParticleIsTrack);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "purity", purity);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "completeness", completeness);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitDriftPositionsW", &hitDriftPositionsW);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitWirePositionsW", &hitWirePositionsW);
-        PandoraMonitoringApi::SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitEnergiesW", &hitEnergiesW);
-        PandoraMonitoringApi::FillTree(this->GetPandora(), m_treeName.c_str());
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "eventId", m_eventId));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "pfoId", pfoId));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInPfoTotal", nHitsInPfoTotal));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInPfoU", nHitsInPfoU));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInPfoV", nHitsInPfoV));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInPfoW", nHitsInPfoW));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInBestMCParticleTotal", nHitsInBestMCParticleTotal));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInBestMCParticleU", nHitsInBestMCParticleU));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInBestMCParticleV", nHitsInBestMCParticleV));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInBestMCParticleW", nHitsInBestMCParticleW));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsSharedWithBestMCParticleTotal", nHitsSharedWithBestMCParticleTotal));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsSharedWithBestMCParticleU", nHitsSharedWithBestMCParticleU));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsSharedWithBestMCParticleV", nHitsSharedWithBestMCParticleV));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsSharedWithBestMCParticleW", nHitsSharedWithBestMCParticleW));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "bestMCParticlePdgCode", bestMCParticlePdgCode));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "bestMCParticleIsTrack", bestMCParticleIsTrack));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "purity", purity));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "completeness", completeness));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitDriftPositionsW", &hitDriftPositionsW));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitWirePositionsW", &hitWirePositionsW));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitEnergiesW", &hitEnergiesW));
+        PANDORA_MONITORING_API(FillTree(this->GetPandora(), m_treeName.c_str()));
+
+        ++pfoId;
     }
     
     return STATUS_CODE_SUCCESS;
