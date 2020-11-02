@@ -17,6 +17,9 @@ endif
 ifdef BUILD_32BIT_COMPATIBLE
     LIBS += -m32
 endif
+ifdef PANDORA_LIBTORCH
+    LIBS += -lLArDLContent
+endif
 
 PROJECT_BINARY = $(PROJECT_DIR)/bin/PandoraInterface
 
@@ -30,6 +33,9 @@ endif
 
 ifdef MONITORING
     DEFINES = -DMONITORING=1
+endif
+ifdef PANDORA_LIBTORCH
+    DEFINES += -DLIBTORCH_DL=1
 endif
 
 SOURCES =  $(wildcard $(PROJECT_DIR)/test/*.cxx)
