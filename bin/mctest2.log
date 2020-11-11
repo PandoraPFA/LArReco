@@ -1,0 +1,871 @@
+EventReadingAlgorithm: Processing event file: Pandora_Events.pndr
+  
+*pRecreatedCRPfos.size 117
+No MCParticles supplied.
+Failure in algorithm Alg0003, LArMaster, unknown exception
+  
+*pRecreatedCRPfos.size 78
+MC particle found
+MC particle found
+MC particle found
+MC particle found
+MC particle found
+|[1m MCParticle [0m|[1m[0m|[1m[0m|[1m Pfo [0m|[1m nSharedHits [0m|[1m[0m|[1m Pfo [0m|[1m nSharedHits [0m|[1m[0m|[1m Pfo [0m|[1m nSharedHits [0m|[1m[0m|[1m Pfo [0m|[1m nSharedHits [0m|
+|[0m ---------- [0m|[0m[0m|[0m[0m|[0m --- [0m|[0m ----------- [0m|[0m[0m|[0m --- [0m|[0m ----------- [0m|[0m[0m|[0m --- [0m|[0m ----------- [0m|[0m[0m|[0m --- [0m|[0m ----------- [0m|
+|[0m[92m          1 [0m|[0m|[0m|[0m[91m   1 [0m|[0m[91m         166 [0m|[0m|[0m[39m     [0m|[0m[39m             [0m|[0m|[0m[39m     [0m|[0m[39m             [0m|[0m|[0m[39m     [0m|[0m[39m             [0m|
+|[0m[92m          2 [0m|[0m|[0m|[0m[91m   2 [0m|[0m[91m         124 [0m|[0m|[0m[39m     [0m|[0m[39m             [0m|[0m|[0m[39m     [0m|[0m[39m             [0m|[0m|[0m[39m     [0m|[0m[39m             [0m|
+|[0m[92m          3 [0m|[0m|[0m|[0m[91m   1 [0m|[0m[91m          72 [0m|[0m|[0m[91m   3 [0m|[0m[91m          72 [0m|[0m|[0m[39m     [0m|[0m[39m             [0m|[0m|[0m[39m     [0m|[0m[39m             [0m|
+|[0m[92m          4 [0m|[0m|[0m|[0m[91m   2 [0m|[0m[91m           5 [0m|[0m|[0m[91m   1 [0m|[0m[91m           4 [0m|[0m|[0m[91m   3 [0m|[0m[91m           4 [0m|[0m|[0m[91m   4 [0m|[0m[91m           4 [0m|
+   
+Tagged clear cosmic = 78.9474%
+clear cosmic identified as neutrino = 21.0526%
+protected clear neutrinos = 100%
+clear neutrino identified as cosmic = 0%
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (163.712, 92.6248, 257.547)
+Endpoint position: (156.168, 113.941, 276.468)
+Hypothosis: 0
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (164.48, 90.1329, 256.31)
+Endpoint position: (158.044, 88.4678, 283.794)
+Hypothosis: 0
+    
+ERROR: cluster is not in the W view!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+Skipping...
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (163.63, 92.9534, 257.662)
+Endpoint position: (156.167, 114.192, 276.352)
+Hypothosis: 0
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (164.546, 90.5046, 256.324)
+Endpoint position: (157.993, 88.5478, 283.842)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+-1-1
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.60821
+SVM Ran Correctly!
+SlicePfo Info: 1  1  1  18  1
+nu hits in mc 623
+nSlices 1
+total hits in slice 1100
+nu hits in slice 657
+shared hits: 623
+completeness = 1
+purity = 0.94825
+isSelectedAsNu = 1
+-----------------------------------
+sum comp = 1
+true = 1
+  
+*pRecreatedCRPfos.size 201
+No MCParticles supplied.
+Failure in algorithm Alg0003, LArMaster, unknown exception
+  
+*pRecreatedCRPfos.size 176
+MC particle found
+MC particle found
+MC particle found
+MC particle found
+No MCParticles supplied.
+Failure in algorithm Alg0003, LArMaster, unknown exception
+  
+*pRecreatedCRPfos.size 58
+MC particle found
+|[1m MCParticle [0m|[1m[0m|[1m[0m|[1m Pfo [0m|[1m nSharedHits [0m|
+|[0m ---------- [0m|[0m[0m|[0m[0m|[0m --- [0m|[0m ----------- [0m|
+|[0m[92m          1 [0m|[0m|[0m|[0m[91m   1 [0m|[0m[91m          77 [0m|
+   
+Tagged clear cosmic = 81.8182%
+clear cosmic identified as neutrino = 18.1818%
+protected clear neutrinos = 100%
+clear neutrino identified as cosmic = 0%
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (14.5827, 40.1091, 878.276)
+Endpoint position: (225.322, 110.819, 960.324)
+Hypothosis: 0
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (234.617, 28.8176, 4.27779)
+Endpoint position: (236.766, 35.0751, 16.3169)
+Hypothosis: 0
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (0.114089, 34.0017, 872.475)
+Endpoint position: (225.309, 110.838, 960.308)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (234.652, 29.1241, 4.07745)
+Endpoint position: (236.766, 34.943, 16.3761)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+-1-1
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.243686
+SVM Ran Correctly!
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.297125
+SVM Ran Correctly!
+SlicePfo Info: 2  2  7  10  2
+nu hits in mc 90
+nSlices 2
+total hits in slice 1226
+nu hits in slice 0
+shared hits: 0
+completeness = 0
+purity = -nan
+isSelectedAsNu = 0
+-----------------------------------
+total hits in slice 251
+nu hits in slice 90
+shared hits: 90
+completeness = 1
+purity = 1
+isSelectedAsNu = 1
+-----------------------------------
+sum comp = 1
+true = 1
+  
+*pRecreatedCRPfos.size 89
+No MCParticles supplied.
+Failure in algorithm Alg0003, LArMaster, unknown exception
+  
+*pRecreatedCRPfos.size 85
+MC particle found
+MC particle found
+MC particle found
+|[1m MCParticle [0m|[1m[0m|[1m[0m|[1m Pfo [0m|[1m nSharedHits [0m|
+|[0m ---------- [0m|[0m[0m|[0m[0m|[0m --- [0m|[0m ----------- [0m|
+|[0m[92m          1 [0m|[0m|[0m|[0m[91m   1 [0m|[0m[91m         110 [0m|
+   
+Tagged clear cosmic = 40%
+clear cosmic identified as neutrino = 60%
+protected clear neutrinos = -nan%
+clear neutrino identified as cosmic = -nan%
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (102.732, 31.0617, 1023.83)
+Endpoint position: (141.131, 35.8438, 1036.06)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+W Cluster too small
+9.30494
+Skipping...
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (37.6322, 40.165, 403.267)
+Endpoint position: (42.7551, 22.1531, 406.009)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (91.924, 30.2119, 1025.75)
+Endpoint position: (141.201, 35.8479, 1036.11)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+Skipping...
+    
+ERROR: cluster is not in the W view!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (46.6237, 6.47154, 407.612)
+Endpoint position: (49.5874, 9.32944, 409.739)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+W Cluster too small
+7.81951
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+-1-1
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.604881
+SVM Ran Correctly!
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.0151289
+SVM Ran Correctly!
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.0404806
+SVM Ran Correctly!
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.0690094
+SVM Ran Correctly!
+SlicePfo Info: 4  4  23  33  4
+nu hits in mc 182
+nSlices 4
+total hits in slice 224
+nu hits in slice 206
+shared hits: 182
+completeness = 1
+purity = 0.883495
+isSelectedAsNu = 1
+-----------------------------------
+total hits in slice 425
+nu hits in slice 0
+shared hits: 0
+completeness = 0
+purity = -nan
+isSelectedAsNu = 0
+-----------------------------------
+total hits in slice 415
+nu hits in slice 0
+shared hits: 0
+completeness = 0
+purity = -nan
+isSelectedAsNu = 0
+-----------------------------------
+total hits in slice 557
+nu hits in slice 0
+shared hits: 0
+completeness = 0
+purity = -nan
+isSelectedAsNu = 0
+-----------------------------------
+sum comp = 1
+true = 1
+  
+*pRecreatedCRPfos.size 123
+MC particle found
+MC particle found
+MC particle found
+MC particle found
+MC particle found
+MC particle found
+MC particle found
+MC particle found
+MC particle found
+MC particle found
+MC particle found
+MC particle found
+|[1m MCParticle [0m|[1m[0m|[1m[0m|[1m Pfo [0m|[1m nSharedHits [0m|
+|[0m ---------- [0m|[0m[0m|[0m[0m|[0m --- [0m|[0m ----------- [0m|
+|[0m[92m          1 [0m|[0m|[0m|[0m[91m   1 [0m|[0m[91m         228 [0m|
+   
+Tagged clear cosmic = 43.4783%
+clear cosmic identified as neutrino = 56.5217%
+protected clear neutrinos = 100%
+clear neutrino identified as cosmic = 0%
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (215.815, -92.8934, 374.574)
+Endpoint position: (28.38, 42.2635, 410.542)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (236.741, -2.22516, 641.81)
+Endpoint position: (167.288, -30.2841, 651.148)
+Hypothosis: 0
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (251.509, 3.59063, 640.622)
+Endpoint position: (236.989, -2.18674, 642.062)
+Hypothosis: 0
+    
+ERROR: cluster is not in the W view!
+Skipping...
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (46.1017, 112.864, 833.947)
+Endpoint position: (52.1453, 32.596, 892.69)
+Hypothosis: 0
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (52.0072, -6.5668, 892.096)
+Endpoint position: (48.2902, -47.2752, 904.444)
+Hypothosis: 0
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (84.4954, -102.765, 88.5232)
+Endpoint position: (74.6906, -101.076, 114.004)
+Hypothosis: 0
+    
+Applied Hypothesis #1 (Single Clean Particle)
+returned
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.739423
+Vertex position: (88.4144, -115.185, 95.8496)
+Endpoint position: (126.2, -87.1376, 121.51)
+Hypothosis: 1
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (232.743, -104.598, 370.407)
+Endpoint position: (9.52079, 58.3045, 412.66)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (251.945, 4.00089, 640.623)
+Endpoint position: (0.250431, -100.125, 662.098)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (46.0994, 112.894, 834.017)
+Endpoint position: (56.7729, -39.4153, 901.591)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+W Cluster too small
+6.82102
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: cluster is not in the W view!
+Skipping...
+    
+Applied Hypothesis #1 (Single Clean Particle)
+returned
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.739423
+Vertex position: (88.4144, -115.185, 95.8496)
+Endpoint position: (126.2, -87.1376, 121.51)
+Hypothosis: 1
+    
+ERROR: cluster is not in the W view!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (75.1088, -105.293, 112.232)
+Endpoint position: (76.793, -96.1157, 115.699)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+-1-1
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.0132335
+SVM Ran Correctly!
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.55872
+SVM Ran Correctly!
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.0434565
+SVM Ran Correctly!
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.946684
+SVM Ran Correctly!
+SlicePfo Info: 4  4  25  44  4
+nu hits in mc 682
+nSlices 4
+total hits in slice 2002
+nu hits in slice 7
+shared hits: 7
+completeness = 0.0102639
+purity = 1
+isSelectedAsNu = 0
+-----------------------------------
+total hits in slice 1729
+nu hits in slice 0
+shared hits: 0
+completeness = 0
+purity = -nan
+isSelectedAsNu = 0
+-----------------------------------
+total hits in slice 1365
+nu hits in slice 0
+shared hits: 0
+completeness = 0
+purity = -nan
+isSelectedAsNu = 0
+-----------------------------------
+total hits in slice 834
+nu hits in slice 663
+shared hits: 663
+completeness = 0.972141
+purity = 1
+isSelectedAsNu = 1
+-----------------------------------
+sum comp = 0.982405
+true = 1
+  
+*pRecreatedCRPfos.size 82
+MC particle found
+|[1m MCParticle [0m|[1m[0m|[1m[0m|[1m Pfo [0m|[1m nSharedHits [0m|
+|[0m ---------- [0m|[0m[0m|[0m[0m|[0m --- [0m|[0m ----------- [0m|
+|[0m[92m          1 [0m|[0m|[0m|[0m[91m   1 [0m|[0m[91m         228 [0m|
+   
+Tagged clear cosmic = 56%
+clear cosmic identified as neutrino = 44%
+protected clear neutrinos = 100%
+clear neutrino identified as cosmic = 0%
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.516823
+Vertex position: (238.359, 5.83465, 548.486)
+Endpoint position: (220.507, 105.121, 658.914)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (91.3976, 116.516, 250.316)
+Endpoint position: (99.6878, 10.3524, 252.033)
+Hypothosis: 0
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (71.7536, -51.8478, 783.025)
+Endpoint position: (4.64324, -102.892, 828.942)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.638214
+Vertex position: (1.31949, 16.7524, 211.971)
+Endpoint position: (29.6183, 37.6957, 251.808)
+Hypothosis: 0
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (53.335, 116.575, 790.629)
+Endpoint position: (83.9228, 71.5225, 794.422)
+Hypothosis: 0
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (12.3093, -25.9931, 7.31108)
+Endpoint position: (25.6883, -76.5842, 52.3155)
+Hypothosis: 0
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.516823
+Vertex position: (237.924, 5.08995, 549.379)
+Endpoint position: (220.55, 105.012, 658.216)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+W Cluster too small
+9.18793
+Skipping...
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (99.7566, 36.5898, 250.382)
+Endpoint position: (103.097, 27.8036, 257.695)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+ERROR: cluster is not in the W view!
+Skipping...
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (74.2485, -50.0719, 780.951)
+Endpoint position: (4.64392, -102.648, 829.073)
+Hypothosis: 0
+    
+ERROR: PFO is tiny!
+Skipping...
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.638214
+Vertex position: (1.31949, 16.7524, 211.971)
+Endpoint position: (29.6183, 37.6957, 251.808)
+Hypothosis: 0
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.5
+Vertex position: (53.335, 116.575, 790.629)
+Endpoint position: (83.9228, 71.5225, 794.422)
+Hypothosis: 0
+    
+Not hypothosis one
+Not hypothosis two
+                                DIRECTION RESULTS FOR PFO >>>>            
+Probability: 0.620014
+Vertex position: (12.1546, -25.349, 7.26162)
+Endpoint position: (25.4901, -71.9158, 52.7394)
+Hypothosis: 0
+-1-1
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.881141
+SVM Ran Correctly!
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.744092
+SVM Ran Correctly!
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.853522
+SVM Ran Correctly!
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.425475
+SVM Ran Correctly!
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.0175875
+SVM Ran Correctly!
+-----------------start of new slice loop---------------------------------
+nuProbability : 0.262926
+SVM Ran Correctly!
+SlicePfo Info: 6  6  11  23  6
+nu hits in mc 234
+nSlices 6
+total hits in slice 1002
+nu hits in slice 0
+shared hits: 0
+completeness = 0
+purity = -nan
+isSelectedAsNu = 1
+-----------------------------------
+total hits in slice 1553
+nu hits in slice 0
+shared hits: 0
+completeness = 0
+purity = -nan
+isSelectedAsNu = 0
+-----------------------------------
+total hits in slice 777
+nu hits in slice 0
+shared hits: 0
+completeness = 0
+purity = -nan
+isSelectedAsNu = 0
+-----------------------------------
+total hits in slice 266
+nu hits in slice 234
+shared hits: 234
+completeness = 1
+purity = 1
+isSelectedAsNu = 0
+-----------------------------------
+total hits in slice 298
+nu hits in slice 0
+shared hits: 0
+completeness = 0
+purity = -nan
+isSelectedAsNu = 0
+-----------------------------------
+total hits in slice 293
+nu hits in slice 0
+shared hits: 0
+completeness = 0
+purity = -nan
+isSelectedAsNu = 0
+-----------------------------------
+sum comp = 1
+true = 0
+  
+*pRecreatedCRPfos.size 83
+MC particle found
+MC particle found
+MC particle found
+MC particle found
+No MCParticles supplied.
+Failure in algorithm Alg0003, LArMaster, unknown exception
+Algorithm Alg0001, LArEventReading raised stop processing exception: All event files processed
