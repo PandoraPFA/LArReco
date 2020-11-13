@@ -53,7 +53,9 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
     
     // Mapping target MCParticles -> truth associated Hits
     LArMCParticleHelper::MCContributionMap targetMCParticleToHitsMap;
-    LArMCParticleHelper::SelectReconstructableMCParticles(pMCParticleList, pCaloHitList, LArMCParticleHelper::PrimaryParameters(), LArMCParticleHelper::IsBeamNeutrinoFinalState, targetMCParticleToHitsMap);
+    LArMCParticleHelper::PrimaryParameters parameters;
+    parameters.m_foldBackHierarchy = false;
+    LArMCParticleHelper::SelectReconstructableMCParticles(pMCParticleList, pCaloHitList, parameters, LArMCParticleHelper::IsBeamNeutrinoFinalState, targetMCParticleToHitsMap);
     
     // Mapping reconstructed particles -> reconstruction associated Hits
     PfoList allConnectedPfos;
@@ -67,7 +69,7 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
     }
     
     LArMCParticleHelper::PfoContributionMap pfoToHitsMap;
-    const bool foldBackHierarchy(false);
+    const bool foldBackHierarchy(parameters.m_foldBackHierarchy);
     LArMCParticleHelper::GetPfoToReconstructable2DHitsMap(finalStatePfos, targetMCParticleToHitsMap, pfoToHitsMap, foldBackHierarchy);
     
     // Matching step
@@ -137,8 +139,8 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
             if (static_cast<int>(associatedMCHits.size()) > nHitsSharedWithBestMCParticleTotal)
             {
                 // This is the current best matched MCParticle, to be stored
-                std::cout << "associatedMCHits.size() " << associatedMCHits.size() << ", nHitsSharedWithBestMCParticleTotal " << nHitsSharedWithBestMCParticleTotal << std::endl;
                 nHitsSharedWithBestMCParticleTotal = associatedMCHits.size();
+                std::cout << "associatedMCHits.size() " << associatedMCHits.size() << ", nHitsSharedWithBestMCParticleTotal " << nHitsSharedWithBestMCParticleTotal << std::endl;
                 nHitsSharedWithBestMCParticleU = LArMonitoringHelper::CountHitsByType(TPC_VIEW_U, associatedMCHits);
                 nHitsSharedWithBestMCParticleV = LArMonitoringHelper::CountHitsByType(TPC_VIEW_V, associatedMCHits);
                 nHitsSharedWithBestMCParticleW = LArMonitoringHelper::CountHitsByType(TPC_VIEW_W, associatedMCHits);
