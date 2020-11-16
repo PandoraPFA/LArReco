@@ -52,9 +52,16 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
     PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraContentApi::GetList(*this, m_caloHitListName, pCaloHitList));
     
     // Mapping target MCParticles -> truth associated Hits
+    // ATTN - We're writing out PFOs from the end of the reco chain, so don't apply any reconstructability criteria, or empty PFOs may result
     LArMCParticleHelper::MCContributionMap targetMCParticleToHitsMap;
     LArMCParticleHelper::PrimaryParameters parameters;
-    parameters.m_foldBackHierarchy = false;
+    parameters.m_foldBackHierarchy = true;
+    parameters.m_minPrimaryGoodHits = 0;
+    parameters.m_minHitsForGoodView = 0;
+    parameters.m_minHitSharingFraction = 0.f;
+    parameters.m_maxPhotonPropagation = std::numeric_limits<float>::max();
+    parameters.m_selectInputHits = false;
+
     LArMCParticleHelper::SelectReconstructableMCParticles(pMCParticleList, pCaloHitList, parameters, LArMCParticleHelper::IsBeamNeutrinoFinalState, targetMCParticleToHitsMap);
     
     // Mapping reconstructed particles -> reconstruction associated Hits
