@@ -171,7 +171,7 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         FloatVector hitDriftPositionsU, hitWirePositionsU, hitEnergiesU,
                     hitDriftPositionsV, hitWirePositionsV, hitEnergiesV,
                     hitDriftPositionsW, hitWirePositionsW, hitEnergiesW,
-		    hit3DPositionsX, hit3DPositionsY, hit3DPositionsZ;
+                    hit3DPositionsX, hit3DPositionsY, hit3DPositionsZ;
 
         for (const CaloHit *const pCaloHit : uHitsInPfo)
         {
@@ -199,23 +199,23 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         }
 
 	//GetVertex
-	const pandora::Vertex* vertex = LArPfoHelper::GetVertex(pPfo);
+        const pandora::Vertex* vertex = LArPfoHelper::GetVertex(pPfo);
         CartesianVector vertexPosition = vertex->GetPosition();
-	float vertexPositionX = vertexPosition.GetX();
-	float vertexPositionY = vertexPosition.GetY();
-	float vertexPositionZ = vertexPosition.GetZ();
+        float vertexPositionX = vertexPosition.GetX();
+        float vertexPositionY = vertexPosition.GetY();
+        float vertexPositionZ = vertexPosition.GetZ();
 
 	//Project vertex on U,V views
-	CartesianVector vertexPositionU = LArGeometryHelper::ProjectPosition(this->GetPandora(),vertexPosition,TPC_VIEW_U);
-	CartesianVector vertexPositionV = LArGeometryHelper::ProjectPosition(this->GetPandora(),vertexPosition,TPC_VIEW_V);
-	CartesianVector vertexPositionW = LArGeometryHelper::ProjectPosition(this->GetPandora(),vertexPosition,TPC_VIEW_W);
-	
-	float vertexDriftPositionU=vertexPositionU.GetX();
-	float vertexWirePositionU=vertexPositionU.GetZ();
-	float vertexDriftPositionV=vertexPositionV.GetX();
-	float vertexWirePositionV=vertexPositionV.GetZ();
-	float vertexDriftPositionW=vertexPositionW.GetX();
-	float vertexWirePositionW=vertexPositionW.GetZ();
+        CartesianVector vertexPositionU = LArGeometryHelper::ProjectPosition(this->GetPandora(),vertexPosition,TPC_VIEW_U);
+        CartesianVector vertexPositionV = LArGeometryHelper::ProjectPosition(this->GetPandora(),vertexPosition,TPC_VIEW_V);
+        CartesianVector vertexPositionW = LArGeometryHelper::ProjectPosition(this->GetPandora(),vertexPosition,TPC_VIEW_W);
+
+        float vertexDriftPositionU=vertexPositionU.GetX();
+        float vertexWirePositionU=vertexPositionU.GetZ();
+        float vertexDriftPositionV=vertexPositionV.GetX();
+        float vertexWirePositionV=vertexPositionV.GetZ();
+        float vertexDriftPositionW=vertexPositionW.GetX();
+        float vertexWirePositionW=vertexPositionW.GetZ();
 
         // Write to tree here
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "eventId", m_eventId));
@@ -240,8 +240,8 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitWirePositionsU", &hitWirePositionsU));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitEnergiesU", &hitEnergiesU));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitDriftPositionsV", &hitDriftPositionsV));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitWirePositionsW", &hitWirePositionsV));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitEnergiesW", &hitEnergiesV));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitWirePositionsV", &hitWirePositionsV));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitEnergiesV", &hitEnergiesV));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitDriftPositionsW", &hitDriftPositionsW));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitWirePositionsW", &hitWirePositionsW));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitEnergiesW", &hitEnergiesW));
