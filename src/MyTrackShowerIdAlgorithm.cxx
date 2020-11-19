@@ -198,14 +198,14 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
             hit3DPositionsZ.push_back(pCaloHit->GetPositionVector().GetZ());
         }
 
-	//GetVertex
+        //GetVertex
         const pandora::Vertex* vertex = LArPfoHelper::GetVertex(pPfo);
         CartesianVector vertexPosition = vertex->GetPosition();
         float vertexPositionX = vertexPosition.GetX();
         float vertexPositionY = vertexPosition.GetY();
         float vertexPositionZ = vertexPosition.GetZ();
 
-	//Project vertex on U,V views
+        //Project vertex on U,V views
         CartesianVector vertexPositionU = LArGeometryHelper::ProjectPosition(this->GetPandora(),vertexPosition,TPC_VIEW_U);
         CartesianVector vertexPositionV = LArGeometryHelper::ProjectPosition(this->GetPandora(),vertexPosition,TPC_VIEW_V);
         CartesianVector vertexPositionW = LArGeometryHelper::ProjectPosition(this->GetPandora(),vertexPosition,TPC_VIEW_W);
@@ -214,6 +214,13 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         float vertexWirePositionU=vertexPositionU.GetZ();
         float vertexWirePositionV=vertexPositionV.GetZ();
         float vertexWirePositionW=vertexPositionW.GetZ();
+
+        //Get interaction vertex
+        const pandora::Vertex* intVertex = LArPfoHelper::GetVertex(LArPfoHelper::GetParentNeutrino(pPfo));
+        CartesianVector intVertexPosition = intVertex->GetPosition();
+        CartesianVector intVertexPositionU = LArGeometryHelper::ProjectPosition(this->GetPandora(), intVertexPosition, TPC_VIEW_U);
+        CartesianVector intVertexPositionV = LArGeometryHelper::ProjectPosition(this->GetPandora(), intVertexPosition, TPC_VIEW_V);
+        CartesianVector intVertexPositionW = LArGeometryHelper::ProjectPosition(this->GetPandora(), intVertexPosition, TPC_VIEW_W);
 
         // Write to tree here
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "eventId", m_eventId));
@@ -253,7 +260,13 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vertexWirePositionU", vertexWirePositionU));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vertexWirePositionV", vertexWirePositionV));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vertexWirePositionW", vertexWirePositionW));
-
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVertexPositionX", intVertexPosition.GetX()));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVertexPositionY", intVertexPosition.GetY()));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVertexPositionZ", intVertexPosition.GetZ()));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVertexDriftPosition", intVertexPosition.GetX()));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVertexWirePositionU", intVertexPositionU.GetZ()));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVertexWirePositionV", intVertexPositionV.GetZ()));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVertexWirePositionW", intVertexPositionW.GetZ()));
 
         PANDORA_MONITORING_API(FillTree(this->GetPandora(), m_treeName.c_str()));
 
