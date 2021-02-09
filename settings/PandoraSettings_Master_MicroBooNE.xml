@@ -78,7 +78,6 @@
    <algorithm type = "LArVisualMonitoring">
         <ShowCurrentPfos>true</ShowCurrentPfos>
         <ShowDetector>true</ShowDetector>
-	<ShowCurrectMCParticles>true</ShowCurrectMCParticles>
     </algorithm>
 
 </pandora>
