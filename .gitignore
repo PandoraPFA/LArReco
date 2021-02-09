@@ -1,0 +1,10 @@
+*~
+*.bak
+*.backup
+*.log
+*.root
+*#
+lib/
+include/
+build/
+bin/
