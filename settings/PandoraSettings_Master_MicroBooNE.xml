@@ -13,6 +13,10 @@
         <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
         <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
     </algorithm>
+    <algorithm type = "LArVisualMonitoring">
+        <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
+        <ShowDetector>true</ShowDetector>
+    </algorithm>
 
 
     <algorithm type = "LArMaster">
@@ -28,10 +32,8 @@
         </CosmicRayTaggingTools>
         <SliceIdTools>
             <tool type = "LArSvmNeutrinoId">
-                <MvaFileName>PandoraSvm_v03_11_00.xml</MvaFileName>
-                <MvaName>NeutrinoId</MvaName>
-		<UseTrainingMode>false</UseTrainingMode>
-		<TrainingOutputFileName>TrainingOutTDT_13f.txt</TrainingOutputFileName>
+                <MvaFileName>PandoraSvm_TrackDirectionTool.xml</MvaFileName>
+                <MvaName>TrackDirectionToolSvm</MvaName>
             </tool>
 	    <tool type = "LArSliceIdMonitoring"/>
         </SliceIdTools>
@@ -46,9 +48,9 @@
 	<PfoListName>RecreatedPfos</PfoListName>
 	<TrackDirection>
 	  <tool type = "LArTrackDirectionTool">
-	    <SlidingFitWindow>20</SlidingFitWindow>
-	    <MinClusterCaloHits>20</MinClusterCaloHits>
-	    <MinClusterLength>10.f</MinClusterLength>
+	    <SlidingFitWindow>5</SlidingFitWindow>
+	    <MinClusterCaloHits>5</MinClusterCaloHits>
+	    <MinClusterLength>1.f</MinClusterLength>
 	    <NumberTrackEndHits>100000</NumberTrackEndHits>
 	    <EnableFragmentRemoval>true</EnableFragmentRemoval>
 	    <EnableSplitting>true</EnableSplitting>
@@ -71,6 +73,12 @@
         <WriteToTree>false</WriteToTree>
         <OutputTree>Validation</OutputTree>
         <OutputFile>Validation.root</OutputFile>
+    </algorithm>
+
+   <algorithm type = "LArVisualMonitoring">
+        <ShowCurrentPfos>true</ShowCurrentPfos>
+        <ShowDetector>true</ShowDetector>
+	<ShowCurrectMCParticles>true</ShowCurrectMCParticles>
     </algorithm>
 
 </pandora>
