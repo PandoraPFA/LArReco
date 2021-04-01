@@ -6,21 +6,19 @@
  *  $Log: $
  */
 
+#include "TFile.h"
+#include "TTree.h"
+
+#include "TG4Event.h"
+
 #include "Api/PandoraApi.h"
 #include "Helpers/XmlHelper.h"
 #include "Xml/tinyxml.h"
 
 #include "larpandoracontent/LArContent.h"
-#include "larpandoracontent/LArControlFlow/MasterAlgorithm.h"
 #include "larpandoracontent/LArControlFlow/MultiPandoraApi.h"
-#include "larpandoracontent/LArHelpers/LArPfoHelper.h"
-#include "larpandoracontent/LArPersistency/EventReadingAlgorithm.h"
 #include "larpandoracontent/LArPlugins/LArPseudoLayerPlugin.h"
 #include "larpandoracontent/LArPlugins/LArRotationalTransformationPlugin.h"
-
-#ifdef LIBTORCH_DL
-#include "larpandoradlcontent/LArDLContent.h"
-#endif
 
 #include "PandoraInterface.h"
 
@@ -30,10 +28,11 @@
 
 #include <getopt.h>
 #include <iostream>
+#include <random>
 #include <string>
 
 using namespace pandora;
-using namespace lar_reco;
+using namespace lar_nd_reco;
 
 int main(int argc, char *argv[])
 {
@@ -51,10 +50,21 @@ int main(int argc, char *argv[])
         TApplication *pTApplication = new TApplication("LArReco", &argc, argv);
         pTApplication->SetReturnFromRun(kTRUE);
 #endif
-        CreatePandoraInstances(parameters, pPrimaryPandora);
+
+        pPrimaryPandora = new pandora::Pandora();
 
         if (!pPrimaryPandora)
             throw StatusCodeException(STATUS_CODE_FAILURE);
+
+        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::RegisterAlgorithms(*pPrimaryPandora));
+        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::RegisterBasicPlugins(*pPrimaryPandora));
+
+        MultiPandoraApi::AddPrimaryPandoraInstance(pPrimaryPandora);
+
+        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetPseudoLayerPlugin(*pPrimaryPandora, new lar_content::LArPseudoLayerPlugin));
+        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=,
+            PandoraApi::SetLArTransformationPlugin(*pPrimaryPandora, new lar_content::LArRotationalTransformationPlugin));
+        PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPrimaryPandora, parameters.m_settingsFile));
 
         ProcessEvents(parameters, pPrimaryPandora);
     }
@@ -62,11 +72,6 @@ int main(int argc, char *argv[])
     {
         std::cerr << "Pandora StatusCodeException: " << statusCodeException.ToString() << statusCodeException.GetBackTrace() << std::endl;
         errorNo = 1;
-    }
-    catch (const StopProcessingException &)
-    {
-        // Exit gracefully
-        errorNo = 0;
     }
     catch (...)
     {
@@ -80,39 +85,77 @@ int main(int argc, char *argv[])
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-namespace lar_reco
+namespace lar_nd_reco
 {
-
-void CreatePandoraInstances(const Parameters &parameters, const Pandora *&pPrimaryPandora)
-{
-    pPrimaryPandora = new Pandora();
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::RegisterAlgorithms(*pPrimaryPandora));
-#ifdef LIBTORCH_DL
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArDLContent::RegisterAlgorithms(*pPrimaryPandora));
-#endif
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, LArContent::RegisterBasicPlugins(*pPrimaryPandora));
-
-    if (!pPrimaryPandora)
-        throw StatusCodeException(STATUS_CODE_FAILURE);
-
-    MultiPandoraApi::AddPrimaryPandoraInstance(pPrimaryPandora);
-
-    ProcessExternalParameters(parameters, pPrimaryPandora);
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetPseudoLayerPlugin(*pPrimaryPandora, new lar_content::LArPseudoLayerPlugin));
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetLArTransformationPlugin(*pPrimaryPandora, new lar_content::LArRotationalTransformationPlugin));
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPrimaryPandora, parameters.m_settingsFile));
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
 
 void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPandora)
 {
     int nEvents(0);
 
-    while ((nEvents++ < parameters.m_nEventsToProcess) || (0 > parameters.m_nEventsToProcess))
+    TFile fileSource(parameters.m_inputFileName.c_str(), "READ");
+    TTree *pEDepSimTree = (TTree*)fileSource.Get("EDepSimEvents");
+
+    if (!pEDepSimTree)
+    {
+        std::cout << "Missing the event tree" << std::endl;
+        return;
+    }
+
+    TG4Event *pEDepSimEvent(nullptr);
+    pEDepSimTree->SetBranchAddress("Event", &pEDepSimEvent);
+    // fileSource->Get("EDepSimGeometry");
+
+    while ((nEvents < parameters.m_nEventsToProcess) || (0 > parameters.m_nEventsToProcess))
     {
         if (parameters.m_shouldDisplayEventNumber)
-            std::cout << std::endl << "   PROCESSING EVENT: " << (nEvents - 1) << std::endl << std::endl;
+            std::cout << std::endl << "   PROCESSING EVENT: " << nEvents << std::endl << std::endl;
+
+        pEDepSimTree->GetEntry(nEvents++);
+
+        if (!pEDepSimEvent)
+            return;
+
+        int hitCounter(0);
+
+        for (TG4HitSegmentDetectors::iterator detector = pEDepSimEvent->SegmentDetectors.begin(); detector != pEDepSimEvent->SegmentDetectors.end(); ++detector)
+        {
+            std::cout << "Show hits for " << detector->first << " (" << detector->second.size() << " hits)" << std::endl;
+
+            for (TG4HitSegmentContainer::iterator g4Hit = detector->second.begin(); g4Hit != detector->second.end(); ++g4Hit)
+            {
+                //const double length = g4Hit->GetTrackLength();
+                //const int contrib = g4Hit->Contrib.front();
+                //const std::string particle = pEDepSimEvent->Trajectories[contrib].GetName();
+
+                const double energy = g4Hit->GetEnergyDeposit();
+                const CartesianVector start(g4Hit->GetStart().X(), g4Hit->GetStart().Y(), g4Hit->GetStart().Z());
+                const CartesianVector stop(g4Hit->GetStop().X(), g4Hit->GetStop().Y(), g4Hit->GetStop().Z());
+
+                PandoraApi::CaloHit::Parameters caloHitParameters;
+                caloHitParameters.m_positionVector = (start + stop) * 0.5f;
+                caloHitParameters.m_expectedDirection = pandora::CartesianVector(0.f, 0.f, 1.f);
+                caloHitParameters.m_cellNormalVector = pandora::CartesianVector(0.f, 0.f, 1.f);
+                caloHitParameters.m_cellGeometry = pandora::RECTANGULAR;
+                caloHitParameters.m_cellSize0 = std::fabs(start.GetY() - stop.GetY());
+                caloHitParameters.m_cellSize1 = std::fabs(start.GetX() - stop.GetX());
+                caloHitParameters.m_cellThickness = std::fabs(start.GetZ() - stop.GetZ());
+                caloHitParameters.m_nCellRadiationLengths = 1.f;
+                caloHitParameters.m_nCellInteractionLengths = 1.f;
+                caloHitParameters.m_time = 0.f;
+                caloHitParameters.m_inputEnergy = energy;
+                caloHitParameters.m_mipEquivalentEnergy = energy;
+                caloHitParameters.m_electromagneticEnergy = energy;
+                caloHitParameters.m_hadronicEnergy = energy;
+                caloHitParameters.m_isDigital = false;
+                caloHitParameters.m_hitType = pandora::TPC_3D;
+                caloHitParameters.m_hitRegion = pandora::SINGLE_REGION;
+                caloHitParameters.m_layer = 0;
+                caloHitParameters.m_isInOuterSamplingLayer = false;
+                caloHitParameters.m_pParentAddress = (void*)(static_cast<uintptr_t>(++hitCounter));
+
+                PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::CaloHit::Create(*pPrimaryPandora, caloHitParameters));
+            }
+        }
 
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ProcessEvent(*pPrimaryPandora));
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::Reset(*pPrimaryPandora));
@@ -127,32 +170,22 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
         return PrintOptions();
 
     int c(0);
-    std::string recoOption;
 
-    while ((c = getopt(argc, argv, "r:i:e:g:n:s:pNh")) != -1)
+    while ((c = getopt(argc, argv, ":i:e:n:s:Nh")) != -1)
     {
         switch (c)
         {
-        case 'r':
-            recoOption = optarg;
-            break;
         case 'i':
             parameters.m_settingsFile = optarg;
             break;
         case 'e':
-            parameters.m_eventFileNameList = optarg;
-            break;
-        case 'g':
-            parameters.m_geometryFileName = optarg;
+            parameters.m_inputFileName = optarg;
             break;
         case 'n':
             parameters.m_nEventsToProcess = atoi(optarg);
             break;
         case 's':
             parameters.m_nEventsToSkip = atoi(optarg);
-            break;
-        case 'p':
-            parameters.m_printOverallRecoStatus = true;
             break;
         case 'N':
             parameters.m_shouldDisplayEventNumber = true;
@@ -163,7 +196,7 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
         }
     }
 
-    return ProcessRecoOption(recoOption, parameters);
+    return true;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -171,10 +204,8 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
 bool PrintOptions()
 {
     std::cout << std::endl << "./bin/PandoraInterface " << std::endl
-              << "    -r RecoOption          (required) [Full, AllHitsCR, AllHitsNu, CRRemHitsSliceCR, CRRemHitsSliceNu, AllHitsSliceCR, AllHitsSliceNu]" << std::endl
               << "    -i Settings            (required) [algorithm description: xml]" << std::endl
-              << "    -e EventFileList       (optional) [colon-separated list of files: xml/pndr]" << std::endl
-              << "    -g GeometryFile        (optional) [detector geometry description: xml/pndr]" << std::endl
+              << "    -e EventsFile          (required) [input edep-sim file, typically containing events and geometry]" << std::endl
               << "    -n NEventsToProcess    (optional) [no. of events to process]" << std::endl
               << "    -s NEventsToSkip       (optional) [no. of events to skip in first file]" << std::endl
               << "    -p                     (optional) [print status]" << std::endl
@@ -183,128 +214,4 @@ bool PrintOptions()
     return false;
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters)
-{
-    std::string chosenRecoOption(recoOption);
-    std::transform(chosenRecoOption.begin(), chosenRecoOption.end(), chosenRecoOption.begin(), ::tolower);
-
-    if ("full" == chosenRecoOption)
-    {
-        parameters.m_shouldRunAllHitsCosmicReco = true;
-        parameters.m_shouldRunStitching = true;
-        parameters.m_shouldRunCosmicHitRemoval = true;
-        parameters.m_shouldRunSlicing = true;
-        parameters.m_shouldRunNeutrinoRecoOption = true;
-        parameters.m_shouldRunCosmicRecoOption = true;
-        parameters.m_shouldPerformSliceId = true;
-    }
-    else if ("allhitscr" == chosenRecoOption)
-    {
-        parameters.m_shouldRunAllHitsCosmicReco = true;
-        parameters.m_shouldRunStitching = true;
-        parameters.m_shouldRunCosmicHitRemoval = false;
-        parameters.m_shouldRunSlicing = false;
-        parameters.m_shouldRunNeutrinoRecoOption = false;
-        parameters.m_shouldRunCosmicRecoOption = false;
-        parameters.m_shouldPerformSliceId = false;
-    }
-    else if ("nostitchingcr" == chosenRecoOption)
-    {
-        parameters.m_shouldRunAllHitsCosmicReco = false;
-        parameters.m_shouldRunStitching = false;
-        parameters.m_shouldRunCosmicHitRemoval = false;
-        parameters.m_shouldRunSlicing = false;
-        parameters.m_shouldRunNeutrinoRecoOption = false;
-        parameters.m_shouldRunCosmicRecoOption = true;
-        parameters.m_shouldPerformSliceId = false;
-    } 
-    else if ("allhitsnu" == chosenRecoOption)
-    {
-        parameters.m_shouldRunAllHitsCosmicReco = false;
-        parameters.m_shouldRunStitching = false;
-        parameters.m_shouldRunCosmicHitRemoval = false;
-        parameters.m_shouldRunSlicing = false;
-        parameters.m_shouldRunNeutrinoRecoOption = true;
-        parameters.m_shouldRunCosmicRecoOption = false;
-        parameters.m_shouldPerformSliceId = false;
-    }
-    else if ("crremhitsslicecr" == chosenRecoOption)
-    {
-        parameters.m_shouldRunAllHitsCosmicReco = true;
-        parameters.m_shouldRunStitching = true;
-        parameters.m_shouldRunCosmicHitRemoval = true;
-        parameters.m_shouldRunSlicing = true;
-        parameters.m_shouldRunNeutrinoRecoOption = false;
-        parameters.m_shouldRunCosmicRecoOption = true;
-        parameters.m_shouldPerformSliceId = false;
-    }
-    else if ("crremhitsslicenu" == chosenRecoOption)
-    {
-        parameters.m_shouldRunAllHitsCosmicReco = true;
-        parameters.m_shouldRunStitching = true;
-        parameters.m_shouldRunCosmicHitRemoval = true;
-        parameters.m_shouldRunSlicing = true;
-        parameters.m_shouldRunNeutrinoRecoOption = true;
-        parameters.m_shouldRunCosmicRecoOption = false;
-        parameters.m_shouldPerformSliceId = false;
-    }
-    else if ("allhitsslicecr" == chosenRecoOption)
-    {
-        parameters.m_shouldRunAllHitsCosmicReco = false;
-        parameters.m_shouldRunStitching = false;
-        parameters.m_shouldRunCosmicHitRemoval = false;
-        parameters.m_shouldRunSlicing = true;
-        parameters.m_shouldRunNeutrinoRecoOption = false;
-        parameters.m_shouldRunCosmicRecoOption = true;
-        parameters.m_shouldPerformSliceId = false;
-    }
-    else if ("allhitsslicenu" == chosenRecoOption)
-    {
-        parameters.m_shouldRunAllHitsCosmicReco = false;
-        parameters.m_shouldRunStitching = false;
-        parameters.m_shouldRunCosmicHitRemoval = false;
-        parameters.m_shouldRunSlicing = true;
-        parameters.m_shouldRunNeutrinoRecoOption = true;
-        parameters.m_shouldRunCosmicRecoOption = false;
-        parameters.m_shouldPerformSliceId = false;
-    }
-    else
-    {
-        std::cout << "LArReco, Unrecognized reconstruction option: " << recoOption << std::endl << std::endl;
-        return PrintOptions();
-    }
-
-    return true;
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------
-
-void ProcessExternalParameters(const Parameters &parameters, const Pandora *const pPandora)
-{
-    auto *const pEventReadingParameters = new lar_content::EventReadingAlgorithm::ExternalEventReadingParameters;
-    pEventReadingParameters->m_geometryFileName = parameters.m_geometryFileName;
-    pEventReadingParameters->m_eventFileNameList = parameters.m_eventFileNameList;
-    if (parameters.m_nEventsToSkip.IsInitialized()) pEventReadingParameters->m_skipToEvent = parameters.m_nEventsToSkip.Get();
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetExternalParameters(*pPandora, "LArEventReading", pEventReadingParameters));
-
-    auto *const pEventSteeringParameters = new lar_content::MasterAlgorithm::ExternalSteeringParameters;
-    pEventSteeringParameters->m_shouldRunAllHitsCosmicReco = parameters.m_shouldRunAllHitsCosmicReco;
-    pEventSteeringParameters->m_shouldRunStitching = parameters.m_shouldRunStitching;
-    pEventSteeringParameters->m_shouldRunCosmicHitRemoval = parameters.m_shouldRunCosmicHitRemoval;
-    pEventSteeringParameters->m_shouldRunSlicing = parameters.m_shouldRunSlicing;
-    pEventSteeringParameters->m_shouldRunNeutrinoRecoOption = parameters.m_shouldRunNeutrinoRecoOption;
-    pEventSteeringParameters->m_shouldRunCosmicRecoOption = parameters.m_shouldRunCosmicRecoOption;
-    pEventSteeringParameters->m_shouldPerformSliceId = parameters.m_shouldPerformSliceId;
-    pEventSteeringParameters->m_printOverallRecoStatus = parameters.m_printOverallRecoStatus;
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetExternalParameters(*pPandora, "LArMaster", pEventSteeringParameters));
-
-#ifdef LIBTORCH_DL
-    auto *const pEventSettingsParametersCopy = new lar_content::MasterAlgorithm::ExternalSteeringParameters(*pEventSteeringParameters);
-    PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, pandora::ExternallyConfiguredAlgorithm::SetExternalParameters(*pPandora,
-        "LArDLMaster", pEventSettingsParametersCopy));
-#endif
-}
-
-} // namespace lar_reco
+} // namespace lar_nd_reco

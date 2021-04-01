@@ -1,0 +1,13 @@
+<pandora>
+    <!-- GLOBAL SETTINGS -->
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
+    <ShouldDisplayAlgorithmInfo>true</ShouldDisplayAlgorithmInfo>
+
+    <!-- ALGORITHM SETTINGS -->
+    <algorithm type = "LArEventReading">
+        <GeometryFileName>geometry/PandoraGeometry_MicroBooNE.xml</GeometryFileName>
+    </algorithm>
+    <algorithm type = "LArVisualMonitoring">
+        <CaloHitListNames>Input</CaloHitListNames>
+    </algorithm>
+</pandora>

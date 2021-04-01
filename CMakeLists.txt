@@ -52,6 +52,8 @@ if(PANDORA_MONITORING)
     find_package(ROOT 6.18.04 REQUIRED COMPONENTS Eve Geom RGL EG)
 endif()
 
+find_package(EDepSim)
+
 #-------------------------------------------------------------------------------------------------------------------------------------------
 # Low level settings - compiler etc
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing -std=c++17 ${CMAKE_CXX_FLAGS}")
@@ -78,7 +80,7 @@ endif()
 add_executable(PandoraInterface ${PROJECT_SOURCE_DIR}/test/PandoraInterface.cxx)
 if(PANDORA_MONITORING)
     include_directories(${ROOT_INCLUDE_DIRS})
-    target_link_libraries(PandoraInterface ${ROOT_LIBRARIES})
+    target_link_libraries(PandoraInterface ${ROOT_LIBRARIES} EDepSim::edepsim_io)
 endif()
 #target_link_libraries(PandoraInterface ${PROJECT_NAME})
 
