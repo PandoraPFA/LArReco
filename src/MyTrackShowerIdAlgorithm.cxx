@@ -8,6 +8,7 @@
 #include "Pandora/AlgorithmHeaders.h"
 #include "Helpers/MCParticleHelper.h"
 #include "larpandoracontent/LArHelpers/LArClusterHelper.h"
+#include "larpandoracontent/LArHelpers/LArInteractionTypeHelper.h"
 #include "larpandoracontent/LArHelpers/LArMCParticleHelper.h"
 #include "larpandoracontent/LArHelpers/LArMonitoringHelper.h"
 #include "larpandoracontent/LArHelpers/LArObjectHelper.h"
@@ -46,17 +47,23 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
     const PfoList *pPfoList(nullptr);
     PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraContentApi::GetList(*this, m_inputPfoListName, pPfoList));
     
-    const MCParticleList *pMCParticleList = nullptr;
+    const MCParticleList *pMCParticleList(nullptr);
     PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraContentApi::GetList(*this, m_mcParticleListName, pMCParticleList));
     
-    const CaloHitList *pCaloHitList = nullptr;
+    const CaloHitList *pCaloHitList(nullptr);
     PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraContentApi::GetList(*this, m_caloHitListName, pCaloHitList));
+
+    MCParticleVector primaryMCVector;
+    LArMCParticleHelper::GetPrimaryMCParticleList(pMCParticleList, primaryMCVector);
+    MCParticleList primaryMCList;
+    primaryMCList.insert(primaryMCList.end(), primaryMCVector.begin(), primaryMCVector.end());
+    int interactionType{static_cast<int>(LArInteractionTypeHelper::GetInteractionType(primaryMCList))};
     
     // Mapping target MCParticles -> truth associated Hits
     // ATTN - We're writing out PFOs from the end of the reco chain, so don't apply any reconstructability criteria, or empty PFOs may result
     LArMCParticleHelper::MCContributionMap targetMCParticleToHitsMap;
     LArMCParticleHelper::PrimaryParameters parameters;
-    parameters.m_foldBackHierarchy = true;
+    parameters.m_foldBackHierarchy = false;
     parameters.m_minPrimaryGoodHits = 0;
     parameters.m_minHitsForGoodView = 0;
     parameters.m_minHitSharingFraction = 0.f;
@@ -68,6 +75,19 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
     // Mapping reconstructed particles -> reconstruction associated Hits
     PfoList allConnectedPfos;
     LArPfoHelper::GetAllConnectedPfos(*pPfoList, allConnectedPfos);
+
+    std::map<const ParticleFlowObject *, int> pfoToIdMap;
+    int i{1};
+    for (const ParticleFlowObject *const pPfo : allConnectedPfos)
+    {
+        if (!LArPfoHelper::IsNeutrino(pPfo))
+        {
+            pfoToIdMap[pPfo] = i;
+            ++i;
+        }
+        else
+            pfoToIdMap[pPfo] = 0;
+    }
     
     PfoList finalStatePfos;
     for (const ParticleFlowObject *const pPfo : allConnectedPfos)
@@ -75,10 +95,9 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         if (LArPfoHelper::IsFinalState(pPfo))
             finalStatePfos.push_back(pPfo);
     }
-    
+    int nFinalStateParticles{static_cast<int>(finalStatePfos.size())};
     LArMCParticleHelper::PfoContributionMap pfoToHitsMap;
-    const bool foldBackHierarchy(parameters.m_foldBackHierarchy);
-    LArMCParticleHelper::GetPfoToReconstructable2DHitsMap(finalStatePfos, targetMCParticleToHitsMap, pfoToHitsMap, foldBackHierarchy);
+    LArMCParticleHelper::GetPfoToReconstructable2DHitsMap(allConnectedPfos, targetMCParticleToHitsMap, pfoToHitsMap, parameters.m_foldBackHierarchy);
     
     // Matching step
     LArMCParticleHelper::PfoToMCParticleHitSharingMap pfoToMCHitSharingMap;
@@ -90,19 +109,23 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
     // PANDORA_MONITORING_API(VisualizeParticleFlowObjects(this->GetPandora(), pPfoList, "GotThePfoList", RED));
     // PANDORA_MONITORING_API(ViewEvent(this->GetPandora()));
     // Write one tree entry for each Pfo
-    int pfoId(0);
-    for (const Pfo *const pPfo : finalStatePfos)
+    for (const Pfo *const pPfo : allConnectedPfos)
     {
+        if (LArPfoHelper::IsNeutrino(pPfo))
+            continue;
+        const PfoList &parentList{pPfo->GetParentPfoList()};
+        const ParticleFlowObject *pParentPfo{parentList.size() == 1 ? parentList.front() : nullptr};
+        const int parentId{pParentPfo ? pfoToIdMap[pParentPfo] : -1};
+        IntVector childPfos;
+        const PfoList &childList{pPfo->GetDaughterPfoList()}; 
+        for (const ParticleFlowObject *pChild : childList)
+            childPfos.emplace_back(pfoToIdMap[pChild]);
+
         const CaloHitList &allHitsInPfo(pfoToHitsMap.at(pPfo));
-        std::cout << "We got a pfo, isNeutrinoFinalState " << LArPfoHelper::IsNeutrinoFinalState(pPfo) << ", nHits " << allHitsInPfo.size()
-                  << " (U: " << LArMonitoringHelper::CountHitsByType(TPC_VIEW_U, allHitsInPfo)
-                  << ", V: " << LArMonitoringHelper::CountHitsByType(TPC_VIEW_V, allHitsInPfo)
-                  << ", W: " << LArMonitoringHelper::CountHitsByType(TPC_VIEW_W, allHitsInPfo) << ") " << std::endl;
         const int nHitsInPfoTotal(allHitsInPfo.size()),
             nHitsInPfoU(LArMonitoringHelper::CountHitsByType(TPC_VIEW_U, allHitsInPfo)),
             nHitsInPfoV(LArMonitoringHelper::CountHitsByType(TPC_VIEW_V, allHitsInPfo)),
             nHitsInPfoW(LArMonitoringHelper::CountHitsByType(TPC_VIEW_W, allHitsInPfo));
-        
         CaloHitList uHitsInPfo, vHitsInPfo, wHitsInPfo, hitsInPfo3D;
         LArPfoHelper::GetCaloHits(pPfo, TPC_VIEW_U, uHitsInPfo);
         LArPfoHelper::GetCaloHits(pPfo, TPC_VIEW_V, vHitsInPfo);
@@ -116,12 +139,8 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
             nHitsInBestMCParticleU(-1),
             nHitsInBestMCParticleV(-1),
             nHitsInBestMCParticleW(-1),
-            bestMCParticlePdgCode(0),
-            bestMCParticleIsTrack(-1);
-        int nHitsSharedWithBestMCParticleTotal(-1),
-            nHitsSharedWithBestMCParticleU(-1),
-            nHitsSharedWithBestMCParticleV(-1),
-            nHitsSharedWithBestMCParticleW(-1);
+            bestMCParticlePdgCode(0);
+        int nHitsSharedWithBestMCParticleTotal(-1);
         
         const LArMCParticleHelper::MCParticleToSharedHitsVector &mcParticleToSharedHitsVector(pfoToMCHitSharingMap.at(pPfo));
         
@@ -129,11 +148,6 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         {
             const pandora::MCParticle *const pAssociatedMCParticle(mcParticleCaloHitListPair.first);
             const CaloHitList &allMCHits(targetMCParticleToHitsMap.at(pAssociatedMCParticle));
-            std::cout << "Associated MCParticle: " << pAssociatedMCParticle->GetParticleId() << ", nTotalHits " << allMCHits.size()
-                      << " (U: " << LArMonitoringHelper::CountHitsByType(TPC_VIEW_U, allMCHits)
-                      << ", V: " << LArMonitoringHelper::CountHitsByType(TPC_VIEW_V, allMCHits)
-                      << ", W: " << LArMonitoringHelper::CountHitsByType(TPC_VIEW_W, allMCHits) << ") " << std::endl;
-            
             const CaloHitList &associatedMCHits(mcParticleCaloHitListPair.second);
             
             CaloHitList associatedMCHitsW;
@@ -143,31 +157,21 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
                     associatedMCHitsW.push_back(pCaloHit);
             }
             
-            std::cout << "Shared with MCParticle: " << pAssociatedMCParticle->GetParticleId() << ", nSharedHits " << associatedMCHits.size()
-                      << " (U: " << LArMonitoringHelper::CountHitsByType(TPC_VIEW_U, associatedMCHits)
-                      << ", V: " << LArMonitoringHelper::CountHitsByType(TPC_VIEW_V, associatedMCHits)
-                      << ", W: " << LArMonitoringHelper::CountHitsByType(TPC_VIEW_W, associatedMCHits) << ") " << std::endl;
             if (static_cast<int>(associatedMCHits.size()) > nHitsSharedWithBestMCParticleTotal)
             {
                 // This is the current best matched MCParticle, to be stored
                 nHitsSharedWithBestMCParticleTotal = associatedMCHits.size();
-                std::cout << "associatedMCHits.size() " << associatedMCHits.size() << ", nHitsSharedWithBestMCParticleTotal " << nHitsSharedWithBestMCParticleTotal << std::endl;
-                nHitsSharedWithBestMCParticleU = LArMonitoringHelper::CountHitsByType(TPC_VIEW_U, associatedMCHits);
-                nHitsSharedWithBestMCParticleV = LArMonitoringHelper::CountHitsByType(TPC_VIEW_V, associatedMCHits);
-                nHitsSharedWithBestMCParticleW = LArMonitoringHelper::CountHitsByType(TPC_VIEW_W, associatedMCHits);
                 nHitsInBestMCParticleTotal = allMCHits.size();
                 nHitsInBestMCParticleU = LArMonitoringHelper::CountHitsByType(TPC_VIEW_U, allMCHits);
                 nHitsInBestMCParticleV = LArMonitoringHelper::CountHitsByType(TPC_VIEW_V, allMCHits);
                 nHitsInBestMCParticleW = LArMonitoringHelper::CountHitsByType(TPC_VIEW_W, allMCHits);
                 bestMCParticlePdgCode = pAssociatedMCParticle->GetParticleId();
-                bestMCParticleIsTrack = ((PHOTON != pAssociatedMCParticle->GetParticleId()) && (E_MINUS != std::abs(pAssociatedMCParticle->GetParticleId())) ? 1 : 0);
             }
-            // PANDORA_MONITORING_API(VisualizeCaloHits(this->GetPandora(), &associatedMCHitsW, "associatedMCHitsW", GREEN));
-            // PANDORA_MONITORING_API(ViewEvent(this->GetPandora()));
         }
         // Cache values here
         const float purity((nHitsInPfoTotal > 0) ? static_cast<float>(nHitsSharedWithBestMCParticleTotal) / static_cast<float>(nHitsInPfoTotal) : 0.f);
         const float completeness((nHitsInBestMCParticleTotal > 0) ? static_cast<float>(nHitsSharedWithBestMCParticleTotal)/static_cast<float>(nHitsInBestMCParticleTotal) : 0.f);
+        //std::cout << "PFO " << pfoToIdMap[pPfo] << "(" << bestMCParticlePdgCode << ")" << " P: " << purity << " C: " << completeness << std::endl; 
         FloatVector hitDriftPositionsU, hitWirePositionsU, hitEnergiesU,
                     hitDriftPositionsV, hitWirePositionsV, hitEnergiesV,
                     hitDriftPositionsW, hitWirePositionsW, hitEnergiesW,
@@ -197,18 +201,26 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
             hit3DPositionsY.push_back(pCaloHit->GetPositionVector().GetY());
             hit3DPositionsZ.push_back(pCaloHit->GetPositionVector().GetZ());
         }
-
         //GetVertex
-        const pandora::Vertex* vertex = LArPfoHelper::GetVertex(pPfo);
-        CartesianVector vertexPosition = vertex->GetPosition();
+        const pandora::Vertex* vertex{nullptr};
+        try
+        {
+            vertex = LArPfoHelper::GetVertex(pPfo);
+        }
+        catch (StatusCodeException &)
+        {
+        }
+        CartesianVector vertexPosition(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+        if (vertex)
+            vertexPosition = vertex->GetPosition();
         float vertexPositionX = vertexPosition.GetX();
         float vertexPositionY = vertexPosition.GetY();
         float vertexPositionZ = vertexPosition.GetZ();
 
         //Project vertex on U,V views
-        CartesianVector vertexPositionU = LArGeometryHelper::ProjectPosition(this->GetPandora(),vertexPosition,TPC_VIEW_U);
-        CartesianVector vertexPositionV = LArGeometryHelper::ProjectPosition(this->GetPandora(),vertexPosition,TPC_VIEW_V);
-        CartesianVector vertexPositionW = LArGeometryHelper::ProjectPosition(this->GetPandora(),vertexPosition,TPC_VIEW_W);
+        CartesianVector vertexPositionU = vertex ? LArGeometryHelper::ProjectPosition(this->GetPandora(),vertexPosition,TPC_VIEW_U) : vertexPosition;
+        CartesianVector vertexPositionV = vertex ? LArGeometryHelper::ProjectPosition(this->GetPandora(),vertexPosition,TPC_VIEW_V) : vertexPosition;
+        CartesianVector vertexPositionW = vertex ? LArGeometryHelper::ProjectPosition(this->GetPandora(),vertexPosition,TPC_VIEW_W) : vertexPosition;
 
         float vertexDriftPosition=vertexPositionU.GetX();
         float vertexWirePositionU=vertexPositionU.GetZ();
@@ -221,10 +233,13 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         CartesianVector intVertexPositionU = LArGeometryHelper::ProjectPosition(this->GetPandora(), intVertexPosition, TPC_VIEW_U);
         CartesianVector intVertexPositionV = LArGeometryHelper::ProjectPosition(this->GetPandora(), intVertexPosition, TPC_VIEW_V);
         CartesianVector intVertexPositionW = LArGeometryHelper::ProjectPosition(this->GetPandora(), intVertexPosition, TPC_VIEW_W);
-
         // Write to tree here
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "eventId", m_eventId));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "pfoId", pfoId));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "interactionType", interactionType));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nFinalStateParticles", nFinalStateParticles));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "pfoId", pfoToIdMap[pPfo]));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "parent", parentId));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "children", &childPfos));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInPfoTotal", nHitsInPfoTotal));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInPfoU", nHitsInPfoU));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInPfoV", nHitsInPfoV));
@@ -233,44 +248,35 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInBestMCParticleU", nHitsInBestMCParticleU));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInBestMCParticleV", nHitsInBestMCParticleV));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInBestMCParticleW", nHitsInBestMCParticleW));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsSharedWithBestMCParticleTotal", nHitsSharedWithBestMCParticleTotal));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsSharedWithBestMCParticleU", nHitsSharedWithBestMCParticleU));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsSharedWithBestMCParticleV", nHitsSharedWithBestMCParticleV));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsSharedWithBestMCParticleW", nHitsSharedWithBestMCParticleW));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "bestMCParticlePdgCode", bestMCParticlePdgCode));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "bestMCParticleIsTrack", bestMCParticleIsTrack));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "purity", purity));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "completeness", completeness));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitDriftPositionsU", &hitDriftPositionsU));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitWirePositionsU", &hitWirePositionsU));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitEnergiesU", &hitEnergiesU));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitDriftPositionsV", &hitDriftPositionsV));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitWirePositionsV", &hitWirePositionsV));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitEnergiesV", &hitEnergiesV));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitDriftPositionsW", &hitDriftPositionsW));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitWirePositionsW", &hitWirePositionsW));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hitEnergiesW", &hitEnergiesW));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hit3DPositionsX", &hit3DPositionsX));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hit3DPositionsY", &hit3DPositionsY));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "hit3DPositionsZ", &hit3DPositionsZ));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vertexPositionX", vertexPositionX));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vertexPositionY", vertexPositionY));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vertexPositionZ", vertexPositionZ));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vertexDriftPosition", vertexDriftPosition));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vertexWirePositionU", vertexWirePositionU));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vertexWirePositionV", vertexWirePositionV));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vertexWirePositionW", vertexWirePositionW));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVertexPositionX", intVertexPosition.GetX()));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVertexPositionY", intVertexPosition.GetY()));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVertexPositionZ", intVertexPosition.GetZ()));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVertexDriftPosition", intVertexPosition.GetX()));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVertexWirePositionU", intVertexPositionU.GetZ()));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVertexWirePositionV", intVertexPositionV.GetZ()));
-        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVertexWirePositionW", intVertexPositionW.GetZ()));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "x", &hitDriftPositionsU));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "u", &hitWirePositionsU));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "adcU", &hitEnergiesU));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "v", &hitWirePositionsV));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "adcV", &hitEnergiesV));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "w", &hitWirePositionsW));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "adcW", &hitEnergiesW));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "x3d", &hit3DPositionsX));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "y3d", &hit3DPositionsY));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "z3d", &hit3DPositionsZ));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vtxX3d", vertexPositionX));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vtxY3d", vertexPositionY));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vtxZ3d", vertexPositionZ));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vtxX", vertexDriftPosition));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vtxU", vertexWirePositionU));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vtxV", vertexWirePositionV));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "vtxW", vertexWirePositionW));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVtxX3d", intVertexPosition.GetX()));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVtxY3d", intVertexPosition.GetY()));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVtxZ3d", intVertexPosition.GetZ()));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVtxX", intVertexPosition.GetX()));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVtxU", intVertexPositionU.GetZ()));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVtxV", intVertexPositionV.GetZ()));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVtxW", intVertexPositionW.GetZ()));
 
         PANDORA_MONITORING_API(FillTree(this->GetPandora(), m_treeName.c_str()));
-
-        ++pfoId;
     }
     
     return STATUS_CODE_SUCCESS;
