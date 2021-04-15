@@ -53,24 +53,29 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
     const CaloHitList *pCaloHitList(nullptr);
     PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraContentApi::GetList(*this, m_caloHitListName, pCaloHitList));
 
-    MCParticleVector primaryMCVector;
-    LArMCParticleHelper::GetPrimaryMCParticleList(pMCParticleList, primaryMCVector);
+    LArMCParticleHelper::MCContributionMap primaryMCParticleToHitsMap;
+    LArMCParticleHelper::PrimaryParameters parameters;
+    parameters.m_foldBackHierarchy = true;
+
+    LArMCParticleHelper::SelectReconstructableMCParticles(pMCParticleList, pCaloHitList, parameters,
+        LArMCParticleHelper::IsBeamNeutrinoFinalState, primaryMCParticleToHitsMap);
     MCParticleList primaryMCList;
-    primaryMCList.insert(primaryMCList.end(), primaryMCVector.begin(), primaryMCVector.end());
+    for (auto [ pMC, hits ] : primaryMCParticleToHitsMap)
+    {   (void)hits;
+        primaryMCList.emplace_back(pMC);
+    }
+
     int interactionType{static_cast<int>(LArInteractionTypeHelper::GetInteractionType(primaryMCList))};
     
     // Mapping target MCParticles -> truth associated Hits
     // ATTN - We're writing out PFOs from the end of the reco chain, so don't apply any reconstructability criteria, or empty PFOs may result
     LArMCParticleHelper::MCContributionMap targetMCParticleToHitsMap;
-    LArMCParticleHelper::PrimaryParameters parameters;
     parameters.m_foldBackHierarchy = false;
     parameters.m_minPrimaryGoodHits = 0;
     parameters.m_minHitsForGoodView = 0;
     parameters.m_minHitSharingFraction = 0.f;
-    parameters.m_maxPhotonPropagation = std::numeric_limits<float>::max();
-    parameters.m_selectInputHits = false;
-
-    LArMCParticleHelper::SelectReconstructableMCParticles(pMCParticleList, pCaloHitList, parameters, LArMCParticleHelper::IsBeamNeutrinoFinalState, targetMCParticleToHitsMap);
+    LArMCParticleHelper::SelectReconstructableMCParticles(pMCParticleList, pCaloHitList, parameters,
+        LArMCParticleHelper::IsBeamNeutrinoFinalState, targetMCParticleToHitsMap);
     
     // Mapping reconstructed particles -> reconstruction associated Hits
     PfoList allConnectedPfos;
@@ -171,7 +176,6 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         // Cache values here
         const float purity((nHitsInPfoTotal > 0) ? static_cast<float>(nHitsSharedWithBestMCParticleTotal) / static_cast<float>(nHitsInPfoTotal) : 0.f);
         const float completeness((nHitsInBestMCParticleTotal > 0) ? static_cast<float>(nHitsSharedWithBestMCParticleTotal)/static_cast<float>(nHitsInBestMCParticleTotal) : 0.f);
-        //std::cout << "PFO " << pfoToIdMap[pPfo] << "(" << bestMCParticlePdgCode << ")" << " P: " << purity << " C: " << completeness << std::endl; 
         FloatVector hitDriftPositionsU, hitWirePositionsU, hitEnergiesU,
                     hitDriftPositionsV, hitWirePositionsV, hitEnergiesV,
                     hitDriftPositionsW, hitWirePositionsW, hitEnergiesW,
