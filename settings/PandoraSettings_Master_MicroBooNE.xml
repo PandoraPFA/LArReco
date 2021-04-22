@@ -36,7 +36,6 @@
                 <MvaFileName>PandoraSvm_TrackDirectionTool.xml</MvaFileName>
                 <MvaName>TrackDirectionToolSvm</MvaName>
             </tool>
-	    <tool type = "LArSliceIdMonitoring"/>
         </SliceIdTools>
         <InputHitListName>CaloHitList2D</InputHitListName>
 	<InputMCParticleListName>Input</InputMCParticleListName>
@@ -49,16 +48,9 @@
 	<PfoListName>RecreatedPfos</PfoListName>
 	<TrackDirection>
 	  <tool type = "LArTrackDirectionTool">
-	    <SlidingFitWindow>5</SlidingFitWindow>
-	    <MinClusterCaloHits>5</MinClusterCaloHits>
-	    <MinClusterLength>1.f</MinClusterLength>
-	    <NumberTrackEndHits>100000</NumberTrackEndHits>
-	    <EnableFragmentRemoval>true</EnableFragmentRemoval>
-	    <EnableSplitting>true</EnableSplitting>
-	    <WriteTable>false</WriteTable>
-	    <FileName>false</FileName>
-	    <InitialEnergy>2000.f</InitialEnergy>
-	    <StepSize>0.5f</StepSize>
+	    <SlidingFitWindow>20</SlidingFitWindow>
+	    <MinClusterCaloHits>20</MinClusterCaloHits>
+	    <MinClusterLength>10.f</MinClusterLength>
 	  </tool>
 	</TrackDirection>
     </algorithm>
@@ -76,7 +68,7 @@
         <OutputFile>Validation.root</OutputFile>
     </algorithm>
 
-   <algorithm type = "LArVisualMonitoring">
+    <algorithm type = "LArVisualMonitoring">
         <ShowCurrentPfos>true</ShowCurrentPfos>
         <ShowDetector>true</ShowDetector>
     </algorithm>
