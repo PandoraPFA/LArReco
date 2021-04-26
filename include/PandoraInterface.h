@@ -38,6 +38,14 @@ public:
 };
 
 /**
+ *  @brief  Create the detector geometry based on the C++ root file
+ *
+ *  @param  parameters the application parameters
+ *  @param  pPrimaryPandora the address of the primary pandora instance
+ */
+ void CreateGeometry(const Parameters &parameters, const pandora::Pandora *const pPrimaryPandora);
+
+/**
  *  @brief  Process events using the supplied pandora instances
  *
  *  @param  parameters the application parameters

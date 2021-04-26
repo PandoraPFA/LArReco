@@ -10,6 +10,12 @@
 #include "TTree.h"
 
 #include "TG4Event.h"
+#include "TGeoManager.h"
+#include "TObjArray.h"
+#include "TGeoVolume.h"
+#include "TObject.h"
+#include "TGeoShape.h"
+#include "TGeoBBox.h"
 
 #include "Api/PandoraApi.h"
 #include "Helpers/XmlHelper.h"
@@ -61,6 +67,8 @@ int main(int argc, char *argv[])
 
         MultiPandoraApi::AddPrimaryPandoraInstance(pPrimaryPandora);
 
+	CreateGeometry(parameters, pPrimaryPandora);
+
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetPseudoLayerPlugin(*pPrimaryPandora, new lar_content::LArPseudoLayerPlugin));
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=,
             PandoraApi::SetLArTransformationPlugin(*pPrimaryPandora, new lar_content::LArRotationalTransformationPlugin));
@@ -87,6 +95,102 @@ int main(int argc, char *argv[])
 
 namespace lar_nd_reco
 {
+
+void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryPandora)
+{ 
+    //Get the geometry info from the input root file
+    TFile fileSource(parameters.m_inputFileName.c_str(), "READ");
+    TGeoManager *pEDepSimGeo = (TGeoManager*)fileSource.Get("EDepSimGeometry");
+
+    if (!pEDepSimGeo)
+    {
+        std::cout << "Missing the geometry info" << std::endl;
+        return;
+    }
+
+    //Start by looking at the top level volume and move down to the one we need
+    TGeoVolume *pMasterVol = pEDepSimGeo->GetMasterVolume();
+    for (int i = 0; i < pMasterVol->GetNdaughters(); i++)
+    {
+      pEDepSimGeo->CdDown(i);
+    }
+    
+    TGeoNode* currentnode = pEDepSimGeo->GetCurrentNode();
+    std::string name(currentnode->GetName());										     
+    for (int i = 0; i < currentnode->GetVolume()->GetNdaughters(); i++)
+    {
+      TGeoNode* node = pEDepSimGeo->GetCurrentNode();;
+      pEDepSimGeo->CdDown(i);
+      for (int i2=0; i2< node->GetNdaughters(); ++i2) {
+	    pEDepSimGeo->CdDown(i+1);
+        }
+    }
+      
+    //This should now be the ArgonCube volume
+    currentnode = pEDepSimGeo->GetCurrentNode();
+    name = currentnode->GetName();
+    std::cout << "Current Node: " << name << std::endl;
+    std::cout << "Current N daughters: " << currentnode->GetVolume()->GetNdaughters() << std::endl;
+    std::cout << "  " << std::endl;
+
+    //Get the BBox for the ArgonCube
+    TGeoVolume *pCurrentVol = currentnode->GetVolume();
+    TGeoShape *pCurrentShape = pCurrentVol->GetShape();
+    pCurrentShape->InspectShape();
+    TGeoBBox *pBox = dynamic_cast<TGeoBBox*>(pCurrentShape);
+
+    //Now can get origin/width data from the BBox
+    std::cout << "   " << std::endl;
+    double dx = pBox->GetDX();        //Note these are the half widths
+    double dy = pBox->GetDY();
+    double dz = pBox->GetDZ();
+    const double* origin = pBox->GetOrigin();
+
+    //Translate the origin coordinates from the 4th level to the first.
+    //Doesn't seem to change anything. Needed?
+    Double_t level3[3] = { 0. , 0. , 0. };
+    currentnode->LocalToMasterVect(origin, level3);
+    Double_t level2[3] = { 0. , 0. , 0. };
+    currentnode->LocalToMasterVect(level3, level2);
+    Double_t level1[3] = { 0. , 0. , 0. };
+    currentnode->LocalToMasterVect(level2, level1);
+
+    //Can now create a geometry using the found parameters
+    PandoraApi::Geometry::LArTPC::Parameters geoparameters;
+    
+    try {
+        geoparameters.m_centerX = level1[0];
+        geoparameters.m_centerY = level1[1];
+        geoparameters.m_centerZ = level1[2];
+        geoparameters.m_widthX = dx*2;
+        geoparameters.m_widthY = dy*2;
+        geoparameters.m_widthZ = dz*2;
+	//ATTN: parameters past here taken from uboone
+	geoparameters.m_larTPCVolumeId = 0;
+	geoparameters.m_wirePitchU = 0.300000011921;
+        geoparameters.m_wirePitchV = 0.300000011921;
+        geoparameters.m_wirePitchW = 0.300000011921;
+        geoparameters.m_wireAngleU = 1.04719758034;
+        geoparameters.m_wireAngleV = -1.04719758034;
+        geoparameters.m_wireAngleW = 0.;
+        geoparameters.m_sigmaUVW = 1;
+        geoparameters.m_isDriftInPositiveX = 0;
+    }
+    catch (const pandora::StatusCodeException&) {
+	std::cout << "CreatePandoraLArTPCs - invalid tpc parameter provided" << std::endl;
+    }
+
+    try {
+        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::Geometry::LArTPC::Create(*pPrimaryPandora, geoparameters));
+    }
+    catch (const pandora::StatusCodeException&) {
+	std::cout << "CreatePandoraLArTPCs - unable to create tpc, insufficient or invalid information supplied" << std::endl;
+    }
+    
+}
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------
 
 void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPandora)
 {
