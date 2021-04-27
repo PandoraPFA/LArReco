@@ -160,8 +160,9 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
     
     try {
         geoparameters.m_centerX = level1[0];
-        geoparameters.m_centerY = level1[1];
-        geoparameters.m_centerZ = level1[2];
+	//ATTN: offsets taken by visual comparison with edep-disp
+        geoparameters.m_centerY = level1[1]-675;
+        geoparameters.m_centerZ = level1[2]+6660;
         geoparameters.m_widthX = dx*2;
         geoparameters.m_widthY = dy*2;
         geoparameters.m_widthZ = dz*2;
