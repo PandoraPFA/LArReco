@@ -99,7 +99,8 @@ void CreatePandoraInstances(const Parameters &parameters, const Pandora *&pPrima
 
     ProcessExternalParameters(parameters, pPrimaryPandora);
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetPseudoLayerPlugin(*pPrimaryPandora, new lar_content::LArPseudoLayerPlugin));
-    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetLArTransformationPlugin(*pPrimaryPandora, new lar_content::LArRotationalTransformationPlugin));
+    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=,
+        PandoraApi::SetLArTransformationPlugin(*pPrimaryPandora, new lar_content::LArRotationalTransformationPlugin));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPrimaryPandora, parameters.m_settingsFile));
 }
 
@@ -133,33 +134,33 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
     {
         switch (c)
         {
-        case 'r':
-            recoOption = optarg;
-            break;
-        case 'i':
-            parameters.m_settingsFile = optarg;
-            break;
-        case 'e':
-            parameters.m_eventFileNameList = optarg;
-            break;
-        case 'g':
-            parameters.m_geometryFileName = optarg;
-            break;
-        case 'n':
-            parameters.m_nEventsToProcess = atoi(optarg);
-            break;
-        case 's':
-            parameters.m_nEventsToSkip = atoi(optarg);
-            break;
-        case 'p':
-            parameters.m_printOverallRecoStatus = true;
-            break;
-        case 'N':
-            parameters.m_shouldDisplayEventNumber = true;
-            break;
-        case 'h':
-        default:
-            return PrintOptions();
+            case 'r':
+                recoOption = optarg;
+                break;
+            case 'i':
+                parameters.m_settingsFile = optarg;
+                break;
+            case 'e':
+                parameters.m_eventFileNameList = optarg;
+                break;
+            case 'g':
+                parameters.m_geometryFileName = optarg;
+                break;
+            case 'n':
+                parameters.m_nEventsToProcess = atoi(optarg);
+                break;
+            case 's':
+                parameters.m_nEventsToSkip = atoi(optarg);
+                break;
+            case 'p':
+                parameters.m_printOverallRecoStatus = true;
+                break;
+            case 'N':
+                parameters.m_shouldDisplayEventNumber = true;
+                break;
+            case 'h':
+            default:
+                return PrintOptions();
         }
     }
 
@@ -170,15 +171,18 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
 
 bool PrintOptions()
 {
-    std::cout << std::endl << "./bin/PandoraInterface " << std::endl
-              << "    -r RecoOption          (required) [Full, AllHitsCR, AllHitsNu, CRRemHitsSliceCR, CRRemHitsSliceNu, AllHitsSliceCR, AllHitsSliceNu]" << std::endl
+    std::cout << std::endl
+              << "./bin/PandoraInterface " << std::endl
+              << "    -r RecoOption          (required) [Full, AllHitsCR, AllHitsNu, CRRemHitsSliceCR, CRRemHitsSliceNu, AllHitsSliceCR, AllHitsSliceNu]"
+              << std::endl
               << "    -i Settings            (required) [algorithm description: xml]" << std::endl
               << "    -e EventFileList       (optional) [colon-separated list of files: xml/pndr]" << std::endl
               << "    -g GeometryFile        (optional) [detector geometry description: xml/pndr]" << std::endl
               << "    -n NEventsToProcess    (optional) [no. of events to process]" << std::endl
               << "    -s NEventsToSkip       (optional) [no. of events to skip in first file]" << std::endl
               << "    -p                     (optional) [print status]" << std::endl
-              << "    -N                     (optional) [print event numbers]" << std::endl << std::endl;
+              << "    -N                     (optional) [print event numbers]" << std::endl
+              << std::endl;
 
     return false;
 }
@@ -219,7 +223,7 @@ bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters)
         parameters.m_shouldRunNeutrinoRecoOption = false;
         parameters.m_shouldRunCosmicRecoOption = true;
         parameters.m_shouldPerformSliceId = false;
-    } 
+    }
     else if ("allhitsnu" == chosenRecoOption)
     {
         parameters.m_shouldRunAllHitsCosmicReco = false;
@@ -286,7 +290,8 @@ void ProcessExternalParameters(const Parameters &parameters, const Pandora *cons
     auto *const pEventReadingParameters = new lar_content::EventReadingAlgorithm::ExternalEventReadingParameters;
     pEventReadingParameters->m_geometryFileName = parameters.m_geometryFileName;
     pEventReadingParameters->m_eventFileNameList = parameters.m_eventFileNameList;
-    if (parameters.m_nEventsToSkip.IsInitialized()) pEventReadingParameters->m_skipToEvent = parameters.m_nEventsToSkip.Get();
+    if (parameters.m_nEventsToSkip.IsInitialized())
+        pEventReadingParameters->m_skipToEvent = parameters.m_nEventsToSkip.Get();
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetExternalParameters(*pPandora, "LArEventReading", pEventReadingParameters));
 
     auto *const pEventSteeringParameters = new lar_content::MasterAlgorithm::ExternalSteeringParameters;
@@ -302,8 +307,8 @@ void ProcessExternalParameters(const Parameters &parameters, const Pandora *cons
 
 #ifdef LIBTORCH_DL
     auto *const pEventSettingsParametersCopy = new lar_content::MasterAlgorithm::ExternalSteeringParameters(*pEventSteeringParameters);
-    PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, pandora::ExternallyConfiguredAlgorithm::SetExternalParameters(*pPandora,
-        "LArDLMaster", pEventSettingsParametersCopy));
+    PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=,
+        pandora::ExternallyConfiguredAlgorithm::SetExternalParameters(*pPandora, "LArDLMaster", pEventSettingsParametersCopy));
 #endif
 }
 

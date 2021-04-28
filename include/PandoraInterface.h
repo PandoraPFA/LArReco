@@ -10,7 +10,10 @@
 
 #include "Pandora/PandoraInputTypes.h"
 
-namespace pandora {class Pandora;}
+namespace pandora
+{
+class Pandora;
+}
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -28,23 +31,23 @@ public:
      */
     Parameters();
 
-    std::string         m_settingsFile;                 ///< The path to the pandora settings file (mandatory parameter)
-    std::string         m_eventFileNameList;            ///< Colon-separated list of file names to be processed
-    std::string         m_geometryFileName;             ///< Name of the file containing geometry information
+    std::string m_settingsFile;      ///< The path to the pandora settings file (mandatory parameter)
+    std::string m_eventFileNameList; ///< Colon-separated list of file names to be processed
+    std::string m_geometryFileName;  ///< Name of the file containing geometry information
 
-    int                 m_nEventsToProcess;             ///< The number of events to process (default all events in file)
-    bool                m_shouldDisplayEventNumber;     ///< Whether event numbers should be displayed (default false)
+    int m_nEventsToProcess;          ///< The number of events to process (default all events in file)
+    bool m_shouldDisplayEventNumber; ///< Whether event numbers should be displayed (default false)
 
-    bool                m_shouldRunAllHitsCosmicReco;   ///< Whether to run all hits cosmic-ray reconstruction
-    bool                m_shouldRunStitching;           ///< Whether to stitch cosmic-ray muons crossing between volumes
-    bool                m_shouldRunCosmicHitRemoval;    ///< Whether to remove hits from tagged cosmic-rays
-    bool                m_shouldRunSlicing;             ///< Whether to slice events into separate regions for processing
-    bool                m_shouldRunNeutrinoRecoOption;  ///< Whether to run neutrino reconstruction for each slice
-    bool                m_shouldRunCosmicRecoOption;    ///< Whether to run cosmic-ray reconstruction for each slice
-    bool                m_shouldPerformSliceId;         ///< Whether to identify slices and select most appropriate pfos
-    bool                m_printOverallRecoStatus;       ///< Whether to print current operation status messages
+    bool m_shouldRunAllHitsCosmicReco;  ///< Whether to run all hits cosmic-ray reconstruction
+    bool m_shouldRunStitching;          ///< Whether to stitch cosmic-ray muons crossing between volumes
+    bool m_shouldRunCosmicHitRemoval;   ///< Whether to remove hits from tagged cosmic-rays
+    bool m_shouldRunSlicing;            ///< Whether to slice events into separate regions for processing
+    bool m_shouldRunNeutrinoRecoOption; ///< Whether to run neutrino reconstruction for each slice
+    bool m_shouldRunCosmicRecoOption;   ///< Whether to run cosmic-ray reconstruction for each slice
+    bool m_shouldPerformSliceId;        ///< Whether to identify slices and select most appropriate pfos
+    bool m_printOverallRecoStatus;      ///< Whether to print current operation status messages
 
-    pandora::InputInt   m_nEventsToSkip;                ///< The number of events to skip
+    pandora::InputInt m_nEventsToSkip; ///< The number of events to skip
 };
 
 /**
