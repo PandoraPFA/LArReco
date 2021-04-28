@@ -11,9 +11,7 @@
 
 #include "TG4Event.h"
 #include "TGeoManager.h"
-#include "TObjArray.h"
 #include "TGeoVolume.h"
-#include "TObject.h"
 #include "TGeoShape.h"
 #include "TGeoBBox.h"
 
@@ -108,24 +106,43 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
         return;
     }
 
-    //Start by looking at the top level volume and move down to the one we need
+    //Start by looking at the top level volume and move down to the one we need   
+    std::string name;
+    std::string needednode("volArgonCubeDetector_PV_0");
+    TGeoNode* currentnode = pEDepSimGeo->GetCurrentNode();
+    bool foundnode(false);
+
     TGeoVolume *pMasterVol = pEDepSimGeo->GetMasterVolume();
     for (int i = 0; i < pMasterVol->GetNdaughters(); i++)
     {
-      pEDepSimGeo->CdDown(i);
+	pEDepSimGeo->CdDown(i);
     }
     
-    TGeoNode* currentnode = pEDepSimGeo->GetCurrentNode();
-    std::string name(currentnode->GetName());										     
-    for (int i = 0; i < currentnode->GetVolume()->GetNdaughters(); i++)
-    {
-      TGeoNode* node = pEDepSimGeo->GetCurrentNode();;
-      pEDepSimGeo->CdDown(i);
-      for (int i2=0; i2< node->GetNdaughters(); ++i2) {
-	    pEDepSimGeo->CdDown(i+1);
-        }
+    while (foundnode == false) {
+      currentnode = pEDepSimGeo->GetCurrentNode();
+      name = currentnode->GetName();
+
+      int i1 = 0;
+      for (int i = 0; i < currentnode->GetNdaughters(); i++)
+      {
+	  pEDepSimGeo->CdDown(i1);
+	  TGeoNode* node = pEDepSimGeo->GetCurrentNode();
+	  name = node->GetName();
+	  if (name == needednode) 
+	  {
+	      foundnode = true;
+	      break;
+	  }
+	  else if (i+1 != currentnode->GetNdaughters())
+	  {
+	    pEDepSimGeo->CdUp(); 
+	    i1++;
+	  }
+      }
+
+      if (foundnode == true) {break;}
     }
-      
+
     //This should now be the ArgonCube volume
     currentnode = pEDepSimGeo->GetCurrentNode();
     name = currentnode->GetName();
@@ -140,7 +157,6 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
     TGeoBBox *pBox = dynamic_cast<TGeoBBox*>(pCurrentShape);
 
     //Now can get origin/width data from the BBox
-    std::cout << "   " << std::endl;
     double dx = pBox->GetDX();        //Note these are the half widths
     double dy = pBox->GetDY();
     double dz = pBox->GetDZ();
