@@ -10,10 +10,10 @@
 #include "TTree.h"
 
 #include "TG4Event.h"
-#include "TGeoManager.h"
-#include "TGeoVolume.h"
-#include "TGeoShape.h"
 #include "TGeoBBox.h"
+#include "TGeoManager.h"
+#include "TGeoShape.h"
+#include "TGeoVolume.h"
 
 #include "Api/PandoraApi.h"
 #include "Helpers/XmlHelper.h"
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 
         MultiPandoraApi::AddPrimaryPandoraInstance(pPrimaryPandora);
 
-	CreateGeometry(parameters, pPrimaryPandora);
+        CreateGeometry(parameters, pPrimaryPandora);
 
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetPseudoLayerPlugin(*pPrimaryPandora, new lar_content::LArPseudoLayerPlugin));
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=,
@@ -95,10 +95,10 @@ namespace lar_nd_reco
 {
 
 void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryPandora)
-{ 
+{
     //Get the geometry info from the input root file
     TFile fileSource(parameters.m_inputFileName.c_str(), "READ");
-    TGeoManager *pEDepSimGeo = (TGeoManager*)fileSource.Get("EDepSimGeometry");
+    TGeoManager *pEDepSimGeo = (TGeoManager *)fileSource.Get("EDepSimGeometry");
 
     if (!pEDepSimGeo)
     {
@@ -106,41 +106,45 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
         return;
     }
 
-    //Start by looking at the top level volume and move down to the one we need   
+    //Start by looking at the top level volume and move down to the one we need
     std::string name;
     std::string needednode("volArgonCubeDetector_PV_0");
-    TGeoNode* currentnode = pEDepSimGeo->GetCurrentNode();
+    TGeoNode *currentnode = pEDepSimGeo->GetCurrentNode();
     bool foundnode(false);
 
     TGeoVolume *pMasterVol = pEDepSimGeo->GetMasterVolume();
     for (int i = 0; i < pMasterVol->GetNdaughters(); i++)
     {
-	pEDepSimGeo->CdDown(i);
+        pEDepSimGeo->CdDown(i);
     }
-    
-    while (foundnode == false) {
-      currentnode = pEDepSimGeo->GetCurrentNode();
-      name = currentnode->GetName();
 
-      int i1 = 0;
-      for (int i = 0; i < currentnode->GetNdaughters(); i++)
-      {
-	  pEDepSimGeo->CdDown(i1);
-	  TGeoNode* node = pEDepSimGeo->GetCurrentNode();
-	  name = node->GetName();
-	  if (name == needednode) 
-	  {
-	      foundnode = true;
-	      break;
-	  }
-	  else if (i+1 != currentnode->GetNdaughters())
-	  {
-	    pEDepSimGeo->CdUp(); 
-	    i1++;
-	  }
-      }
+    while (foundnode == false)
+    {
+        currentnode = pEDepSimGeo->GetCurrentNode();
+        name = currentnode->GetName();
 
-      if (foundnode == true) {break;}
+        int i1 = 0;
+        for (int i = 0; i < currentnode->GetNdaughters(); i++)
+        {
+            pEDepSimGeo->CdDown(i1);
+            TGeoNode *node = pEDepSimGeo->GetCurrentNode();
+            name = node->GetName();
+            if (name == needednode)
+            {
+                foundnode = true;
+                break;
+            }
+            else if (i + 1 != currentnode->GetNdaughters())
+            {
+                pEDepSimGeo->CdUp();
+                i1++;
+            }
+        }
+
+        if (foundnode == true)
+        {
+            break;
+        }
     }
 
     //This should now be the ArgonCube volume
@@ -154,37 +158,38 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
     TGeoVolume *pCurrentVol = currentnode->GetVolume();
     TGeoShape *pCurrentShape = pCurrentVol->GetShape();
     pCurrentShape->InspectShape();
-    TGeoBBox *pBox = dynamic_cast<TGeoBBox*>(pCurrentShape);
+    TGeoBBox *pBox = dynamic_cast<TGeoBBox *>(pCurrentShape);
 
     //Now can get origin/width data from the BBox
-    double dx = pBox->GetDX();        //Note these are the half widths
+    double dx = pBox->GetDX(); //Note these are the half widths
     double dy = pBox->GetDY();
     double dz = pBox->GetDZ();
-    const double* origin = pBox->GetOrigin();
+    const double *origin = pBox->GetOrigin();
 
     //Translate the origin coordinates from the 4th level to the first.
     //Doesn't seem to change anything. Needed?
-    Double_t level3[3] = { 0. , 0. , 0. };
+    Double_t level3[3] = {0., 0., 0.};
     currentnode->LocalToMasterVect(origin, level3);
-    Double_t level2[3] = { 0. , 0. , 0. };
+    Double_t level2[3] = {0., 0., 0.};
     currentnode->LocalToMasterVect(level3, level2);
-    Double_t level1[3] = { 0. , 0. , 0. };
+    Double_t level1[3] = {0., 0., 0.};
     currentnode->LocalToMasterVect(level2, level1);
 
     //Can now create a geometry using the found parameters
     PandoraApi::Geometry::LArTPC::Parameters geoparameters;
-    
-    try {
+
+    try
+    {
         geoparameters.m_centerX = level1[0];
-	//ATTN: offsets taken by visual comparison with edep-disp
-        geoparameters.m_centerY = level1[1]-675;
-        geoparameters.m_centerZ = level1[2]+6660;
-        geoparameters.m_widthX = dx*2;
-        geoparameters.m_widthY = dy*2;
-        geoparameters.m_widthZ = dz*2;
-	//ATTN: parameters past here taken from uboone
-	geoparameters.m_larTPCVolumeId = 0;
-	geoparameters.m_wirePitchU = 0.300000011921;
+        //ATTN: offsets taken by visual comparison with edep-disp
+        geoparameters.m_centerY = level1[1] - 675;
+        geoparameters.m_centerZ = level1[2] + 6660;
+        geoparameters.m_widthX = dx * 2;
+        geoparameters.m_widthY = dy * 2;
+        geoparameters.m_widthZ = dz * 2;
+        //ATTN: parameters past here taken from uboone
+        geoparameters.m_larTPCVolumeId = 0;
+        geoparameters.m_wirePitchU = 0.300000011921;
         geoparameters.m_wirePitchV = 0.300000011921;
         geoparameters.m_wirePitchW = 0.300000011921;
         geoparameters.m_wireAngleU = 1.04719758034;
@@ -193,19 +198,20 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
         geoparameters.m_sigmaUVW = 1;
         geoparameters.m_isDriftInPositiveX = 0;
     }
-    catch (const pandora::StatusCodeException&) {
-	std::cout << "CreatePandoraLArTPCs - invalid tpc parameter provided" << std::endl;
+    catch (const pandora::StatusCodeException &)
+    {
+        std::cout << "CreatePandoraLArTPCs - invalid tpc parameter provided" << std::endl;
     }
 
-    try {
+    try
+    {
         PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::Geometry::LArTPC::Create(*pPrimaryPandora, geoparameters));
     }
-    catch (const pandora::StatusCodeException&) {
-	std::cout << "CreatePandoraLArTPCs - unable to create tpc, insufficient or invalid information supplied" << std::endl;
+    catch (const pandora::StatusCodeException &)
+    {
+        std::cout << "CreatePandoraLArTPCs - unable to create tpc, insufficient or invalid information supplied" << std::endl;
     }
-    
 }
-
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -214,7 +220,7 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
     int nEvents(0);
 
     TFile fileSource(parameters.m_inputFileName.c_str(), "READ");
-    TTree *pEDepSimTree = (TTree*)fileSource.Get("EDepSimEvents");
+    TTree *pEDepSimTree = (TTree *)fileSource.Get("EDepSimEvents");
 
     if (!pEDepSimTree)
     {
@@ -238,7 +244,8 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
 
         int hitCounter(0);
 
-        for (TG4HitSegmentDetectors::iterator detector = pEDepSimEvent->SegmentDetectors.begin(); detector != pEDepSimEvent->SegmentDetectors.end(); ++detector)
+        for (TG4HitSegmentDetectors::iterator detector = pEDepSimEvent->SegmentDetectors.begin();
+             detector != pEDepSimEvent->SegmentDetectors.end(); ++detector)
         {
             std::cout << "Show hits for " << detector->first << " (" << detector->second.size() << " hits)" << std::endl;
 
@@ -272,7 +279,7 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
                 caloHitParameters.m_hitRegion = pandora::SINGLE_REGION;
                 caloHitParameters.m_layer = 0;
                 caloHitParameters.m_isInOuterSamplingLayer = false;
-                caloHitParameters.m_pParentAddress = (void*)(static_cast<uintptr_t>(++hitCounter));
+                caloHitParameters.m_pParentAddress = (void *)(static_cast<uintptr_t>(++hitCounter));
 
                 PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::CaloHit::Create(*pPrimaryPandora, caloHitParameters));
             }
@@ -296,24 +303,24 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
     {
         switch (c)
         {
-        case 'i':
-            parameters.m_settingsFile = optarg;
-            break;
-        case 'e':
-            parameters.m_inputFileName = optarg;
-            break;
-        case 'n':
-            parameters.m_nEventsToProcess = atoi(optarg);
-            break;
-        case 's':
-            parameters.m_nEventsToSkip = atoi(optarg);
-            break;
-        case 'N':
-            parameters.m_shouldDisplayEventNumber = true;
-            break;
-        case 'h':
-        default:
-            return PrintOptions();
+            case 'i':
+                parameters.m_settingsFile = optarg;
+                break;
+            case 'e':
+                parameters.m_inputFileName = optarg;
+                break;
+            case 'n':
+                parameters.m_nEventsToProcess = atoi(optarg);
+                break;
+            case 's':
+                parameters.m_nEventsToSkip = atoi(optarg);
+                break;
+            case 'N':
+                parameters.m_shouldDisplayEventNumber = true;
+                break;
+            case 'h':
+            default:
+                return PrintOptions();
         }
     }
 
@@ -324,13 +331,15 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
 
 bool PrintOptions()
 {
-    std::cout << std::endl << "./bin/PandoraInterface " << std::endl
+    std::cout << std::endl
+              << "./bin/PandoraInterface " << std::endl
               << "    -i Settings            (required) [algorithm description: xml]" << std::endl
               << "    -e EventsFile          (required) [input edep-sim file, typically containing events and geometry]" << std::endl
               << "    -n NEventsToProcess    (optional) [no. of events to process]" << std::endl
               << "    -s NEventsToSkip       (optional) [no. of events to skip in first file]" << std::endl
               << "    -p                     (optional) [print status]" << std::endl
-              << "    -N                     (optional) [print event numbers]" << std::endl << std::endl;
+              << "    -N                     (optional) [print event numbers]" << std::endl
+              << std::endl;
 
     return false;
 }

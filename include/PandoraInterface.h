@@ -10,7 +10,10 @@
 
 #include "Pandora/PandoraInputTypes.h"
 
-namespace pandora {class Pandora;}
+namespace pandora
+{
+class Pandora;
+}
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -28,13 +31,13 @@ public:
      */
     Parameters();
 
-    std::string         m_settingsFile;                 ///< The path to the pandora settings file (mandatory parameter)
-    std::string         m_inputFileName;                ///< The path to the input file containing events and/or geometry information
+    std::string m_settingsFile;  ///< The path to the pandora settings file (mandatory parameter)
+    std::string m_inputFileName; ///< The path to the input file containing events and/or geometry information
 
-    int                 m_nEventsToProcess;             ///< The number of events to process (default all events in file)
-    bool                m_shouldDisplayEventNumber;     ///< Whether event numbers should be displayed (default false)
+    int m_nEventsToProcess;          ///< The number of events to process (default all events in file)
+    bool m_shouldDisplayEventNumber; ///< Whether event numbers should be displayed (default false)
 
-    pandora::InputInt   m_nEventsToSkip;                ///< The number of events to skip
+    pandora::InputInt m_nEventsToSkip; ///< The number of events to skip
 };
 
 /**
@@ -43,7 +46,7 @@ public:
  *  @param  parameters the application parameters
  *  @param  pPrimaryPandora the address of the primary pandora instance
  */
- void CreateGeometry(const Parameters &parameters, const pandora::Pandora *const pPrimaryPandora);
+void CreateGeometry(const Parameters &parameters, const pandora::Pandora *const pPrimaryPandora);
 
 /**
  *  @brief  Process events using the supplied pandora instances
@@ -74,11 +77,7 @@ bool PrintOptions();
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-inline Parameters::Parameters() :
-    m_settingsFile(""),
-    m_inputFileName(""),
-    m_nEventsToProcess(-1),
-    m_shouldDisplayEventNumber(false)
+inline Parameters::Parameters() : m_settingsFile(""), m_inputFileName(""), m_nEventsToProcess(-1), m_shouldDisplayEventNumber(false)
 {
 }
 
