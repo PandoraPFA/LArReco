@@ -14,6 +14,7 @@
 #include "TGeoManager.h"
 #include "TGeoShape.h"
 #include "TGeoVolume.h"
+#include "TLorentzVector.h"
 
 #include "Api/PandoraApi.h"
 #include "Helpers/XmlHelper.h"
@@ -162,10 +163,13 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
     pCurrentShape->InspectShape();
     TGeoBBox *pBox = dynamic_cast<TGeoBBox *>(pCurrentShape);
 
+    // mm to cm conversion
+    const double mm2cm = 0.1;
+
     //Now can get origin/width data from the BBox
-    double dx = pBox->GetDX(); //Note these are the half widths
-    double dy = pBox->GetDY();
-    double dz = pBox->GetDZ();
+    double dx = pBox->GetDX()*mm2cm; //Note these are the half widths
+    double dy = pBox->GetDY()*mm2cm;
+    double dz = pBox->GetDZ()*mm2cm;
     const double *origin = pBox->GetOrigin();
 
     //Translate the origin coordinates from the 4th level to the first.
@@ -182,13 +186,13 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
 
     try
     {
-        geoparameters.m_centerX = level1[0];
+        geoparameters.m_centerX = level1[0]*mm2cm;
         //ATTN: offsets taken by visual comparison with edep-disp
-        geoparameters.m_centerY = level1[1] - 675;
-        geoparameters.m_centerZ = level1[2] + 6660;
-        geoparameters.m_widthX = dx * 2;
-        geoparameters.m_widthY = dy * 2;
-        geoparameters.m_widthZ = dz * 2;
+        geoparameters.m_centerY = (level1[1] - 675.0)*mm2cm;
+        geoparameters.m_centerZ = (level1[2] + 6660.0)*mm2cm;
+        geoparameters.m_widthX = dx * 2.0;
+        geoparameters.m_widthY = dy * 2.0;
+        geoparameters.m_widthZ = dz * 2.0;
         //ATTN: parameters past here taken from uboone
         geoparameters.m_larTPCVolumeId = 0;
         geoparameters.m_wirePitchU = 0.300000011921;
@@ -236,6 +240,8 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
 
     // Factory for creating LArCaloHits
     lar_content::LArCaloHitFactory m_larCaloHitFactory;
+    // mm to cm conversion
+    const double mm2cm = 0.1;
 
     while ((nEvents < parameters.m_nEventsToProcess) || (0 > parameters.m_nEventsToProcess))
     {
@@ -261,8 +267,10 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
                 //const std::string particle = pEDepSimEvent->Trajectories[contrib].GetName();
 
                 const double energy = g4Hit->GetEnergyDeposit();
-                const CartesianVector start(g4Hit->GetStart().X(), g4Hit->GetStart().Y(), g4Hit->GetStart().Z());
-                const CartesianVector stop(g4Hit->GetStop().X(), g4Hit->GetStop().Y(), g4Hit->GetStop().Z());
+		const TLorentzVector& hitStart = g4Hit->GetStart()*mm2cm;
+		const TLorentzVector& hitStop  = g4Hit->GetStop()*mm2cm;
+		const CartesianVector start(hitStart.X(), hitStart.Y(), hitStart.Z());
+		const CartesianVector stop(hitStop.X(), hitStop.Y(), hitStop.Z());
 		const CartesianVector centre( (start + stop) * 0.5f );
 
 		lar_content::LArCaloHitParameters caloHitParameters;
