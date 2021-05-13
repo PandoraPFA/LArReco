@@ -17,10 +17,12 @@
 
 #include "Api/PandoraApi.h"
 #include "Helpers/XmlHelper.h"
+#include "Managers/PluginManager.h"
 #include "Xml/tinyxml.h"
 
 #include "larpandoracontent/LArContent.h"
 #include "larpandoracontent/LArControlFlow/MultiPandoraApi.h"
+#include "larpandoracontent/LArObjects/LArCaloHit.h"
 #include "larpandoracontent/LArPlugins/LArPseudoLayerPlugin.h"
 #include "larpandoracontent/LArPlugins/LArRotationalTransformationPlugin.h"
 
@@ -232,6 +234,9 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
     pEDepSimTree->SetBranchAddress("Event", &pEDepSimEvent);
     // fileSource->Get("EDepSimGeometry");
 
+    // Factory for creating LArCaloHits
+    lar_content::LArCaloHitFactory m_larCaloHitFactory;
+
     while ((nEvents < parameters.m_nEventsToProcess) || (0 > parameters.m_nEventsToProcess))
     {
         if (parameters.m_shouldDisplayEventNumber)
@@ -258,9 +263,10 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
                 const double energy = g4Hit->GetEnergyDeposit();
                 const CartesianVector start(g4Hit->GetStart().X(), g4Hit->GetStart().Y(), g4Hit->GetStart().Z());
                 const CartesianVector stop(g4Hit->GetStop().X(), g4Hit->GetStop().Y(), g4Hit->GetStop().Z());
+		const CartesianVector centre( (start + stop) * 0.5f );
 
-                PandoraApi::CaloHit::Parameters caloHitParameters;
-                caloHitParameters.m_positionVector = (start + stop) * 0.5f;
+		lar_content::LArCaloHitParameters caloHitParameters;
+                caloHitParameters.m_positionVector = centre;
                 caloHitParameters.m_expectedDirection = pandora::CartesianVector(0.f, 0.f, 1.f);
                 caloHitParameters.m_cellNormalVector = pandora::CartesianVector(0.f, 0.f, 1.f);
                 caloHitParameters.m_cellGeometry = pandora::RECTANGULAR;
@@ -280,8 +286,36 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
                 caloHitParameters.m_layer = 0;
                 caloHitParameters.m_isInOuterSamplingLayer = false;
                 caloHitParameters.m_pParentAddress = (void *)(static_cast<uintptr_t>(++hitCounter));
+		caloHitParameters.m_larTPCVolumeId = 0;
+		caloHitParameters.m_daughterVolumeId = 0;
 
                 PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::CaloHit::Create(*pPrimaryPandora, caloHitParameters));
+
+		// Create U, V and W views assuming x is the common drift coordinate
+		const double x0_cm = centre.GetX();
+		const double y0_cm = centre.GetY();
+		const double z0_cm = centre.GetZ();
+
+		lar_content::LArCaloHitParameters caloHitPars_UView(caloHitParameters);
+		caloHitPars_UView.m_hitType = pandora::TPC_VIEW_U;
+		const double upos_cm(pPrimaryPandora->GetPlugins()->GetLArTransformationPlugin()->YZtoU(y0_cm, z0_cm));
+		caloHitPars_UView.m_positionVector = CartesianVector(x0_cm, 0.0, upos_cm);
+
+		lar_content::LArCaloHitParameters caloHitPars_VView(caloHitParameters);
+		caloHitPars_VView.m_hitType = pandora::TPC_VIEW_V;
+		const double vpos_cm(pPrimaryPandora->GetPlugins()->GetLArTransformationPlugin()->YZtoV(y0_cm, z0_cm));
+		caloHitPars_VView.m_positionVector = CartesianVector(x0_cm, 0.0, vpos_cm);
+
+		lar_content::LArCaloHitParameters caloHitPars_WView(caloHitParameters);
+		caloHitPars_WView.m_hitType = pandora::TPC_VIEW_W;
+		const double wpos_cm(pPrimaryPandora->GetPlugins()->GetLArTransformationPlugin()->YZtoW(y0_cm, z0_cm));
+		caloHitPars_WView.m_positionVector = CartesianVector(x0_cm, 0.0, wpos_cm);
+
+		// Create LArCaloHitLists for U, V and W views
+                PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::CaloHit::Create(*pPrimaryPandora, caloHitPars_UView, m_larCaloHitFactory));
+                PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::CaloHit::Create(*pPrimaryPandora, caloHitPars_VView, m_larCaloHitFactory));
+                PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::CaloHit::Create(*pPrimaryPandora, caloHitPars_WView, m_larCaloHitFactory));
+
             }
         }
 
