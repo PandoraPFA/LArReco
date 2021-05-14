@@ -1,8 +1,8 @@
 /**
  *  @file   LArReco/include/PandoraInterface.h
- * 
+ *
  *  @brief  Header file for PandoraInterface.
- * 
+ *
  *  $Log: $
  */
 #ifndef PANDORA_ND_INTERFACE_H
@@ -27,17 +27,24 @@ class Parameters
 {
 public:
     /**
-     *  @brief Default constructor
-     */
+   *  @brief Default constructor
+   */
     Parameters();
 
-    std::string m_settingsFile;  ///< The path to the pandora settings file (mandatory parameter)
-    std::string m_inputFileName; ///< The path to the input file containing events and/or geometry information
+    std::string m_settingsFile;  ///< The path to the pandora settings file
+                                 ///< (mandatory parameter)
+    std::string m_inputFileName; ///< The path to the input file containing events
+                                 ///< and/or geometry information
 
-    int m_nEventsToProcess;          ///< The number of events to process (default all events in file)
-    bool m_shouldDisplayEventNumber; ///< Whether event numbers should be displayed (default false)
+    int m_nEventsToProcess;          ///< The number of events to process (default all
+                                     ///< events in file)
+    bool m_shouldDisplayEventNumber; ///< Whether event numbers should be
+                                     ///< displayed (default false)
 
     pandora::InputInt m_nEventsToSkip; ///< The number of events to skip
+
+    bool m_useLArTPC; ///< Create LArTPC LArCaloHits with u,v,w views (default)
+    bool m_use3DST;   ///< Create 3DST LArCaloHit lists (optional)
 };
 
 /**
@@ -73,6 +80,15 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters);
  *  @return false, to force abort
  */
 bool PrintOptions();
+
+/**
+ *  @brief  Process view option so that 3x2D and/or 3D hit lists are created
+ *
+ *  @param  viewOption the view option string
+ *  @param  parameters to receive the application parameters
+ *
+ */
+void ProcessViewOption(const std::string &viewOption, Parameters &parameters);
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
