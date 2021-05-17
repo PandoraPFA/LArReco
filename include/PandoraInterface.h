@@ -27,8 +27,8 @@ class Parameters
 {
 public:
     /**
-   *  @brief Default constructor
-   */
+     *  @brief Default constructor
+     */
     Parameters();
 
     std::string m_settingsFile;  ///< The path to the pandora settings file
@@ -43,8 +43,8 @@ public:
 
     pandora::InputInt m_nEventsToSkip; ///< The number of events to skip
 
+    bool m_use3D;     ///< Create 3D LArCaloHits (optional)
     bool m_useLArTPC; ///< Create LArTPC LArCaloHits with u,v,w views (default)
-    bool m_use3DST;   ///< Create 3DST LArCaloHit lists (optional)
 };
 
 /**
@@ -93,7 +93,13 @@ void ProcessViewOption(const std::string &viewOption, Parameters &parameters);
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-inline Parameters::Parameters() : m_settingsFile(""), m_inputFileName(""), m_nEventsToProcess(-1), m_shouldDisplayEventNumber(false)
+inline Parameters::Parameters() :
+    m_settingsFile(""),
+    m_inputFileName(""),
+    m_nEventsToProcess(-1),
+    m_shouldDisplayEventNumber(false),
+    m_use3D(true),
+    m_useLArTPC(false)
 {
 }
 

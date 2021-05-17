@@ -300,7 +300,7 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
                 caloHitParameters.m_larTPCVolumeId = 0;
                 caloHitParameters.m_daughterVolumeId = 0;
 
-                if (parameters.m_use3DST)
+                if (parameters.m_use3D)
                 {
                     PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=,
                         PandoraApi::CaloHit::Create(*pPrimaryPandora, caloHitParameters, m_larCaloHitFactory));
@@ -402,7 +402,7 @@ bool PrintOptions()
               << std::endl
               << "    -p                     (optional) [print status]" << std::endl
               << "    -N                     (optional) [print event numbers]" << std::endl
-              << "    -j Projection          (optional) [LArTPC (default), 3DST, Both]" << std::endl
+              << "    -j Projection          (optional) [3D (default), LArTPC, Both]" << std::endl
               << std::endl;
 
     return false;
@@ -415,26 +415,26 @@ void ProcessViewOption(const std::string &viewOption, Parameters &parameters)
     std::string chosenViewOption(viewOption);
     std::transform(chosenViewOption.begin(), chosenViewOption.end(), chosenViewOption.begin(), ::tolower);
 
-    if (chosenViewOption == "3dst")
+    if (chosenViewOption == "3d")
     {
-        // 3DST hits only
-        std::cout << "Using 3DST views" << std::endl;
+        // 3D hits only
+        std::cout << "Using 3D hits" << std::endl;
         parameters.m_useLArTPC = false;
-        parameters.m_use3DST = true;
+        parameters.m_use3D = true;
     }
     else if (chosenViewOption == "both")
     {
-        // LArTPC and 3DST hits
-        std::cout << "Using LArTPC and 3DST views" << std::endl;
+        // LArTPC and 3D hits
+        std::cout << "Using LArTPC projections _and_ 3D hits" << std::endl;
         parameters.m_useLArTPC = true;
-        parameters.m_use3DST = true;
+        parameters.m_use3D = true;
     }
     else
     {
         // LArTPC hits only (default)
-        std::cout << "Using LArTPC views" << std::endl;
+        std::cout << "Using LArTPC projections" << std::endl;
         parameters.m_useLArTPC = true;
-        parameters.m_use3DST = false;
+        parameters.m_use3D = false;
     }
 }
 
