@@ -9,7 +9,9 @@
     </LArTransformationPlugin>
 
     <!-- ALGORITHM SETTINGS -->
-    <algorithm type = "LArEventReading"/>
+    <algorithm type = "LArEventReading">
+        <LArMCParticleVersion>1</LArMCParticleVersion>
+    </algorithm>
     <algorithm type = "LArPreProcessing">
         <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
         <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
