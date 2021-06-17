@@ -361,15 +361,15 @@
 
     <!-- ThreeDRecoveryAlgorithms -->
     <algorithm type = "LArVertexBasedPfoRecovery">
-        <InputClusterListNames>TrackClustersU TrackClustersV TrackClustersW</InputClusterListNames>
+        <InputClusterListNames>TrackClustersU TrackClustersV TrackClustersW ShowerClustersU ShowerClustersV ShowerClustersW</InputClusterListNames>
         <OutputPfoListName>TrackParticles3D</OutputPfoListName>
     </algorithm>
     <algorithm type = "LArParticleRecovery">
-        <InputClusterListNames>TrackClustersU TrackClustersV TrackClustersW</InputClusterListNames>
+        <InputClusterListNames>TrackClustersU TrackClustersV TrackClustersW ShowerClustersU ShowerClustersV ShowerClustersW</InputClusterListNames>
         <OutputPfoListName>TrackParticles3D</OutputPfoListName>
     </algorithm>
     <algorithm type = "LArParticleRecovery">
-        <InputClusterListNames>TrackClustersU TrackClustersV TrackClustersW</InputClusterListNames>
+        <InputClusterListNames>TrackClustersU TrackClustersV TrackClustersW ShowerClustersU ShowerClustersV ShowerClustersW</InputClusterListNames>
         <OutputPfoListName>TrackParticles3D</OutputPfoListName>
         <VertexClusterMode>true</VertexClusterMode>
         <MinXOverlapFraction>0.5</MinXOverlapFraction>
