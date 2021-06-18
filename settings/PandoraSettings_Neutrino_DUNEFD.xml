@@ -178,12 +178,8 @@
     </algorithm>
 
     <!-- VertexAlgorithms -->
-    <algorithm type = "LArCutClusterCharacterisation">
+    <algorithm type = "LArDLClusterCharacterisation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
-        <MaxShowerLengthCut>500.</MaxShowerLengthCut>
-        <VertexDistanceRatioCut>500.</VertexDistanceRatioCut>
-        <PathLengthRatioCut>1.012</PathLengthRatioCut>
-        <ShowerWidthRatioCut>0.2</ShowerWidthRatioCut>
     </algorithm>
     <algorithm type = "LArCandidateVertexCreation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
@@ -208,7 +204,7 @@
             <tool type = "LArRPhiFeature"/>
         </FeatureTools>
     </algorithm>
-    <algorithm type = "LArCutClusterCharacterisation">
+    <algorithm type = "LArDLClusterCharacterisation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <ZeroMode>true</ZeroMode>
     </algorithm>
@@ -285,21 +281,9 @@
     <algorithm type = "LArListDeletion">
         <PfoListNames>ShowerParticles3D</PfoListNames>
     </algorithm>
-    <algorithm type = "LArCutClusterCharacterisation">
-        <InputClusterListNames>TrackClustersU TrackClustersV TrackClustersW</InputClusterListNames>
+    <algorithm type = "LArDLClusterCharacterisation">
+        <InputClusterListNames>TrackClustersU TrackClustersV TrackClustersW ShowerClustersU ShowerClustersV ShowerClustersW</InputClusterListNames>
         <OverwriteExistingId>true</OverwriteExistingId>
-        <MaxShowerLengthCut>500.</MaxShowerLengthCut>
-        <VertexDistanceRatioCut>500.</VertexDistanceRatioCut>
-        <PathLengthRatioCut>1.012</PathLengthRatioCut>
-        <ShowerWidthRatioCut>0.2</ShowerWidthRatioCut>
-    </algorithm>
-    <algorithm type = "LArCutClusterCharacterisation">
-        <InputClusterListNames>ShowerClustersU ShowerClustersV ShowerClustersW</InputClusterListNames>
-        <OverwriteExistingId>true</OverwriteExistingId>
-        <MaxShowerLengthCut>500.</MaxShowerLengthCut>
-        <VertexDistanceRatioCut>500.</VertexDistanceRatioCut>
-        <PathLengthRatioCut>1.012</PathLengthRatioCut>
-        <ShowerWidthRatioCut>0.2</ShowerWidthRatioCut>
     </algorithm>
     <algorithm type = "LArShowerGrowing">
         <InputClusterListNames>ShowerClustersU ShowerClustersV ShowerClustersW</InputClusterListNames>
