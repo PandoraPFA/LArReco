@@ -388,7 +388,85 @@
         <AddHitsAsIsolated>true</AddHitsAsIsolated>
     </algorithm>
 
-    <!-- NeutrinoAlgorithms -->
+    <algorithm type = "LArBdtPfoCharacterisation">
+        <TrackPfoListName>TrackParticles3D</TrackPfoListName>
+        <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+        <MCParticleListName>Input</MCParticleListName>
+        <CaloHitListName>CaloHitList2D</CaloHitListName>
+        <UseThreeDInformation>true</UseThreeDInformation>
+        <MvaFileName>PandoraBdt_v03_20_00.xml</MvaFileName>
+        <MvaName>PfoCharacterisation</MvaName>
+        <MvaFileNameNoChargeInfo>PandoraBdt_v03_20_00.xml</MvaFileNameNoChargeInfo>
+        <MvaNameNoChargeInfo>PfoCharacterisationNoChargeInfo</MvaNameNoChargeInfo>
+        <TrainingSetMode>false</TrainingSetMode>
+        <TrainingOutputFileName>training_output</TrainingOutputFileName>
+        <FeatureTools>
+            <tool type = "LArThreeDLinearFitFeatureTool"/>
+            <tool type = "LArThreeDVertexDistanceFeatureTool"/>
+            <tool type = "LArThreeDPCAFeatureTool"/>
+            <tool type = "LArPfoHierarchyFeatureTool"/>
+            <tool type = "LArThreeDOpeningAngleFeatureTool">
+                <HitFraction>0.2</HitFraction>
+            </tool>
+            <tool type = "LArThreeDChargeFeatureTool"/>
+        </FeatureTools>
+        <FeatureToolsNoChargeInfo>
+            <tool type = "LArThreeDLinearFitFeatureTool"/>
+            <tool type = "LArThreeDVertexDistanceFeatureTool"/>
+            <tool type = "LArThreeDPCAFeatureTool"/>
+            <tool type = "LArPfoHierarchyFeatureTool"/>
+            <tool type = "LArThreeDOpeningAngleFeatureTool">
+                <HitFraction>0.2</HitFraction>
+            </tool>
+        </FeatureToolsNoChargeInfo>
+        <WriteToTree>false</WriteToTree>
+        <OutputTree>tree</OutputTree>
+        <OutputFile>tree.root</OutputFile>
+    </algorithm>
+
+    <!-- Recursively Repeat MopUpAlgorithms -->
+    <algorithm type = "LArRecursivePfoMopUp">
+        <PfoListNames>ShowerParticles3D</PfoListNames>
+        <MaxIterations>10</MaxIterations>
+        <MopUpAlgorithms>
+            <algorithm type = "LArBoundedClusterMopUp">
+                <PfoListNames>ShowerParticles3D</PfoListNames>
+                <DaughterListNames>ShowerClustersU ShowerClustersV ShowerClustersW</DaughterListNames>
+            </algorithm>
+            <algorithm type = "LArConeClusterMopUp">
+                <PfoListNames>ShowerParticles3D</PfoListNames>
+                <DaughterListNames>ShowerClustersU ShowerClustersV ShowerClustersW</DaughterListNames>
+            </algorithm>
+            <algorithm type = "LArNearbyClusterMopUp">
+                <PfoListNames>ShowerParticles3D</PfoListNames>
+                <DaughterListNames>ShowerClustersU ShowerClustersV ShowerClustersW</DaughterListNames>
+            </algorithm>
+            <algorithm type = "LArSlidingConePfoMopUp">
+                <InputPfoListNames>ShowerParticles3D</InputPfoListNames>
+                <DaughterListNames>ShowerClustersU ShowerClustersV ShowerClustersW ShowerClusters3D</DaughterListNames>
+            </algorithm>
+            <algorithm type = "LArSlidingConeClusterMopUp">
+                <InputPfoListNames>ShowerParticles3D</InputPfoListNames>
+                <DaughterListNames>ShowerClustersU ShowerClustersV ShowerClustersW</DaughterListNames>
+            </algorithm>
+            <algorithm type = "LArPfoHitCleaning">
+                <PfoListNames>ShowerParticles3D</PfoListNames>
+                <ClusterListNames>ShowerClusters3D</ClusterListNames>
+            </algorithm>
+            <algorithm type = "LArThreeDHitCreation">
+                <InputPfoListName>ShowerParticles3D</InputPfoListName>
+                <OutputCaloHitListName>ShowerCaloHits3D</OutputCaloHitListName>
+                <OutputClusterListName>ShowerClusters3D</OutputClusterListName>
+                <HitCreationTools>
+                    <tool type = "LArThreeViewShowerHits"/>
+                    <tool type = "LArTwoViewShowerHits"/>
+                    <tool type = "LArDeltaRayShowerHits"/>
+                </HitCreationTools>
+            </algorithm>
+        </MopUpAlgorithms>
+    </algorithm>
+
+    <!-- Neutrino creation and hierarchy building -->
     <algorithm type = "LArNeutrinoCreation">
        <InputVertexListName>NeutrinoVertices3D</InputVertexListName>
        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
