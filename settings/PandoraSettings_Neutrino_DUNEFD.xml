@@ -271,12 +271,10 @@
     </algorithm>
 
     <!-- ThreeDShowerAlgorithms -->
-    <algorithm type = "LArCutPfoCharacterisation">
+    <algorithm type = "LArDLPfoCharacterisation">
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
         <UseThreeDInformation>false</UseThreeDInformation>
-        <MaxShowerLengthCut>500.</MaxShowerLengthCut>
-        <VertexDistanceRatioCut>500.</VertexDistanceRatioCut>
     </algorithm>
     <algorithm type = "LArListDeletion">
         <PfoListNames>ShowerParticles3D</PfoListNames>
@@ -339,14 +337,10 @@
     </algorithm>
 
     <!-- ThreeDHitAlgorithms -->
-    <algorithm type = "LArCutPfoCharacterisation">
+    <algorithm type = "LArDLPfoCharacterisation">
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
-        <PostBranchAddition>true</PostBranchAddition>
         <UseThreeDInformation>false</UseThreeDInformation>
-        <MaxShowerLengthCut>500.</MaxShowerLengthCut>
-        <VertexDistanceRatioCut>500.</VertexDistanceRatioCut>
-        <DTDLWidthRatioCut>0.08</DTDLWidthRatioCut>
     </algorithm>
     <algorithm type = "LArThreeDHitCreation">
         <InputPfoListName>TrackParticles3D</InputPfoListName>
