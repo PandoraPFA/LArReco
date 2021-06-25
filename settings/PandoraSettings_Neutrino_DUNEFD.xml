@@ -19,7 +19,7 @@
         <ModelFileNameU>DUNE_unet_U_v1.0.pt</ModelFileNameU>
         <ModelFileNameV>DUNE_unet_V_v1.0.pt</ModelFileNameV>
         <ModelFileNameW>DUNE_unet_W_v1.0.pt</ModelFileNameW>
-        <Visualize>true</Visualize>
+        <Visualize>false</Visualize>
     </algorithm>
 
     <!-- TwoDReconstruction -->
@@ -331,10 +331,10 @@
         <DaughterListNames>ShowerClustersU ShowerClustersV ShowerClustersW</DaughterListNames>
     </algorithm>
     
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <ClusterListNames>TrackClustersU TrackClustersV TrackClustersW ShowerClustersU ShowerClustersV ShowerClustersW</ClusterListNames>
         <ShowDetector>true</ShowDetector>
-    </algorithm>
+    </algorithm-->
 
     <!-- ThreeDHitAlgorithms -->
     <algorithm type = "LArDLPfoCharacterisation">
