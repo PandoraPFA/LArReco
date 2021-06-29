@@ -16,7 +16,9 @@
 #include "TGeoVolume.h"
 
 #include "Api/PandoraApi.h"
+#include "Geometry/LArTPC.h"
 #include "Helpers/XmlHelper.h"
+#include "Managers/GeometryManager.h"
 #include "Managers/PluginManager.h"
 #include "Xml/tinyxml.h"
 
@@ -192,6 +194,7 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
         geoparameters.m_widthX = dx * 2.0;
         geoparameters.m_widthY = dy * 2.0;
         geoparameters.m_widthZ = dz * 2.0;
+
         // ATTN: parameters past here taken from uboone
         geoparameters.m_larTPCVolumeId = 0;
         geoparameters.m_wirePitchU = 0.300000011921;
@@ -241,6 +244,23 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
     // Factory for creating LArCaloHits
     lar_content::LArCaloHitFactory m_larCaloHitFactory;
 
+    // Detector volume for voxelising the hits
+    const GeometryManager *geom = pPrimaryPandora->GetGeometry();
+    const LArTPC &tpc = geom->GetLArTPC();
+
+    double botX = tpc.GetCenterX() - 0.5 * tpc.GetWidthX();
+    double botY = tpc.GetCenterY() - 0.5 * tpc.GetWidthY();
+    double botZ = tpc.GetCenterZ() - 0.5 * tpc.GetWidthZ();
+    double topX = botX + tpc.GetWidthX();
+    double topY = botY + tpc.GetWidthY();
+    double topZ = botZ + tpc.GetWidthZ();
+    const double voxelWidth(parameters.m_voxelWidth);
+    LArGrid grid(pandora::CartesianVector(botX, botY, botZ), pandora::CartesianVector(topX, topY, topZ),
+        pandora::CartesianVector(voxelWidth, voxelWidth, voxelWidth));
+
+    std::cout << "Total grid volume: bot = " << grid.m_bottom << "\n top = " << grid.m_top << std::endl;
+    std::cout << "Making voxels with size " << grid.m_binWidths << std::endl;
+
     while ((nEvents < parameters.m_nEventsToProcess) || (0 > parameters.m_nEventsToProcess))
     {
         if (parameters.m_shouldDisplayEventNumber)
@@ -260,11 +280,10 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
             std::cout << "                                 " << std::endl;
 
             std::vector<LArVoxel> voxelList;
-            const double voxelWidth_cm(0.4);
 
             for (TG4HitSegment &g4Hit : detector->second)
             {
-                std::vector<LArVoxel> currentVoxelList = makeVoxels(g4Hit, voxelWidth_cm);
+                std::vector<LArVoxel> currentVoxelList = makeVoxels(g4Hit, grid);
 
                 for (LArVoxel &voxel : currentVoxelList)
                 {
@@ -272,7 +291,7 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
                 }
             }
 
-            std::cout << "Voxels produced: " << voxelList.size() << std::endl;
+            std::cout << "Produced " << voxelList.size() << " voxels from " << detector->second.size() << " hit segments." << std::endl;
 
             // ATTN: Here we might need to add something to check if there are
             // multiple energy deposits from the same particle into one voxel. How can
@@ -291,9 +310,9 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
                 caloHitParameters.m_expectedDirection = pandora::CartesianVector(0.f, 0.f, 1.f);
                 caloHitParameters.m_cellNormalVector = pandora::CartesianVector(0.f, 0.f, 1.f);
                 caloHitParameters.m_cellGeometry = pandora::RECTANGULAR;
-                caloHitParameters.m_cellSize0 = voxelWidth_cm;
-                caloHitParameters.m_cellSize1 = voxelWidth_cm;
-                caloHitParameters.m_cellThickness = voxelWidth_cm;
+                caloHitParameters.m_cellSize0 = voxelWidth;
+                caloHitParameters.m_cellSize1 = voxelWidth;
+                caloHitParameters.m_cellThickness = voxelWidth;
                 caloHitParameters.m_nCellRadiationLengths = 1.f;
                 caloHitParameters.m_nCellInteractionLengths = 1.f;
                 caloHitParameters.m_time = 0.f;
@@ -359,437 +378,276 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
     }
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------
-std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, double voxelWidth_cm)
+std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid)
 {
-
     std::vector<LArVoxel> currentVoxelList;
 
-    // Set the variables for the AV bounding box and voxel size
-    const double voxelSize[3] = {voxelWidth_cm, voxelWidth_cm, voxelWidth_cm};
-    const double boxTop[3] = {370.0, 160.0, 930.0};
-    const double boxBottom[3] = {-370.0, -160.0, 400.0};
-    double boxLength[3] = {0.0, 0.0, 0.0};
-    for (int i = 0; i < 3; i++)
-    {
-        boxLength[i] = boxTop[i] - boxBottom[i];
-    }
-    const double xnum = boxLength[0] / voxelSize[0];
-    const double ynum = boxLength[1] / voxelSize[1];
-    const double znum = boxLength[2] / voxelSize[2];
-
-    const double epsilon(1.0e-3);
-    double energy_deposit(0.0);
-
-    // Get start and stop points for what we want to voxelise
     // mm to cm conversion
     const double mm2cm(0.1);
+
+    // Start and end positions
     const TLorentzVector &hitStart = g4Hit.GetStart() * mm2cm;
     const TLorentzVector &hitStop = g4Hit.GetStop() * mm2cm;
 
     const CartesianVector start(hitStart.X(), hitStart.Y(), hitStart.Z());
     const CartesianVector stop(hitStop.X(), hitStop.Y(), hitStop.Z());
 
-    std::cout<<"Hit start: " << start << std::endl;
-    std::cout<<"Hit stop: "<< stop << std::endl;
-    std::cout<<"Hit displ: " << start-stop <<std::endl;
+    // Direction vector and hit segment length
+    const CartesianVector dir = stop - start;
+    const double hitLength = dir.GetMagnitude();
 
-    // Eliminate any tracks which are just points
-    if ((stop - start).GetMagnitude() < 1e-10)
+    // Hit segment total energy
+    const double g4HitEnergy = g4Hit.GetEnergyDeposit();
+
+    std::cout << "Hit start: " << start << std::endl;
+    std::cout << "Hit stop: " << stop << std::endl;
+    std::cout << "Hit direction: " << dir << std::endl;
+    std::cout << "Hit energy: " << g4HitEnergy << std::endl;
+    if (hitLength < 1e-10)
     {
-        std::cout << "Cannot have zero track length." << std::endl;
-        std::cout << "                              " << std::endl;
+        std::cout << "Cannot have zero track length" << std::endl;
         return currentVoxelList;
     }
 
-    // Vectors for the intersection points of the hit and the test box
-    CartesianVector pt0(0, 0, 0);
-    CartesianVector pt1(0, 0, 0);
-
-    // Find intersections (check hit contained within AV)
-    const int crossings = Intersections(boxBottom, boxTop, start, stop, pt0, pt1);
-
-    if (crossings == 0)
-    {
-        std::cout << "No crossing point found..." << std::endl;
-        // ATTN: In ML they return voxel list here if no crossing points
-        // found. Think I'm doing this a slightly different way, so maybe
-        // remove
-    }
-
-    std::cout << "Crossings = " << crossings << std::endl;
-    std::cout << "   Intersects with bounding box at"
-              << " pt0 = (" << pt0.GetX() << "," << pt0.GetY() << "," << pt0.GetZ() << ")"
-              << " and pt1 = (" << pt1.GetX() << "," << pt1.GetY() << "," << pt1.GetZ() << ")" << std::endl;
-
-    // Get a unit vector in the direction of the hit segment
-    const CartesianVector dir = pt1 - pt0;
-    const double length = dir.GetMagnitude();
+    // Define ray trajectory
     const CartesianVector dirNorm = dir.GetUnitVector();
+    LArRay ray(start, dirNorm);
 
-    // Need this to check the inverse vector doesn't end up with a divide by 0
-    float val1, val2, val3;
-    if (dir.GetX() != 0)
+    // We need to shuffle along the hit segment path and create voxels as we go.
+    // There are 4 cases for the start and end points inside the voxelisation region.
+    // Case 1: start & stop are both inside the voxelisation boundary
+    // Case 2: start & stop are both outside, but path direction intersects boundary
+    // Case 3: start is inside boundary, stop point = intersection at region boundary
+    // Case 4: end is inside boundary, start point = intersection at region boundary
+
+    double t0(0.0), t1(0.0);
+    pandora::CartesianVector point1(0.0, 0.0, 0.0), point2(0.0, 0.0, 0.0);
+
+    // Check if the start and end points are inside the voxelisation region
+    const bool inStart = grid.inside(start);
+    const bool inStop = grid.inside(stop);
+
+    if (inStart && inStop)
     {
-        val1 = 1.0 / dir.GetX();
+        std::cout << "Case 1: Start and end points are inside boundary" << std::endl;
+        point1 = start;
+        point2 = stop;
     }
-    else
+    else if (!inStart && !inStop)
     {
-        val1 = std::numeric_limits<float>::max();
-    }
-
-    if (dir.GetY() != 0)
-    {
-        val2 = 1.0 / dir.GetY();
-    }
-    else
-    {
-        val2 = std::numeric_limits<float>::max();
-    }
-
-    if (dir.GetZ() != 0)
-    {
-        val3 = 1.0 / dir.GetZ();
-    }
-    else
-    {
-        val3 = std::numeric_limits<float>::max();
-    }
-
-    const CartesianVector invDirNorm(val1, val2, val3);
-    int sign[3];
-    sign[0] = (invDirNorm.GetX() < 0);
-    sign[1] = (invDirNorm.GetY() < 0);
-    sign[2] = (invDirNorm.GetZ() < 0);
-
-    double t0(0.0);
-    double t1(0.0);
-    // size_t nx(0), ny(0), nz(0);
-
-    // Shuffle along this hit segment
-    while (true)
-    {
-        // Get the position vector that we are going to check out
-        CartesianVector pt = pt0 + dirNorm * (t1 + epsilon);
-        std::cout << "    New point: " << pt << std::endl;
-
-        // Find which voxel this lives in
-        //-----voxel Iding------------
-        if (pt.GetX() > boxTop[0] || pt.GetX() < boxBottom[0] || pt.GetY() > boxTop[1] || pt.GetY() < boxBottom[1] ||
-            pt.GetZ() > boxTop[2] || pt.GetZ() < boxBottom[2])
+        std::cout << "Case 2: Start and end points are outside boundary" << std::endl;
+        bool ok = grid.intersect(ray, t0, t1);
+        if (ok)
         {
-            std::cout << "Invalid voxel! Out of Geometry!" << std::endl;
-            std::cout << "                               " << std::endl;
-            return currentVoxelList;
-        }
-
-        double xindex = (pt.GetX() - boxBottom[0]) / voxelSize[0];
-        double yindex = (pt.GetY() - boxBottom[1]) / voxelSize[1];
-        double zindex = (pt.GetZ() - boxBottom[2]) / voxelSize[2];
-
-        if (xindex == xnum)
-            xindex -= 1;
-        if (yindex == ynum)
-            yindex -= 1;
-        if (zindex == znum)
-            zindex -= 1;
-
-        int voxelID = int(zindex * (xnum * ynum) + yindex * xnum + xindex);
-        //---------------------------
-
-        // ATTN: This wasn't working for x or y, but was for z. I couldn't
-        // work out why, but seemed to work okay if I just used the indexes
-        // straight out
-        //--------------id_to_xyz_index---------------
-        /*
-	  nz = (double)voxelID / (xnum * ynum);
-	  std::cout << "voxelID before = " << voxelID <<std::endl;
-	  std::cout << "nz " << nz << std::endl;
-	  voxelID -= nz * (xnum * ynum);
-	  std::cout << "voxelID after = " << voxelID << std::endl;
-	  ny = (double)voxelID / xnum;
-	  nx = ((double)voxelID - ny * xnum);
-	  
-	  std::cout << "xindex : " << xindex << "  yindex : " << yindex << "    zindex
-	  : " << zindex << std::endl; std::cout << "nx : " << nx << "  ny : " << ny <<
-	  "    nz : " << nz << std::endl;
-	*/
-        //-----------------------------------------------------------------------
-        // move the box bounds such that they are moved a voxel along
-        // z in good....x and y aren't....but can just use index straight here
-        double boxBottomUpdate[3] = {0, 0, 0};
-        double boxTopUpdate[3] = {0, 0, 0};
-
-        // boxBottomUpdate[0] = boxBottom[0] + (nx * voxelSize[0] - 1e-3);
-        // boxBottomUpdate[1] = boxBottom[1] + (ny * voxelSize[1] - 1e-3);
-        // boxBottomUpdate[2] = boxBottom[2] + (nz * voxelSize[2] - 1e-3);
-
-        // Define an updated test box
-        boxBottomUpdate[0] = boxBottom[0] + (xindex * voxelSize[0] - 1e-3);
-        boxBottomUpdate[1] = boxBottom[1] + (yindex * voxelSize[1] - 1e-3);
-        boxBottomUpdate[2] = boxBottom[2] + (zindex * voxelSize[2] - 1e-3);
-        boxTopUpdate[0] = boxBottomUpdate[0] + voxelSize[0];
-        boxTopUpdate[1] = boxBottomUpdate[1] + voxelSize[1];
-        boxTopUpdate[2] = boxBottomUpdate[2] + voxelSize[2];
-
-	std::cout<<"Updated box: bottom = ("<<boxBottomUpdate[0]<<", "<<boxBottomUpdate[1]<<", "
-		 <<boxBottomUpdate[2]<<"), top = ("<<boxTopUpdate[0]<<", "<<boxTopUpdate[1]
-		 <<", "<<boxTopUpdate[2]<<")"<<std::endl;
-
-        std::cout << "    Inspecting a voxel id " << voxelID << " ... " << std::endl;
-
-        double t1before = t1;
-        int cross = BoxCrossings(boxBottomUpdate, boxTopUpdate, pt0, sign, invDirNorm, t0, t1);
-        double t1after = t1;
-	std::cout<<"t1: before = "<<t1before<<", after = "<<t1after<<std::endl;
-
-        // ATTN: This is here so that it can not get stuck in an infinite loop
-        // where t1 doesn't shuffle along. Probably should think of a better
-        // way to do this
-        if (t1before == t1after)
-            return currentVoxelList;
-
-        // Consider crossings with the test box
-        if (cross == 0)
-        {
-            // Test box should have been set up to contain a section of this hit
-            std::cout << "      No crossing (not expected) ... breaking" << std::endl;
-            return currentVoxelList;
-        }
-
-        double dx(0.0);
-        if (cross == 1)
-        {
-            std::cout << "      One crossing: " << pt0 + dir * t1 << std::endl;
-            dx = std::min(t1, length);
+            point1 = ray.getPoint(t0);
+            point2 = ray.getPoint(t1);
+            std::cout << "Boundary points: " << point1 << " and " << point2 << std::endl;
         }
         else
         {
-            std::cout << "      Two crossing" << pt0 + dir * t0 << " => " << pt0 + dir * t1 << std::endl;
-            if (t0 > length)
-                dx = length;
-            else if (t1 > length)
-                dx = length - t0;
-            else
-                dx = t1 - t0;
-        }
-
-        // Find the fraction of energy contained in voxel from the fraction of
-        // track in voxel
-        double energyInVoxel = g4Hit.GetEnergyDeposit() * dx / length;
-
-        if (energyInVoxel < 0)
-        {
-            std::cout << "Voxel with negative energy deposited!" << std::endl
-                      << "  ID = " << voxelID << std::endl
-                      << "  edep computed from:" << std::endl
-                      << "      dx = " << dx << ", length = " << length << ", TG4HitSegment edep = " << g4Hit.GetEnergyDeposit() << std::endl;
-            throw StatusCodeException(STATUS_CODE_FAILURE);
-        }
-
-        energy_deposit += energyInVoxel;
-
-        std::cout << "      Registering voxel id " << voxelID << " t1 =" << t1 << " (total length = " << length << ")" << std::endl;
-
-        // Push back voxels back into a list
-        const CartesianVector voxelPosVect(boxBottomUpdate[0], boxBottomUpdate[1], boxBottomUpdate[2]);
-	std::cout << "Adding voxel with pos = " << voxelPosVect << " and E = " << energyInVoxel << std::endl;
-        LArVoxel currentVoxel(voxelID, energyInVoxel, voxelPosVect);
-        currentVoxelList.push_back(currentVoxel);
-
-        // Once t1 is longer than the voxel, break out of the loop
-        if (t1 > length)
-        {
-            std::cout << "      Reached the segment end (t1 = " << t1 << " fractional length " << t1 / length << ") ... breaking" << std::endl;
-            std::cout << "                      " << std::endl;
+            std::cout << "Voxel ray does not intersect boundary limits." << std::endl;
             return currentVoxelList;
         }
+    }
+    else if (inStart && !inStop)
+    {
+        std::cout << "Case 3: Start inside boundary" << std::endl;
+        point1 = start;
+        bool ok = grid.intersect(ray, t0, t1);
+        if (ok)
+        {
+            point2 = ray.getPoint(t1);
+        }
+        else
+        {
+            std::cout << "Voxel ray does not intersect boundary" << std::endl;
+            return currentVoxelList;
+        }
+    }
+    else if (!inStart && inStop)
+    {
+        std::cout << "Case 4: End inside boundary" << std::endl;
+        point2 = stop;
+        bool ok = grid.intersect(ray, t0, t1);
+        if (ok)
+        {
+            point1 = ray.getPoint(t0);
+        }
+        else
+        {
+            std::cout << "Voxel ray does not intersect boundary" << std::endl;
+            return currentVoxelList;
+        }
+    }
 
-        std::cout << "      Updated t1 = " << t1 << " (fractional length " << t1 / length << ")" << std::endl;
-        std::cout << "                      " << std::endl;
+    // Now create voxels between point1 and point2.
+    // Ray direction will be the same, but update starting point
+    ray.updateOrigin(point1);
 
-    } // end while true
+    const double epsilon(1e-3);
+    bool shuffle(true);
 
-    std::cout << "current num of voxels: " << currentVoxelList.size() << std::endl;
-    std::cout << "                      " << std::endl;
+    // Keep track of total voxel path length and energy (so far)
+    double totalPath(0.0), ETot(0.0);
+
+    while (shuffle)
+    {
+
+        // Get point along path to define voxel bin (bottom corner)
+        pandora::CartesianVector voxelPoint = ray.getPoint(epsilon);
+
+        // Grid 3d bin containing this point; 4th element is the total bin number
+        std::array<int, 4> gridBins = grid.getBinIndices(voxelPoint);
+        int voxelID = gridBins[3];
+
+        int xBin = gridBins[0];
+        int yBin = gridBins[1];
+        int zBin = gridBins[2];
+
+        // Voxel bottom and top corners
+        const pandora::CartesianVector voxBot = grid.getPoint(xBin, yBin, zBin);
+        const pandora::CartesianVector voxTop = grid.getPoint(xBin + 1, yBin + 1, zBin + 1);
+
+        // Voxel box
+        const LArBox vBox(voxBot, voxTop);
+        // Get ray intersections with this box
+        bool result = vBox.intersect(ray, t0, t1);
+
+        if (!result)
+            shuffle = false;
+
+        // Voxel extent = intersection path difference
+        double dL(t1 - t0);
+        // Stop processing if we are not moving the path along
+        if (dL < epsilon)
+            shuffle = false;
+
+        totalPath += dL;
+
+        // Stop adding voxels if we have enough
+        if (totalPath > hitLength)
+        {
+            shuffle = false;
+            dL = hitLength - totalPath + dL;
+        }
+
+        // Voxel energy using path length fraction w.r.t hit length
+        const double voxelEnergy = g4HitEnergy * dL / hitLength;
+        ETot += voxelEnergy;
+
+        const double fracTotE = g4HitEnergy > 0.0 ? ETot / g4HitEnergy : 0.0;
+        std::cout << "Voxel: pos =" << voxBot << ", E = " << voxelEnergy << ", fracTotE = " << fracTotE << std::endl;
+
+        // Store voxel object in vector
+        const LArVoxel voxel(voxelID, voxelEnergy, voxBot);
+        currentVoxelList.push_back(voxel);
+
+        // Update ray starting position using intersection path difference
+        const pandora::CartesianVector newStart = ray.getPoint(dL);
+        ray.updateOrigin(newStart);
+    }
+
+    std::cout << "Returning vector of " << currentVoxelList.size() << " voxels for G4HitSegment\n" << std::endl;
 
     return currentVoxelList;
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------
-int Intersections(const double *const boxBottom, const double *const boxTop, const CartesianVector &start, const CartesianVector &stop,
-    CartesianVector &pt0, CartesianVector &pt1)
+bool LArBox::intersect(const LArRay &ray, double &t0, double &t1) const
 {
-    const CartesianVector displVec = (stop - start);
-    const CartesianVector dir = displVec.GetUnitVector();
-    float val1, val2, val3;
-    if (dir.GetX() != 0)
+    // Brian Smits ray-box algorithm with improvements from Amy Williams et al
+    double x(ray.m_origin.GetX());
+    double y(ray.m_origin.GetY());
+
+    double invDirX(ray.m_invDir.GetX());
+    double invDirY(ray.m_invDir.GetY());
+
+    double tMin(0.0), tMax(0.0), tyMin(0.0), tyMax(0.0), tzMin(0.0), tzMax(0.0);
+
+    if (ray.m_sign[0] == 0)
     {
-        val1 = 1.0 / dir.GetX();
+        tMin = (m_bottom.GetX() - x) * invDirX;
+        tMax = (m_top.GetX() - x) * invDirX;
     }
     else
     {
-        val1 = std::numeric_limits<float>::max();
+        tMin = (m_top.GetX() - x) * invDirX;
+        tMax = (m_bottom.GetX() - x) * invDirX;
     }
 
-    if (dir.GetY() != 0)
+    if (ray.m_sign[1] == 0)
     {
-        val2 = 1.0 / dir.GetY();
+        tyMin = (m_bottom.GetY() - y) * invDirY;
+        tyMax = (m_top.GetY() - y) * invDirY;
     }
     else
     {
-        val2 = std::numeric_limits<float>::max();
+        tyMin = (m_top.GetY() - y) * invDirY;
+        tyMax = (m_bottom.GetY() - y) * invDirY;
     }
 
-    if (dir.GetZ() != 0)
+    if ((tMin > tyMax) || (tyMin > tMax))
     {
-        val3 = 1.0 / dir.GetZ();
+        return false;
+    }
+
+    if (tyMin > tMin)
+    {
+        tMin = tyMin;
+    }
+
+    if (tyMax < tMax)
+    {
+        tMax = tyMax;
+    }
+
+    double z(ray.m_origin.GetZ());
+    double invDirZ(ray.m_invDir.GetZ());
+    if (ray.m_sign[2] == 0)
+    {
+        tzMin = (m_bottom.GetZ() - z) * invDirZ;
+        tzMax = (m_top.GetZ() - z) * invDirZ;
     }
     else
     {
-        val3 = std::numeric_limits<float>::max();
+        tzMin = (m_top.GetZ() - z) * invDirZ;
+        tzMax = (m_bottom.GetZ() - z) * invDirZ;
     }
 
-    const CartesianVector invdir(val1, val2, val3);
-    int sign[3];
-    sign[0] = (invdir.GetX() < 0);
-    sign[1] = (invdir.GetY() < 0);
-    sign[2] = (invdir.GetZ() < 0);
-
-    // Consider if start and stop points are contained
-    const bool startContained = (start.GetX() > boxBottom[0] && start.GetX() < boxTop[0]) &&
-                                (start.GetY() > boxBottom[1] && start.GetY() < boxTop[1]) &&
-                                (start.GetZ() > boxBottom[2] && start.GetZ() < boxTop[2]);
-    const bool stopContained = (stop.GetX() > boxBottom[0] && stop.GetX() < boxTop[0]) &&
-                               (stop.GetY() > boxBottom[1] && stop.GetY() < boxTop[1]) && (stop.GetZ() > boxBottom[2] && stop.GetZ() < boxTop[2]);
-
-    // If the start and stop points are contained, we know entry/exit points
-    if (startContained)
+    if ((tMin > tzMax) || (tzMin > tMax))
     {
-        pt0 = start;
+        return false;
     }
-    if (stopContained)
+
+    if (tzMin > tMin)
     {
-        pt1 = stop;
+        tMin = tzMin;
     }
 
-    if (!startContained || !stopContained)
+    if (tzMax < tMax)
     {
-        double t0, t1;
-
-        int cross = BoxCrossings(boxBottom, boxTop, start, sign, invdir, t0, t1);
-
-        if (cross > 0)
-        {
-            if ((!startContained && t0 < 0) || t0 > displVec.GetMagnitude())
-                cross--;
-            if (t1 < 0 || t1 > displVec.GetMagnitude())
-                cross--;
-        }
-
-        if (cross > 0)
-        {
-            const float epsilon = 0.0001;
-            if (!startContained)
-                pt0 = start + (dir * (t0 + epsilon));
-
-            if (!stopContained)
-                pt1 = start + (dir * (t1 - epsilon));
-        }
-
-        std::cout << "Number of crossings=" << cross << " for bounding box " << boxBottom << "-" << boxTop << " and ray between "
-                  << "(" << start.GetX() << "," << start.GetY() << "," << start.GetZ() << ")"
-                  << " and (" << stop.GetX() << "," << stop.GetY() << "," << stop.GetZ() << ")" << std::endl;
-
-        if (cross > 0)
-        {
-            std::cout << "Start point contained?: " << startContained << std::endl;
-            if (!startContained)
-                std::cout << "  entry point: " << pt0 << "; t0=" << t0 << std::endl;
-            std::cout << "Stop point contained?: " << stopContained << std::endl;
-            if (!stopContained)
-                std::cout << "  exit point: " << pt1 << "; t1=" << t1 << std::endl;
-        }
-
-        if (cross == 1 && startContained == stopContained)
-        {
-            std::cout << "Unexpected number of crossings (" << cross << ")"
-                      << " for bounding box and ray between "
-                      << "(" << start.GetX() << "," << start.GetY() << "," << start.GetZ() << ")"
-                      << " and (" << stop.GetX() << "," << stop.GetY() << "," << stop.GetZ() << ")" << std::endl;
-            std::cout << "Start point contained?: " << startContained << ".  Stop point contained?: " << stopContained << std::endl;
-        }
-
-        return cross;
+        tMax = tzMax;
     }
 
-    return 2;
+    // First and second intersection path lengths
+    t0 = tMin;
+    t1 = tMax;
+    return true;
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------
-int BoxCrossings(const double *const boxBottom, const double *const boxTop, const CartesianVector &start, int *const sign,
-    const CartesianVector &invdir, double &t0, double &t1)
+bool LArBox::inside(const pandora::CartesianVector &point) const
 {
+    bool result(false);
 
-    float tmin(0), tmax(0), tymin(0), tymax(0), tzmin(0), tzmax(0);
+    float x = point.GetX();
+    float y = point.GetY();
+    float z = point.GetZ();
 
-    if (sign[0] == 0)
+    if (x > m_bottom.GetX() && x < m_top.GetX() && y > m_bottom.GetY() && y < m_top.GetY() && z > m_bottom.GetZ() && z < m_top.GetZ())
     {
-        tmin = (boxBottom[0] - start.GetX()) * invdir.GetX();
-        tmax = (boxTop[0] - start.GetX()) * invdir.GetX();
-    }
-    else if (sign[0] == 1)
-    {
-        tmin = (boxTop[0] - start.GetX()) * invdir.GetX();
-        tmax = (boxBottom[0] - start.GetX()) * invdir.GetX();
+        result = true;
     }
 
-    if (sign[1] == 0)
-    {
-        tymin = (boxBottom[1] - start.GetY()) * invdir.GetY();
-        tymax = (boxTop[1] - start.GetY()) * invdir.GetY();
-    }
-    else if (sign[1] == 1)
-    {
-        tymin = (boxTop[1] - start.GetY()) * invdir.GetY();
-        tymax = (boxBottom[1] - start.GetY()) * invdir.GetY();
-    }
-
-    if ((tmin > tymax) || (tymin > tmax))
-        return 0;
-
-    if (tymin > tmin)
-        tmin = tymin;
-    if (tymax < tmax)
-        tmax = tymax;
-
-    if (sign[2] == 0)
-    {
-        tzmin = (boxBottom[2] - start.GetZ()) * invdir.GetZ();
-        tzmax = (boxTop[2] - start.GetZ()) * invdir.GetZ();
-    }
-    else if (sign[2] == 1)
-    {
-        tzmin = (boxTop[2] - start.GetZ()) * invdir.GetZ();
-        tzmax = (boxBottom[2] - start.GetZ()) * invdir.GetZ();
-    }
-
-    if ((tmin > tzmax) || (tzmin > tmax))
-        return 0;
-
-    if (tzmin > tmin)
-        tmin = tzmin;
-    if (tzmax < tmax)
-        tmax = tzmax;
-
-    t0 = tmin;
-    t1 = tmax;
-
-    if (t1 <= 0)
-        return 0;
-    if (t0 <= 0)
-        return 1;
-    return 2;
+    return result;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------

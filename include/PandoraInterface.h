@@ -46,7 +46,7 @@ public:
     bool m_use3D;     ///< Create 3D LArCaloHits
     bool m_useLArTPC; ///< Create LArTPC LArCaloHits with u,v,w views
 
-    double m_voxelWidth;
+    double m_voxelWidth; ///< Voxel box width (cm)
 };
 
 /**
@@ -58,15 +58,84 @@ public:
     /**
    *  @brief Default constructor
    */
-    LArVoxel(int voxelID, double energyInVoxel, const pandora::CartesianVector& voxelPosVect);
+    LArVoxel(int voxelID, double energyInVoxel, const pandora::CartesianVector &voxelPosVect);
 
     LArVoxel(const LArVoxel &rhs);
 
-    int m_voxelID; ///< The ID of the voxel
+    int m_voxelID;                           ///< The ID of the voxel
+    double m_energyInVoxel;                  ///< The energy in the voxel
+    pandora::CartesianVector m_voxelPosVect; ///< position vector (x,y,z) of voxel
+};
 
-    double m_energyInVoxel; ///< The energy in the voxel
+/**
+ * @brief Ray class
+ */
+class LArRay
+{
+public:
+    /**
+     * @brief Default constructor
+     */
+    LArRay(const pandora::CartesianVector &origin, const pandora::CartesianVector &dir);
 
-    pandora::CartesianVector m_voxelPosVect; ///< x, y, z, position vector of voxel
+    LArRay(const LArRay &ray);
+
+    void updateOrigin(const pandora::CartesianVector &newOrigin)
+    {
+        m_origin = newOrigin;
+    }
+
+    pandora::CartesianVector getPoint(double length) const; ///< Pos along ray from start point
+
+    pandora::CartesianVector m_origin; ///< Starting point of the ray
+    pandora::CartesianVector m_dir;    ///< Ray direction
+    pandora::CartesianVector m_invDir; ///< Reciprocal direction vector
+    std::array<int, 3> m_sign;         ///< sign of reciprocal direction vector components
+};
+
+/**
+ * @brief Box class
+ */
+class LArBox
+{
+public:
+    /**
+     * @brief Default constructor
+     */
+    LArBox(const pandora::CartesianVector &bottom, const pandora::CartesianVector &top);
+
+    LArBox(const LArBox &rhs);
+
+    bool intersect(const LArRay &ray, double &t0, double &t1) const;
+    bool inside(const pandora::CartesianVector &point) const;
+
+    pandora::CartesianVector m_bottom; // The bottom corner of the box
+    pandora::CartesianVector m_top;    // The top corner of the box
+};
+
+/**
+ * @brief Grid class
+ */
+class LArGrid : public LArBox
+{
+public:
+    /**
+     * @brief Default constructor
+     */
+    LArGrid(const pandora::CartesianVector &bottom, const pandora::CartesianVector &top, const pandora::CartesianVector &binWidths);
+
+    LArGrid(const LArGrid &rhs);
+
+    std::array<int, 4> getBinIndices(const pandora::CartesianVector &point) const;
+
+    pandora::CartesianVector getPoint(int xBin, int yBin, int zBin) const;
+    pandora::CartesianVector getPoint(const std::array<int, 4> &bins) const;
+
+    pandora::CartesianVector m_bottom; // The bottom corner of the box
+    pandora::CartesianVector m_top;    // The top corner of the box
+    pandora::CartesianVector m_binWidths;
+    float m_binExtent; // magnitude of m_binWidths vector
+    std::array<int, 4> m_nBins;
 };
 
 /**
@@ -86,38 +155,12 @@ void CreateGeometry(const Parameters &parameters, const pandora::Pandora *const 
 void ProcessEvents(const Parameters &parameters, const pandora::Pandora *const pPrimaryPandora);
 
 /**
- *  @brief  Make voxels from g4hits
+ *  @brief  Make voxels from TG4HitSegments (Geant4 hits)
  *
- *  @param  the g4Hits
+ *  @param  g4Hit the TG4HitSegment
+ *  @param  voxelWidth the voxel box width (cm)
  */
-std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, double voxelWidth = 0.4);
-
-/**
- *  @brief  Find the crossings between a given box and hit segment
- *
- *  @param  coordinates of the top of box
- *  @param  coordinates of the bottom of box
- *  @param  start coordinates of the hit segment
- *  @param  stop coordinates of the hit segment
- *  @param  entry point in the box
- *  @param  exit point in the box
- */
-int Intersections(const double *const boxBottom, const double *const boxTop, const pandora::CartesianVector &start,
-    const pandora::CartesianVector &stop, pandora::CartesianVector &pt0, pandora::CartesianVector &pt1);
-
-/**
- *  @brief  Find the crossings between a given box and hit segment, using a ray
- *
- *  @param  coordinates of the bottom of box
- *  @param  coordinates of the top of box
- *  @param  start coordinates of the hit segment
- *  @param  sign indicator from the inverse direction vector
- *  @param  inverse direction vector
- *  @param  cross point start
- *  @param  cross point stop
- */
-int BoxCrossings(const double *const boxBottom, const double *const boxTop, const pandora::CartesianVector &start, int *const sign,
-    const pandora::CartesianVector &invdir, double &t0, double &t1);
+std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid);
 
 /**
  *  @brief  Parse the command line arguments, setting the application parameters
@@ -162,7 +205,7 @@ inline Parameters::Parameters() :
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-inline LArVoxel::LArVoxel(int voxelID, double energyInVoxel, const pandora::CartesianVector& voxelPosVect) :
+inline LArVoxel::LArVoxel(int voxelID, double energyInVoxel, const pandora::CartesianVector &voxelPosVect) :
     m_voxelID(voxelID),
     m_energyInVoxel(energyInVoxel),
     m_voxelPosVect(voxelPosVect)
@@ -176,6 +219,125 @@ inline LArVoxel::LArVoxel(const LArVoxel &rhs) :
     m_energyInVoxel(rhs.m_energyInVoxel),
     m_voxelPosVect(rhs.m_voxelPosVect)
 {
+}
+
+inline LArRay::LArRay(const pandora::CartesianVector &origin, const pandora::CartesianVector &dir) :
+    m_origin(origin),
+    m_dir(dir),
+    m_invDir({0, 0, 0}),
+    m_sign({0, 0, 0})
+{
+    float dx = m_dir.GetX();
+    float dy = m_dir.GetY();
+    float dz = m_dir.GetZ();
+
+    // Initalise inverse direction values to maximum numerical limit (i.e. parallel lines)
+    const float maxVal = std::numeric_limits<float>::max();
+    float invdx(maxVal), invdy(maxVal), invdz(maxVal);
+    if (fabs(dx) > 0.0)
+    {
+        invdx = 1.0 / dx;
+    }
+    if (fabs(dy) > 0.0)
+    {
+        invdy = 1.0 / dy;
+    }
+    if (fabs(dz) > 0.0)
+    {
+        invdz = 1.0 / dz;
+    }
+    m_invDir.SetValues(invdx, invdy, invdz);
+
+    m_sign[0] = (m_invDir.GetX() < 0);
+    m_sign[1] = (m_invDir.GetY() < 0);
+    m_sign[2] = (m_invDir.GetZ() < 0);
+}
+
+inline LArRay::LArRay(const LArRay &rhs) :
+    m_origin(rhs.m_origin),
+    m_dir(rhs.m_dir),
+    m_invDir(rhs.m_invDir),
+    m_sign({rhs.m_sign[0], rhs.m_sign[1], rhs.m_sign[2]})
+{
+}
+
+inline pandora::CartesianVector LArRay::getPoint(double length) const
+{
+    pandora::CartesianVector point = m_origin + m_dir * length;
+    return point;
+}
+
+inline LArBox::LArBox(const pandora::CartesianVector &bottom, const pandora::CartesianVector &top) : m_bottom(bottom), m_top(top)
+{
+}
+
+inline LArBox::LArBox(const LArBox &rhs) : m_bottom(rhs.m_bottom), m_top(rhs.m_top)
+{
+}
+
+inline LArGrid::LArGrid(const pandora::CartesianVector &bottom, const pandora::CartesianVector &top, const pandora::CartesianVector &binWidths) :
+    LArBox(bottom, top),
+    m_bottom(bottom),
+    m_top(top),
+    m_binWidths(binWidths),
+    m_binExtent(binWidths.GetMagnitude()),
+    m_nBins({0, 0, 0})
+{
+    int NxBins = int((top.GetX() - bottom.GetX()) / binWidths.GetX());
+    int NyBins = int((top.GetY() - bottom.GetY()) / binWidths.GetY());
+    int NzBins = int((top.GetZ() - bottom.GetZ()) / binWidths.GetZ());
+    m_nBins = {NxBins, NyBins, NzBins};
+}
+
+inline LArGrid::LArGrid(const LArGrid &rhs) :
+    LArBox(rhs),
+    m_bottom(rhs.m_bottom),
+    m_top(rhs.m_top),
+    m_binWidths(rhs.m_binWidths),
+    m_binExtent(rhs.m_binExtent),
+    m_nBins(rhs.m_nBins)
+{
+}
+
+inline int getBinIndex(double x, double botX, double binWidth, int maxBin)
+{
+    int index(0);
+    if (binWidth > 0.0)
+        index = (x - botX) / binWidth;
+
+    if (index < 0)
+        index = 0;
+    else if (index >= maxBin)
+        index = maxBin - 1;
+
+    return index;
+}
+
+inline std::array<int, 4> LArGrid::getBinIndices(const pandora::CartesianVector &point) const
+{
+    // Bin widths should always be non-zero
+    int xBin = getBinIndex(point.GetX(), m_bottom.GetX(), m_binWidths.GetX(), m_nBins[0]);
+    int yBin = getBinIndex(point.GetY(), m_bottom.GetY(), m_binWidths.GetY(), m_nBins[1]);
+    int zBin = getBinIndex(point.GetZ(), m_bottom.GetZ(), m_binWidths.GetZ(), m_nBins[2]);
+
+    int totBin = (zBin * m_nBins[1] + yBin) * m_nBins[0] + xBin;
+
+    std::array<int, 4> binIndices = {xBin, yBin, zBin, totBin};
+    return binIndices;
+}
+
+inline pandora::CartesianVector LArGrid::getPoint(int xBin, int yBin, int zBin) const
+{
+    float x = m_bottom.GetX() + xBin * m_binWidths.GetX();
+    float y = m_bottom.GetY() + yBin * m_binWidths.GetY();
+    float z = m_bottom.GetZ() + zBin * m_binWidths.GetZ();
+
+    return pandora::CartesianVector(x, y, z);
+}
+
+inline pandora::CartesianVector LArGrid::getPoint(const std::array<int, 4> &bins) const
+{
+    return getPoint(bins[0], bins[1], bins[2]);
 }
 
 } // namespace lar_nd_reco
