@@ -489,6 +489,7 @@ std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
 
     // Keep track of total voxel path length and energy (so far)
     double totalPath(0.0), ETot(0.0);
+    int loop(0);
 
     while (shuffle)
     {
@@ -518,6 +519,11 @@ std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
 
         // Voxel extent = intersection path difference
         double dL(t1 - t0);
+        // For the first path length, use the distance from the
+        // starting ray point to the 2nd intersection t1
+        if (loop == 0)
+            dL = t1;
+
         // Stop processing if we are not moving the path along
         if (dL < epsilon)
             shuffle = false;
@@ -528,6 +534,7 @@ std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
         if (totalPath > hitLength)
         {
             shuffle = false;
+            // Adjust final path according to hit segment total length
             dL = hitLength - totalPath + dL;
         }
 
@@ -536,7 +543,7 @@ std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
         ETot += voxelEnergy;
 
         const double fracTotE = g4HitEnergy > 0.0 ? ETot / g4HitEnergy : 0.0;
-        std::cout << "Voxel: pos =" << voxBot << ", E = " << voxelEnergy << ", fracTotE = " << fracTotE << std::endl;
+        std::cout << "Voxel " << voxelID << ": pos =" << voxBot << ", E = " << voxelEnergy << ", fracTotE = " << fracTotE << std::endl;
 
         // Store voxel object in vector
         const LArVoxel voxel(voxelID, voxelEnergy, voxBot);
@@ -545,6 +552,7 @@ std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
         // Update ray starting position using intersection path difference
         const pandora::CartesianVector newStart = ray.getPoint(dL);
         ray.updateOrigin(newStart);
+        loop++;
     }
 
     std::cout << "Returning vector of " << currentVoxelList.size() << " voxels for G4HitSegment\n" << std::endl;
