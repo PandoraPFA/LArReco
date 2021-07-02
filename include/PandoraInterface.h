@@ -58,11 +58,15 @@ public:
     /**
    *  @brief Default constructor
    */
-    LArVoxel(int voxelID, double energyInVoxel, const pandora::CartesianVector &voxelPosVect);
+    LArVoxel(long voxelID, double energyInVoxel, const pandora::CartesianVector &voxelPosVect);
 
     LArVoxel(const LArVoxel &rhs);
+    void setEnergy(double E)
+    {
+        m_energyInVoxel = E;
+    }
 
-    int m_voxelID;                           ///< The ID of the voxel
+    long m_voxelID;                          ///< The ID of the voxel
     double m_energyInVoxel;                  ///< The energy in the voxel
     pandora::CartesianVector m_voxelPosVect; ///< position vector (x,y,z) of voxel
 };
@@ -126,16 +130,16 @@ public:
 
     LArGrid(const LArGrid &rhs);
 
-    std::array<int, 4> getBinIndices(const pandora::CartesianVector &point) const;
+    std::array<long, 4> getBinIndices(const pandora::CartesianVector &point) const;
 
-    pandora::CartesianVector getPoint(int xBin, int yBin, int zBin) const;
-    pandora::CartesianVector getPoint(const std::array<int, 4> &bins) const;
+    pandora::CartesianVector getPoint(long xBin, long yBin, long zBin) const;
+    pandora::CartesianVector getPoint(const std::array<long, 4> &bins) const;
 
     pandora::CartesianVector m_bottom; // The bottom corner of the box
     pandora::CartesianVector m_top;    // The top corner of the box
     pandora::CartesianVector m_binWidths;
     float m_binExtent; // magnitude of m_binWidths vector
-    std::array<int, 4> m_nBins;
+    std::array<long, 3> m_nBins;
 };
 
 /**
@@ -159,8 +163,19 @@ void ProcessEvents(const Parameters &parameters, const pandora::Pandora *const p
  *
  *  @param  g4Hit the TG4HitSegment
  *  @param  voxelWidth the voxel box width (cm)
+ *
+ *  @return vector of LArVoxels
  */
 std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid);
+
+/**
+ * @brief Combine energies for voxels with the same ID
+ *
+ *  @param voxelList The list of voxels (which can be updated)
+ *
+ *  @return vector of merged LArVoxels
+ */
+std::vector<LArVoxel> mergeSameVoxels(const std::vector<LArVoxel> &voxelList);
 
 /**
  *  @brief  Parse the command line arguments, setting the application parameters
@@ -205,7 +220,7 @@ inline Parameters::Parameters() :
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-inline LArVoxel::LArVoxel(int voxelID, double energyInVoxel, const pandora::CartesianVector &voxelPosVect) :
+inline LArVoxel::LArVoxel(long voxelID, double energyInVoxel, const pandora::CartesianVector &voxelPosVect) :
     m_voxelID(voxelID),
     m_energyInVoxel(energyInVoxel),
     m_voxelPosVect(voxelPosVect)
@@ -283,9 +298,10 @@ inline LArGrid::LArGrid(const pandora::CartesianVector &bottom, const pandora::C
     m_binExtent(binWidths.GetMagnitude()),
     m_nBins({0, 0, 0})
 {
-    int NxBins = int((top.GetX() - bottom.GetX()) / binWidths.GetX());
-    int NyBins = int((top.GetY() - bottom.GetY()) / binWidths.GetY());
-    int NzBins = int((top.GetZ() - bottom.GetZ()) / binWidths.GetZ());
+    long NxBins = long((top.GetX() - bottom.GetX()) / binWidths.GetX());
+    long NyBins = long((top.GetY() - bottom.GetY()) / binWidths.GetY());
+    long NzBins = long((top.GetZ() - bottom.GetZ()) / binWidths.GetZ());
+    std::cout << "Grid: Nx = " << NxBins << ", Ny = " << NyBins << ", Nz = " << NzBins << std::endl;
     m_nBins = {NxBins, NyBins, NzBins};
 }
 
@@ -299,9 +315,9 @@ inline LArGrid::LArGrid(const LArGrid &rhs) :
 {
 }
 
-inline int getBinIndex(double x, double botX, double binWidth, int maxBin)
+inline long getBinIndex(double x, double botX, double binWidth, long maxBin)
 {
-    int index(0);
+    long index(0);
     if (binWidth > 0.0)
         index = (x - botX) / binWidth;
 
@@ -313,20 +329,22 @@ inline int getBinIndex(double x, double botX, double binWidth, int maxBin)
     return index;
 }
 
-inline std::array<int, 4> LArGrid::getBinIndices(const pandora::CartesianVector &point) const
+inline std::array<long, 4> LArGrid::getBinIndices(const pandora::CartesianVector &point) const
 {
-    // Bin widths should always be non-zero
-    int xBin = getBinIndex(point.GetX(), m_bottom.GetX(), m_binWidths.GetX(), m_nBins[0]);
-    int yBin = getBinIndex(point.GetY(), m_bottom.GetY(), m_binWidths.GetY(), m_nBins[1]);
-    int zBin = getBinIndex(point.GetZ(), m_bottom.GetZ(), m_binWidths.GetZ(), m_nBins[2]);
+    // Bin widths should always be non-zero. Need to use long integers to avoid
+    // integer overflow for the total bin, which can be larger than 2^31
+    long xBin = getBinIndex(point.GetX(), m_bottom.GetX(), m_binWidths.GetX(), m_nBins[0]);
+    long yBin = getBinIndex(point.GetY(), m_bottom.GetY(), m_binWidths.GetY(), m_nBins[1]);
+    long zBin = getBinIndex(point.GetZ(), m_bottom.GetZ(), m_binWidths.GetZ(), m_nBins[2]);
 
-    int totBin = (zBin * m_nBins[1] + yBin) * m_nBins[0] + xBin;
+    long totBin = (zBin * m_nBins[1] + yBin) * m_nBins[0] + xBin;
+    std::cout << "getBinIndex for " << point << ": " << xBin << ", " << yBin << ", " << zBin << "; " << totBin << std::endl;
 
-    std::array<int, 4> binIndices = {xBin, yBin, zBin, totBin};
+    std::array<long, 4> binIndices = {xBin, yBin, zBin, totBin};
     return binIndices;
 }
 
-inline pandora::CartesianVector LArGrid::getPoint(int xBin, int yBin, int zBin) const
+inline pandora::CartesianVector LArGrid::getPoint(long xBin, long yBin, long zBin) const
 {
     float x = m_bottom.GetX() + xBin * m_binWidths.GetX();
     float y = m_bottom.GetY() + yBin * m_binWidths.GetY();
@@ -335,7 +353,7 @@ inline pandora::CartesianVector LArGrid::getPoint(int xBin, int yBin, int zBin) 
     return pandora::CartesianVector(x, y, z);
 }
 
-inline pandora::CartesianVector LArGrid::getPoint(const std::array<int, 4> &bins) const
+inline pandora::CartesianVector LArGrid::getPoint(const std::array<long, 4> &bins) const
 {
     return getPoint(bins[0], bins[1], bins[2]);
 }

@@ -293,15 +293,15 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
 
             std::cout << "Produced " << voxelList.size() << " voxels from " << detector->second.size() << " hit segments." << std::endl;
 
-            // ATTN: Here we might need to add something to check if there are
-            // multiple energy deposits from the same particle into one voxel. How can
-            // we tell if they are from the same particle though? This should also
-            // be rare I think
+            // Merge voxels with the same IDs
+            std::vector<LArVoxel> mergedVoxels = mergeSameVoxels(voxelList);
+
+            std::cout << "Produced " << mergedVoxels.size() << " merged voxels from " << detector->second.size() << " hit segments." << std::endl;
 
             // Loop over the voxels and make them into caloHits
-            for (int i = 0; i < voxelList.size(); i++)
+            for (int i = 0; i < mergedVoxels.size(); i++)
             {
-                const LArVoxel voxel = voxelList[i];
+                const LArVoxel voxel = mergedVoxels[i];
                 const CartesianVector voxelPos(voxel.m_voxelPosVect);
                 const double voxelE = voxel.m_energyInVoxel;
 
@@ -417,8 +417,8 @@ std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
     // There are 4 cases for the start and end points inside the voxelisation region.
     // Case 1: start & stop are both inside the voxelisation boundary
     // Case 2: start & stop are both outside, but path direction intersects boundary
-    // Case 3: start is inside boundary, stop point = intersection at region boundary
-    // Case 4: end is inside boundary, start point = intersection at region boundary
+    // Case 3: start is inside boundary, stop = intersection at region boundary
+    // Case 4: end is inside boundary, start = intersection at region boundary
 
     double t0(0.0), t1(0.0);
     pandora::CartesianVector point1(0.0, 0.0, 0.0), point2(0.0, 0.0, 0.0);
@@ -498,12 +498,12 @@ std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
         pandora::CartesianVector voxelPoint = ray.getPoint(epsilon);
 
         // Grid 3d bin containing this point; 4th element is the total bin number
-        std::array<int, 4> gridBins = grid.getBinIndices(voxelPoint);
-        int voxelID = gridBins[3];
+        std::array<long, 4> gridBins = grid.getBinIndices(voxelPoint);
+        long voxelID = gridBins[3];
 
-        int xBin = gridBins[0];
-        int yBin = gridBins[1];
-        int zBin = gridBins[2];
+        long xBin = gridBins[0];
+        long yBin = gridBins[1];
+        long zBin = gridBins[2];
 
         // Voxel bottom and top corners
         const pandora::CartesianVector voxBot = grid.getPoint(xBin, yBin, zBin);
@@ -515,18 +515,24 @@ std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
         bool result = vBox.intersect(ray, t0, t1);
 
         if (!result)
+        {
             shuffle = false;
+        }
 
         // Voxel extent = intersection path difference
         double dL(t1 - t0);
         // For the first path length, use the distance from the
         // starting ray point to the 2nd intersection t1
         if (loop == 0)
+        {
             dL = t1;
+        }
 
         // Stop processing if we are not moving the path along
         if (dL < epsilon)
+        {
             shuffle = false;
+        }
 
         totalPath += dL;
 
@@ -656,6 +662,62 @@ bool LArBox::inside(const pandora::CartesianVector &point) const
     }
 
     return result;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+std::vector<LArVoxel> mergeSameVoxels(const std::vector<LArVoxel> &voxelList)
+{
+
+    std::cout << "Merging voxels with the same IDs" << std::endl;
+    std::vector<LArVoxel> mergedVoxels;
+
+    int nVoxels = voxelList.size();
+    std::vector<int> processed(nVoxels, 0);
+
+    for (int i = 0; i < nVoxels; i++)
+    {
+        // Skip voxel if it was already used in a merge
+        if (processed[i])
+        {
+            continue;
+        }
+
+        LArVoxel voxel1 = voxelList[i];
+        double voxE1 = voxel1.m_energyInVoxel;
+        long id1 = voxel1.m_voxelID;
+
+        // Loop over other voxels (from i+1) and check if we have an ID match.
+        // If so, add their energies and only store the combined voxel at the end
+        for (int j = i + 1; j < nVoxels; j++)
+        {
+
+            // Skip voxel if it was already used in a merge
+            if (processed[j])
+            {
+                continue;
+            }
+
+            LArVoxel voxel2 = voxelList[j];
+            long id2 = voxel2.m_voxelID;
+
+            if (id2 == id1)
+            {
+                // IDs match. Add energy and set processed integer
+                voxE1 += voxel2.m_energyInVoxel;
+                processed[j] = 1;
+            }
+        }
+
+        // Add combined (or untouched) voxel to the merged list
+        voxel1.setEnergy(voxE1);
+        mergedVoxels.push_back(voxel1);
+
+        // We have processed the ith voxel
+        processed[i] = 1;
+    }
+
+    return mergedVoxels;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
