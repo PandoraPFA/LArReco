@@ -551,8 +551,12 @@ std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
         const double fracTotE = g4HitEnergy > 0.0 ? ETot / g4HitEnergy : 0.0;
         std::cout << "Voxel " << voxelID << ": pos =" << voxBot << ", E = " << voxelEnergy << ", fracTotE = " << fracTotE << std::endl;
 
+        // Get a trackID of contributing to add to the voxel
+        // ATTN: this can very rarely be more than one track
+        int trackID = g4Hit.Contrib[0];
+
         // Store voxel object in vector
-        const LArVoxel voxel(voxelID, voxelEnergy, voxBot);
+        const LArVoxel voxel(voxelID, voxelEnergy, voxBot, trackID);
         currentVoxelList.push_back(voxel);
 
         // Update ray starting position using intersection path difference
@@ -666,7 +670,7 @@ bool LArBox::inside(const pandora::CartesianVector &point) const
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-std::vector<LArVoxel> mergeSameVoxels(const std::vector<LArVoxel> &voxelList)
+  std::vector<LArVoxel> mergeSameVoxels(const std::vector<LArVoxel> &voxelList)
 {
 
     std::cout << "Merging voxels with the same IDs" << std::endl;
@@ -686,6 +690,7 @@ std::vector<LArVoxel> mergeSameVoxels(const std::vector<LArVoxel> &voxelList)
         LArVoxel voxel1 = voxelList[i];
         double voxE1 = voxel1.m_energyInVoxel;
         long id1 = voxel1.m_voxelID;
+        int trackid1 = voxel1.m_trackID;
 
         // Loop over other voxels (from i+1) and check if we have an ID match.
         // If so, add their energies and only store the combined voxel at the end
@@ -700,8 +705,9 @@ std::vector<LArVoxel> mergeSameVoxels(const std::vector<LArVoxel> &voxelList)
 
             LArVoxel voxel2 = voxelList[j];
             long id2 = voxel2.m_voxelID;
+            int trackid2 = voxel2.m_trackID;
 
-            if (id2 == id1)
+            if (id2 == id1 && trackid1 == trackid2)
             {
                 // IDs match. Add energy and set processed integer
                 voxE1 += voxel2.m_energyInVoxel;

@@ -58,7 +58,7 @@ public:
     /**
    *  @brief Default constructor
    */
-    LArVoxel(long voxelID, double energyInVoxel, const pandora::CartesianVector &voxelPosVect);
+    LArVoxel(long voxelID, double energyInVoxel, const pandora::CartesianVector &voxelPosVect, int trackID);
 
     LArVoxel(const LArVoxel &rhs);
     void setEnergy(double E)
@@ -69,6 +69,7 @@ public:
     long m_voxelID;                          ///< The ID of the voxel
     double m_energyInVoxel;                  ///< The energy in the voxel
     pandora::CartesianVector m_voxelPosVect; ///< position vector (x,y,z) of voxel
+    int m_trackID;                            ///< The ID for contributing track to this hit segment, and thus voxel
 };
 
 /**
@@ -220,10 +221,11 @@ inline Parameters::Parameters() :
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-inline LArVoxel::LArVoxel(long voxelID, double energyInVoxel, const pandora::CartesianVector &voxelPosVect) :
+inline LArVoxel::LArVoxel(long voxelID, double energyInVoxel, const pandora::CartesianVector &voxelPosVect, int trackID) :
     m_voxelID(voxelID),
     m_energyInVoxel(energyInVoxel),
-    m_voxelPosVect(voxelPosVect)
+    m_voxelPosVect(voxelPosVect),
+    m_trackID(trackID)
 {
 }
 
@@ -232,7 +234,8 @@ inline LArVoxel::LArVoxel(long voxelID, double energyInVoxel, const pandora::Car
 inline LArVoxel::LArVoxel(const LArVoxel &rhs) :
     m_voxelID(rhs.m_voxelID),
     m_energyInVoxel(rhs.m_energyInVoxel),
-    m_voxelPosVect(rhs.m_voxelPosVect)
+    m_voxelPosVect(rhs.m_voxelPosVect),
+    m_trackID(rhs.m_trackID)
 {
 }
 
