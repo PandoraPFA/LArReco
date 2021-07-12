@@ -12,7 +12,7 @@ project(LArReco)
 # project version
 set(${PROJECT_NAME}_VERSION_MAJOR 03)
 set(${PROJECT_NAME}_VERSION_MINOR 23)
-set(${PROJECT_NAME}_VERSION_PATCH 03)
+set(${PROJECT_NAME}_VERSION_PATCH 04)
 set(${PROJECT_NAME}_VERSION "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}")
 
 #-------------------------------------------------------------------------------------------------------------------------------------------
@@ -25,11 +25,12 @@ include_directories(include)
 find_package(PandoraSDK 03.04.01 REQUIRED)
 
 set(LAR_CONTENT_LIBRARY_NAME "LArContent")
-find_package(${LAR_CONTENT_LIBRARY_NAME} 03.23.03 REQUIRED)
+set(LAR_CONTENT_LIBRARY_VERSION "03.23.04")
+find_package(${LAR_CONTENT_LIBRARY_NAME} ${LAR_CONTENT_LIBRARY_VERSION} REQUIRED)
 
 if(PANDORA_LIBTORCH)
     set(LAR_DL_CONTENT_LIBRARY_NAME "LArDLContent")
-    find_package(${LAR_DL_CONTENT_LIBRARY_NAME} 03.23.03 REQUIRED)
+    find_package(${LAR_DL_CONTENT_LIBRARY_NAME} ${LAR_CONTENT_LIBRARY_VERSION} REQUIRED)
     add_definitions(-DLIBTORCH_DL=1)
 endif()
 
