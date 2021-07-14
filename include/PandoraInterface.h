@@ -9,6 +9,7 @@
 #define PANDORA_ND_INTERFACE_H 1
 
 #include "Pandora/PandoraInputTypes.h"
+#include "TG4Event.h"
 
 namespace pandora
 {
@@ -69,7 +70,7 @@ public:
     long m_voxelID;                          ///< The ID of the voxel
     double m_energyInVoxel;                  ///< The energy in the voxel
     pandora::CartesianVector m_voxelPosVect; ///< position vector (x,y,z) of voxel
-    int m_trackID;                            ///< The ID for contributing track to this hit segment, and thus voxel
+    int m_trackID;                           ///< The ID for contributing track to this hit segment, and thus voxel
 };
 
 /**
@@ -158,6 +159,14 @@ void CreateGeometry(const Parameters &parameters, const pandora::Pandora *const 
  *  @param  pPrimaryPandora the address of the primary pandora instance
  */
 void ProcessEvents(const Parameters &parameters, const pandora::Pandora *const pPrimaryPandora);
+
+/**
+ *  @brief Create MC particles from the Geant4 trajectories
+ *
+ *  @param event The Geant4 event
+ *  @param pPrimaryPandora the address of the primary pandora instance
+ */
+void CreateMCParticles(const TG4Event &event, const pandora::Pandora *const pPrimaryPandora);
 
 /**
  *  @brief  Make voxels from TG4HitSegments (Geant4 hits)
@@ -341,7 +350,6 @@ inline std::array<long, 4> LArGrid::getBinIndices(const pandora::CartesianVector
     long zBin = getBinIndex(point.GetZ(), m_bottom.GetZ(), m_binWidths.GetZ(), m_nBins[2]);
 
     long totBin = (zBin * m_nBins[1] + yBin) * m_nBins[0] + xBin;
-    std::cout << "getBinIndex for " << point << ": " << xBin << ", " << yBin << ", " << zBin << "; " << totBin << std::endl;
 
     std::array<long, 4> binIndices = {xBin, yBin, zBin, totBin};
     return binIndices;

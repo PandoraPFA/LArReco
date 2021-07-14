@@ -9,7 +9,6 @@
 #include "TFile.h"
 #include "TTree.h"
 
-#include "TG4Event.h"
 #include "TGeoBBox.h"
 #include "TGeoManager.h"
 #include "TGeoShape.h"
@@ -25,6 +24,7 @@
 #include "larpandoracontent/LArContent.h"
 #include "larpandoracontent/LArControlFlow/MultiPandoraApi.h"
 #include "larpandoracontent/LArObjects/LArCaloHit.h"
+#include "larpandoracontent/LArObjects/LArMCParticle.h"
 #include "larpandoracontent/LArPlugins/LArPseudoLayerPlugin.h"
 #include "larpandoracontent/LArPlugins/LArRotationalTransformationPlugin.h"
 
@@ -272,7 +272,12 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
             return;
 
         int hitCounter(0);
+        int hitLoop(0);
 
+        // Create MCParticles from Geant4 trajectories
+        CreateMCParticles(*pEDepSimEvent, pPrimaryPandora);
+
+        // Loop over (EDep) hits, which are stored in the hit segment detectors
         for (TG4HitSegmentDetectors::iterator detector = pEDepSimEvent->SegmentDetectors.begin();
              detector != pEDepSimEvent->SegmentDetectors.end(); ++detector)
         {
@@ -281,8 +286,11 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
 
             std::vector<LArVoxel> voxelList;
 
+            // Loop over hit segments and create voxels from them
             for (TG4HitSegment &g4Hit : detector->second)
             {
+                hitLoop++;
+                std::cout << "HIT LOOP: " << hitLoop << std::endl;
                 std::vector<LArVoxel> currentVoxelList = makeVoxels(g4Hit, grid);
 
                 for (LArVoxel &voxel : currentVoxelList)
@@ -296,7 +304,7 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
             // Merge voxels with the same IDs
             std::vector<LArVoxel> mergedVoxels = mergeSameVoxels(voxelList);
 
-            std::cout << "Produced " << mergedVoxels.size() << " merged voxels from " << detector->second.size() << " hit segments." << std::endl;
+            std::cout << "Produced " << mergedVoxels.size() << " merged voxels from " << voxelList.size() << " voxels." << std::endl;
 
             // Loop over the voxels and make them into caloHits
             for (int i = 0; i < mergedVoxels.size(); i++)
@@ -378,6 +386,65 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
     }
 }
 
+void CreateMCParticles(const TG4Event &event, const pandora::Pandora *const pPrimaryPandora)
+{
+    if (!pPrimaryPandora)
+    {
+        std::cout << "Could not create MC particles, since pPrimaryPandora is null" << std::endl;
+        return;
+    }
+
+    std::cout << "Creating MC Particles from the Geant4 event trajectories" << std::endl;
+    lar_content::LArMCParticleFactory mcParticleFactory;
+
+    // Loop over trajectories
+    for (const TG4Trajectory &g4Traj : event.Trajectories)
+    {
+        // LArMCParticle parameters
+        lar_content::LArMCParticleParameters mcParticleParameters;
+
+        // Initial momentum and energy
+        const TLorentzVector initMtm(g4Traj.GetInitialMomentum());
+        mcParticleParameters.m_energy = initMtm.E();
+        mcParticleParameters.m_momentum = pandora::CartesianVector(initMtm.X(), initMtm.Y(), initMtm.Z());
+
+        // Particle codes
+        mcParticleParameters.m_particleId = g4Traj.GetPDGCode();
+        mcParticleParameters.m_mcParticleType = pandora::MC_3D;
+        mcParticleParameters.m_nuanceCode = 0;
+
+        // Set unique parent integer address using trackID
+        const int trackID = g4Traj.GetTrackId();
+        mcParticleParameters.m_pParentAddress = (void *)((intptr_t)trackID);
+
+        // Start and end points
+        const std::vector<TG4TrajectoryPoint> trajPoints = g4Traj.Points;
+        const int nPoints(trajPoints.size());
+
+        if (nPoints > 1)
+        {
+            const TG4TrajectoryPoint start = trajPoints[0];
+            const TLorentzVector vertex = start.GetPosition();
+            mcParticleParameters.m_vertex = pandora::CartesianVector(vertex.X(), vertex.Y(), vertex.Z());
+
+            const TG4TrajectoryPoint end = trajPoints[nPoints - 1];
+            const TLorentzVector endPos = end.GetPosition();
+            mcParticleParameters.m_endpoint = pandora::CartesianVector(endPos.X(), endPos.Y(), endPos.Z());
+            mcParticleParameters.m_process = start.GetProcess();
+        }
+        else
+        {
+            // Should not reach here, but set sensible values just in case
+            mcParticleParameters.m_vertex = pandora::CartesianVector(0, 0, 0);
+            mcParticleParameters.m_endpoint = pandora::CartesianVector(0, 0, 0);
+            mcParticleParameters.m_process = 0;
+        }
+
+        PANDORA_THROW_RESULT_IF(
+            pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::MCParticle::Create(*pPrimaryPandora, mcParticleParameters, mcParticleFactory));
+    }
+}
+
 std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid)
 {
     std::vector<LArVoxel> currentVoxelList;
@@ -399,10 +466,16 @@ std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
     // Hit segment total energy
     const double g4HitEnergy = g4Hit.GetEnergyDeposit();
 
+    // Get a trackID of contributing to add to the voxel.
+    // ATTN: this can very rarely be more than one track
+    const int trackID = g4Hit.Contrib[0];
+    const int primaryID = g4Hit.GetPrimaryId();
+
     std::cout << "Hit start: " << start << std::endl;
     std::cout << "Hit stop: " << stop << std::endl;
     std::cout << "Hit direction: " << dir << std::endl;
     std::cout << "Hit energy: " << g4HitEnergy << std::endl;
+    std::cout << "Hit trackID = " << trackID << ", primaryID = " << primaryID << std::endl;
     if (hitLength < 1e-10)
     {
         std::cout << "Cannot have zero track length" << std::endl;
@@ -551,10 +624,6 @@ std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
         const double fracTotE = g4HitEnergy > 0.0 ? ETot / g4HitEnergy : 0.0;
         std::cout << "Voxel " << voxelID << ": pos =" << voxBot << ", E = " << voxelEnergy << ", fracTotE = " << fracTotE << std::endl;
 
-        // Get a trackID of contributing to add to the voxel
-        // ATTN: this can very rarely be more than one track
-        int trackID = g4Hit.Contrib[0];
-
         // Store voxel object in vector
         const LArVoxel voxel(voxelID, voxelEnergy, voxBot, trackID);
         currentVoxelList.push_back(voxel);
@@ -670,13 +739,13 @@ bool LArBox::inside(const pandora::CartesianVector &point) const
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-  std::vector<LArVoxel> mergeSameVoxels(const std::vector<LArVoxel> &voxelList)
+std::vector<LArVoxel> mergeSameVoxels(const std::vector<LArVoxel> &voxelList)
 {
 
     std::cout << "Merging voxels with the same IDs" << std::endl;
     std::vector<LArVoxel> mergedVoxels;
 
-    int nVoxels = voxelList.size();
+    const int nVoxels = voxelList.size();
     std::vector<int> processed(nVoxels, 0);
 
     for (int i = 0; i < nVoxels; i++)
@@ -689,8 +758,8 @@ bool LArBox::inside(const pandora::CartesianVector &point) const
 
         LArVoxel voxel1 = voxelList[i];
         double voxE1 = voxel1.m_energyInVoxel;
-        long id1 = voxel1.m_voxelID;
-        int trackid1 = voxel1.m_trackID;
+        const long id1 = voxel1.m_voxelID;
+        const int trackid1 = voxel1.m_trackID;
 
         // Loop over other voxels (from i+1) and check if we have an ID match.
         // If so, add their energies and only store the combined voxel at the end
@@ -703,9 +772,9 @@ bool LArBox::inside(const pandora::CartesianVector &point) const
                 continue;
             }
 
-            LArVoxel voxel2 = voxelList[j];
-            long id2 = voxel2.m_voxelID;
-            int trackid2 = voxel2.m_trackID;
+            const LArVoxel voxel2 = voxelList[j];
+            const long id2 = voxel2.m_voxelID;
+            const int trackid2 = voxel2.m_trackID;
 
             if (id2 == id1 && trackid1 == trackid2)
             {
