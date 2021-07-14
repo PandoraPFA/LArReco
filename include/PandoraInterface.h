@@ -23,6 +23,9 @@ namespace lar_nd_reco
 
 typedef std::map<int, double> MCParticleEnergyMap;
 
+double m_mm2cm{0.1};
+double m_MeV2GeV{1e-3};
+
 /**
  *  @brief  Parameters class
  */

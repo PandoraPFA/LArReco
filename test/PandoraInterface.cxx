@@ -164,13 +164,10 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
     pCurrentShape->InspectShape();
     TGeoBBox *pBox = dynamic_cast<TGeoBBox *>(pCurrentShape);
 
-    // mm to cm conversion
-    const double mm2cm(0.1);
-
     // Now can get origin/width data from the BBox
-    double dx = pBox->GetDX() * mm2cm; // Note these are the half widths
-    double dy = pBox->GetDY() * mm2cm;
-    double dz = pBox->GetDZ() * mm2cm;
+    double dx = pBox->GetDX() * m_mm2cm; // Note these are the half widths
+    double dy = pBox->GetDY() * m_mm2cm;
+    double dz = pBox->GetDZ() * m_mm2cm;
     const double *origin = pBox->GetOrigin();
 
     // Translate the origin coordinates from the 4th level to the first.
@@ -187,10 +184,10 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
 
     try
     {
-        geoparameters.m_centerX = level1[0] * mm2cm;
+        geoparameters.m_centerX = level1[0] * m_mm2cm;
         // ATTN: offsets taken by visual comparison with edep-disp
-        geoparameters.m_centerY = (level1[1] - 675.0) * mm2cm;
-        geoparameters.m_centerZ = (level1[2] + 6660.0) * mm2cm;
+        geoparameters.m_centerY = (level1[1] - 675.0) * m_mm2cm;
+        geoparameters.m_centerZ = (level1[2] + 6660.0) * m_mm2cm;
         geoparameters.m_widthX = dx * 2.0;
         geoparameters.m_widthY = dy * 2.0;
         geoparameters.m_widthZ = dz * 2.0;
@@ -272,7 +269,6 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
             return;
 
         int hitCounter(0);
-        int hitLoop(0);
 
         // Create MCParticles from Geant4 trajectories
         MCParticleEnergyMap MCEnergyMap = CreateMCParticles(*pEDepSimEvent, pPrimaryPandora);
@@ -289,8 +285,6 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
             // Loop over hit segments and create voxels from them
             for (TG4HitSegment &g4Hit : detector->second)
             {
-                hitLoop++;
-                std::cout << "HIT LOOP: " << hitLoop << std::endl;
                 std::vector<LArVoxel> currentVoxelList = MakeVoxels(g4Hit, grid);
 
                 for (LArVoxel &voxel : currentVoxelList)
@@ -390,9 +384,6 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
                     energyFrac = voxelE / MCEnergy;
                 }
 
-                //std::cout<<"Assoc: hitID = "<<hitCounter<<", trkID = "<<trackID<<", MCE = "
-                //	 <<MCEnergy<<", hitE = "<<voxelE<<", fracE = "<<energyFrac<<std::endl;
-
                 PandoraApi::SetCaloHitToMCParticleRelationship(*pPrimaryPandora, (void *)((intptr_t)hitCounter), (void *)((intptr_t)trackID), energyFrac);
 
             } // end voxel loop
@@ -427,8 +418,8 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
         // LArMCParticle parameters
         lar_content::LArMCParticleParameters mcParticleParameters;
 
-        // Initial momentum and energy
-        const TLorentzVector initMtm(g4Traj.GetInitialMomentum());
+        // Initial momentum and energy in GeV (Geant4 uses MeV)
+        const TLorentzVector initMtm(g4Traj.GetInitialMomentum() * m_MeV2GeV);
         const double energy = initMtm.E();
         mcParticleParameters.m_energy = energy;
         mcParticleParameters.m_momentum = pandora::CartesianVector(initMtm.X(), initMtm.Y(), initMtm.Z());
@@ -442,18 +433,18 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
         const int trackID = g4Traj.GetTrackId();
         mcParticleParameters.m_pParentAddress = (void *)((intptr_t)trackID);
 
-        // Start and end points
+        // Start and end points in cm (Geant4 uses mm)
         const std::vector<TG4TrajectoryPoint> trajPoints = g4Traj.Points;
         const int nPoints(trajPoints.size());
 
         if (nPoints > 1)
         {
             const TG4TrajectoryPoint start = trajPoints[0];
-            const TLorentzVector vertex = start.GetPosition();
+            const TLorentzVector vertex = start.GetPosition() * m_mm2cm;
             mcParticleParameters.m_vertex = pandora::CartesianVector(vertex.X(), vertex.Y(), vertex.Z());
 
             const TG4TrajectoryPoint end = trajPoints[nPoints - 1];
-            const TLorentzVector endPos = end.GetPosition();
+            const TLorentzVector endPos = end.GetPosition() * m_mm2cm;
             mcParticleParameters.m_endpoint = pandora::CartesianVector(endPos.X(), endPos.Y(), endPos.Z());
             // Process ID
             mcParticleParameters.m_process = start.GetProcess();
@@ -485,12 +476,9 @@ std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
 {
     std::vector<LArVoxel> currentVoxelList;
 
-    // mm to cm conversion
-    const double mm2cm(0.1);
-
     // Start and end positions
-    const TLorentzVector &hitStart = g4Hit.GetStart() * mm2cm;
-    const TLorentzVector &hitStop = g4Hit.GetStop() * mm2cm;
+    const TLorentzVector &hitStart = g4Hit.GetStart() * m_mm2cm;
+    const TLorentzVector &hitStop = g4Hit.GetStop() * m_mm2cm;
 
     const CartesianVector start(hitStart.X(), hitStart.Y(), hitStart.Z());
     const CartesianVector stop(hitStop.X(), hitStop.Y(), hitStop.Z());
@@ -499,22 +487,23 @@ std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
     const CartesianVector dir = stop - start;
     const double hitLength = dir.GetMagnitude();
 
-    // Hit segment total energy
-    const double g4HitEnergy = g4Hit.GetEnergyDeposit();
+    // Hit segment total energy in GeV (Geant4 uses MeV)
+    const double g4HitEnergy = g4Hit.GetEnergyDeposit() * m_MeV2GeV;
 
     // Get a trackID of contributing to add to the voxel.
     // ATTN: this can very rarely be more than one track
     const int trackID = g4Hit.Contrib[0];
-    const int primaryID = g4Hit.GetPrimaryId();
 
+    /*const int primaryID = g4Hit.GetPrimaryId();
     std::cout << "Hit start: " << start << std::endl;
     std::cout << "Hit stop: " << stop << std::endl;
     std::cout << "Hit direction: " << dir << std::endl;
     std::cout << "Hit energy: " << g4HitEnergy << std::endl;
     std::cout << "Hit trackID = " << trackID << ", primaryID = " << primaryID << std::endl;
+    */
     if (hitLength < 1e-10)
     {
-        std::cout << "Cannot have zero track length" << std::endl;
+        //std::cout << "Cannot have zero track length" << std::endl;
         return currentVoxelList;
     }
 
@@ -538,19 +527,19 @@ std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
 
     if (inStart && inStop)
     {
-        std::cout << "Case 1: Start and end points are inside boundary" << std::endl;
+        //std::cout << "Case 1: Start and end points are inside boundary" << std::endl;
         point1 = start;
         point2 = stop;
     }
     else if (!inStart && !inStop)
     {
-        std::cout << "Case 2: Start and end points are outside boundary" << std::endl;
+        //std::cout << "Case 2: Start and end points are outside boundary" << std::endl;
         bool ok = grid.intersect(ray, t0, t1);
         if (ok)
         {
             point1 = ray.getPoint(t0);
             point2 = ray.getPoint(t1);
-            std::cout << "Boundary points: " << point1 << " and " << point2 << std::endl;
+            //std::cout << "Boundary points: " << point1 << " and " << point2 << std::endl;
         }
         else
         {
@@ -560,7 +549,7 @@ std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
     }
     else if (inStart && !inStop)
     {
-        std::cout << "Case 3: Start inside boundary" << std::endl;
+        //std::cout << "Case 3: Start inside boundary" << std::endl;
         point1 = start;
         bool ok = grid.intersect(ray, t0, t1);
         if (ok)
@@ -575,7 +564,7 @@ std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
     }
     else if (!inStart && inStop)
     {
-        std::cout << "Case 4: End inside boundary" << std::endl;
+        //std::cout << "Case 4: End inside boundary" << std::endl;
         point2 = stop;
         bool ok = grid.intersect(ray, t0, t1);
         if (ok)
@@ -657,8 +646,9 @@ std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
         const double voxelEnergy = g4HitEnergy * dL / hitLength;
         ETot += voxelEnergy;
 
-        const double fracTotE = g4HitEnergy > 0.0 ? ETot / g4HitEnergy : 0.0;
-        std::cout << "Voxel " << voxelID << ": pos =" << voxBot << ", E = " << voxelEnergy << ", fracTotE = " << fracTotE << std::endl;
+        //const double fracTotE = g4HitEnergy > 0.0 ? ETot / g4HitEnergy : 0.0;
+        //std::cout << "Voxel " << voxelID << ": pos =" << voxBot << ", E = "
+        //          << voxelEnergy << ", fracTotE = " << fracTotE << std::endl;
 
         // Store voxel object in vector
         const LArVoxel voxel(voxelID, voxelEnergy, voxBot, trackID);
@@ -670,7 +660,7 @@ std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
         loop++;
     }
 
-    std::cout << "Returning vector of " << currentVoxelList.size() << " voxels for G4HitSegment\n" << std::endl;
+    //std::cout << "Returning vector of " << currentVoxelList.size() << " voxels for G4HitSegment\n" << std::endl;
 
     return currentVoxelList;
 }
