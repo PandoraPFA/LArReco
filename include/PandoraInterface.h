@@ -21,6 +21,8 @@ class Pandora;
 namespace lar_nd_reco
 {
 
+typedef std::map<int, double> MCParticleEnergyMap;
+
 /**
  *  @brief  Parameters class
  */
@@ -165,8 +167,10 @@ void ProcessEvents(const Parameters &parameters, const pandora::Pandora *const p
  *
  *  @param event The Geant4 event
  *  @param pPrimaryPandora the address of the primary pandora instance
+ *
+ *  @return Map of <trackID, energy> for the MC particles
  */
-void CreateMCParticles(const TG4Event &event, const pandora::Pandora *const pPrimaryPandora);
+MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pandora *const pPrimaryPandora);
 
 /**
  *  @brief  Make voxels from TG4HitSegments (Geant4 hits)
@@ -176,7 +180,7 @@ void CreateMCParticles(const TG4Event &event, const pandora::Pandora *const pPri
  *
  *  @return vector of LArVoxels
  */
-std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid);
+std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid);
 
 /**
  * @brief Combine energies for voxels with the same ID
@@ -185,7 +189,7 @@ std::vector<LArVoxel> makeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
  *
  *  @return vector of merged LArVoxels
  */
-std::vector<LArVoxel> mergeSameVoxels(const std::vector<LArVoxel> &voxelList);
+std::vector<LArVoxel> MergeSameVoxels(const std::vector<LArVoxel> &voxelList);
 
 /**
  *  @brief  Parse the command line arguments, setting the application parameters
