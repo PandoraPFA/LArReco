@@ -171,7 +171,7 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
     const double *origin = pBox->GetOrigin();
 
     // Translate the origin coordinates from the 4th level to the first.
-    // Doesn't seem to change anything. Needed?
+    // Doesn't seem to change anything, but leave it in for now
     double level3[3] = {0.0, 0.0, 0.0};
     currentnode->LocalToMasterVect(origin, level3);
     double level2[3] = {0.0, 0.0, 0.0};
@@ -185,7 +185,8 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
     try
     {
         geoparameters.m_centerX = level1[0] * m_mm2cm;
-        // ATTN: offsets taken by visual comparison with edep-disp
+        // ATTN: offsets taken by visual comparison with edep-disp.
+        // Diff between volWorld_PV and volArgonCubeDetector_PV coords
         geoparameters.m_centerY = (level1[1] - 675.0) * m_mm2cm;
         geoparameters.m_centerZ = (level1[2] + 6660.0) * m_mm2cm;
         geoparameters.m_widthX = dx * 2.0;
@@ -501,13 +502,15 @@ std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
     std::cout << "Hit energy: " << g4HitEnergy << std::endl;
     std::cout << "Hit trackID = " << trackID << ", primaryID = " << primaryID << std::endl;
     */
-    if (hitLength < 1e-10)
+
+    // Check hit length is greater than epsilon limit
+    if (hitLength < std::numeric_limits<float>::epsilon())
     {
         //std::cout << "Cannot have zero track length" << std::endl;
         return currentVoxelList;
     }
 
-    // Define ray trajectory
+    // Define ray trajectory (this checks dirMag >= epsilon)
     const CartesianVector dirNorm = dir.GetUnitVector();
     LArRay ray(start, dirNorm);
 
@@ -832,7 +835,7 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
 
     std::string viewOption("3d");
 
-    while ((c = getopt(argc, argv, ":i:e:n:s:j:Nh")) != -1)
+    while ((c = getopt(argc, argv, ":i:e:n:s:j:w:Nh")) != -1)
     {
         switch (c)
         {
@@ -850,6 +853,9 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
                 break;
             case 'j':
                 viewOption = optarg;
+                break;
+            case 'w':
+                parameters.m_voxelWidth = atof(optarg);
                 break;
             case 'N':
                 parameters.m_shouldDisplayEventNumber = true;
@@ -881,6 +887,7 @@ bool PrintOptions()
               << "    -p                     (optional) [print status]" << std::endl
               << "    -N                     (optional) [print event numbers]" << std::endl
               << "    -j Projection          (optional) [3D (default), LArTPC, Both]" << std::endl
+              << "    -w width               (optional) [voxel bin width (cm), default = 0.4 cm]" << std::endl
               << std::endl;
 
     return false;
