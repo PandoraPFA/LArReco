@@ -1,7 +1,7 @@
 <pandora>
     <!-- GLOBAL SETTINGS -->
     <IsMonitoringEnabled>true</IsMonitoringEnabled>
-    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
+    <ShouldDisplayAlgorithmInfo>true</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
     <!-- ALGORITHM SETTINGS -->
@@ -19,7 +19,7 @@
         <ModelFileNameU>DUNE_unet_U_v1.0.pt</ModelFileNameU>
         <ModelFileNameV>DUNE_unet_V_v1.0.pt</ModelFileNameV>
         <ModelFileNameW>DUNE_unet_W_v1.0.pt</ModelFileNameW>
-        <Visualize>false</Visualize>
+        <Visualize>true</Visualize>
     </algorithm>
 
     <!-- TwoDReconstruction -->
@@ -212,6 +212,11 @@
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
     </algorithm>
 
+    <algorithm type = "LArVisualMonitoring">
+        <VertexListNames>NeutrinoVertices3D</VertexListNames>
+        <ShowDetector>true</ShowDetector>
+    </algorithm>
+
     <algorithm type = "LArDLTrackShowerStreamSelection">
         <InputListName>ClustersU</InputListName>
         <TrackListName>TrackClustersU</TrackListName>
@@ -227,7 +232,7 @@
         <TrackListName>TrackClustersW</TrackListName>
         <ShowerListName>ShowerClustersW</ShowerListName>
     </algorithm>
-    
+
     <!-- ThreeDTrackAlgorithms -->
     <algorithm type = "LArThreeDTransverseTracks">
         <InputClusterListNameU>TrackClustersU</InputClusterListNameU>
@@ -242,7 +247,7 @@
             <tool type = "LArOvershootTracks"><SplitMode>false</SplitMode></tool>
             <tool type = "LArUndershootTracks"><SplitMode>false</SplitMode></tool>
             <tool type = "LArMissingTrackSegment"/>
-            <tool type = "LArTrackSplitting"/>
+            <tool type = "LArTrackSplitting"><MaxAbsoluteShortDeltaX>6.0</MaxAbsoluteShortDeltaX></tool>
             <tool type = "LArLongTracks"><MinMatchedFraction>0.75</MinMatchedFraction><MinXOverlapFraction>0.75</MinXOverlapFraction></tool>
             <tool type = "LArTracksCrossingGaps"><MinMatchedFraction>0.75</MinMatchedFraction><MinXOverlapFraction>0.75</MinXOverlapFraction></tool>
             <tool type = "LArMissingTrack"/>
@@ -283,15 +288,21 @@
         <InputClusterListNames>TrackClustersU TrackClustersV TrackClustersW ShowerClustersU ShowerClustersV ShowerClustersW</InputClusterListNames>
         <OverwriteExistingId>true</OverwriteExistingId>
     </algorithm>
-    <algorithm type = "LArShowerGrowing">
+
+    <algorithm type = "LArMetricBasedShowerGrowing">
         <InputClusterListNames>ShowerClustersU ShowerClustersV ShowerClustersW</InputClusterListNames>
+        <!-- Metric stuff -->
+        <NearbyClusterDistance>5.</NearbyClusterDistance>
+        <RecursiveMode>true</RecursiveMode>
+        <UseMCFigureOfMerit>true</UseMCFigureOfMerit>
     </algorithm>
-    
+
     <algorithm type = "LArThreeDShowers">
         <InputClusterListNameU>ShowerClustersU</InputClusterListNameU>
         <InputClusterListNameV>ShowerClustersV</InputClusterListNameV>
         <InputClusterListNameW>ShowerClustersW</InputClusterListNameW>
         <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
+        <MinShowerMatchedPoints>15</MinShowerMatchedPoints>
         <ShowerTools>
             <tool type = "LArClearShowers"/>
             <tool type = "LArSplitShowers"/>
@@ -299,24 +310,131 @@
         </ShowerTools>
     </algorithm>
 
+    <!--2 view Calo matching for showers - U V -->
+    <algorithm type = "LArTwoViewTransverseTracks">
+        <InputClusterListName1>ShowerClustersU</InputClusterListName1>
+        <InputClusterListName2>ShowerClustersV</InputClusterListName2>
+        <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
+        <LocalMatchingScoreThreshold>0.90</LocalMatchingScoreThreshold>
+        <DisplayPotentialMatches>false</DisplayPotentialMatches>
+        <MinSamples>13</MinSamples>
+        <TrackTools>
+            <tool type = "LArTwoViewThreeDKink"/>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.0</MinLocallyMatchedFraction>
+                <PrintIfMatch>false</PrintIfMatch>
+            </tool>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.30</MinLocallyMatchedFraction>
+                <PrintIfMatch>false</PrintIfMatch>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinMatchedFraction>0.30</MinMatchedFraction>
+                <PrintIfMatch>false</PrintIfMatch>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinMatchedFraction>0.0</MinMatchedFraction>
+                <PrintIfMatch>false</PrintIfMatch>
+            </tool>
+            <tool type = "LArTwoViewSimpleTracks">
+                <PrintIfMatch>false</PrintIfMatch>
+            </tool>
+        </TrackTools>
+    </algorithm>
+    <!--2 view Calo matching for showers - U W -->
+    <algorithm type = "LArTwoViewTransverseTracks">
+        <InputClusterListName1>ShowerClustersU</InputClusterListName1>
+        <InputClusterListName2>ShowerClustersW</InputClusterListName2>
+        <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
+        <LocalMatchingScoreThreshold>0.90</LocalMatchingScoreThreshold>
+        <DisplayPotentialMatches>false</DisplayPotentialMatches>
+        <MinSamples>13</MinSamples>
+        <TrackTools>
+            <tool type = "LArTwoViewThreeDKink"/>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.0</MinLocallyMatchedFraction>
+                <PrintIfMatch>false</PrintIfMatch>
+            </tool>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.30</MinLocallyMatchedFraction>
+                <PrintIfMatch>false</PrintIfMatch>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinMatchedFraction>0.30</MinMatchedFraction>
+                <PrintIfMatch>false</PrintIfMatch>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinMatchedFraction>0.0</MinMatchedFraction>
+                <PrintIfMatch>false</PrintIfMatch>
+            </tool>
+            <tool type = "LArTwoViewSimpleTracks">
+                <PrintIfMatch>false</PrintIfMatch>
+            </tool>
+        </TrackTools>
+    </algorithm>
+    <!--2 view Calo matching for showers - V W -->
+    <algorithm type = "LArTwoViewTransverseTracks">
+        <InputClusterListName1>ShowerClustersV</InputClusterListName1>
+        <InputClusterListName2>ShowerClustersW</InputClusterListName2>
+        <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
+        <LocalMatchingScoreThreshold>0.90</LocalMatchingScoreThreshold>
+        <DisplayPotentialMatches>false</DisplayPotentialMatches>
+        <MinSamples>13</MinSamples>
+        <TrackTools>
+            <tool type = "LArTwoViewThreeDKink"/>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.0</MinLocallyMatchedFraction>
+                <PrintIfMatch>false</PrintIfMatch>
+            </tool>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.30</MinLocallyMatchedFraction>
+                <PrintIfMatch>false</PrintIfMatch>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinMatchedFraction>0.30</MinMatchedFraction>
+                <PrintIfMatch>false</PrintIfMatch>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinMatchedFraction>0.0</MinMatchedFraction>
+                <PrintIfMatch>false</PrintIfMatch>
+            </tool>
+            <tool type = "LArTwoViewSimpleTracks">
+                <PrintIfMatch>false</PrintIfMatch>
+            </tool>
+        </TrackTools>
+    </algorithm>
+    <!-- end two view recovery -->
+
     <!-- ThreeDRecoveryAlgorithms -->
     <algorithm type = "LArVertexBasedPfoRecovery">
         <InputClusterListNames>TrackClustersU TrackClustersV TrackClustersW ShowerClustersU ShowerClustersV ShowerClustersW</InputClusterListNames>
         <OutputPfoListName>TrackParticles3D</OutputPfoListName>
     </algorithm>
     <algorithm type = "LArParticleRecovery">
-        <InputClusterListNames>TrackClustersU TrackClustersV TrackClustersW ShowerClustersU ShowerClustersV ShowerClustersW</InputClusterListNames>
+        <InputClusterListNames>TrackClustersU TrackClustersV TrackClustersW</InputClusterListNames>
         <OutputPfoListName>TrackParticles3D</OutputPfoListName>
     </algorithm>
     <algorithm type = "LArParticleRecovery">
-        <InputClusterListNames>TrackClustersU TrackClustersV TrackClustersW ShowerClustersU ShowerClustersV ShowerClustersW</InputClusterListNames>
+        <InputClusterListNames>TrackClustersU TrackClustersV TrackClustersW</InputClusterListNames>
         <OutputPfoListName>TrackParticles3D</OutputPfoListName>
         <VertexClusterMode>true</VertexClusterMode>
         <MinXOverlapFraction>0.5</MinXOverlapFraction>
         <MinClusterCaloHits>5</MinClusterCaloHits>
         <MinClusterLength>1.</MinClusterLength>
     </algorithm>
-    
+
     <!-- TwoDMopUpAlgorithms -->
     <algorithm type = "LArBoundedClusterMopUp">
         <PfoListNames>ShowerParticles3D</PfoListNames>
@@ -331,10 +449,10 @@
         <DaughterListNames>ShowerClustersU ShowerClustersV ShowerClustersW</DaughterListNames>
     </algorithm>
     
-    <!--algorithm type = "LArVisualMonitoring">
-        <ClusterListNames>TrackClustersU TrackClustersV TrackClustersW ShowerClustersU ShowerClustersV ShowerClustersW</ClusterListNames>
+    <algorithm type = "LArVisualMonitoring">
+        <PfoListNames>TrackParticles3D ShowerParticles3D</PfoListNames>
         <ShowDetector>true</ShowDetector>
-    </algorithm-->
+    </algorithm>
 
     <!-- ThreeDHitAlgorithms -->
     <algorithm type = "LArDLPfoCharacterisation">
