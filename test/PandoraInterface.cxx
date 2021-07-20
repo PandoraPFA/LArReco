@@ -165,9 +165,9 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
     TGeoBBox *pBox = dynamic_cast<TGeoBBox *>(pCurrentShape);
 
     // Now can get origin/width data from the BBox
-    double dx = pBox->GetDX() * m_mm2cm; // Note these are the half widths
-    double dy = pBox->GetDY() * m_mm2cm;
-    double dz = pBox->GetDZ() * m_mm2cm;
+    const double dx = pBox->GetDX() * m_mm2cm; // Note these are the half widths
+    const double dy = pBox->GetDY() * m_mm2cm;
+    const double dz = pBox->GetDZ() * m_mm2cm;
     const double *origin = pBox->GetOrigin();
 
     // Translate the origin coordinates from the 4th level to the first.
@@ -537,7 +537,7 @@ std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
     else if (!inStart && !inStop)
     {
         //std::cout << "Case 2: Start and end points are outside boundary" << std::endl;
-        bool ok = grid.intersect(ray, t0, t1);
+        const bool ok = grid.intersect(ray, t0, t1);
         if (ok)
         {
             point1 = ray.getPoint(t0);
@@ -554,7 +554,7 @@ std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
     {
         //std::cout << "Case 3: Start inside boundary" << std::endl;
         point1 = start;
-        bool ok = grid.intersect(ray, t0, t1);
+        const bool ok = grid.intersect(ray, t0, t1);
         if (ok)
         {
             point2 = ray.getPoint(t1);
@@ -569,7 +569,7 @@ std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
     {
         //std::cout << "Case 4: End inside boundary" << std::endl;
         point2 = stop;
-        bool ok = grid.intersect(ray, t0, t1);
+        const bool ok = grid.intersect(ray, t0, t1);
         if (ok)
         {
             point1 = ray.getPoint(t0);
@@ -585,6 +585,7 @@ std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
     // Ray direction will be the same, but update starting point
     ray.updateOrigin(point1);
 
+    // Small position shift to ensure we move along the ray path
     const double epsilon(1e-3);
     bool shuffle(true);
 
@@ -612,7 +613,8 @@ std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
 
         // Voxel box
         const LArBox vBox(voxBot, voxTop);
-        // Get ray intersections with this box
+        // Get ray intersections with this box: t0 and t1 are set as the start
+        // and end intersection pathlengths relative to the current ray point
         bool result = vBox.intersect(ray, t0, t1);
 
         if (!result)
@@ -671,11 +673,11 @@ std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
 bool LArBox::intersect(const LArRay &ray, double &t0, double &t1) const
 {
     // Brian Smits ray-box algorithm with improvements from Amy Williams et al
-    double x(ray.m_origin.GetX());
-    double y(ray.m_origin.GetY());
+    const double x(ray.m_origin.GetX());
+    const double y(ray.m_origin.GetY());
 
-    double invDirX(ray.m_invDir.GetX());
-    double invDirY(ray.m_invDir.GetY());
+    const double invDirX(ray.m_invDir.GetX());
+    const double invDirY(ray.m_invDir.GetY());
 
     double tMin(0.0), tMax(0.0), tyMin(0.0), tyMax(0.0), tzMin(0.0), tzMax(0.0);
 
@@ -716,8 +718,8 @@ bool LArBox::intersect(const LArRay &ray, double &t0, double &t1) const
         tMax = tyMax;
     }
 
-    double z(ray.m_origin.GetZ());
-    double invDirZ(ray.m_invDir.GetZ());
+    const double z(ray.m_origin.GetZ());
+    const double invDirZ(ray.m_invDir.GetZ());
     if (ray.m_sign[2] == 0)
     {
         tzMin = (m_bottom.GetZ() - z) * invDirZ;
@@ -754,9 +756,9 @@ bool LArBox::inside(const pandora::CartesianVector &point) const
 {
     bool result(false);
 
-    float x = point.GetX();
-    float y = point.GetY();
-    float z = point.GetZ();
+    const float x = point.GetX();
+    const float y = point.GetY();
+    const float z = point.GetZ();
 
     if (x > m_bottom.GetX() && x < m_top.GetX() && y > m_bottom.GetY() && y < m_top.GetY() && z > m_bottom.GetZ() && z < m_top.GetZ())
     {
@@ -775,7 +777,7 @@ std::vector<LArVoxel> MergeSameVoxels(const std::vector<LArVoxel> &voxelList)
     std::vector<LArVoxel> mergedVoxels;
 
     const int nVoxels = voxelList.size();
-    std::vector<int> processed(nVoxels, 0);
+    std::vector<bool> processed(nVoxels, false);
 
     for (int i = 0; i < nVoxels; i++)
     {
@@ -809,7 +811,7 @@ std::vector<LArVoxel> MergeSameVoxels(const std::vector<LArVoxel> &voxelList)
             {
                 // IDs match. Add energy and set processed integer
                 voxE1 += voxel2.m_energyInVoxel;
-                processed[j] = 1;
+                processed[j] = true;
             }
         }
 
@@ -818,7 +820,7 @@ std::vector<LArVoxel> MergeSameVoxels(const std::vector<LArVoxel> &voxelList)
         mergedVoxels.push_back(voxel1);
 
         // We have processed the ith voxel
-        processed[i] = 1;
+        processed[i] = true;
     }
 
     return mergedVoxels;

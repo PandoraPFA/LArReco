@@ -261,9 +261,9 @@ inline LArRay::LArRay(const pandora::CartesianVector &origin, const pandora::Car
     m_invDir({0, 0, 0}),
     m_sign({0, 0, 0})
 {
-    float dx = m_dir.GetX();
-    float dy = m_dir.GetY();
-    float dz = m_dir.GetZ();
+    const float dx = m_dir.GetX();
+    const float dy = m_dir.GetY();
+    const float dz = m_dir.GetZ();
 
     // Initalise inverse direction values to maximum numerical limit (i.e. parallel lines)
     const float maxVal = std::numeric_limits<float>::max();
@@ -317,9 +317,9 @@ inline LArGrid::LArGrid(const pandora::CartesianVector &bottom, const pandora::C
     m_binExtent(binWidths.GetMagnitude()),
     m_nBins({0, 0, 0})
 {
-    long NxBins = long((top.GetX() - bottom.GetX()) / binWidths.GetX());
-    long NyBins = long((top.GetY() - bottom.GetY()) / binWidths.GetY());
-    long NzBins = long((top.GetZ() - bottom.GetZ()) / binWidths.GetZ());
+    const long NxBins = static_cast<long>((top.GetX() - bottom.GetX()) / binWidths.GetX());
+    const long NyBins = static_cast<long>((top.GetY() - bottom.GetY()) / binWidths.GetY());
+    const long NzBins = static_cast<long>((top.GetZ() - bottom.GetZ()) / binWidths.GetZ());
     std::cout << "Grid: Nx = " << NxBins << ", Ny = " << NyBins << ", Nz = " << NzBins << std::endl;
     m_nBins = {NxBins, NyBins, NzBins};
 }
@@ -352,11 +352,11 @@ inline std::array<long, 4> LArGrid::getBinIndices(const pandora::CartesianVector
 {
     // Bin widths should always be non-zero. Need to use long integers to avoid
     // integer overflow for the total bin, which can be larger than 2^31
-    long xBin = getBinIndex(point.GetX(), m_bottom.GetX(), m_binWidths.GetX(), m_nBins[0]);
-    long yBin = getBinIndex(point.GetY(), m_bottom.GetY(), m_binWidths.GetY(), m_nBins[1]);
-    long zBin = getBinIndex(point.GetZ(), m_bottom.GetZ(), m_binWidths.GetZ(), m_nBins[2]);
+    const long xBin = getBinIndex(point.GetX(), m_bottom.GetX(), m_binWidths.GetX(), m_nBins[0]);
+    const long yBin = getBinIndex(point.GetY(), m_bottom.GetY(), m_binWidths.GetY(), m_nBins[1]);
+    const long zBin = getBinIndex(point.GetZ(), m_bottom.GetZ(), m_binWidths.GetZ(), m_nBins[2]);
 
-    long totBin = (zBin * m_nBins[1] + yBin) * m_nBins[0] + xBin;
+    const long totBin = (zBin * m_nBins[1] + yBin) * m_nBins[0] + xBin;
 
     std::array<long, 4> binIndices = {xBin, yBin, zBin, totBin};
     return binIndices;
@@ -364,9 +364,9 @@ inline std::array<long, 4> LArGrid::getBinIndices(const pandora::CartesianVector
 
 inline pandora::CartesianVector LArGrid::getPoint(long xBin, long yBin, long zBin) const
 {
-    float x = m_bottom.GetX() + xBin * m_binWidths.GetX();
-    float y = m_bottom.GetY() + yBin * m_binWidths.GetY();
-    float z = m_bottom.GetZ() + zBin * m_binWidths.GetZ();
+    const float x = m_bottom.GetX() + xBin * m_binWidths.GetX();
+    const float y = m_bottom.GetY() + yBin * m_binWidths.GetY();
+    const float z = m_bottom.GetZ() + zBin * m_binWidths.GetZ();
 
     return pandora::CartesianVector(x, y, z);
 }
