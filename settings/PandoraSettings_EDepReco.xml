@@ -14,7 +14,7 @@
         <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
     </algorithm>
     <algorithm type = "LArVisualMonitoring">
-      <MCParticleListNames>Input</MCParticleListNames>
+        <MCParticleListNames>Input</MCParticleListNames>
         <!--Suppress neutrons (PDG=2112) with E < 0.95 GeV-->
         <SuppressMCParticles>2112:0.95</SuppressMCParticles>
 	<CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>

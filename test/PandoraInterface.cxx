@@ -102,7 +102,7 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
 {
     // Get the geometry info from the input root file
     TFile fileSource(parameters.m_inputFileName.c_str(), "READ");
-    TGeoManager *pEDepSimGeo = (TGeoManager *)fileSource.Get("EDepSimGeometry");
+    TGeoManager *pEDepSimGeo = dynamic_cast<TGeoManager *>(fileSource.Get("EDepSimGeometry"));
 
     if (!pEDepSimGeo)
     {
@@ -118,9 +118,7 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
 
     TGeoVolume *pMasterVol = pEDepSimGeo->GetMasterVolume();
     for (int i = 0; i < pMasterVol->GetNdaughters(); i++)
-    {
         pEDepSimGeo->CdDown(i);
-    }
 
     while (foundnode == false)
     {
@@ -146,9 +144,7 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
         }
 
         if (foundnode == true)
-        {
             break;
-        }
     }
 
     // This should now be the ArgonCube volume
@@ -165,13 +161,13 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
     TGeoBBox *pBox = dynamic_cast<TGeoBBox *>(pCurrentShape);
 
     // Now can get origin/width data from the BBox
-    const double dx = pBox->GetDX() * m_mm2cm; // Note these are the half widths
-    const double dy = pBox->GetDY() * m_mm2cm;
-    const double dz = pBox->GetDZ() * m_mm2cm;
+    const float dx = pBox->GetDX() * parameters.m_mm2cm; // Note these are the half widths
+    const float dy = pBox->GetDY() * parameters.m_mm2cm;
+    const float dz = pBox->GetDZ() * parameters.m_mm2cm;
     const double *origin = pBox->GetOrigin();
 
     // Translate the origin coordinates from the 4th level to the first.
-    // Doesn't seem to change anything, but leave it in for now
+    // TODO: Check if this is really needed, as it doesn't seem to change anything
     double level3[3] = {0.0, 0.0, 0.0};
     currentnode->LocalToMasterVect(origin, level3);
     double level2[3] = {0.0, 0.0, 0.0};
@@ -184,11 +180,12 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
 
     try
     {
-        geoparameters.m_centerX = level1[0] * m_mm2cm;
+        geoparameters.m_centerX = level1[0] * parameters.m_mm2cm;
         // ATTN: offsets taken by visual comparison with edep-disp.
-        // Diff between volWorld_PV and volArgonCubeDetector_PV coords
-        geoparameters.m_centerY = (level1[1] - 675.0) * m_mm2cm;
-        geoparameters.m_centerZ = (level1[2] + 6660.0) * m_mm2cm;
+        // Diff between volWorld_PV and volArgonCubeDetector_PV coords.
+        // TODO: Get these transformation offsets from the geometry objects?
+        geoparameters.m_centerY = (level1[1] - 675.0) * parameters.m_mm2cm;
+        geoparameters.m_centerZ = (level1[2] + 6660.0) * parameters.m_mm2cm;
         geoparameters.m_widthX = dx * 2.0;
         geoparameters.m_widthY = dy * 2.0;
         geoparameters.m_widthZ = dz * 2.0;
@@ -228,7 +225,7 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
     int nEvents(0);
 
     TFile fileSource(parameters.m_inputFileName.c_str(), "READ");
-    TTree *pEDepSimTree = (TTree *)fileSource.Get("EDepSimEvents");
+    TTree *pEDepSimTree = dynamic_cast<TTree *>(fileSource.Get("EDepSimEvents"));
 
     if (!pEDepSimTree)
     {
@@ -246,21 +243,29 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
     const GeometryManager *geom = pPrimaryPandora->GetGeometry();
     const LArTPC &tpc = geom->GetLArTPC();
 
-    double botX = tpc.GetCenterX() - 0.5 * tpc.GetWidthX();
-    double botY = tpc.GetCenterY() - 0.5 * tpc.GetWidthY();
-    double botZ = tpc.GetCenterZ() - 0.5 * tpc.GetWidthZ();
-    double topX = botX + tpc.GetWidthX();
-    double topY = botY + tpc.GetWidthY();
-    double topZ = botZ + tpc.GetWidthZ();
-    const double voxelWidth(parameters.m_voxelWidth);
-    LArGrid grid(pandora::CartesianVector(botX, botY, botZ), pandora::CartesianVector(topX, topY, topZ),
+    const float botX = tpc.GetCenterX() - 0.5 * tpc.GetWidthX();
+    const float botY = tpc.GetCenterY() - 0.5 * tpc.GetWidthY();
+    const float botZ = tpc.GetCenterZ() - 0.5 * tpc.GetWidthZ();
+    const float topX = botX + tpc.GetWidthX();
+    const float topY = botY + tpc.GetWidthY();
+    const float topZ = botZ + tpc.GetWidthZ();
+    const float voxelWidth(parameters.m_voxelWidth);
+    const LArGrid grid(pandora::CartesianVector(botX, botY, botZ), pandora::CartesianVector(topX, topY, topZ),
         pandora::CartesianVector(voxelWidth, voxelWidth, voxelWidth));
 
     std::cout << "Total grid volume: bot = " << grid.m_bottom << "\n top = " << grid.m_top << std::endl;
     std::cout << "Making voxels with size " << grid.m_binWidths << std::endl;
 
-    while ((nEvents < parameters.m_nEventsToProcess) || (0 > parameters.m_nEventsToProcess))
+    const int eventMax(parameters.m_nEventsToProcess + parameters.m_nEventsToSkip);
+    const int nEntries(pEDepSimTree->GetEntries());
+    while ((nEvents < eventMax && nEvents < nEntries) || (0 > parameters.m_nEventsToProcess))
     {
+        if (nEvents < parameters.m_nEventsToSkip)
+        {
+            nEvents++;
+            continue;
+        }
+
         if (parameters.m_shouldDisplayEventNumber)
             std::cout << std::endl << "   PROCESSING EVENT: " << nEvents << std::endl << std::endl;
 
@@ -272,7 +277,7 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
         int hitCounter(0);
 
         // Create MCParticles from Geant4 trajectories
-        MCParticleEnergyMap MCEnergyMap = CreateMCParticles(*pEDepSimEvent, pPrimaryPandora);
+        const MCParticleEnergyMap MCEnergyMap = CreateMCParticles(*pEDepSimEvent, pPrimaryPandora, parameters);
 
         // Loop over (EDep) hits, which are stored in the hit segment detectors
         for (TG4HitSegmentDetectors::iterator detector = pEDepSimEvent->SegmentDetectors.begin();
@@ -281,23 +286,21 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
             std::cout << "Show hits for " << detector->first << " (" << detector->second.size() << " hits)" << std::endl;
             std::cout << "                                 " << std::endl;
 
-            std::vector<LArVoxel> voxelList;
+            LArVoxelList voxelList;
 
             // Loop over hit segments and create voxels from them
             for (TG4HitSegment &g4Hit : detector->second)
             {
-                std::vector<LArVoxel> currentVoxelList = MakeVoxels(g4Hit, grid);
+                LArVoxelList currentVoxelList = MakeVoxels(g4Hit, grid, parameters);
 
                 for (LArVoxel &voxel : currentVoxelList)
-                {
-                    voxelList.push_back(voxel);
-                }
+                    voxelList.emplace_back(voxel);
             }
 
             std::cout << "Produced " << voxelList.size() << " voxels from " << detector->second.size() << " hit segments." << std::endl;
 
             // Merge voxels with the same IDs
-            std::vector<LArVoxel> mergedVoxels = MergeSameVoxels(voxelList);
+            LArVoxelList mergedVoxels = MergeSameVoxels(voxelList);
 
             std::cout << "Produced " << mergedVoxels.size() << " merged voxels from " << voxelList.size() << " voxels." << std::endl;
 
@@ -306,7 +309,7 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
             {
                 const LArVoxel voxel = mergedVoxels[i];
                 const CartesianVector voxelPos(voxel.m_voxelPosVect);
-                const double voxelE = voxel.m_energyInVoxel;
+                const float voxelE = voxel.m_energyInVoxel;
 
                 lar_content::LArCaloHitParameters caloHitParameters;
                 caloHitParameters.m_positionVector = voxelPos;
@@ -333,32 +336,30 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
                 caloHitParameters.m_daughterVolumeId = 0;
 
                 if (parameters.m_use3D)
-                {
                     PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=,
                         PandoraApi::CaloHit::Create(*pPrimaryPandora, caloHitParameters, m_larCaloHitFactory));
-                }
 
                 if (parameters.m_useLArTPC)
                 {
                     // Create U, V and W views assuming x is the common drift coordinate
-                    const double x0_cm = voxelPos.GetX();
-                    const double y0_cm = voxelPos.GetY();
-                    const double z0_cm = voxelPos.GetZ();
+                    const float x0_cm(voxelPos.GetX());
+                    const float y0_cm(voxelPos.GetY());
+                    const float z0_cm(voxelPos.GetZ());
 
                     lar_content::LArCaloHitParameters caloHitPars_UView(caloHitParameters);
                     caloHitPars_UView.m_hitType = pandora::TPC_VIEW_U;
-                    const double upos_cm(pPrimaryPandora->GetPlugins()->GetLArTransformationPlugin()->YZtoU(y0_cm, z0_cm));
-                    caloHitPars_UView.m_positionVector = CartesianVector(x0_cm, 0.0, upos_cm);
+                    const float upos_cm(pPrimaryPandora->GetPlugins()->GetLArTransformationPlugin()->YZtoU(y0_cm, z0_cm));
+                    caloHitPars_UView.m_positionVector = CartesianVector(x0_cm, 0.f, upos_cm);
 
                     lar_content::LArCaloHitParameters caloHitPars_VView(caloHitParameters);
                     caloHitPars_VView.m_hitType = pandora::TPC_VIEW_V;
-                    const double vpos_cm(pPrimaryPandora->GetPlugins()->GetLArTransformationPlugin()->YZtoV(y0_cm, z0_cm));
-                    caloHitPars_VView.m_positionVector = CartesianVector(x0_cm, 0.0, vpos_cm);
+                    const float vpos_cm(pPrimaryPandora->GetPlugins()->GetLArTransformationPlugin()->YZtoV(y0_cm, z0_cm));
+                    caloHitPars_VView.m_positionVector = CartesianVector(x0_cm, 0.f, vpos_cm);
 
                     lar_content::LArCaloHitParameters caloHitPars_WView(caloHitParameters);
                     caloHitPars_WView.m_hitType = pandora::TPC_VIEW_W;
-                    const double wpos_cm(pPrimaryPandora->GetPlugins()->GetLArTransformationPlugin()->YZtoW(y0_cm, z0_cm));
-                    caloHitPars_WView.m_positionVector = CartesianVector(x0_cm, 0.0, wpos_cm);
+                    const float wpos_cm(pPrimaryPandora->GetPlugins()->GetLArTransformationPlugin()->YZtoW(y0_cm, z0_cm));
+                    caloHitPars_WView.m_positionVector = CartesianVector(x0_cm, 0.f, wpos_cm);
 
                     // Create LArCaloHits for U, V and W views
                     PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=,
@@ -373,23 +374,22 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
                 const int trackID = voxel.m_trackID;
 
                 // Find the energy fraction: voxelHitE/MCParticleE
-                double energyFrac(0.0), MCEnergy(0.0);
+                float energyFrac(0.f), MCEnergy(0.f);
                 MCParticleEnergyMap::const_iterator mapIter = MCEnergyMap.find(trackID);
                 if (mapIter != MCEnergyMap.end())
-                {
                     MCEnergy = mapIter->second;
-                }
 
                 if (MCEnergy > 0.0)
-                {
                     energyFrac = voxelE / MCEnergy;
-                }
 
                 PandoraApi::SetCaloHitToMCParticleRelationship(*pPrimaryPandora, (void *)((intptr_t)hitCounter), (void *)((intptr_t)trackID), energyFrac);
 
             } // end voxel loop
 
-            // The voxelisation only works with ArgonCube
+            // The voxelisation only works with ArgonCube. The geometry parameters
+            // are set assuming that we only have an ArgonCube detector.
+            // So stop processing other hit segment detectors.
+            // TODO: Allow hits in any geometry/detector to be voxelised.
             break;
 
         } // end segment detector loop
@@ -399,7 +399,9 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
     }
 }
 
-MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pandora *const pPrimaryPandora)
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pandora *const pPrimaryPandora, const Parameters &parameters)
 {
     // Create map of trackID and energy
     MCParticleEnergyMap energyMap;
@@ -420,8 +422,8 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
         lar_content::LArMCParticleParameters mcParticleParameters;
 
         // Initial momentum and energy in GeV (Geant4 uses MeV)
-        const TLorentzVector initMtm(g4Traj.GetInitialMomentum() * m_MeV2GeV);
-        const double energy = initMtm.E();
+        const TLorentzVector initMtm(g4Traj.GetInitialMomentum() * parameters.m_MeV2GeV);
+        const float energy(initMtm.E());
         mcParticleParameters.m_energy = energy;
         mcParticleParameters.m_momentum = pandora::CartesianVector(initMtm.X(), initMtm.Y(), initMtm.Z());
 
@@ -441,11 +443,11 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
         if (nPoints > 1)
         {
             const TG4TrajectoryPoint start = trajPoints[0];
-            const TLorentzVector vertex = start.GetPosition() * m_mm2cm;
+            const TLorentzVector vertex = start.GetPosition() * parameters.m_mm2cm;
             mcParticleParameters.m_vertex = pandora::CartesianVector(vertex.X(), vertex.Y(), vertex.Z());
 
             const TG4TrajectoryPoint end = trajPoints[nPoints - 1];
-            const TLorentzVector endPos = end.GetPosition() * m_mm2cm;
+            const TLorentzVector endPos = end.GetPosition() * parameters.m_mm2cm;
             mcParticleParameters.m_endpoint = pandora::CartesianVector(endPos.X(), endPos.Y(), endPos.Z());
             // Process ID
             mcParticleParameters.m_process = start.GetProcess();
@@ -453,9 +455,9 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
         else
         {
             // Should not reach here, but set sensible values just in case
-            mcParticleParameters.m_vertex = pandora::CartesianVector(0, 0, 0);
-            mcParticleParameters.m_endpoint = pandora::CartesianVector(0, 0, 0);
-            mcParticleParameters.m_process = 0;
+            mcParticleParameters.m_vertex = pandora::CartesianVector(0.f, 0.f, 0.f);
+            mcParticleParameters.m_endpoint = pandora::CartesianVector(0.f, 0.f, 0.f);
+            mcParticleParameters.m_process = lar_content::MC_PROC_UNKNOWN;
         }
 
         // Create MCParticle
@@ -473,44 +475,42 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
     return energyMap;
 }
 
-std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid)
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+LArVoxelList MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid, const Parameters &parameters)
 {
-    std::vector<LArVoxel> currentVoxelList;
+    // Code based on https://github.com/chenel/larcv2/tree/edepsim-formattruth/larcv/app/Supera/Voxelize.cxx
+    // which is made available under the MIT license (which is fully compatible with Pandora's GPLv3 license).
+
+    LArVoxelList currentVoxelList;
 
     // Start and end positions
-    const TLorentzVector &hitStart = g4Hit.GetStart() * m_mm2cm;
-    const TLorentzVector &hitStop = g4Hit.GetStop() * m_mm2cm;
+    const TLorentzVector &hitStart = g4Hit.GetStart() * parameters.m_mm2cm;
+    const TLorentzVector &hitStop = g4Hit.GetStop() * parameters.m_mm2cm;
 
     const CartesianVector start(hitStart.X(), hitStart.Y(), hitStart.Z());
     const CartesianVector stop(hitStop.X(), hitStop.Y(), hitStop.Z());
 
     // Direction vector and hit segment length
     const CartesianVector dir = stop - start;
-    const double hitLength = dir.GetMagnitude();
-
-    // Hit segment total energy in GeV (Geant4 uses MeV)
-    const double g4HitEnergy = g4Hit.GetEnergyDeposit() * m_MeV2GeV;
-
-    // Get a trackID of contributing to add to the voxel.
-    // ATTN: this can very rarely be more than one track
-    const int trackID = g4Hit.Contrib[0];
-
-    /*const int primaryID = g4Hit.GetPrimaryId();
-    std::cout << "Hit start: " << start << std::endl;
-    std::cout << "Hit stop: " << stop << std::endl;
-    std::cout << "Hit direction: " << dir << std::endl;
-    std::cout << "Hit energy: " << g4HitEnergy << std::endl;
-    std::cout << "Hit trackID = " << trackID << ", primaryID = " << primaryID << std::endl;
-    */
+    const float hitLength(dir.GetMagnitude());
 
     // Check hit length is greater than epsilon limit
     if (hitLength < std::numeric_limits<float>::epsilon())
-    {
-        //std::cout << "Cannot have zero track length" << std::endl;
         return currentVoxelList;
-    }
 
-    // Define ray trajectory (this checks dirMag >= epsilon)
+    // Hit segment total energy in GeV (Geant4 uses MeV)
+    const float g4HitEnergy(g4Hit.GetEnergyDeposit() * parameters.m_MeV2GeV);
+
+    // Check hit energy is greater than epsilon limit
+    if (g4HitEnergy < std::numeric_limits<float>::epsilon())
+        return currentVoxelList;
+
+    // Get a trackID of contributing to add to the voxel.
+    // ATTN: this can very rarely be more than one track
+    const int trackID = g4Hit.GetContributors()[0];
+
+    // Define ray trajectory, which checks dirMag (hitLength) >= epsilon limit
     const CartesianVector dirNorm = dir.GetUnitVector();
     LArRay ray(start, dirNorm);
 
@@ -522,120 +522,94 @@ std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
     // Case 4: end is inside boundary, start = intersection at region boundary
 
     double t0(0.0), t1(0.0);
-    pandora::CartesianVector point1(0.0, 0.0, 0.0), point2(0.0, 0.0, 0.0);
+    pandora::CartesianVector point1(0.f, 0.f, 0.f), point2(0.f, 0.f, 0.f);
 
     // Check if the start and end points are inside the voxelisation region
-    const bool inStart = grid.inside(start);
-    const bool inStop = grid.inside(stop);
+    const bool inStart = grid.Inside(start);
+    const bool inStop = grid.Inside(stop);
 
     if (inStart && inStop)
     {
-        //std::cout << "Case 1: Start and end points are inside boundary" << std::endl;
+        // Case 1: Start and end points are inside boundary
         point1 = start;
         point2 = stop;
     }
     else if (!inStart && !inStop)
     {
-        //std::cout << "Case 2: Start and end points are outside boundary" << std::endl;
-        const bool ok = grid.intersect(ray, t0, t1);
-        if (ok)
+        // Case 2: Start and end points are outside boundary
+        if (grid.Intersect(ray, t0, t1))
         {
-            point1 = ray.getPoint(t0);
-            point2 = ray.getPoint(t1);
-            //std::cout << "Boundary points: " << point1 << " and " << point2 << std::endl;
+            point1 = ray.GetPoint(t0);
+            point2 = ray.GetPoint(t1);
         }
         else
-        {
-            std::cout << "Voxel ray does not intersect boundary limits." << std::endl;
             return currentVoxelList;
-        }
     }
     else if (inStart && !inStop)
     {
-        //std::cout << "Case 3: Start inside boundary" << std::endl;
+        // Case 3: Start inside boundary
         point1 = start;
-        const bool ok = grid.intersect(ray, t0, t1);
-        if (ok)
-        {
-            point2 = ray.getPoint(t1);
-        }
+        if (grid.Intersect(ray, t0, t1))
+            point2 = ray.GetPoint(t1);
         else
-        {
-            std::cout << "Voxel ray does not intersect boundary" << std::endl;
             return currentVoxelList;
-        }
     }
     else if (!inStart && inStop)
     {
-        //std::cout << "Case 4: End inside boundary" << std::endl;
+        // Case 4: End inside boundary
         point2 = stop;
-        const bool ok = grid.intersect(ray, t0, t1);
-        if (ok)
-        {
-            point1 = ray.getPoint(t0);
-        }
+        if (grid.Intersect(ray, t0, t1))
+            point1 = ray.GetPoint(t0);
         else
-        {
-            std::cout << "Voxel ray does not intersect boundary" << std::endl;
             return currentVoxelList;
-        }
     }
 
     // Now create voxels between point1 and point2.
     // Ray direction will be the same, but update starting point
-    ray.updateOrigin(point1);
+    ray.UpdateOrigin(point1);
 
-    // Small position shift to ensure we move along the ray path
-    const double epsilon(1e-3);
     bool shuffle(true);
 
-    // Keep track of total voxel path length and energy (so far)
-    double totalPath(0.0), ETot(0.0);
+    // Keep track of total voxel path length so far
+    float totalPath(0.0);
     int loop(0);
 
     while (shuffle)
     {
 
         // Get point along path to define voxel bin (bottom corner)
-        pandora::CartesianVector voxelPoint = ray.getPoint(epsilon);
+        pandora::CartesianVector voxelPoint = ray.GetPoint(parameters.m_voxelPathShift);
 
         // Grid 3d bin containing this point; 4th element is the total bin number
-        std::array<long, 4> gridBins = grid.getBinIndices(voxelPoint);
-        long voxelID = gridBins[3];
-
-        long xBin = gridBins[0];
-        long yBin = gridBins[1];
-        long zBin = gridBins[2];
+        LongBin4Array gridBins = grid.GetBinIndices(voxelPoint);
+        const long voxelID = gridBins[3];
+        const long xBin = gridBins[0];
+        const long yBin = gridBins[1];
+        const long zBin = gridBins[2];
 
         // Voxel bottom and top corners
-        const pandora::CartesianVector voxBot = grid.getPoint(xBin, yBin, zBin);
-        const pandora::CartesianVector voxTop = grid.getPoint(xBin + 1, yBin + 1, zBin + 1);
+        const pandora::CartesianVector voxBot = grid.GetPoint(xBin, yBin, zBin);
+        const pandora::CartesianVector voxTop = grid.GetPoint(xBin + 1, yBin + 1, zBin + 1);
 
         // Voxel box
         const LArBox vBox(voxBot, voxTop);
-        // Get ray intersections with this box: t0 and t1 are set as the start
-        // and end intersection pathlengths relative to the current ray point
-        bool result = vBox.intersect(ray, t0, t1);
 
-        if (!result)
-        {
+        // Get ray intersections with this box: t0 and t1 are set as the start
+        // and end intersection pathlengths relative to the current ray point.
+        // If we can't find t0 and t1, then stop shuffling along the path
+        if (!vBox.Intersect(ray, t0, t1))
             shuffle = false;
-        }
 
         // Voxel extent = intersection path difference
         double dL(t1 - t0);
         // For the first path length, use the distance from the
         // starting ray point to the 2nd intersection t1
         if (loop == 0)
-        {
             dL = t1;
-        }
 
-        // Stop processing if we are not moving the path along
-        if (dL < epsilon)
-        {
+        // Stop processing if we are not moving along the path
+        if (dL < parameters.m_voxelPathShift)
             shuffle = false;
-        }
 
         totalPath += dL;
 
@@ -647,32 +621,33 @@ std::vector<LArVoxel> MakeVoxels(const TG4HitSegment &g4Hit, const LArGrid &grid
             dL = hitLength - totalPath + dL;
         }
 
-        // Voxel energy using path length fraction w.r.t hit length
-        const double voxelEnergy = g4HitEnergy * dL / hitLength;
-        ETot += voxelEnergy;
-
-        //const double fracTotE = g4HitEnergy > 0.0 ? ETot / g4HitEnergy : 0.0;
-        //std::cout << "Voxel " << voxelID << ": pos =" << voxBot << ", E = "
-        //          << voxelEnergy << ", fracTotE = " << fracTotE << std::endl;
+        // Voxel energy (GeV) using path length fraction w.r.t hit length.
+        // Here, hitLength is guaranteed to be greater than zero
+        const float voxelEnergy(g4HitEnergy * dL / hitLength);
 
         // Store voxel object in vector
         const LArVoxel voxel(voxelID, voxelEnergy, voxBot, trackID);
-        currentVoxelList.push_back(voxel);
+        currentVoxelList.emplace_back(voxel);
 
         // Update ray starting position using intersection path difference
-        const pandora::CartesianVector newStart = ray.getPoint(dL);
-        ray.updateOrigin(newStart);
+        const pandora::CartesianVector newStart = ray.GetPoint(dL);
+        ray.UpdateOrigin(newStart);
         loop++;
     }
-
-    //std::cout << "Returning vector of " << currentVoxelList.size() << " voxels for G4HitSegment\n" << std::endl;
 
     return currentVoxelList;
 }
 
-bool LArBox::intersect(const LArRay &ray, double &t0, double &t1) const
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+bool LArBox::Intersect(const LArRay &ray, double &t0, double &t1) const
 {
-    // Brian Smits ray-box algorithm with improvements from Amy Williams et al
+    // Brian Smits ray-box intersection algorithm with improvements from Amy Williams et al. Code based on
+    // https://github.com/chenel/larcv2/tree/edepsim-formattruth/larcv/app/Supera/Voxelize.cxx (MIT license)
+    // which uses code from i) "An Efficient and Robust Ray–Box Intersection Algorithm", Amy Williams et al. (2004):
+    // https://doi.org/10.1145/1198555.1198748 and ii) "Efficiency Issues for Ray Tracing", Brian Smits (1998):
+    // https://doi.org/10.1080/10867651.1998.10487488. The Smits-Williams GPLv3 licensed code is available from:
+    // https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
     const double x(ray.m_origin.GetX());
     const double y(ray.m_origin.GetY());
 
@@ -704,19 +679,13 @@ bool LArBox::intersect(const LArRay &ray, double &t0, double &t1) const
     }
 
     if ((tMin > tyMax) || (tyMin > tMax))
-    {
         return false;
-    }
 
     if (tyMin > tMin)
-    {
         tMin = tyMin;
-    }
 
     if (tyMax < tMax)
-    {
         tMax = tyMax;
-    }
 
     const double z(ray.m_origin.GetZ());
     const double invDirZ(ray.m_invDir.GetZ());
@@ -732,19 +701,13 @@ bool LArBox::intersect(const LArRay &ray, double &t0, double &t1) const
     }
 
     if ((tMin > tzMax) || (tzMin > tMax))
-    {
         return false;
-    }
 
     if (tzMin > tMin)
-    {
         tMin = tzMin;
-    }
 
     if (tzMax < tMax)
-    {
         tMax = tzMax;
-    }
 
     // First and second intersection path lengths
     t0 = tMin;
@@ -752,29 +715,28 @@ bool LArBox::intersect(const LArRay &ray, double &t0, double &t1) const
     return true;
 }
 
-bool LArBox::inside(const pandora::CartesianVector &point) const
-{
-    bool result(false);
+//------------------------------------------------------------------------------------------------------------------------------------------
 
+bool LArBox::Inside(const pandora::CartesianVector &point) const
+{
     const float x = point.GetX();
     const float y = point.GetY();
     const float z = point.GetZ();
 
     if (x > m_bottom.GetX() && x < m_top.GetX() && y > m_bottom.GetY() && y < m_top.GetY() && z > m_bottom.GetZ() && z < m_top.GetZ())
     {
-        result = true;
+        return true;
     }
 
-    return result;
+    return false;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-std::vector<LArVoxel> MergeSameVoxels(const std::vector<LArVoxel> &voxelList)
+LArVoxelList MergeSameVoxels(const std::vector<LArVoxel> &voxelList)
 {
-
     std::cout << "Merging voxels with the same IDs" << std::endl;
-    std::vector<LArVoxel> mergedVoxels;
+    LArVoxelList mergedVoxels;
 
     const int nVoxels = voxelList.size();
     std::vector<bool> processed(nVoxels, false);
@@ -783,12 +745,10 @@ std::vector<LArVoxel> MergeSameVoxels(const std::vector<LArVoxel> &voxelList)
     {
         // Skip voxel if it was already used in a merge
         if (processed[i])
-        {
             continue;
-        }
 
         LArVoxel voxel1 = voxelList[i];
-        double voxE1 = voxel1.m_energyInVoxel;
+        float voxE1 = voxel1.m_energyInVoxel;
         const long id1 = voxel1.m_voxelID;
         const int trackid1 = voxel1.m_trackID;
 
@@ -796,12 +756,9 @@ std::vector<LArVoxel> MergeSameVoxels(const std::vector<LArVoxel> &voxelList)
         // If so, add their energies and only store the combined voxel at the end
         for (int j = i + 1; j < nVoxels; j++)
         {
-
             // Skip voxel if it was already used in a merge
             if (processed[j])
-            {
                 continue;
-            }
 
             const LArVoxel voxel2 = voxelList[j];
             const long id2 = voxel2.m_voxelID;
@@ -816,8 +773,8 @@ std::vector<LArVoxel> MergeSameVoxels(const std::vector<LArVoxel> &voxelList)
         }
 
         // Add combined (or untouched) voxel to the merged list
-        voxel1.setEnergy(voxE1);
-        mergedVoxels.push_back(voxel1);
+        voxel1.SetEnergy(voxE1);
+        mergedVoxels.emplace_back(voxel1);
 
         // We have processed the ith voxel
         processed[i] = true;
@@ -894,6 +851,8 @@ bool PrintOptions()
 
     return false;
 }
+
+//------------------------------------------------------------------------------------------------------------------------------------------
 
 void ProcessViewOption(const std::string &viewOption, Parameters &parameters)
 {
