@@ -166,14 +166,9 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
     const float dz = pBox->GetDZ() * parameters.m_mm2cm;
     const double *origin = pBox->GetOrigin();
 
-    // Translate the origin coordinates from the 4th level to the first.
-    // TODO: Check if this is really needed, as it doesn't seem to change anything
-    double level3[3] = {0.0, 0.0, 0.0};
-    currentnode->LocalToMasterVect(origin, level3);
-    double level2[3] = {0.0, 0.0, 0.0};
-    currentnode->LocalToMasterVect(level3, level2);
+    // Translate local origin to global coordinates
     double level1[3] = {0.0, 0.0, 0.0};
-    currentnode->LocalToMasterVect(level2, level1);
+    currentnode->LocalToMasterVect(origin, level1);
 
     // Can now create a geometry using the found parameters
     PandoraApi::Geometry::LArTPC::Parameters geoparameters;
@@ -182,7 +177,7 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
     {
         geoparameters.m_centerX = level1[0] * parameters.m_mm2cm;
         // ATTN: offsets taken by visual comparison with edep-disp.
-        // Diff between volWorld_PV and volArgonCubeDetector_PV coords.
+        // Diff between volWorld_PV (global) and volArgonCubeDetector_PV coords.
         // TODO: Get these transformation offsets from the geometry objects?
         geoparameters.m_centerY = (level1[1] - 675.0) * parameters.m_mm2cm;
         geoparameters.m_centerZ = (level1[2] + 6660.0) * parameters.m_mm2cm;
@@ -305,9 +300,8 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
             std::cout << "Produced " << mergedVoxels.size() << " merged voxels from " << voxelList.size() << " voxels." << std::endl;
 
             // Loop over the voxels and make them into caloHits
-            for (int i = 0; i < mergedVoxels.size(); i++)
+            for (const LArVoxel &voxel : mergedVoxels)
             {
-                const LArVoxel voxel = mergedVoxels[i];
                 const CartesianVector voxelPos(voxel.m_voxelPosVect);
                 const float voxelE = voxel.m_energyInVoxel;
 
