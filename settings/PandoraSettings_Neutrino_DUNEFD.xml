@@ -1,6 +1,6 @@
 <pandora>
     <!-- GLOBAL SETTINGS -->
-    <IsMonitoringEnabled>false</IsMonitoringEnabled>
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
     <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
@@ -161,8 +161,6 @@
         <algorithm type = "LArSimpleClusterCreation" description = "ClusterRebuilding"/>
     </algorithm>
 
-
-
     <!-- ThreeDShowerAlgorithms -->
     <algorithm type = "LArCutPfoCharacterisation">
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
@@ -197,119 +195,92 @@
         </ShowerTools>
     </algorithm>
 
-<!--2 view Calo matching run "out of the box" for showers - U V -->
-  <algorithm type = "LArTwoViewTransverseTracks">
-   <InputClusterListName1>ClustersU</InputClusterListName1>
-   <InputClusterListName2>ClustersV</InputClusterListName2>
-   <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
-   <LocalMatchingScoreThreshold>0.90</LocalMatchingScoreThreshold>
-   <!--DownsampleFactor>1</DownsampleFactor-->
-   <!--MinOverallLocallyMatchedFraction>0.1f</MinOverallLocallyMatchedFraction-->
-   <DisplayPotentialMatches>false</DisplayPotentialMatches>
-   <MinSamples>13</MinSamples>
-   <TrackTools>
-    <tool type = "LArTwoViewThreeDKink"/>
-    <tool type = "LArTwoViewClearTracks">
-     <MinMatchingScore>0.95</MinMatchingScore>
-     <MinLocallyMatchedFraction>0.0</MinLocallyMatchedFraction>
-     <PrintIfMatch>false</PrintIfMatch>
-    </tool>
-    <tool type = "LArTwoViewClearTracks">
-     <MinMatchingScore>0.0</MinMatchingScore>
-     <MinLocallyMatchedFraction>0.30</MinLocallyMatchedFraction>
-     <PrintIfMatch>false</PrintIfMatch>
-    </tool>
-    <tool type = "LArTwoViewLongTracks">
-     <MinMatchingScore>0.0</MinMatchingScore>
-     <MinMatchedFraction>0.30</MinMatchedFraction>
-     <PrintIfMatch>false</PrintIfMatch>
-    </tool>
-    <tool type = "LArTwoViewLongTracks">
-     <MinMatchingScore>0.95</MinMatchingScore>
-     <MinMatchedFraction>0.0</MinMatchedFraction>
-     <PrintIfMatch>false</PrintIfMatch>
-    </tool>
-    <tool type = "LArTwoViewSimpleTracks">
-     <PrintIfMatch>true</PrintIfMatch>
-    </tool>
-   </TrackTools>
-  </algorithm>
+    <!-- TwoViewTrackAlgorithms out-of-the-box for showers - U and V -->
+    <algorithm type = "LArTwoViewTransverseTracks">
+        <InputClusterListName1>ClustersU</InputClusterListName1>
+        <InputClusterListName2>ClustersV</InputClusterListName2>
+        <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
+        <LocalMatchingScoreThreshold>0.90</LocalMatchingScoreThreshold>
+        <MinSamples>13</MinSamples>
+        <TrackTools>
+            <tool type = "LArTwoViewThreeDKink"/>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.0</MinLocallyMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.30</MinLocallyMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinMatchedFraction>0.30</MinMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinMatchedFraction>0.0</MinMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewSimpleTracks"/>
+        </TrackTools>
+    </algorithm>
 
-<!--2 view Calo matching run "out of the box" for showers - U W -->
-  <algorithm type = "LArTwoViewTransverseTracks">
-   <InputClusterListName1>ClustersU</InputClusterListName1>
-   <InputClusterListName2>ClustersW</InputClusterListName2>
-   <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
-   <LocalMatchingScoreThreshold>0.90</LocalMatchingScoreThreshold>
-   <!--DownsampleFactor>1</DownsampleFactor-->
-   <!--MinOverallLocallyMatchedFraction>0.1f</MinOverallLocallyMatchedFraction-->
-   <DisplayPotentialMatches>false</DisplayPotentialMatches>
-   <MinSamples>13</MinSamples>
-   <TrackTools>
-    <tool type = "LArTwoViewThreeDKink"/>
-    <tool type = "LArTwoViewClearTracks">
-     <MinMatchingScore>0.95</MinMatchingScore>
-     <MinLocallyMatchedFraction>0.0</MinLocallyMatchedFraction>
-     <PrintIfMatch>false</PrintIfMatch>
-    </tool>
-    <tool type = "LArTwoViewClearTracks">
-     <MinMatchingScore>0.0</MinMatchingScore>
-     <MinLocallyMatchedFraction>0.30</MinLocallyMatchedFraction>
-     <PrintIfMatch>false</PrintIfMatch>
-    </tool>
-    <tool type = "LArTwoViewLongTracks">
-     <MinMatchingScore>0.0</MinMatchingScore>
-     <MinMatchedFraction>0.30</MinMatchedFraction>
-     <PrintIfMatch>false</PrintIfMatch>
-    </tool>
-    <tool type = "LArTwoViewLongTracks">
-     <MinMatchingScore>0.95</MinMatchingScore>
-     <MinMatchedFraction>0.0</MinMatchedFraction>
-     <PrintIfMatch>false</PrintIfMatch>
-    </tool>
-    <tool type = "LArTwoViewSimpleTracks">
-     <PrintIfMatch>true</PrintIfMatch>
-    </tool>
-   </TrackTools>
-  </algorithm>
+    <!-- TwoViewTrackAlgorithms out-of-the-box for showers - U and W -->
+    <algorithm type = "LArTwoViewTransverseTracks">
+        <InputClusterListName1>ClustersU</InputClusterListName1>
+        <InputClusterListName2>ClustersW</InputClusterListName2>
+        <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
+        <LocalMatchingScoreThreshold>0.90</LocalMatchingScoreThreshold>
+        <MinSamples>13</MinSamples>
+        <TrackTools>
+            <tool type = "LArTwoViewThreeDKink"/>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.0</MinLocallyMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.30</MinLocallyMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinMatchedFraction>0.30</MinMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinMatchedFraction>0.0</MinMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewSimpleTracks"/>
+        </TrackTools>
+    </algorithm>
 
-<!--2 view Calo matching run "out of the box" for showers - V W -->
-  <algorithm type = "LArTwoViewTransverseTracks">
-   <InputClusterListName1>ClustersV</InputClusterListName1>
-   <InputClusterListName2>ClustersW</InputClusterListName2>
-   <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
-   <LocalMatchingScoreThreshold>0.90</LocalMatchingScoreThreshold>
-   <!--DownsampleFactor>1</DownsampleFactor-->
-   <!--MinOverallLocallyMatchedFraction>0.1f</MinOverallLocallyMatchedFraction-->
-   <DisplayPotentialMatches>false</DisplayPotentialMatches>
-   <MinSamples>13</MinSamples>
-   <TrackTools>
-    <tool type = "LArTwoViewThreeDKink"/>
-    <tool type = "LArTwoViewClearTracks">
-     <MinMatchingScore>0.95</MinMatchingScore>
-     <MinLocallyMatchedFraction>0.0</MinLocallyMatchedFraction>
-     <PrintIfMatch>false</PrintIfMatch>
-    </tool>
-    <tool type = "LArTwoViewClearTracks">
-     <MinMatchingScore>0.0</MinMatchingScore>
-     <MinLocallyMatchedFraction>0.30</MinLocallyMatchedFraction>
-     <PrintIfMatch>false</PrintIfMatch>
-    </tool>
-    <tool type = "LArTwoViewLongTracks">
-     <MinMatchingScore>0.0</MinMatchingScore>
-     <MinMatchedFraction>0.30</MinMatchedFraction>
-     <PrintIfMatch>false</PrintIfMatch>
-    </tool>
-    <tool type = "LArTwoViewLongTracks">
-     <MinMatchingScore>0.95</MinMatchingScore>
-     <MinMatchedFraction>0.0</MinMatchedFraction>
-     <PrintIfMatch>false</PrintIfMatch>
-    </tool>
-    <tool type = "LArTwoViewSimpleTracks">
-     <PrintIfMatch>true</PrintIfMatch>
-    </tool>
-   </TrackTools>
-  </algorithm>
+    <!-- TwoViewTrackAlgorithms out-of-the-box for showers - V and W -->
+    <algorithm type = "LArTwoViewTransverseTracks">
+        <InputClusterListName1>ClustersV</InputClusterListName1>
+        <InputClusterListName2>ClustersW</InputClusterListName2>
+        <OutputPfoListName>ShowerParticles3D</OutputPfoListName>
+        <LocalMatchingScoreThreshold>0.90</LocalMatchingScoreThreshold>
+        <MinSamples>13</MinSamples>
+        <TrackTools>
+            <tool type = "LArTwoViewThreeDKink"/>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.0</MinLocallyMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.30</MinLocallyMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinMatchedFraction>0.30</MinMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinMatchedFraction>0.0</MinMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewSimpleTracks"/>
+        </TrackTools>
+    </algorithm>
 
     <!-- Repeat ThreeDTrackAlgorithms -->
     <algorithm type = "LArThreeDTransverseTracks">
@@ -355,90 +326,84 @@
 
     <!-- TwoViewTrackAlgorithms for U and V -->
     <algorithm type = "LArTwoViewTransverseTracks">
-      <InputClusterListName1>ClustersU</InputClusterListName1>
-      <InputClusterListName2>ClustersV</InputClusterListName2>
-      <OutputPfoListName>TrackParticles3D</OutputPfoListName>
-      <TrackTools>
-        <tool type = "LArTwoViewThreeDKink"/>
-        <tool type = "LArTwoViewClearTracks">
-          <MinMatchingScore>0.95</MinMatchingScore>
-          <MinLocallyMatchedFraction>0.0</MinLocallyMatchedFraction>
-        </tool>
-        <tool type = "LArTwoViewClearTracks">
-          <MinMatchingScore>0.0</MinMatchingScore>
-          <MinLocallyMatchedFraction>0.30</MinLocallyMatchedFraction>
-        </tool>
-        <tool type = "LArTwoViewLongTracks">
-          <MinMatchingScore>0.0</MinMatchingScore>
-          <MinMatchedFraction>0.30</MinMatchedFraction>
-        </tool>
-        <tool type = "LArTwoViewLongTracks">
-          <MinMatchingScore>0.95</MinMatchingScore>
-          <MinMatchedFraction>0.0</MinMatchedFraction>
-        </tool>
-        <tool type = "LArTwoViewSimpleTracks"/>
-      </TrackTools>
+        <InputClusterListName1>ClustersU</InputClusterListName1>
+        <InputClusterListName2>ClustersV</InputClusterListName2>
+        <OutputPfoListName>TrackParticles3D</OutputPfoListName>
+        <TrackTools>
+            <tool type = "LArTwoViewThreeDKink"/>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.0</MinLocallyMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.30</MinLocallyMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinMatchedFraction>0.30</MinMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinMatchedFraction>0.0</MinMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewSimpleTracks"/>
+        </TrackTools>
     </algorithm>
 
     <!-- TwoViewTrackAlgorithms for U and W -->
     <algorithm type = "LArTwoViewTransverseTracks">
-      <InputClusterListName1>ClustersU</InputClusterListName1>
-      <InputClusterListName2>ClustersW</InputClusterListName2>
-      <OutputPfoListName>TrackParticles3D</OutputPfoListName>
-      <TrackTools>
-        <tool type = "LArTwoViewThreeDKink"/>
-        <tool type = "LArTwoViewClearTracks">
-          <MinMatchingScore>0.95</MinMatchingScore>
-          <MinLocallyMatchedFraction>0.0</MinLocallyMatchedFraction>
-        </tool>
-        <tool type = "LArTwoViewClearTracks">
-          <MinMatchingScore>0.0</MinMatchingScore>
-          <MinLocallyMatchedFraction>0.30</MinLocallyMatchedFraction>
-        </tool>
-        <tool type = "LArTwoViewLongTracks">
-          <MinMatchingScore>0.0</MinMatchingScore>
-          <MinMatchedFraction>0.30</MinMatchedFraction>
-        </tool>
-        <tool type = "LArTwoViewLongTracks">
-          <MinMatchingScore>0.95</MinMatchingScore>
-          <MinMatchedFraction>0.0</MinMatchedFraction>
-        </tool>
-        <tool type = "LArTwoViewSimpleTracks"/>
-      </TrackTools>
+        <InputClusterListName1>ClustersU</InputClusterListName1>
+        <InputClusterListName2>ClustersW</InputClusterListName2>
+        <OutputPfoListName>TrackParticles3D</OutputPfoListName>
+        <TrackTools>
+            <tool type = "LArTwoViewThreeDKink"/>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.0</MinLocallyMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.30</MinLocallyMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinMatchedFraction>0.30</MinMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinMatchedFraction>0.0</MinMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewSimpleTracks"/>
+        </TrackTools>
     </algorithm>
 
     <!-- TwoViewTrackAlgorithms for V and W -->
     <algorithm type = "LArTwoViewTransverseTracks">
-      <InputClusterListName1>ClustersV</InputClusterListName1>
-      <InputClusterListName2>ClustersW</InputClusterListName2>
-      <OutputPfoListName>TrackParticles3D</OutputPfoListName>
-      <TrackTools>
-        <tool type = "LArTwoViewThreeDKink"/>
-        <tool type = "LArTwoViewClearTracks">
-          <MinMatchingScore>0.95</MinMatchingScore>
-          <MinLocallyMatchedFraction>0.0</MinLocallyMatchedFraction>
-        </tool>
-        <tool type = "LArTwoViewClearTracks">
-          <MinMatchingScore>0.0</MinMatchingScore>
-          <MinLocallyMatchedFraction>0.30</MinLocallyMatchedFraction>
-        </tool>
-        <tool type = "LArTwoViewLongTracks">
-          <MinMatchingScore>0.0</MinMatchingScore>
-          <MinMatchedFraction>0.30</MinMatchedFraction>
-        </tool>
-        <tool type = "LArTwoViewLongTracks">
-          <MinMatchingScore>0.95</MinMatchingScore>
-          <MinMatchedFraction>0.0</MinMatchedFraction>
-        </tool>
-        <tool type = "LArTwoViewSimpleTracks"/>
-      </TrackTools>
+        <InputClusterListName1>ClustersV</InputClusterListName1>
+        <InputClusterListName2>ClustersW</InputClusterListName2>
+        <OutputPfoListName>TrackParticles3D</OutputPfoListName>
+        <TrackTools>
+            <tool type = "LArTwoViewThreeDKink"/>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.0</MinLocallyMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewClearTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinLocallyMatchedFraction>0.30</MinLocallyMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.0</MinMatchingScore>
+                <MinMatchedFraction>0.30</MinMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewLongTracks">
+                <MinMatchingScore>0.95</MinMatchingScore>
+                <MinMatchedFraction>0.0</MinMatchedFraction>
+            </tool>
+            <tool type = "LArTwoViewSimpleTracks"/>
+        </TrackTools>
     </algorithm>
-
-    <!--algorithm type = "LArVisualMonitoring">
-        <ClusterListNames>ClustersU ClustersV ClustersW</ClusterListNames>
-        <ShowCurrentPfos>true</ShowCurrentPfos>
-        <ShowDetector>true</ShowDetector>
-    </algorithm-->
 
     <!-- ThreeDRecoveryAlgorithms -->
     <algorithm type = "LArVertexBasedPfoRecovery">
