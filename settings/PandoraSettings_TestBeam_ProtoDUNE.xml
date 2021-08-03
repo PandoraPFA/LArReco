@@ -94,7 +94,7 @@
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-        <MvaFileName>PandoraMVAData/PandoraBdt_v03_20_00.xml</MvaFileName>
+        <MvaFileName>PandoraMVAData/PandoraBdt_Vertexing_ProtoDUNESP_v03_24_00.xml</MvaFileName>
         <RegionMvaName>ProtoDUNE_VertexSelectionRegion</RegionMvaName>
         <VertexMvaName>ProtoDUNE_VertexSelectionVertex</VertexMvaName>
         <TestBeamMode>true</TestBeamMode>
@@ -340,9 +340,15 @@
         <MCParticleListName>Input</MCParticleListName>
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <UseThreeDInformation>true</UseThreeDInformation>
+<<<<<<< HEAD
         <MvaFileName>PandoraMVAData/PandoraBdt_ProtoDUNE_v03_20_00.xml</MvaFileName>
         <MvaName>PfoCharacterisation</MvaName>
         <MvaFileNameNoChargeInfo>PandoraMVAData/PandoraBdt_ProtoDUNE_v03_20_00.xml</MvaFileNameNoChargeInfo>
+=======
+        <MvaFileName>PandoraBdt_PfoCharacterisation_ProtoDUNESP_v03_24_00.xml</MvaFileName>
+        <MvaName>PfoCharacterisation</MvaName>
+        <MvaFileNameNoChargeInfo>PandoraBdt_PfoCharacterisation_ProtoDUNESP_v03_24_00.xml</MvaFileNameNoChargeInfo>
+>>>>>>> Point ProtoDUNE SP and DP settings XMLs to new bdt files, now separated by detector and bdt type
         <MvaNameNoChargeInfo>PfoCharacterisationNoChargeInfo</MvaNameNoChargeInfo>
         <TrainingSetMode>false</TrainingSetMode>
         <TrainingOutputFileName>training_output</TrainingOutputFileName>
