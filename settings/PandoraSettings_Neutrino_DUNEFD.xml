@@ -109,7 +109,10 @@
             <tool type = "LArGlobalAsymmetryFeature"/>
             <tool type = "LArShowerAsymmetryFeature"/>
             <tool type = "LArRPhiFeature"/>
+            <tool type = "LArEnergyDepositionAsymmetryFeature"/>
         </FeatureTools>
+        <LegacyEventShapes>false</LegacyEventShapes>
+        <LegacyVariables>false</LegacyVariables>
     </algorithm>
     <algorithm type = "LArCutClusterCharacterisation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
