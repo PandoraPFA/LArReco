@@ -315,6 +315,8 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
             {
                 const CartesianVector voxelPos(voxel.m_voxelPosVect);
                 const float voxelE = voxel.m_energyInVoxel;
+                const float MipE = 0.00075;
+                const float voxelMipEquivalentE = voxelE/MipE;
 
                 lar_content::LArCaloHitParameters caloHitParameters;
                 caloHitParameters.m_positionVector = voxelPos;
@@ -328,7 +330,7 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
                 caloHitParameters.m_nCellInteractionLengths = 1.f;
                 caloHitParameters.m_time = 0.f;
                 caloHitParameters.m_inputEnergy = voxelE;
-                caloHitParameters.m_mipEquivalentEnergy = voxelE;
+                caloHitParameters.m_mipEquivalentEnergy = voxelMipEquivalentE;
                 caloHitParameters.m_electromagneticEnergy = voxelE;
                 caloHitParameters.m_hadronicEnergy = voxelE;
                 caloHitParameters.m_isDigital = false;
@@ -390,6 +392,8 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
                 PandoraApi::SetCaloHitToMCParticleRelationship(*pPrimaryPandora, (void *)((intptr_t)hitCounter), (void *)((intptr_t)trackID), energyFrac);
 
             } // end voxel loop
+	    //PANDORA_MONITORING_API(ScanTree(*pPrimaryPandora, "ttree"));
+	    //PANDORA_MONITORING_API(SaveTree(*pPrimaryPandora, "ttree", "cali.root", "UPDATE"))
 
             // The voxelisation only works with ArgonCube. The geometry parameters
             // are set assuming that we only have an ArgonCube detector.
