@@ -15,10 +15,10 @@
         <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
         <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
     </algorithm>
-    <!--algorithm type = "LArVisualMonitoring">
+    <algorithm type = "LArVisualMonitoring">
         <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
         <ShowDetector>true</ShowDetector>
-    </algorithm-->
+    </algorithm>
 
     <algorithm type = "LArDLMaster">
         <CRSettingsFile>PandoraSettings_Cosmic_DUNEFD.xml</CRSettingsFile>
@@ -44,44 +44,6 @@
     </algorithm>
 
     <!-- MC level validation -->
-    <algorithm type = "LArHierarchyValidation">
-        <CaloHitListName>CaloHitList2D</CaloHitListName>
-        <PfoListName>RecreatedPfos</PfoListName>
-        <WriteTree>true</WriteTree>
-        <ValidateMC>true</ValidateMC>
-        <FileName>mc_unfolded.root</FileName>
-        <TreeName>mc_unfolded</TreeName>
-    </algorithm>
-
-    <algorithm type = "LArHierarchyValidation">
-        <CaloHitListName>CaloHitList2D</CaloHitListName>
-        <PfoListName>RecreatedPfos</PfoListName>
-        <WriteTree>true</WriteTree>
-        <ValidateMC>true</ValidateMC>
-        <FileName>mc_folded.root</FileName>
-        <TreeName>mc_folded</TreeName>
-        <FoldToPrimaries>true</FoldToPrimaries>
-    </algorithm>
-
-    <!-- Event level validation -->
-    <algorithm type = "LArHierarchyValidation">
-        <CaloHitListName>CaloHitList2D</CaloHitListName>
-        <PfoListName>RecreatedPfos</PfoListName>
-        <WriteTree>true</WriteTree>
-        <ValidateEvent>true</ValidateEvent>
-        <FileName>summary_unfolded.root</FileName>
-        <TreeName>summary_unfolded</TreeName>
-    </algorithm>
-
-    <algorithm type = "LArHierarchyValidation">
-        <CaloHitListName>CaloHitList2D</CaloHitListName>
-        <PfoListName>RecreatedPfos</PfoListName>
-        <WriteTree>true</WriteTree>
-        <ValidateEvent>true</ValidateEvent>
-        <FileName>summary_folded.root</FileName>
-        <TreeName>summary_folded</TreeName>
-        <FoldToPrimaries>true</FoldToPrimaries>
-    </algorithm>
 
     <algorithm type = "LArNeutrinoEventValidation">
         <CaloHitListName>CaloHitList2D</CaloHitListName>
