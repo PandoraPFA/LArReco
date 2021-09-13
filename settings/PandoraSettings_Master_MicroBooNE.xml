@@ -33,7 +33,7 @@
         </CosmicRayTaggingTools>
         <SliceIdTools>
             <tool type = "LArSvmNeutrinoId">
-                <MvaFileName>PandoraSvm_v03_11_00.xml</MvaFileName>
+                <MvaFileName>PandoraMVAData/PandoraSvm_v03_11_00.xml</MvaFileName>
                 <MvaName>NeutrinoId</MvaName>
             </tool>
         </SliceIdTools>
