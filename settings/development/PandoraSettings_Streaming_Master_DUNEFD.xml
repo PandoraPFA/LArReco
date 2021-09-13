@@ -20,10 +20,10 @@
         <ShowDetector>true</ShowDetector>
     </algorithm>
 
-    <algorithm type = "LArMaster">
-        <CRSettingsFile>PandoraSettings_Cosmic_ProtoDUNE.xml</CRSettingsFile>
-        <NuSettingsFile>PandoraSettings_TestBeam_ProtoDUNE.xml</NuSettingsFile>
-        <SlicingSettingsFile>PandoraSettings_Slicing_ProtoDUNE.xml</SlicingSettingsFile>
+    <algorithm type = "LArDLMaster">
+        <CRSettingsFile>PandoraSettings_Cosmic_DUNEFD.xml</CRSettingsFile>
+        <NuSettingsFile>development/PandoraSettings_Streaming_Neutrino_DUNEFD.xml</NuSettingsFile>
+        <SlicingSettingsFile>PandoraSettings_Slicing_Standard.xml</SlicingSettingsFile>
         <StitchingTools>
             <tool type = "LArStitchingCosmicRayMerging"><ThreeDStitchingMode>true</ThreeDStitchingMode></tool>
             <tool type = "LArStitchingCosmicRayMerging"><ThreeDStitchingMode>false</ThreeDStitchingMode></tool>
@@ -32,23 +32,24 @@
             <tool type = "LArCosmicRayTagging"/>
         </CosmicRayTaggingTools>
         <SliceIdTools>
-            <tool type = "LArBdtBeamParticleId">
-                <BdtName>ProtoDUNESP_BeamParticleId</BdtName>
-                <BdtFileName>PandoraMVAData/PandoraBdt_v03_20_00.xml</BdtFileName>
-                <MinAdaBDTScore>-0.225</MinAdaBDTScore>
-            </tool>
+            <tool type = "LArSimpleNeutrinoId"/>
         </SliceIdTools>
         <InputHitListName>CaloHitList2D</InputHitListName>
+        <InputMCParticleListName>Input</InputMCParticleListName>
+        <PassMCParticlesToWorkerInstances>true</PassMCParticlesToWorkerInstances>
         <RecreatedPfoListName>RecreatedPfos</RecreatedPfoListName>
         <RecreatedClusterListName>RecreatedClusters</RecreatedClusterListName>
         <RecreatedVertexListName>RecreatedVertices</RecreatedVertexListName>
         <VisualizeOverallRecoStatus>false</VisualizeOverallRecoStatus>
     </algorithm>
 
-    <algorithm type = "LArTestBeamEventValidation">
+    <!-- MC level validation -->
+
+    <algorithm type = "LArNeutrinoEventValidation">
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>Input</MCParticleListName>
         <PfoListName>RecreatedPfos</PfoListName>
+        <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
         <PrintAllToScreen>false</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
         <WriteToTree>false</WriteToTree>

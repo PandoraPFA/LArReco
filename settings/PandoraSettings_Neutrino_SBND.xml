@@ -95,7 +95,7 @@
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-        <MvaFileName>PandoraBdt_v08_33_00_SBND.xml</MvaFileName>
+        <MvaFileName>PandoraMVAData/PandoraBdt_v08_33_00_SBND.xml</MvaFileName>
         <RegionMvaName>VertexBDTRegion</RegionMvaName>
         <VertexMvaName>VertexBDTVertex</VertexMvaName>
         <FeatureTools>
@@ -309,9 +309,9 @@
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
         <UseThreeDInformation>true</UseThreeDInformation>
-        <MvaFileName>PandoraBdt_v08_33_00_SBND.xml</MvaFileName>
+        <MvaFileName>PandoraMVAData/PandoraBdt_v08_33_00_SBND.xml</MvaFileName>
         <MvaName>PfoCharBDT</MvaName>
-        <MvaFileNameNoChargeInfo>/PandoraBdt_v08_33_00_SBND.xml</MvaFileNameNoChargeInfo>
+        <MvaFileNameNoChargeInfo>PandoraMVAData/PandoraBdt_v08_33_00_SBND.xml</MvaFileNameNoChargeInfo>
         <MvaNameNoChargeInfo>PfoCharBDTNoChargeInfo</MvaNameNoChargeInfo>
         <FeatureTools>
             <tool type = "LArThreeDLinearFitFeatureTool"/>
@@ -389,9 +389,9 @@
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
         <UseThreeDInformation>true</UseThreeDInformation>
-        <MvaFileName>PandoraBdt_v08_33_00_SBND.xml</MvaFileName>
+        <MvaFileName>PandoraMVAData/PandoraBdt_v08_33_00_SBND.xml</MvaFileName>
         <MvaName>PfoCharBDT</MvaName>
-        <MvaFileNameNoChargeInfo>PandoraBdt_v08_33_00_SBND.xml</MvaFileNameNoChargeInfo>
+        <MvaFileNameNoChargeInfo>PandoraMVAData/PandoraBdt_v08_33_00_SBND.xml</MvaFileNameNoChargeInfo>
         <MvaNameNoChargeInfo>PfoCharBDTNoChargeInfo</MvaNameNoChargeInfo>
         <FeatureTools>
             <tool type = "LArThreeDLinearFitFeatureTool"/>
