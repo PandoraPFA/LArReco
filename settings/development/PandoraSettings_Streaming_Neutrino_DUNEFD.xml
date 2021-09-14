@@ -19,6 +19,7 @@
         <ModelFileNameU>PandoraNetworkData/PandoraUnet_TSID_DUNEFD_U_v03_25_00.pt</ModelFileNameU>
         <ModelFileNameV>PandoraNetworkData/PandoraUnet_TSID_DUNEFD_V_v03_25_00.pt</ModelFileNameV>
         <ModelFileNameW>PandoraNetworkData/PandoraUnet_TSID_DUNEFD_W_v03_25_00.pt</ModelFileNameW>
+        <Visualize>false</Visualize>
     </algorithm>
 
     <!-- TwoDReconstruction -->
