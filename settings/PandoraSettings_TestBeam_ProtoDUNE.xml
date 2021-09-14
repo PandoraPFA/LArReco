@@ -333,7 +333,7 @@
     <algorithm type = "LArNeutrinoProperties">
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
     </algorithm>
-    
+
     <algorithm type = "LArBdtPfoCharacterisation">
         <TrackPfoListName>TrackParticles3D</TrackPfoListName>
         <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
