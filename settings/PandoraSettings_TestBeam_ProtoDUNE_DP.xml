@@ -98,7 +98,7 @@
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-        <MvaFileName>PandoraMVAData/PandoraBdt_Vertexing_ProtoDUNESP_v03_24_00.xml</MvaFileName>
+        <MvaFileName>PandoraMVAData/PandoraBdt_Vertexing_ProtoDUNESP_v03_26_00.xml</MvaFileName>
         <RegionMvaName>ProtoDUNE_VertexSelectionRegion</RegionMvaName>
         <VertexMvaName>ProtoDUNE_VertexSelectionVertex</VertexMvaName>
         <TestBeamMode>true</TestBeamMode>
