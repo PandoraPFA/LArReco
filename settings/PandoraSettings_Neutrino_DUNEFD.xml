@@ -100,7 +100,7 @@
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-        <MvaFileName>PandoraBdt_v03_20_00.xml</MvaFileName>
+        <MvaFileName>PandoraMVAData/PandoraBdt_Vertexing_DUNEFD_v03_26_00.xml</MvaFileName>
         <RegionMvaName>DUNEFD_VertexSelectionRegion</RegionMvaName>
         <VertexMvaName>DUNEFD_VertexSelectionVertex</VertexMvaName>
         <FeatureTools>
@@ -318,8 +318,100 @@
         <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
         <AddHitsAsIsolated>true</AddHitsAsIsolated>
     </algorithm>
+    
+    <algorithm type = "LArBdtPfoCharacterisation">
+        <TrackPfoListName>TrackParticles3D</TrackPfoListName>
+        <ShowerPfoListName>ShowerParticles3D</ShowerPfoListName>
+        <MCParticleListName>Input</MCParticleListName>
+        <CaloHitListName>CaloHitList2D</CaloHitListName>
+        <UseThreeDInformation>true</UseThreeDInformation>
+        <MvaFileName>PandoraBdt_PfoCharacterisation_DUNEFD_v03_26_00.xml</MvaFileName>
+        <MvaName>PfoCharacterisation</MvaName>
+        <MvaFileNameNoChargeInfo>PandoraBdt_PfoCharacterisation_DUNEFD_v03_26_00.xml</MvaFileNameNoChargeInfo>
+        <MvaNameNoChargeInfo>PfoCharacterisationNoChargeInfo</MvaNameNoChargeInfo>
+        <TrainingSetMode>false</TrainingSetMode>
+        <TrainingOutputFileName>training_output</TrainingOutputFileName>
+        <FeatureTools>
+            <tool type = "LArThreeDLinearFitFeatureTool"/>
+            <tool type = "LArThreeDVertexDistanceFeatureTool"/>
+            <tool type = "LArThreeDPCAFeatureTool"/>
+            <tool type = "LArPfoHierarchyFeatureTool"/>
+            <tool type = "LArThreeDOpeningAngleFeatureTool">
+                <HitFraction>0.2</HitFraction>
+            </tool>
+            <tool type = "LArThreeDChargeFeatureTool"/>
+        </FeatureTools>
+        <FeatureToolsNoChargeInfo>
+            <tool type = "LArThreeDLinearFitFeatureTool"/>
+            <tool type = "LArThreeDVertexDistanceFeatureTool"/>
+            <tool type = "LArThreeDPCAFeatureTool"/>
+            <tool type = "LArPfoHierarchyFeatureTool"/>
+            <tool type = "LArThreeDOpeningAngleFeatureTool">
+                <HitFraction>0.2</HitFraction>
+            </tool>
+        </FeatureToolsNoChargeInfo>
+        <WriteToTree>false</WriteToTree>
+        <OutputTree>tree</OutputTree>
+        <OutputFile>tree.root</OutputFile>
+    </algorithm>
 
-    <!-- NeutrinoAlgorithms -->
+    <!-- Recursively Repeat MopUpAlgorithms -->
+    <algorithm type = "LArRecursivePfoMopUp">
+        <PfoListNames>TrackParticles3D ShowerParticles3D</PfoListNames>
+        <MaxIterations>10</MaxIterations>
+        <MopUpAlgorithms>
+            <algorithm type = "LArBoundedClusterMopUp">
+                <PfoListNames>ShowerParticles3D</PfoListNames>
+                <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
+            </algorithm>
+            <algorithm type = "LArConeClusterMopUp">
+                <PfoListNames>ShowerParticles3D</PfoListNames>
+                <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
+            </algorithm>
+            <algorithm type = "LArNearbyClusterMopUp">
+                <PfoListNames>ShowerParticles3D</PfoListNames>
+                <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
+            </algorithm>
+            <algorithm type = "LArSlidingConePfoMopUp">
+                <InputPfoListNames>TrackParticles3D ShowerParticles3D</InputPfoListNames>
+                <DaughterListNames>ClustersU ClustersV ClustersW TrackClusters3D ShowerClusters3D</DaughterListNames>
+            </algorithm>
+            <algorithm type = "LArSlidingConeClusterMopUp">
+                <InputPfoListNames>TrackParticles3D ShowerParticles3D</InputPfoListNames>
+                <DaughterListNames>ClustersU ClustersV ClustersW</DaughterListNames>
+            </algorithm>
+            <algorithm type = "LArPfoHitCleaning">
+                <PfoListNames>TrackParticles3D ShowerParticles3D</PfoListNames>
+                <ClusterListNames>TrackClusters3D ShowerClusters3D</ClusterListNames>
+            </algorithm>
+            <algorithm type = "LArThreeDHitCreation">
+                <InputPfoListName>TrackParticles3D</InputPfoListName>
+                <OutputCaloHitListName>TrackCaloHits3D</OutputCaloHitListName>
+                <OutputClusterListName>TrackClusters3D</OutputClusterListName>
+                <HitCreationTools>
+                    <tool type = "LArClearTransverseTrackHits"><MinViews>3</MinViews></tool>
+                    <tool type = "LArClearLongitudinalTrackHits"><MinViews>3</MinViews></tool>
+                    <tool type = "LArMultiValuedLongitudinalTrackHits"><MinViews>3</MinViews></tool>
+                    <tool type = "LArMultiValuedTransverseTrackHits"><MinViews>3</MinViews></tool>
+                    <tool type = "LArClearTransverseTrackHits"><MinViews>2</MinViews></tool>
+                    <tool type = "LArClearLongitudinalTrackHits"><MinViews>2</MinViews></tool>
+                    <tool type = "LArMultiValuedLongitudinalTrackHits"><MinViews>2</MinViews></tool>
+                </HitCreationTools>
+            </algorithm>
+            <algorithm type = "LArThreeDHitCreation">
+                <InputPfoListName>ShowerParticles3D</InputPfoListName>
+                <OutputCaloHitListName>ShowerCaloHits3D</OutputCaloHitListName>
+                <OutputClusterListName>ShowerClusters3D</OutputClusterListName>
+                <HitCreationTools>
+                    <tool type = "LArThreeViewShowerHits"/>
+                    <tool type = "LArTwoViewShowerHits"/>
+                    <tool type = "LArDeltaRayShowerHits"/>
+                </HitCreationTools>
+            </algorithm>
+        </MopUpAlgorithms>
+    </algorithm>
+
+    <!-- Neutrino creation and hierarchy building -->
     <algorithm type = "LArNeutrinoCreation">
        <InputVertexListName>NeutrinoVertices3D</InputVertexListName>
        <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
@@ -345,9 +437,9 @@
         <MCParticleListName>Input</MCParticleListName>
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <UseThreeDInformation>true</UseThreeDInformation>
-        <MvaFileName>PandoraBdt_v03_20_00.xml</MvaFileName>
+        <MvaFileName>PandoraMVAData/PandoraBdt_PfoCharacterisation_DUNEFD_v03_26_00.xml</MvaFileName>
         <MvaName>PfoCharacterisation</MvaName>
-        <MvaFileNameNoChargeInfo>PandoraBdt_v03_20_00.xml</MvaFileNameNoChargeInfo>
+        <MvaFileNameNoChargeInfo>PandoraMVAData/PandoraBdt_PfoCharacterisation_DUNEFD_v03_26_00.xml</MvaFileNameNoChargeInfo>
         <MvaNameNoChargeInfo>PfoCharacterisationNoChargeInfo</MvaNameNoChargeInfo>
         <TrainingSetMode>false</TrainingSetMode>
         <TrainingOutputFileName>training_output</TrainingOutputFileName>
