@@ -173,7 +173,12 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
                 bestMCParticlePdgCode = pAssociatedMCParticle->GetParticleId();
             }
         }
+        bool isTrack(true);
+        if (std::abs(bestMCParticlePdgCode) == E_MINUS || std::abs(bestMCParticlePdgCode) == PHOTON)
+            isTrack = false;
         // Cache values here
+        const int isPandoraTrack(pPfo->GetParticleId() == MU_MINUS ? 1 : 0);
+        const int isTrueTrack(isTrack ? 1 : 0);
         const float purity((nHitsInPfoTotal > 0) ? static_cast<float>(nHitsSharedWithBestMCParticleTotal) / static_cast<float>(nHitsInPfoTotal) : 0.f);
         const float completeness((nHitsInBestMCParticleTotal > 0) ? static_cast<float>(nHitsSharedWithBestMCParticleTotal)/static_cast<float>(nHitsInBestMCParticleTotal) : 0.f);
         FloatVector hitDriftPositionsU, hitWirePositionsU, hitEnergiesU,
@@ -255,6 +260,8 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "bestMCParticlePdgCode", bestMCParticlePdgCode));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "purity", purity));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "completeness", completeness));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "isPandoraTrack", isPandoraTrack));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "isTrueTrack", isTrueTrack));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "xU", &hitDriftPositionsU));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "u", &hitWirePositionsU));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "adcU", &hitEnergiesU));
