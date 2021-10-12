@@ -152,7 +152,8 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         for (const ParticleFlowObject *pChild : childList)
             childPfos.emplace_back(pfoToIdMap[pChild]);
 
-        const CaloHitList &allHitsInPfo(pfoToHitsMap.at(pPfo));
+        CaloHitList allHitsInPfo;
+        LArPfoHelper::GetAllCaloHits(pPfo, allHitsInPfo);
         const int nHitsInPfoTotal(allHitsInPfo.size()),
             nHitsInPfoU(LArMonitoringHelper::CountHitsByType(TPC_VIEW_U, allHitsInPfo)),
             nHitsInPfoV(LArMonitoringHelper::CountHitsByType(TPC_VIEW_V, allHitsInPfo)),
@@ -323,6 +324,7 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "trueNuVtxW", trueNeutrinoVertexW));
         PANDORA_MONITORING_API(FillTree(this->GetPandora(), m_treeName.c_str()));
     }
+    std::cout << std::endl;
     
     return STATUS_CODE_SUCCESS;
 }
