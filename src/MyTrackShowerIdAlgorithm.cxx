@@ -53,6 +53,32 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
     const CaloHitList *pCaloHitList(nullptr);
     PANDORA_RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraContentApi::GetList(*this, m_caloHitListName, pCaloHitList));
 
+    // True vertex extraction
+    MCParticleVector primaries;
+    LArMCParticleHelper::GetPrimaryMCParticleList(pMCParticleList, primaries);
+    const MCParticle *pTrueNeutrino{nullptr};
+    if (!primaries.empty())
+    {   
+        const MCParticle *primary{primaries.front()};
+        const MCParticleList &parents{primary->GetParentList()};
+        if (parents.size() == 1 && LArMCParticleHelper::IsNeutrino(parents.front()))
+            pTrueNeutrino = parents.front();
+    }
+    float trueNeutrinoVertexX{0.f}, trueNeutrinoVertexY{0.f}, trueNeutrinoVertexZ{0.f}, trueNeutrinoVertexU{0.f}, trueNeutrinoVertexV{0.f},
+        trueNeutrinoVertexW{0.f};
+    if (pTrueNeutrino)
+    {
+        const LArTransformationPlugin *transform{this->GetPandora().GetPlugins()->GetLArTransformationPlugin()}; 
+        const CartesianVector &trueVertex{pTrueNeutrino->GetVertex()};
+        trueNeutrinoVertexX = trueVertex.GetX();
+        trueNeutrinoVertexY = trueVertex.GetY();
+        trueNeutrinoVertexZ = trueVertex.GetZ();
+        trueNeutrinoVertexU = static_cast<float>(transform->YZtoU(trueVertex.GetY(), trueVertex.GetZ()));
+        trueNeutrinoVertexV = static_cast<float>(transform->YZtoV(trueVertex.GetY(), trueVertex.GetZ()));
+        trueNeutrinoVertexW = static_cast<float>(transform->YZtoW(trueVertex.GetY(), trueVertex.GetZ()));
+    }
+
+    // Get reconstructable MC
     LArMCParticleHelper::MCContributionMap primaryMCParticleToHitsMap;
     LArMCParticleHelper::PrimaryParameters parameters;
     parameters.m_foldBackHierarchy = true;
@@ -288,7 +314,13 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVtxU", intVertexPositionU.GetZ()));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVtxV", intVertexPositionV.GetZ()));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nuVtxW", intVertexPositionW.GetZ()));
-
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "trueNuVtxX3d", trueNeutrinoVertexX));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "trueNuVtxY3d", trueNeutrinoVertexY));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "trueNuVtxZ3d", trueNeutrinoVertexZ));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "trueNuVtxX", trueNeutrinoVertexX));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "trueNuVtxU", trueNeutrinoVertexU));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "trueNuVtxV", trueNeutrinoVertexV));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "trueNuVtxW", trueNeutrinoVertexW));
         PANDORA_MONITORING_API(FillTree(this->GetPandora(), m_treeName.c_str()));
     }
     
