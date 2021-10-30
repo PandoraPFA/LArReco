@@ -448,9 +448,6 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
         const int trackID = g4Traj.GetTrackId();
         mcParticleParameters.m_pParentAddress = (void *)((intptr_t)trackID);
 
-        // Link to MC Neutrino
-        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::SetMCParentDaughterRelationship(*pPrimaryPandora, (void*)((intptr_t)neutrinoID), (void*)((intptr_t)trackID)));
-
         // Start and end points in cm (Geant4 uses mm)
         const std::vector<TG4TrajectoryPoint> trajPoints = g4Traj.Points;
         const int nPoints(trajPoints.size());
@@ -479,9 +476,18 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
         PANDORA_THROW_RESULT_IF(
             pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::MCParticle::Create(*pPrimaryPandora, mcParticleParameters, mcParticleFactory));
 
-        // Set parent relationship
+        // Set parent relationships - TODO, check inclusion of mc neutrino here
         const int parentID = g4Traj.GetParentId();
-        PandoraApi::SetMCParentDaughterRelationship(*pPrimaryPandora, (void *)((intptr_t)parentID), (void *)((intptr_t)trackID));
+
+        if (parentID < 0) // link to mc neutrino
+        {
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::SetMCParentDaughterRelationship(*pPrimaryPandora, (void*)((intptr_t)neutrinoID), (void*)((intptr_t)trackID)));
+
+        }
+        else
+        {
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::SetMCParentDaughterRelationship(*pPrimaryPandora, (void *)((intptr_t)parentID), (void *)((intptr_t)trackID)));
+        }
 
         // Store particle energy for given trackID
         energyMap[trackID] = energy;
