@@ -22,6 +22,7 @@
 #include "Xml/tinyxml.h"
 
 #include "larpandoracontent/LArContent.h"
+#include "larpandoracontent/LArControlFlow/MasterAlgorithm.h"
 #include "larpandoracontent/LArControlFlow/MultiPandoraApi.h"
 #include "larpandoracontent/LArObjects/LArCaloHit.h"
 #include "larpandoracontent/LArObjects/LArMCParticle.h"
@@ -70,6 +71,7 @@ int main(int argc, char *argv[])
         MultiPandoraApi::AddPrimaryPandoraInstance(pPrimaryPandora);
 
         CreateGeometry(parameters, pPrimaryPandora);
+        ProcessExternalParameters(parameters, pPrimaryPandora);
 
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetPseudoLayerPlugin(*pPrimaryPandora, new lar_content::LArPseudoLayerPlugin));
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=,
@@ -805,12 +807,16 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
 
     int c(0);
 
+    std::string recoOption;
     std::string viewOption("3d");
 
-    while ((c = getopt(argc, argv, ":i:e:n:s:j:w:Nh")) != -1)
+    while ((c = getopt(argc, argv, "r:i:e:n:s:j:w:pNh")) != -1)
     {
         switch (c)
         {
+            case 'r':
+                recoOption = optarg;
+                break;
             case 'i':
                 parameters.m_settingsFile = optarg;
                 break;
@@ -822,6 +828,9 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
                 break;
             case 's':
                 parameters.m_nEventsToSkip = atoi(optarg);
+                break;
+            case 'p':
+                parameters.m_printOverallRecoStatus = true;
                 break;
             case 'j':
                 viewOption = optarg;
@@ -839,7 +848,7 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
     }
 
     ProcessViewOption(viewOption, parameters);
-    return true;
+    return ProcessRecoOption(recoOption, parameters);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -848,6 +857,8 @@ bool PrintOptions()
 {
     std::cout << std::endl
               << "./bin/PandoraInterface " << std::endl
+              << "    -r RecoOption          (required) [Full, AllHitsCR, AllHitsNu, CRRemHitsSliceCR, CRRemHitsSliceNu, AllHitsSliceCR, AllHitsSliceNu]"
+              << std::endl
               << "    -i Settings            (required) [algorithm description: xml]" << std::endl
               << "    -e EventsFile          (required) [input edep-sim file, "
                  "typically containing events and geometry]"
@@ -893,6 +904,118 @@ void ProcessViewOption(const std::string &viewOption, Parameters &parameters)
         parameters.m_useLArTPC = true;
         parameters.m_use3D = false;
     }
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters)
+{
+    std::string chosenRecoOption(recoOption);
+    std::transform(chosenRecoOption.begin(), chosenRecoOption.end(), chosenRecoOption.begin(), ::tolower);
+
+    if ("full" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = true;
+        parameters.m_shouldRunStitching = true;
+        parameters.m_shouldRunCosmicHitRemoval = true;
+        parameters.m_shouldRunSlicing = true;
+        parameters.m_shouldRunNeutrinoRecoOption = true;
+        parameters.m_shouldRunCosmicRecoOption = true;
+        parameters.m_shouldPerformSliceId = true;
+    }
+    else if ("allhitscr" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = true;
+        parameters.m_shouldRunStitching = true;
+        parameters.m_shouldRunCosmicHitRemoval = false;
+        parameters.m_shouldRunSlicing = false;
+        parameters.m_shouldRunNeutrinoRecoOption = false;
+        parameters.m_shouldRunCosmicRecoOption = false;
+        parameters.m_shouldPerformSliceId = false;
+    }
+    else if ("nostitchingcr" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = false;
+        parameters.m_shouldRunStitching = false;
+        parameters.m_shouldRunCosmicHitRemoval = false;
+        parameters.m_shouldRunSlicing = false;
+        parameters.m_shouldRunNeutrinoRecoOption = false;
+        parameters.m_shouldRunCosmicRecoOption = true;
+        parameters.m_shouldPerformSliceId = false;
+    }
+    else if ("allhitsnu" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = false;
+        parameters.m_shouldRunStitching = false;
+        parameters.m_shouldRunCosmicHitRemoval = false;
+        parameters.m_shouldRunSlicing = false;
+        parameters.m_shouldRunNeutrinoRecoOption = true;
+        parameters.m_shouldRunCosmicRecoOption = false;
+        parameters.m_shouldPerformSliceId = false;
+    }
+    else if ("crremhitsslicecr" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = true;
+        parameters.m_shouldRunStitching = true;
+        parameters.m_shouldRunCosmicHitRemoval = true;
+        parameters.m_shouldRunSlicing = true;
+        parameters.m_shouldRunNeutrinoRecoOption = false;
+        parameters.m_shouldRunCosmicRecoOption = true;
+        parameters.m_shouldPerformSliceId = false;
+    }
+    else if ("crremhitsslicenu" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = true;
+        parameters.m_shouldRunStitching = true;
+        parameters.m_shouldRunCosmicHitRemoval = true;
+        parameters.m_shouldRunSlicing = true;
+        parameters.m_shouldRunNeutrinoRecoOption = true;
+        parameters.m_shouldRunCosmicRecoOption = false;
+        parameters.m_shouldPerformSliceId = false;
+    }
+    else if ("allhitsslicecr" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = false;
+        parameters.m_shouldRunStitching = false;
+        parameters.m_shouldRunCosmicHitRemoval = false;
+        parameters.m_shouldRunSlicing = true;
+        parameters.m_shouldRunNeutrinoRecoOption = false;
+        parameters.m_shouldRunCosmicRecoOption = true;
+        parameters.m_shouldPerformSliceId = false;
+    }
+    else if ("allhitsslicenu" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = false;
+        parameters.m_shouldRunStitching = false;
+        parameters.m_shouldRunCosmicHitRemoval = false;
+        parameters.m_shouldRunSlicing = true;
+        parameters.m_shouldRunNeutrinoRecoOption = true;
+        parameters.m_shouldRunCosmicRecoOption = false;
+        parameters.m_shouldPerformSliceId = false;
+    }
+    else
+    {
+        std::cout << "LArReco, Unrecognized reconstruction option: " << recoOption << std::endl << std::endl;
+        return PrintOptions();
+    }
+
+    return true;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void ProcessExternalParameters(const Parameters &parameters, const Pandora *const pPandora)
+{
+    auto *const pEventSteeringParameters = new lar_content::MasterAlgorithm::ExternalSteeringParameters;
+    pEventSteeringParameters->m_shouldRunAllHitsCosmicReco = parameters.m_shouldRunAllHitsCosmicReco;
+    pEventSteeringParameters->m_shouldRunStitching = parameters.m_shouldRunStitching;
+    pEventSteeringParameters->m_shouldRunCosmicHitRemoval = parameters.m_shouldRunCosmicHitRemoval;
+    pEventSteeringParameters->m_shouldRunSlicing = parameters.m_shouldRunSlicing;
+    pEventSteeringParameters->m_shouldRunNeutrinoRecoOption = parameters.m_shouldRunNeutrinoRecoOption;
+    pEventSteeringParameters->m_shouldRunCosmicRecoOption = parameters.m_shouldRunCosmicRecoOption;
+    pEventSteeringParameters->m_shouldPerformSliceId = parameters.m_shouldPerformSliceId;
+    pEventSteeringParameters->m_printOverallRecoStatus = parameters.m_printOverallRecoStatus;
+    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetExternalParameters(*pPandora, "LArMaster", pEventSteeringParameters));
 }
 
 } // namespace lar_nd_reco
