@@ -406,8 +406,24 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
         return energyMap;
     }
 
-    std::cout << "Creating MC Particles from the Geant4 event trajectories" << std::endl;
     lar_content::LArMCParticleFactory mcParticleFactory;
+
+    // Create the mc neutrino, linked to the trajectories below
+    const int neutrinoID = 999999; // TODO
+
+    lar_content::LArMCParticleParameters mcNeutrinoParameters;
+    mcNeutrinoParameters.m_nuanceCode = 1000; // TODO
+    mcNeutrinoParameters.m_process = lar_content::MC_PROC_INCIDENT_NU;
+    mcNeutrinoParameters.m_energy = 1.f; // TODO
+    mcNeutrinoParameters.m_momentum = pandora::CartesianVector(0.f, 0.f, 1.f); // TODO
+    mcNeutrinoParameters.m_vertex = pandora::CartesianVector(0.f, 0.f, 0.f); // TODO
+    mcNeutrinoParameters.m_endpoint = pandora::CartesianVector(0.f, 0.f, 1.f); // TODO
+    mcNeutrinoParameters.m_particleId = 14; // TODO
+    mcNeutrinoParameters.m_mcParticleType = pandora::MC_3D;
+    mcNeutrinoParameters.m_pParentAddress = (void*)((intptr_t)neutrinoID);
+    PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::MCParticle::Create(*pPrimaryPandora, mcNeutrinoParameters, mcParticleFactory));
+
+    std::cout << "Creating MC Particles from the Geant4 event trajectories" << std::endl;
 
     // Loop over trajectories
     for (const TG4Trajectory &g4Traj : event.Trajectories)
@@ -424,11 +440,14 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
         // Particle codes
         mcParticleParameters.m_particleId = g4Traj.GetPDGCode();
         mcParticleParameters.m_mcParticleType = pandora::MC_3D;
-        mcParticleParameters.m_nuanceCode = 0;
+        mcParticleParameters.m_nuanceCode = mcNeutrinoParameters.m_nuanceCode.Get();
 
         // Set unique parent integer address using trackID
         const int trackID = g4Traj.GetTrackId();
         mcParticleParameters.m_pParentAddress = (void *)((intptr_t)trackID);
+
+        // Link to MC Neutrino
+        PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::SetMCParentDaughterRelationship(*pPrimaryPandora, (void*)((intptr_t)neutrinoID), (void*)((intptr_t)trackID)));
 
         // Start and end points in cm (Geant4 uses mm)
         const std::vector<TG4TrajectoryPoint> trajPoints = g4Traj.Points;
