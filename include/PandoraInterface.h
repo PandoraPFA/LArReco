@@ -426,6 +426,17 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
+ *  @brief  Convert the GENIE neutrino reaction string to a Nuance-like integer code
+ *
+ *  @param  reaction The neutrino reaction string
+ *
+ *  @return The reaction integer code
+ */
+int GetNuanceCode(const std::string &reaction);
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+/**
  *  @brief  Make voxels from a given TG4HitSegment (a Geant4 energy deposition step)
  *
  *  @param  g4Hit The TG4HitSegment

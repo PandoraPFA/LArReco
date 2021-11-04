@@ -14,6 +14,8 @@
 #include "TGeoShape.h"
 #include "TGeoVolume.h"
 
+#include "TG4PrimaryVertex.h"
+
 #include "Api/PandoraApi.h"
 #include "Geometry/LArTPC.h"
 #include "Helpers/XmlHelper.h"
@@ -410,19 +412,54 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
 
     lar_content::LArMCParticleFactory mcParticleFactory;
 
-    // Create the mc neutrino, linked to the trajectories below
-    const int neutrinoID = 999999; // TODO
+    // Create the primary MC neutrino, linked to the trajectories below
+    int neutrinoID(999999), neutrinoPDG(14), nuanceCode(1000);
+    TLorentzVector neutrinoVtx, neutrinoP4;
+
+    // Get the initial primary vertex
+    if (event.Primaries.size() > 0)
+    {
+
+        const TG4PrimaryVertex &g4PrimaryVtx = event.Primaries[0];
+        neutrinoVtx = g4PrimaryVtx.GetPosition() * parameters.m_mm2cm;
+        std::cout << "Neutrino vertex = " << neutrinoVtx.X() << ", " << neutrinoVtx.Y() << ", " << neutrinoVtx.Z() << std::endl;
+
+        const std::string reaction(g4PrimaryVtx.GetReaction());
+        nuanceCode = GetNuanceCode(reaction);
+
+        // Get the primary vertex particle information
+        if (g4PrimaryVtx.Informational.size() > 0)
+        {
+
+            const TG4PrimaryVertex &g4Info = g4PrimaryVtx.Informational[0];
+
+            // Get the first primary particle, which should be the neutrino.
+            // Other primaries would be nuclei etc.
+            if (g4Info.Particles.size() > 0)
+            {
+
+                const TG4PrimaryParticle &g4Primary = g4Info.Particles[0];
+
+                neutrinoID = g4Primary.GetTrackId();
+                neutrinoPDG = g4Primary.GetPDGCode();
+                neutrinoP4 = g4Primary.GetMomentum() * parameters.m_MeV2GeV;
+
+                std::cout << "Neutrino ID = " << neutrinoID << ", PDG = " << neutrinoPDG << ", E = " << neutrinoP4.E()
+                          << ", px = " << neutrinoP4.Px() << ", py = " << neutrinoP4.Py() << ", pz = " << neutrinoP4.Pz() << std::endl;
+            }
+        }
+    }
 
     lar_content::LArMCParticleParameters mcNeutrinoParameters;
-    mcNeutrinoParameters.m_nuanceCode = 1000; // TODO
+    mcNeutrinoParameters.m_nuanceCode = nuanceCode;
     mcNeutrinoParameters.m_process = lar_content::MC_PROC_INCIDENT_NU;
-    mcNeutrinoParameters.m_energy = 1.f; // TODO
-    mcNeutrinoParameters.m_momentum = pandora::CartesianVector(0.f, 0.f, 1.f); // TODO
-    mcNeutrinoParameters.m_vertex = pandora::CartesianVector(0.f, 0.f, 0.f); // TODO
-    mcNeutrinoParameters.m_endpoint = pandora::CartesianVector(0.f, 0.f, 1.f); // TODO
-    mcNeutrinoParameters.m_particleId = 14; // TODO
+    mcNeutrinoParameters.m_energy = neutrinoP4.E();
+    mcNeutrinoParameters.m_momentum = pandora::CartesianVector(neutrinoP4.Px(), neutrinoP4.Py(), neutrinoP4.Pz());
+    mcNeutrinoParameters.m_vertex = pandora::CartesianVector(neutrinoVtx.X(), neutrinoVtx.Y(), neutrinoVtx.Z());
+    mcNeutrinoParameters.m_endpoint = pandora::CartesianVector(neutrinoVtx.X(), neutrinoVtx.Y(), neutrinoVtx.Z());
+    mcNeutrinoParameters.m_particleId = neutrinoPDG;
     mcNeutrinoParameters.m_mcParticleType = pandora::MC_3D;
-    mcNeutrinoParameters.m_pParentAddress = (void*)((intptr_t)neutrinoID);
+    mcNeutrinoParameters.m_pParentAddress = (void *)((intptr_t)neutrinoID);
     PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::MCParticle::Create(*pPrimaryPandora, mcNeutrinoParameters, mcParticleFactory));
 
     std::cout << "Creating MC Particles from the Geant4 event trajectories" << std::endl;
@@ -481,12 +518,13 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
 
         if (parentID < 0) // link to mc neutrino
         {
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::SetMCParentDaughterRelationship(*pPrimaryPandora, (void*)((intptr_t)neutrinoID), (void*)((intptr_t)trackID)));
-
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=,
+                PandoraApi::SetMCParentDaughterRelationship(*pPrimaryPandora, (void *)((intptr_t)neutrinoID), (void *)((intptr_t)trackID)));
         }
         else
         {
-            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::SetMCParentDaughterRelationship(*pPrimaryPandora, (void *)((intptr_t)parentID), (void *)((intptr_t)trackID)));
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=,
+                PandoraApi::SetMCParentDaughterRelationship(*pPrimaryPandora, (void *)((intptr_t)parentID), (void *)((intptr_t)trackID)));
         }
 
         // Store particle energy for given trackID
@@ -494,6 +532,76 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
     }
 
     return energyMap;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+int GetNuanceCode(const std::string &reaction)
+{
+    // The GENIE reaction string (also stored by edep-sim) is created using
+    // https://github.com/GENIE-MC/Generator/blob/master/src/Framework/Interaction/Interaction.cxx#L249
+    // String format is "nu:PDGId;tgt:PDGId;N:PDGId;proc:interactionType,scattering;", e.g.
+    //                  "nu:14;tgt:1000180400;N:2112;proc:Weak[CC],QES;"
+
+    // GENIE scattering codes:
+    // https://github.com/GENIE-MC/Generator/blob/master/src/Framework/Interaction/ScatteringType.h
+
+    // Nuance codes: https://internal.dunescience.org/doxygen/MCNeutrino_8h_source.html
+
+    // GENIE conversion code for RooTracker output files:
+    // https://github.com/GENIE-MC/Generator/blob/master/src/contrib/t2k/neut_code_from_rootracker.C
+    // Similar code is available here (Neut reaction code):
+    // https://internal.dunescience.org/doxygen/namespacegenie_1_1utils_1_1ghep.html
+
+    // For now, just set the basic reaction types, excluding any specific final states:
+    // https://github.com/GENIE-MC/Generator/blob/master/src/contrib/t2k/neut_code_from_rootracker.C#L276
+    int code(1000);
+
+    bool is_cc = (reaction.find("Weak[CC]") != std::string::npos); // weak charged-current
+    bool is_nc = (reaction.find("Weak[NC]") != std::string::npos); // weak neutral-current
+    //bool is_charm = (reaction.find("charm")    != std::string::npos); // charm production
+    bool is_qel = (reaction.find("QES") != std::string::npos);   // quasi-elastic scattering
+    bool is_dis = (reaction.find("DIS") != std::string::npos);   // deep inelastic scattering
+    bool is_res = (reaction.find("RES") != std::string::npos);   // resonance
+    bool is_cohpi = (reaction.find("COH") != std::string::npos); // coherent pi
+    bool is_ve = (reaction.find("NuEEL") != std::string::npos);  // nu e elastic
+    bool is_imd = (reaction.find("IMD") != std::string::npos);   // inverse mu decay
+    bool is_mec = (reaction.find("MEC") != std::string::npos);   // meson exchange current
+
+    if (is_qel)
+    {
+        code = 0;
+        if (is_cc)
+            code = 1001;
+        else if (is_nc)
+            code = 1002;
+    }
+    else if (is_dis)
+    {
+        code = 2;
+        if (is_cc)
+            code = 1091;
+        else if (is_nc)
+            code = 1092;
+    }
+    else if (is_res)
+        code = 1;
+    else if (is_cohpi)
+    {
+        code = 3;
+        if (is_qel)
+            code = 4;
+    }
+    else if (is_ve)
+        code = 1098;
+    else if (is_imd)
+        code = 1099;
+    else if (is_mec)
+        code = 10;
+
+    std::cout << "Reaction " << reaction << " has code = " << code << std::endl;
+
+    return code;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
