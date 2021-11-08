@@ -1,12 +1,12 @@
 <Geometry>
     <LArTPC>
         <LArTPCVolumeId>0</LArTPCVolumeId>
-        <CenterX>-101.300003052</CenterX>
+        <CenterX>-101.099998474</CenterX>
         <CenterY>0</CenterY>
-        <CenterZ>250</CenterZ>
-        <WidthX>196.5</WidthX>
-        <WidthY>400</WidthY>
-        <WidthZ>500</WidthZ>
+        <CenterZ>254.699996948</CenterZ>
+        <WidthX>201.300003052</WidthX>
+        <WidthY>407.464508057</WidthY>
+        <WidthZ>509.399993896</WidthZ>
         <WirePitchU>0.300000011921</WirePitchU>
         <WirePitchV>0.300000011921</WirePitchV>
         <WirePitchW>0.300000011921</WirePitchW>
@@ -18,12 +18,12 @@
     </LArTPC>
     <LArTPC>
         <LArTPCVolumeId>1</LArTPCVolumeId>
-        <CenterX>101.300003052</CenterX>
+        <CenterX>101.099998474</CenterX>
         <CenterY>0</CenterY>
-        <CenterZ>250</CenterZ>
-        <WidthX>196.5</WidthX>
-        <WidthY>400</WidthY>
-        <WidthZ>500</WidthZ>
+        <CenterZ>254.699996948</CenterZ>
+        <WidthX>201.300003052</WidthX>
+        <WidthY>407.464508057</WidthY>
+        <WidthZ>509.399993896</WidthZ>
         <WirePitchU>0.300000011921</WirePitchU>
         <WirePitchV>0.300000011921</WirePitchV>
         <WirePitchW>0.300000011921</WirePitchW>
@@ -35,9 +35,100 @@
     </LArTPC>
     <LineGap>
         <LineGapType>3</LineGapType>
-        <LineStartX>-3.05000305176</LineStartX>
-        <LineEndX>3.05000305176</LineEndX>
+        <LineStartX>-0.449996948242</LineStartX>
+        <LineEndX>0.449996948242</LineEndX>
         <LineStartZ>-3.40282346639e+38</LineStartZ>
         <LineEndZ>3.40282346639e+38</LineEndZ>
+    </LineGap>
+    <LineGap>
+        <LineGapType>0</LineGapType>
+        <LineStartX>-201.75</LineStartX>
+        <LineEndX>-0.449996948242</LineEndX>
+        <LineStartZ>-170.25</LineStartZ>
+        <LineEndZ>-169.350006104</LineEndZ>
+    </LineGap>
+    <LineGap>
+        <LineGapType>0</LineGapType>
+        <LineStartX>-201.75</LineStartX>
+        <LineEndX>-0.449996948242</LineEndX>
+        <LineStartZ>424.649993896</LineStartZ>
+        <LineEndZ>424.949981689</LineEndZ>
+    </LineGap>
+    <LineGap>
+        <LineGapType>1</LineGapType>
+        <LineStartX>-201.75</LineStartX>
+        <LineEndX>-0.449996948242</LineEndX>
+        <LineStartZ>-170.25</LineStartZ>
+        <LineEndZ>-168.750015259</LineEndZ>
+    </LineGap>
+    <LineGap>
+        <LineGapType>2</LineGapType>
+        <LineStartX>-201.75</LineStartX>
+        <LineEndX>-0.449996948242</LineEndX>
+        <LineStartZ>5.40000009537</LineStartZ>
+        <LineEndZ>6.30000019073</LineEndZ>
+    </LineGap>
+    <LineGap>
+        <LineGapType>2</LineGapType>
+        <LineStartX>-201.75</LineStartX>
+        <LineEndX>-0.449996948242</LineEndX>
+        <LineStartZ>134.400009155</LineStartZ>
+        <LineEndZ>134.699996948</LineEndZ>
+    </LineGap>
+    <LineGap>
+        <LineGapType>2</LineGapType>
+        <LineStartX>-201.75</LineStartX>
+        <LineEndX>-0.449996948242</LineEndX>
+        <LineStartZ>255.300003052</LineStartZ>
+        <LineEndZ>257.100006104</LineEndZ>
+    </LineGap>
+    <LineGap>
+        <LineGapType>2</LineGapType>
+        <LineStartX>-201.75</LineStartX>
+        <LineEndX>-0.449996948242</LineEndX>
+        <LineStartZ>381</LineStartZ>
+        <LineEndZ>381.299987793</LineEndZ>
+    </LineGap>
+    <LineGap>
+        <LineGapType>1</LineGapType>
+        <LineStartX>0.449996948242</LineStartX>
+        <LineEndX>201.75</LineEndX>
+        <LineStartZ>-168.449996948</LineStartZ>
+        <LineEndZ>-167.550003052</LineEndZ>
+    </LineGap>
+    <LineGap>
+        <LineGapType>0</LineGapType>
+        <LineStartX>0.449996948242</LineStartX>
+        <LineEndX>201.75</LineEndX>
+        <LineStartZ>-168.75</LineStartZ>
+        <LineEndZ>-166.950012207</LineEndZ>
+    </LineGap>
+    <LineGap>
+        <LineGapType>2</LineGapType>
+        <LineStartX>0.449996948242</LineStartX>
+        <LineEndX>201.75</LineEndX>
+        <LineStartZ>7.19999980927</LineStartZ>
+        <LineEndZ>8.0999994278</LineEndZ>
+    </LineGap>
+    <LineGap>
+        <LineGapType>2</LineGapType>
+        <LineStartX>0.449996948242</LineStartX>
+        <LineEndX>201.75</LineEndX>
+        <LineStartZ>136.200012207</LineStartZ>
+        <LineEndZ>136.5</LineEndZ>
+    </LineGap>
+    <LineGap>
+        <LineGapType>2</LineGapType>
+        <LineStartX>0.449996948242</LineStartX>
+        <LineEndX>201.75</LineEndX>
+        <LineStartZ>257.100006104</LineStartZ>
+        <LineEndZ>258.899993896</LineEndZ>
+    </LineGap>
+    <LineGap>
+        <LineGapType>2</LineGapType>
+        <LineStartX>0.449996948242</LineStartX>
+        <LineEndX>201.75</LineEndX>
+        <LineStartZ>382.800018311</LineStartZ>
+        <LineEndZ>383.100006104</LineEndZ>
     </LineGap>
 </Geometry>
