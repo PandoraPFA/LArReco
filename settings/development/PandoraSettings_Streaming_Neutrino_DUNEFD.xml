@@ -623,6 +623,11 @@
         <OutputFile>tree.root</OutputFile>
     </algorithm>
 
+    <algorithm type = "LArShowerHierarchyMopUp">
+        <LeadingPfoListName>NeutrinoParticles3D</LeadingPfoListName>
+        <DaughterListNames>TrackParticles3D ShowerParticles3D DaughterVertices3D TrackClustersU TrackClustersV TrackClustersW ShowerClustersU ShowerClustersV ShowerClustersW TrackClusters3D ShowerClusters3D</DaughterListNames>
+    </algorithm>
+
     <algorithm type = "LArNeutrinoProperties">
         <NeutrinoPfoListName>NeutrinoParticles3D</NeutrinoPfoListName>
     </algorithm>
