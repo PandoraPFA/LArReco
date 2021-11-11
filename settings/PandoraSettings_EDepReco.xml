@@ -23,7 +23,8 @@
 
     <algorithm type = "LArMaster">
         <CRSettingsFile>PandoraSettings_Cosmic_Standard.xml</CRSettingsFile>
-        <NuSettingsFile>PandoraSettings_Neutrino_Standard.xml</NuSettingsFile>
+        <!--Use MicroBooNE neutrino algorithms for now-->
+        <NuSettingsFile>PandoraSettings_Neutrino_MicroBooNE.xml</NuSettingsFile>
         <SlicingSettingsFile>PandoraSettings_Slicing_Standard.xml</SlicingSettingsFile>
         <StitchingTools>
             <tool type = "LArStitchingCosmicRayMerging"><ThreeDStitchingMode>true</ThreeDStitchingMode></tool>
@@ -45,7 +46,7 @@
         <ShouldRunStitching>true</ShouldRunStitching>
         <ShouldRunCosmicHitRemoval>false</ShouldRunCosmicHitRemoval>
         <ShouldRunSlicing>false</ShouldRunSlicing>
-        <ShouldRunNeutrinoRecoOption>false</ShouldRunNeutrinoRecoOption>
+        <ShouldRunNeutrinoRecoOption>true</ShouldRunNeutrinoRecoOption>
         <ShouldRunCosmicRecoOption>false</ShouldRunCosmicRecoOption>
         <ShouldPerformSliceId>false</ShouldPerformSliceId>
     </algorithm>
@@ -63,7 +64,7 @@
         <UseTrueNeutrinosOnly>true</UseTrueNeutrinosOnly>
         <PrintAllToScreen>true</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
-        <WriteToTree>false</WriteToTree>
+        <WriteToTree>true</WriteToTree>
         <OutputTree>Validation</OutputTree>
         <OutputFile>Validation.root</OutputFile>
     </algorithm>
