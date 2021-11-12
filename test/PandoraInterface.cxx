@@ -513,7 +513,7 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
         PANDORA_THROW_RESULT_IF(
             pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::MCParticle::Create(*pPrimaryPandora, mcParticleParameters, mcParticleFactory));
 
-        // Set parent relationships - TODO, check inclusion of mc neutrino here
+        // Set parent relationships
         const int parentID = g4Traj.GetParentId();
 
         if (parentID < 0) // link to mc neutrino
@@ -557,16 +557,16 @@ int GetNuanceCode(const std::string &reaction)
     // https://github.com/GENIE-MC/Generator/blob/master/src/contrib/t2k/neut_code_from_rootracker.C#L276
     int code(1000);
 
-    bool is_cc = (reaction.find("Weak[CC]") != std::string::npos); // weak charged-current
-    bool is_nc = (reaction.find("Weak[NC]") != std::string::npos); // weak neutral-current
-    //bool is_charm = (reaction.find("charm")    != std::string::npos); // charm production
-    bool is_qel = (reaction.find("QES") != std::string::npos);   // quasi-elastic scattering
-    bool is_dis = (reaction.find("DIS") != std::string::npos);   // deep inelastic scattering
-    bool is_res = (reaction.find("RES") != std::string::npos);   // resonance
-    bool is_cohpi = (reaction.find("COH") != std::string::npos); // coherent pi
-    bool is_ve = (reaction.find("NuEEL") != std::string::npos);  // nu e elastic
-    bool is_imd = (reaction.find("IMD") != std::string::npos);   // inverse mu decay
-    bool is_mec = (reaction.find("MEC") != std::string::npos);   // meson exchange current
+    const bool is_cc = (reaction.find("Weak[CC]") != std::string::npos); // weak charged-current
+    const bool is_nc = (reaction.find("Weak[NC]") != std::string::npos); // weak neutral-current
+    // const bool is_charm = (reaction.find("charm")    != std::string::npos); // charm production
+    const bool is_qel = (reaction.find("QES") != std::string::npos);   // quasi-elastic scattering
+    const bool is_dis = (reaction.find("DIS") != std::string::npos);   // deep inelastic scattering
+    const bool is_res = (reaction.find("RES") != std::string::npos);   // resonance
+    const bool is_cohpi = (reaction.find("COH") != std::string::npos); // coherent pi
+    const bool is_ve = (reaction.find("NuEEL") != std::string::npos);  // nu e elastic
+    const bool is_imd = (reaction.find("IMD") != std::string::npos);   // inverse mu decay
+    const bool is_mec = (reaction.find("MEC") != std::string::npos);   // meson exchange current
 
     if (is_qel)
     {

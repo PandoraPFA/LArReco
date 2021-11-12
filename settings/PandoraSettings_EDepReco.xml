@@ -41,14 +41,6 @@
         <RecreatedClusterListName>RecreatedClusters</RecreatedClusterListName>
         <RecreatedVertexListName>RecreatedVertices</RecreatedVertexListName>
         <VisualizeOverallRecoStatus>false</VisualizeOverallRecoStatus>
-
-        <ShouldRunAllHitsCosmicReco>true</ShouldRunAllHitsCosmicReco>
-        <ShouldRunStitching>true</ShouldRunStitching>
-        <ShouldRunCosmicHitRemoval>false</ShouldRunCosmicHitRemoval>
-        <ShouldRunSlicing>false</ShouldRunSlicing>
-        <ShouldRunNeutrinoRecoOption>true</ShouldRunNeutrinoRecoOption>
-        <ShouldRunCosmicRecoOption>false</ShouldRunCosmicRecoOption>
-        <ShouldPerformSliceId>false</ShouldPerformSliceId>
     </algorithm>
 
     <algorithm type = "LArMCParticleMonitoring">
