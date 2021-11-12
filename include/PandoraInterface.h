@@ -44,6 +44,15 @@ public:
     bool m_shouldDisplayEventNumber; ///< Whether event numbers should be
                                      ///< displayed (default false)
 
+    bool m_shouldRunAllHitsCosmicReco;  ///< Whether to run all hits cosmic-ray reconstruction
+    bool m_shouldRunStitching;          ///< Whether to stitch cosmic-ray muons crossing between volumes
+    bool m_shouldRunCosmicHitRemoval;   ///< Whether to remove hits from tagged cosmic-rays
+    bool m_shouldRunSlicing;            ///< Whether to slice events into separate regions for processing
+    bool m_shouldRunNeutrinoRecoOption; ///< Whether to run neutrino reconstruction for each slice
+    bool m_shouldRunCosmicRecoOption;   ///< Whether to run cosmic-ray reconstruction for each slice
+    bool m_shouldPerformSliceId;        ///< Whether to identify slices and select most appropriate pfos
+    bool m_printOverallRecoStatus;      ///< Whether to print current operation status messages
+
     int m_nEventsToSkip; ///< The number of events to skip
 
     bool m_use3D;     ///< Create 3D LArCaloHits
@@ -63,6 +72,14 @@ inline Parameters::Parameters() :
     m_inputFileName(""),
     m_nEventsToProcess(-1),
     m_shouldDisplayEventNumber(false),
+    m_shouldRunAllHitsCosmicReco(true),
+    m_shouldRunStitching(true),
+    m_shouldRunCosmicHitRemoval(true),
+    m_shouldRunSlicing(true),
+    m_shouldRunNeutrinoRecoOption(true),
+    m_shouldRunCosmicRecoOption(true),
+    m_shouldPerformSliceId(true),
+    m_printOverallRecoStatus(false),
     m_nEventsToSkip(0),
     m_use3D(true),
     m_useLArTPC(false),
@@ -409,6 +426,17 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
+ *  @brief  Convert the GENIE neutrino reaction string to a Nuance-like integer code
+ *
+ *  @param  reaction The neutrino reaction string
+ *
+ *  @return The reaction integer code
+ */
+int GetNuanceCode(const std::string &reaction);
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+/**
  *  @brief  Make voxels from a given TG4HitSegment (a Geant4 energy deposition step)
  *
  *  @param  g4Hit The TG4HitSegment
@@ -443,16 +471,12 @@ LArVoxelList MergeSameVoxels(const LArVoxelList &voxelList);
  */
 bool ParseCommandLine(int argc, char *argv[], Parameters &parameters);
 
-//------------------------------------------------------------------------------------------------------------------------------------------
-
 /**
  *  @brief  Print the list of configurable options
  *
  *  @return false, to force abort
  */
 bool PrintOptions();
-
-//------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
  *  @brief  Process view option so that 3x2D and/or 3D hit lists are created
@@ -462,6 +486,24 @@ bool PrintOptions();
  *
  */
 void ProcessViewOption(const std::string &viewOption, Parameters &parameters);
+
+/**
+ *  @brief  Process the provided reco option string to perform high-level steering
+ *
+ *  @param  recoOption the reco option string
+ *  @param  parameters to receive the application parameters
+ *
+ *  @return success
+ */
+bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters);
+
+/**
+ *  @brief  Process list of external, commandline parameters to be passed to specific algorithms
+ *
+ *  @param  parameters the parameters
+ *  @param  pPandora the address of the pandora instance
+ */
+void ProcessExternalParameters(const Parameters &parameters, const pandora::Pandora *const pPandora);
 
 } // namespace lar_nd_reco
 

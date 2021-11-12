@@ -23,6 +23,7 @@
 
     <algorithm type = "LArMaster">
         <CRSettingsFile>PandoraSettings_Cosmic_Standard.xml</CRSettingsFile>
+        <!--Use MicroBooNE neutrino algorithms for now-->
         <NuSettingsFile>PandoraSettings_Neutrino_MicroBooNE.xml</NuSettingsFile>
         <SlicingSettingsFile>PandoraSettings_Slicing_Standard.xml</SlicingSettingsFile>
         <StitchingTools>
@@ -33,34 +34,29 @@
             <tool type = "LArCosmicRayTagging"/>
         </CosmicRayTaggingTools>
         <SliceIdTools>
-            <tool type = "LArSvmNeutrinoId">
-                <MvaFileName>PandoraSvm_v03_11_00.xml</MvaFileName>
-                <MvaName>NeutrinoId</MvaName>
-            </tool>
+            <tool type = "LArSimpleNeutrinoId"/>
         </SliceIdTools>
         <InputHitListName>CaloHitList2D</InputHitListName>
         <RecreatedPfoListName>RecreatedPfos</RecreatedPfoListName>
         <RecreatedClusterListName>RecreatedClusters</RecreatedClusterListName>
         <RecreatedVertexListName>RecreatedVertices</RecreatedVertexListName>
         <VisualizeOverallRecoStatus>false</VisualizeOverallRecoStatus>
+    </algorithm>
 
-        <ShouldRunAllHitsCosmicReco>true</ShouldRunAllHitsCosmicReco>
-        <ShouldRunStitching>true</ShouldRunStitching>
-        <ShouldRunCosmicHitRemoval>false</ShouldRunCosmicHitRemoval>
-        <ShouldRunSlicing>false</ShouldRunSlicing>
-        <ShouldRunNeutrinoRecoOption>false</ShouldRunNeutrinoRecoOption>
-        <ShouldRunCosmicRecoOption>false</ShouldRunCosmicRecoOption>
-        <ShouldPerformSliceId>false</ShouldPerformSliceId>
+    <algorithm type = "LArMCParticleMonitoring">
+        <CaloHitListName>CaloHitList2D</CaloHitListName>
+        <MCParticleListName>Input</MCParticleListName>
+        <MinHitsForDisplay>0</MinHitsForDisplay>
     </algorithm>
 
     <algorithm type = "LArNeutrinoEventValidation">
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <MCParticleListName>Input</MCParticleListName>
         <PfoListName>RecreatedPfos</PfoListName>
-        <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
-        <PrintAllToScreen>false</PrintAllToScreen>
+        <UseTrueNeutrinosOnly>true</UseTrueNeutrinosOnly>
+        <PrintAllToScreen>true</PrintAllToScreen>
         <PrintMatchingToScreen>true</PrintMatchingToScreen>
-        <WriteToTree>false</WriteToTree>
+        <WriteToTree>true</WriteToTree>
         <OutputTree>Validation</OutputTree>
         <OutputFile>Validation.root</OutputFile>
     </algorithm>

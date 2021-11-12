@@ -14,6 +14,8 @@
 #include "TGeoShape.h"
 #include "TGeoVolume.h"
 
+#include "TG4PrimaryVertex.h"
+
 #include "Api/PandoraApi.h"
 #include "Geometry/LArTPC.h"
 #include "Helpers/XmlHelper.h"
@@ -22,6 +24,7 @@
 #include "Xml/tinyxml.h"
 
 #include "larpandoracontent/LArContent.h"
+#include "larpandoracontent/LArControlFlow/MasterAlgorithm.h"
 #include "larpandoracontent/LArControlFlow/MultiPandoraApi.h"
 #include "larpandoracontent/LArObjects/LArCaloHit.h"
 #include "larpandoracontent/LArObjects/LArMCParticle.h"
@@ -70,6 +73,7 @@ int main(int argc, char *argv[])
         MultiPandoraApi::AddPrimaryPandoraInstance(pPrimaryPandora);
 
         CreateGeometry(parameters, pPrimaryPandora);
+        ProcessExternalParameters(parameters, pPrimaryPandora);
 
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetPseudoLayerPlugin(*pPrimaryPandora, new lar_content::LArPseudoLayerPlugin));
         PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=,
@@ -406,8 +410,59 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
         return energyMap;
     }
 
-    std::cout << "Creating MC Particles from the Geant4 event trajectories" << std::endl;
     lar_content::LArMCParticleFactory mcParticleFactory;
+
+    // Create the primary MC neutrino, linked to the trajectories below
+    int neutrinoID(999999), neutrinoPDG(14), nuanceCode(1000);
+    TLorentzVector neutrinoVtx, neutrinoP4;
+
+    // Get the initial primary vertex
+    if (event.Primaries.size() > 0)
+    {
+
+        const TG4PrimaryVertex &g4PrimaryVtx = event.Primaries[0];
+        neutrinoVtx = g4PrimaryVtx.GetPosition() * parameters.m_mm2cm;
+        std::cout << "Neutrino vertex = " << neutrinoVtx.X() << ", " << neutrinoVtx.Y() << ", " << neutrinoVtx.Z() << std::endl;
+
+        const std::string reaction(g4PrimaryVtx.GetReaction());
+        nuanceCode = GetNuanceCode(reaction);
+
+        // Get the primary vertex particle information
+        if (g4PrimaryVtx.Informational.size() > 0)
+        {
+
+            const TG4PrimaryVertex &g4Info = g4PrimaryVtx.Informational[0];
+
+            // Get the first primary particle, which should be the neutrino.
+            // Other primaries would be nuclei etc.
+            if (g4Info.Particles.size() > 0)
+            {
+
+                const TG4PrimaryParticle &g4Primary = g4Info.Particles[0];
+
+                neutrinoID = g4Primary.GetTrackId();
+                neutrinoPDG = g4Primary.GetPDGCode();
+                neutrinoP4 = g4Primary.GetMomentum() * parameters.m_MeV2GeV;
+
+                std::cout << "Neutrino ID = " << neutrinoID << ", PDG = " << neutrinoPDG << ", E = " << neutrinoP4.E()
+                          << ", px = " << neutrinoP4.Px() << ", py = " << neutrinoP4.Py() << ", pz = " << neutrinoP4.Pz() << std::endl;
+            }
+        }
+    }
+
+    lar_content::LArMCParticleParameters mcNeutrinoParameters;
+    mcNeutrinoParameters.m_nuanceCode = nuanceCode;
+    mcNeutrinoParameters.m_process = lar_content::MC_PROC_INCIDENT_NU;
+    mcNeutrinoParameters.m_energy = neutrinoP4.E();
+    mcNeutrinoParameters.m_momentum = pandora::CartesianVector(neutrinoP4.Px(), neutrinoP4.Py(), neutrinoP4.Pz());
+    mcNeutrinoParameters.m_vertex = pandora::CartesianVector(neutrinoVtx.X(), neutrinoVtx.Y(), neutrinoVtx.Z());
+    mcNeutrinoParameters.m_endpoint = pandora::CartesianVector(neutrinoVtx.X(), neutrinoVtx.Y(), neutrinoVtx.Z());
+    mcNeutrinoParameters.m_particleId = neutrinoPDG;
+    mcNeutrinoParameters.m_mcParticleType = pandora::MC_3D;
+    mcNeutrinoParameters.m_pParentAddress = (void *)((intptr_t)neutrinoID);
+    PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::MCParticle::Create(*pPrimaryPandora, mcNeutrinoParameters, mcParticleFactory));
+
+    std::cout << "Creating MC Particles from the Geant4 event trajectories" << std::endl;
 
     // Loop over trajectories
     for (const TG4Trajectory &g4Traj : event.Trajectories)
@@ -424,7 +479,7 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
         // Particle codes
         mcParticleParameters.m_particleId = g4Traj.GetPDGCode();
         mcParticleParameters.m_mcParticleType = pandora::MC_3D;
-        mcParticleParameters.m_nuanceCode = 0;
+        mcParticleParameters.m_nuanceCode = mcNeutrinoParameters.m_nuanceCode.Get();
 
         // Set unique parent integer address using trackID
         const int trackID = g4Traj.GetTrackId();
@@ -458,15 +513,95 @@ MCParticleEnergyMap CreateMCParticles(const TG4Event &event, const pandora::Pand
         PANDORA_THROW_RESULT_IF(
             pandora::STATUS_CODE_SUCCESS, !=, PandoraApi::MCParticle::Create(*pPrimaryPandora, mcParticleParameters, mcParticleFactory));
 
-        // Set parent relationship
+        // Set parent relationships
         const int parentID = g4Traj.GetParentId();
-        PandoraApi::SetMCParentDaughterRelationship(*pPrimaryPandora, (void *)((intptr_t)parentID), (void *)((intptr_t)trackID));
+
+        if (parentID < 0) // link to mc neutrino
+        {
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=,
+                PandoraApi::SetMCParentDaughterRelationship(*pPrimaryPandora, (void *)((intptr_t)neutrinoID), (void *)((intptr_t)trackID)));
+        }
+        else
+        {
+            PANDORA_THROW_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=,
+                PandoraApi::SetMCParentDaughterRelationship(*pPrimaryPandora, (void *)((intptr_t)parentID), (void *)((intptr_t)trackID)));
+        }
 
         // Store particle energy for given trackID
         energyMap[trackID] = energy;
     }
 
     return energyMap;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+int GetNuanceCode(const std::string &reaction)
+{
+    // The GENIE reaction string (also stored by edep-sim) is created using
+    // https://github.com/GENIE-MC/Generator/blob/master/src/Framework/Interaction/Interaction.cxx#L249
+    // String format is "nu:PDGId;tgt:PDGId;N:PDGId;proc:interactionType,scattering;", e.g.
+    //                  "nu:14;tgt:1000180400;N:2112;proc:Weak[CC],QES;"
+
+    // GENIE scattering codes:
+    // https://github.com/GENIE-MC/Generator/blob/master/src/Framework/Interaction/ScatteringType.h
+
+    // Nuance codes: https://internal.dunescience.org/doxygen/MCNeutrino_8h_source.html
+
+    // GENIE conversion code for RooTracker output files:
+    // https://github.com/GENIE-MC/Generator/blob/master/src/contrib/t2k/neut_code_from_rootracker.C
+    // Similar code is available here (Neut reaction code):
+    // https://internal.dunescience.org/doxygen/namespacegenie_1_1utils_1_1ghep.html
+
+    // For now, just set the basic reaction types, excluding any specific final states:
+    // https://github.com/GENIE-MC/Generator/blob/master/src/contrib/t2k/neut_code_from_rootracker.C#L276
+    int code(1000);
+
+    const bool is_cc = (reaction.find("Weak[CC]") != std::string::npos); // weak charged-current
+    const bool is_nc = (reaction.find("Weak[NC]") != std::string::npos); // weak neutral-current
+    // const bool is_charm = (reaction.find("charm")    != std::string::npos); // charm production
+    const bool is_qel = (reaction.find("QES") != std::string::npos);   // quasi-elastic scattering
+    const bool is_dis = (reaction.find("DIS") != std::string::npos);   // deep inelastic scattering
+    const bool is_res = (reaction.find("RES") != std::string::npos);   // resonance
+    const bool is_cohpi = (reaction.find("COH") != std::string::npos); // coherent pi
+    const bool is_ve = (reaction.find("NuEEL") != std::string::npos);  // nu e elastic
+    const bool is_imd = (reaction.find("IMD") != std::string::npos);   // inverse mu decay
+    const bool is_mec = (reaction.find("MEC") != std::string::npos);   // meson exchange current
+
+    if (is_qel)
+    {
+        code = 0;
+        if (is_cc)
+            code = 1001;
+        else if (is_nc)
+            code = 1002;
+    }
+    else if (is_dis)
+    {
+        code = 2;
+        if (is_cc)
+            code = 1091;
+        else if (is_nc)
+            code = 1092;
+    }
+    else if (is_res)
+        code = 1;
+    else if (is_cohpi)
+    {
+        code = 3;
+        if (is_qel)
+            code = 4;
+    }
+    else if (is_ve)
+        code = 1098;
+    else if (is_imd)
+        code = 1099;
+    else if (is_mec)
+        code = 10;
+
+    std::cout << "Reaction " << reaction << " has code = " << code << std::endl;
+
+    return code;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -786,12 +921,16 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
 
     int c(0);
 
+    std::string recoOption;
     std::string viewOption("3d");
 
-    while ((c = getopt(argc, argv, ":i:e:n:s:j:w:Nh")) != -1)
+    while ((c = getopt(argc, argv, "r:i:e:n:s:j:w:pNh")) != -1)
     {
         switch (c)
         {
+            case 'r':
+                recoOption = optarg;
+                break;
             case 'i':
                 parameters.m_settingsFile = optarg;
                 break;
@@ -803,6 +942,9 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
                 break;
             case 's':
                 parameters.m_nEventsToSkip = atoi(optarg);
+                break;
+            case 'p':
+                parameters.m_printOverallRecoStatus = true;
                 break;
             case 'j':
                 viewOption = optarg;
@@ -820,7 +962,7 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
     }
 
     ProcessViewOption(viewOption, parameters);
-    return true;
+    return ProcessRecoOption(recoOption, parameters);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -829,6 +971,8 @@ bool PrintOptions()
 {
     std::cout << std::endl
               << "./bin/PandoraInterface " << std::endl
+              << "    -r RecoOption          (required) [Full, AllHitsCR, AllHitsNu, CRRemHitsSliceCR, CRRemHitsSliceNu, AllHitsSliceCR, AllHitsSliceNu]"
+              << std::endl
               << "    -i Settings            (required) [algorithm description: xml]" << std::endl
               << "    -e EventsFile          (required) [input edep-sim file, "
                  "typically containing events and geometry]"
@@ -874,6 +1018,118 @@ void ProcessViewOption(const std::string &viewOption, Parameters &parameters)
         parameters.m_useLArTPC = true;
         parameters.m_use3D = false;
     }
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+bool ProcessRecoOption(const std::string &recoOption, Parameters &parameters)
+{
+    std::string chosenRecoOption(recoOption);
+    std::transform(chosenRecoOption.begin(), chosenRecoOption.end(), chosenRecoOption.begin(), ::tolower);
+
+    if ("full" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = true;
+        parameters.m_shouldRunStitching = true;
+        parameters.m_shouldRunCosmicHitRemoval = true;
+        parameters.m_shouldRunSlicing = true;
+        parameters.m_shouldRunNeutrinoRecoOption = true;
+        parameters.m_shouldRunCosmicRecoOption = true;
+        parameters.m_shouldPerformSliceId = true;
+    }
+    else if ("allhitscr" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = true;
+        parameters.m_shouldRunStitching = true;
+        parameters.m_shouldRunCosmicHitRemoval = false;
+        parameters.m_shouldRunSlicing = false;
+        parameters.m_shouldRunNeutrinoRecoOption = false;
+        parameters.m_shouldRunCosmicRecoOption = false;
+        parameters.m_shouldPerformSliceId = false;
+    }
+    else if ("nostitchingcr" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = false;
+        parameters.m_shouldRunStitching = false;
+        parameters.m_shouldRunCosmicHitRemoval = false;
+        parameters.m_shouldRunSlicing = false;
+        parameters.m_shouldRunNeutrinoRecoOption = false;
+        parameters.m_shouldRunCosmicRecoOption = true;
+        parameters.m_shouldPerformSliceId = false;
+    }
+    else if ("allhitsnu" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = false;
+        parameters.m_shouldRunStitching = false;
+        parameters.m_shouldRunCosmicHitRemoval = false;
+        parameters.m_shouldRunSlicing = false;
+        parameters.m_shouldRunNeutrinoRecoOption = true;
+        parameters.m_shouldRunCosmicRecoOption = false;
+        parameters.m_shouldPerformSliceId = false;
+    }
+    else if ("crremhitsslicecr" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = true;
+        parameters.m_shouldRunStitching = true;
+        parameters.m_shouldRunCosmicHitRemoval = true;
+        parameters.m_shouldRunSlicing = true;
+        parameters.m_shouldRunNeutrinoRecoOption = false;
+        parameters.m_shouldRunCosmicRecoOption = true;
+        parameters.m_shouldPerformSliceId = false;
+    }
+    else if ("crremhitsslicenu" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = true;
+        parameters.m_shouldRunStitching = true;
+        parameters.m_shouldRunCosmicHitRemoval = true;
+        parameters.m_shouldRunSlicing = true;
+        parameters.m_shouldRunNeutrinoRecoOption = true;
+        parameters.m_shouldRunCosmicRecoOption = false;
+        parameters.m_shouldPerformSliceId = false;
+    }
+    else if ("allhitsslicecr" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = false;
+        parameters.m_shouldRunStitching = false;
+        parameters.m_shouldRunCosmicHitRemoval = false;
+        parameters.m_shouldRunSlicing = true;
+        parameters.m_shouldRunNeutrinoRecoOption = false;
+        parameters.m_shouldRunCosmicRecoOption = true;
+        parameters.m_shouldPerformSliceId = false;
+    }
+    else if ("allhitsslicenu" == chosenRecoOption)
+    {
+        parameters.m_shouldRunAllHitsCosmicReco = false;
+        parameters.m_shouldRunStitching = false;
+        parameters.m_shouldRunCosmicHitRemoval = false;
+        parameters.m_shouldRunSlicing = true;
+        parameters.m_shouldRunNeutrinoRecoOption = true;
+        parameters.m_shouldRunCosmicRecoOption = false;
+        parameters.m_shouldPerformSliceId = false;
+    }
+    else
+    {
+        std::cout << "LArReco, Unrecognized reconstruction option: " << recoOption << std::endl << std::endl;
+        return PrintOptions();
+    }
+
+    return true;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+void ProcessExternalParameters(const Parameters &parameters, const Pandora *const pPandora)
+{
+    auto *const pEventSteeringParameters = new lar_content::MasterAlgorithm::ExternalSteeringParameters;
+    pEventSteeringParameters->m_shouldRunAllHitsCosmicReco = parameters.m_shouldRunAllHitsCosmicReco;
+    pEventSteeringParameters->m_shouldRunStitching = parameters.m_shouldRunStitching;
+    pEventSteeringParameters->m_shouldRunCosmicHitRemoval = parameters.m_shouldRunCosmicHitRemoval;
+    pEventSteeringParameters->m_shouldRunSlicing = parameters.m_shouldRunSlicing;
+    pEventSteeringParameters->m_shouldRunNeutrinoRecoOption = parameters.m_shouldRunNeutrinoRecoOption;
+    pEventSteeringParameters->m_shouldRunCosmicRecoOption = parameters.m_shouldRunCosmicRecoOption;
+    pEventSteeringParameters->m_shouldPerformSliceId = parameters.m_shouldPerformSliceId;
+    pEventSteeringParameters->m_printOverallRecoStatus = parameters.m_printOverallRecoStatus;
+    PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::SetExternalParameters(*pPandora, "LArMaster", pEventSteeringParameters));
 }
 
 } // namespace lar_nd_reco
