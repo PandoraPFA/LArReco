@@ -24,19 +24,20 @@ public:
      */
     Parameters();
 
-    bool                    m_displayMatchedEvents;     ///< Whether to display matching results for individual events
-    int                     m_skipEvents;               ///< The number of events to skip
-    int                     m_nEventsToProcess;         ///< The number of events to process
-    bool                    m_applyUbooneFiducialCut;   ///< Whether to apply uboone fiducial volume cut to true neutrino vertex position
-    bool                    m_applySBNDFiducialCut;     ///< Whether to apply sbnd fiducial volume cut to true neutrino vertex position
-    bool                    m_correctTrackShowerId;     ///< Whether to demand that pfos are correctly flagged as tracks or showers
-    float                   m_vertexXCorrection;        ///< The vertex x correction, added to reported mc neutrino endpoint x value, in cm
-    bool                    m_histogramOutput;          ///< Whether to produce output histograms
-    bool                    m_testBeamMode;             ///< Whether running in test beam mode
-    bool                    m_triggeredBeamOnly;        ///< Whether to only consider triggered beam particles
-    std::string             m_histPrefix;               ///< Histogram name prefix
-    std::string             m_mapFileName;              ///< File name to which to write output ascii tables, etc.
-    std::string             m_eventFileName;            ///< File name to which to write list of correct events
+    bool m_displayMatchedEvents;   ///< Whether to display matching results for individual events
+    int m_skipEvents;              ///< The number of events to skip
+    int m_nEventsToProcess;        ///< The number of events to process
+    bool m_applyUbooneFiducialCut; ///< Whether to apply uboone fiducial volume cut to true neutrino vertex position
+    bool m_applySBNDFiducialCut;   ///< Whether to apply sbnd fiducial volume cut to true neutrino vertex position
+    bool m_correctTrackShowerId;   ///< Whether to demand that pfos are correctly flagged as tracks or showers
+    float m_vertexXCorrection;     ///< The vertex x correction, added to reported mc neutrino endpoint x value, in cm
+    bool m_histogramOutput;        ///< Whether to produce output histograms
+    bool m_testBeamMode;           ///< Whether running in test beam mode
+    bool m_triggeredBeamOnly;      ///< Whether to only consider triggered beam particles
+    std::string m_histPrefix;      ///< Histogram name prefix
+    std::string m_mapFileName;     ///< File name to which to write output ascii tables, etc.
+    std::string m_eventFileName;   ///< File name to which to write list of correct events
+    std::string m_histFileName;    ///< File name storing output histograms
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -61,9 +62,9 @@ public:
      */
     SimpleThreeVector(const float x, const float y, const float z);
 
-    float               m_x;                            ///< The x value
-    float               m_y;                            ///< The y value
-    float               m_z;                            ///< The z value
+    float m_x; ///< The x value
+    float m_y; ///< The y value
+    float m_z; ///< The z value
 };
 
 typedef std::vector<SimpleThreeVector> SimpleThreeVectorList;
@@ -97,33 +98,33 @@ public:
      */
     SimpleMCPrimary();
 
-    int                 m_primaryId;                    ///< The identifier
-    int                 m_pdgCode;                      ///< The pdg code
-    float               m_energy;                       ///< The energy
-    SimpleThreeVector   m_momentum;                     ///< The momentum
-    SimpleThreeVector   m_vertex;                       ///< The vertex
-    SimpleThreeVector   m_endpoint;                     ///< The endpoint
-    int                 m_nMCHitsTotal;                 ///< The total number of mc hits
-    int                 m_nMCHitsU;                     ///< The number of u mc hits
-    int                 m_nMCHitsV;                     ///< The number of v mc hits
-    int                 m_nMCHitsW;                     ///< The number of w mc hits
+    int m_primaryId;              ///< The identifier
+    int m_pdgCode;                ///< The pdg code
+    float m_energy;               ///< The energy
+    SimpleThreeVector m_momentum; ///< The momentum
+    SimpleThreeVector m_vertex;   ///< The vertex
+    SimpleThreeVector m_endpoint; ///< The endpoint
+    int m_nMCHitsTotal;           ///< The total number of mc hits
+    int m_nMCHitsU;               ///< The number of u mc hits
+    int m_nMCHitsV;               ///< The number of v mc hits
+    int m_nMCHitsW;               ///< The number of w mc hits
 
-    int                 m_nPrimaryMatchedPfos;          ///< The number of matched pfos
-    int                 m_nPrimaryMatchedNuPfos;        ///< The number of matched nu pfos
-    int                 m_nPrimaryMatchedCRPfos;        ///< The number of matched cr pfos
-    int                 m_bestMatchPfoId;               ///< The best match pfo identifier
-    int                 m_bestMatchPfoPdgCode;          ///< The best match pfo pdg code
-    int                 m_bestMatchPfoIsRecoNu;         ///< Whether best match pfo is reconstructed as part of a neutrino hierarchy
-    int                 m_bestMatchPfoRecoNuId;         ///< The identifier of the associated reco neutrino (if part of a neutrino hierarchy)
-    int                 m_bestMatchPfoIsTestBeam;       ///< Whether best match pfo is reconstructed as a test beam particle
-    int                 m_bestMatchPfoNHitsTotal;       ///< The best match pfo total number of pfo hits
-    int                 m_bestMatchPfoNHitsU;           ///< The best match pfo number of u pfo hits
-    int                 m_bestMatchPfoNHitsV;           ///< The best match pfo number of v pfo hits
-    int                 m_bestMatchPfoNHitsW;           ///< The best match pfo number of w pfo hits
-    int                 m_bestMatchPfoNSharedHitsTotal; ///< The best match pfo total number of matched hits
-    int                 m_bestMatchPfoNSharedHitsU;     ///< The best match pfo number of u matched hits
-    int                 m_bestMatchPfoNSharedHitsV;     ///< The best match pfo number of v matched hits
-    int                 m_bestMatchPfoNSharedHitsW;     ///< The best match pfo number of w matched hits
+    int m_nPrimaryMatchedPfos;          ///< The number of matched pfos
+    int m_nPrimaryMatchedNuPfos;        ///< The number of matched nu pfos
+    int m_nPrimaryMatchedCRPfos;        ///< The number of matched cr pfos
+    int m_bestMatchPfoId;               ///< The best match pfo identifier
+    int m_bestMatchPfoPdgCode;          ///< The best match pfo pdg code
+    int m_bestMatchPfoIsRecoNu;         ///< Whether best match pfo is reconstructed as part of a neutrino hierarchy
+    int m_bestMatchPfoRecoNuId;         ///< The identifier of the associated reco neutrino (if part of a neutrino hierarchy)
+    int m_bestMatchPfoIsTestBeam;       ///< Whether best match pfo is reconstructed as a test beam particle
+    int m_bestMatchPfoNHitsTotal;       ///< The best match pfo total number of pfo hits
+    int m_bestMatchPfoNHitsU;           ///< The best match pfo number of u pfo hits
+    int m_bestMatchPfoNHitsV;           ///< The best match pfo number of v pfo hits
+    int m_bestMatchPfoNHitsW;           ///< The best match pfo number of w pfo hits
+    int m_bestMatchPfoNSharedHitsTotal; ///< The best match pfo total number of matched hits
+    int m_bestMatchPfoNSharedHitsU;     ///< The best match pfo number of u matched hits
+    int m_bestMatchPfoNSharedHitsV;     ///< The best match pfo number of v matched hits
+    int m_bestMatchPfoNSharedHitsW;     ///< The best match pfo number of w matched hits
 };
 
 typedef std::vector<SimpleMCPrimary> SimpleMCPrimaryList;
@@ -141,33 +142,33 @@ public:
      */
     SimpleMCTarget();
 
-    int                 m_interactionType;              ///< The target interaction type
-    int                 m_mcNuanceCode;                 ///< The target nuance code
-    int                 m_isNeutrino;                   ///< Whether the target is a neutrino
-    int                 m_isBeamParticle;               ///< Whether the target is a beam particle
-    int                 m_isCosmicRay;                  ///< Whether the target is a cosmic ray
+    int m_interactionType; ///< The target interaction type
+    int m_mcNuanceCode;    ///< The target nuance code
+    int m_isNeutrino;      ///< Whether the target is a neutrino
+    int m_isBeamParticle;  ///< Whether the target is a beam particle
+    int m_isCosmicRay;     ///< Whether the target is a cosmic ray
 
-    SimpleThreeVector   m_targetVertex;                 ///< The target vertex position
-    SimpleThreeVector   m_recoVertex;                   ///< The reco vertex position, if available
+    SimpleThreeVector m_targetVertex; ///< The target vertex position
+    SimpleThreeVector m_recoVertex;   ///< The reco vertex position, if available
 
-    int                 m_isCorrectNu;                  ///< Whether the target was correctly reconstructed as a neutrino
-    int                 m_isCorrectTB;                  ///< Whether the target was correctly reconstructed as a beam particle
-    int                 m_isCorrectCR;                  ///< Whether the target was correctly reconstructed as a cosmic ray
-    int                 m_isFakeNu;                     ///< Whether the target was reconstructed as a fake neutrino
-    int                 m_isFakeCR;                     ///< Whether the target was reconstructed as a fake cosmic ray
-    int                 m_isSplitNu;                    ///< Whether the target was reconstructed as a split neutrino
-    int                 m_isSplitCR;                    ///< Whether the target was reconstructed as a split cosmic ray
-    int                 m_isLost;                       ///< Whether the target was lost (not reconstructed)
+    int m_isCorrectNu; ///< Whether the target was correctly reconstructed as a neutrino
+    int m_isCorrectTB; ///< Whether the target was correctly reconstructed as a beam particle
+    int m_isCorrectCR; ///< Whether the target was correctly reconstructed as a cosmic ray
+    int m_isFakeNu;    ///< Whether the target was reconstructed as a fake neutrino
+    int m_isFakeCR;    ///< Whether the target was reconstructed as a fake cosmic ray
+    int m_isSplitNu;   ///< Whether the target was reconstructed as a split neutrino
+    int m_isSplitCR;   ///< Whether the target was reconstructed as a split cosmic ray
+    int m_isLost;      ///< Whether the target was lost (not reconstructed)
 
-    int                 m_nTargetMatches;               ///< The number of pfo matches to the target
-    int                 m_nTargetNuMatches;             ///< The number of neutrino pfo matches to the target
-    int                 m_nTargetCRMatches;             ///< The number of cosmic ray pfo matches to the target
-    int                 m_nTargetGoodNuMatches;         ///< The number of good neutrino pfo matches to the target (all from same parent neutrino)
-    int                 m_nTargetNuSplits;              ///< The number of split neutrino pfo matches to the target (from different parent neutrinos)
-    int                 m_nTargetNuLosses;              ///< The number of neutrino primaries with no matches
+    int m_nTargetMatches;       ///< The number of pfo matches to the target
+    int m_nTargetNuMatches;     ///< The number of neutrino pfo matches to the target
+    int m_nTargetCRMatches;     ///< The number of cosmic ray pfo matches to the target
+    int m_nTargetGoodNuMatches; ///< The number of good neutrino pfo matches to the target (all from same parent neutrino)
+    int m_nTargetNuSplits;      ///< The number of split neutrino pfo matches to the target (from different parent neutrinos)
+    int m_nTargetNuLosses;      ///< The number of neutrino primaries with no matches
 
-    int                 m_nTargetPrimaries;             ///< The number of target mc primaries
-    SimpleMCPrimaryList m_mcPrimaryList;                ///< The list of mc primaries
+    int m_nTargetPrimaries;              ///< The number of target mc primaries
+    SimpleMCPrimaryList m_mcPrimaryList; ///< The list of mc primaries
 };
 
 typedef std::vector<SimpleMCTarget> SimpleMCTargetList;
@@ -185,11 +186,11 @@ public:
      */
     SimpleMCEvent();
 
-    int                 m_fileIdentifier;               ///< The file identifier
-    int                 m_eventNumber;                  ///< The event number
+    int m_fileIdentifier; ///< The file identifier
+    int m_eventNumber;    ///< The event number
 
-    int                 m_nMCTargets;                   ///< The number of mc targets
-    SimpleMCTargetList  m_mcTargetList;                 ///< The list of mc targets
+    int m_nMCTargets;                  ///< The number of mc targets
+    SimpleMCTargetList m_mcTargetList; ///< The list of mc targets
 };
 
 typedef std::vector<SimpleMCEvent> SimpleMCEventList;
@@ -421,12 +422,12 @@ public:
      */
     CountingDetails();
 
-    unsigned int            m_nTotal;                   ///< The total number of occurences
-    unsigned int            m_nMatch0;                  ///< The number of times the mc primary has 0 pfo matches
-    unsigned int            m_nMatch1;                  ///< The number of times the mc primary has 1 pfo matches
-    unsigned int            m_nMatch2;                  ///< The number of times the mc primary has 2 pfo matches
-    unsigned int            m_nMatch3Plus;              ///< The number of times the mc primary has 3 or more pfo matches
-    unsigned int            m_correctId;                ///< The number of times the mc primary particle id was correct
+    unsigned int m_nTotal;      ///< The total number of occurences
+    unsigned int m_nMatch0;     ///< The number of times the mc primary has 0 pfo matches
+    unsigned int m_nMatch1;     ///< The number of times the mc primary has 1 pfo matches
+    unsigned int m_nMatch2;     ///< The number of times the mc primary has 2 pfo matches
+    unsigned int m_nMatch3Plus; ///< The number of times the mc primary has 3 or more pfo matches
+    unsigned int m_correctId;   ///< The number of times the mc primary particle id was correct
 };
 
 typedef std::map<ExpectedPrimary, CountingDetails> CountingMap;
@@ -445,14 +446,14 @@ public:
      */
     PrimaryResult();
 
-    unsigned int            m_nPfoMatches;              ///< The total number of pfo matches for a given primary
-    unsigned int            m_nMCHitsTotal;             ///< The number of hits in the mc primary
-    unsigned int            m_nBestMatchSharedHitsTotal;///< The number of hits shared by the mc primary and the best matched pfo
-    unsigned int            m_nBestMatchRecoHitsTotal;  ///< The number of hits in the best matched pfo
-    float                   m_bestMatchCompleteness;    ///< The completeness of the best matched pfo
-    float                   m_bestMatchPurity;          ///< The purity of the best matched pfo
-    bool                    m_isCorrectParticleId;      ///< Whether the best matched pfo has the correct particle id
-    float                   m_trueMomentum;             ///< The true momentum of the mc primary
+    unsigned int m_nPfoMatches;               ///< The total number of pfo matches for a given primary
+    unsigned int m_nMCHitsTotal;              ///< The number of hits in the mc primary
+    unsigned int m_nBestMatchSharedHitsTotal; ///< The number of hits shared by the mc primary and the best matched pfo
+    unsigned int m_nBestMatchRecoHitsTotal;   ///< The number of hits in the best matched pfo
+    float m_bestMatchCompleteness;            ///< The completeness of the best matched pfo
+    float m_bestMatchPurity;                  ///< The purity of the best matched pfo
+    bool m_isCorrectParticleId;               ///< Whether the best matched pfo has the correct particle id
+    float m_trueMomentum;                     ///< The true momentum of the mc primary
 };
 
 typedef std::map<ExpectedPrimary, PrimaryResult> PrimaryResultMap;
@@ -470,12 +471,12 @@ public:
      */
     TargetResult();
 
-    int                     m_fileIdentifier;           ///< The file identifier
-    int                     m_eventNumber;              ///< The event number
-    bool                    m_isCorrect;                ///< Whether the target is reconstructed correctly
-    bool                    m_hasRecoVertex;            ///< Whether a reco vertex is matched to the target
-    SimpleThreeVector       m_vertexOffset;             ///< The offset between the reco and true target vertices
-    PrimaryResultMap        m_primaryResultMap;         ///< The primary result map
+    int m_fileIdentifier;                ///< The file identifier
+    int m_eventNumber;                   ///< The event number
+    bool m_isCorrect;                    ///< Whether the target is reconstructed correctly
+    bool m_hasRecoVertex;                ///< Whether a reco vertex is matched to the target
+    SimpleThreeVector m_vertexOffset;    ///< The offset between the reco and true target vertices
+    PrimaryResultMap m_primaryResultMap; ///< The primary result map
 };
 
 typedef std::vector<TargetResult> TargetResultList; // ATTN Not terribly efficient, but that's not the main aim here
@@ -496,10 +497,10 @@ public:
      */
     TargetHistogramCollection();
 
-    TH1F                   *m_hVtxDeltaX;               ///< The vtx delta x histogram
-    TH1F                   *m_hVtxDeltaY;               ///< The vtx delta y histogram
-    TH1F                   *m_hVtxDeltaZ;               ///< The vtx delta z histogram
-    TH1F                   *m_hVtxDeltaR;               ///< The vtx delta r histogram
+    TH1F *m_hVtxDeltaX; ///< The vtx delta x histogram
+    TH1F *m_hVtxDeltaY; ///< The vtx delta y histogram
+    TH1F *m_hVtxDeltaZ; ///< The vtx delta z histogram
+    TH1F *m_hVtxDeltaR; ///< The vtx delta r histogram
 };
 
 typedef std::map<InteractionType, TargetHistogramCollection> InteractionTargetHistogramMap;
@@ -517,12 +518,12 @@ public:
      */
     PrimaryHistogramCollection();
 
-    TH1F                   *m_hHitsAll;                 ///< The number of primaries vs number of hits histogram
-    TH1F                   *m_hHitsEfficiency;          ///< The primary efficiency vs number of hits histogram
-    TH1F                   *m_hMomentumAll;             ///< The number of primaries vs momentum histogram
-    TH1F                   *m_hMomentumEfficiency;      ///< The primary efficiency vs momentum histogram
-    TH1F                   *m_hCompleteness;            ///< The primary (best match) completeness histogram
-    TH1F                   *m_hPurity;                  ///< The primary (best match) purity histogram
+    TH1F *m_hHitsAll;            ///< The number of primaries vs number of hits histogram
+    TH1F *m_hHitsEfficiency;     ///< The primary efficiency vs number of hits histogram
+    TH1F *m_hMomentumAll;        ///< The number of primaries vs momentum histogram
+    TH1F *m_hMomentumEfficiency; ///< The primary efficiency vs momentum histogram
+    TH1F *m_hCompleteness;       ///< The primary (best match) completeness histogram
+    TH1F *m_hPurity;             ///< The primary (best match) purity histogram
 };
 
 typedef std::map<ExpectedPrimary, PrimaryHistogramCollection> PrimaryHistogramMap;
@@ -651,7 +652,8 @@ void FillTargetHistogramCollection(const std::string &histPrefix, const TargetRe
  *  @param  primaryResult the primary result
  *  @param  primaryHistogramCollection the primary histogram collection
  */
-void FillPrimaryHistogramCollection(const std::string &histPrefix, const Parameters &parameters, const PrimaryResult &primaryResult, PrimaryHistogramCollection &primaryHistogramCollection);
+void FillPrimaryHistogramCollection(const std::string &histPrefix, const Parameters &parameters, const PrimaryResult &primaryResult,
+    PrimaryHistogramCollection &primaryHistogramCollection);
 
 /**
  *  @brief  Process histograms stored in the provided map e.g. calculating final efficiencies, normalising, etc.
@@ -659,6 +661,16 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Paramet
  *  @param  interactionPrimaryHistogramMap the interaction primary histogram map
  */
 void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interactionPrimaryHistogramMap);
+
+/**
+ *  @brief  Write histograms stored in the provided maps
+ *
+ *  @param  outputFile the name of the output ROOT file storing the histograms
+ *  @param  interactionPrimaryHistogramMap the interaction primary histogram map
+ *  @param  interactionTargetHistogramMap the interaction target histogram map
+ */
+void WriteHistogramCollections(const std::string &outputFile, const InteractionPrimaryHistogramMap &interactionPrimaryHistogramMap,
+    const InteractionTargetHistogramMap &interactionTargetHistogramMap);
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -689,10 +701,7 @@ SimpleThreeVector::SimpleThreeVector() :
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-SimpleThreeVector::SimpleThreeVector(const float x, const float y, const float z) :
-    m_x(x),
-    m_y(y),
-    m_z(z)
+SimpleThreeVector::SimpleThreeVector(const float x, const float y, const float z) : m_x(x), m_y(y), m_z(z)
 {
 }
 
@@ -775,23 +784,14 @@ SimpleMCTarget::SimpleMCTarget() :
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-SimpleMCEvent::SimpleMCEvent() :
-    m_fileIdentifier(-1),
-    m_eventNumber(0),
-    m_nMCTargets(0)
+SimpleMCEvent::SimpleMCEvent() : m_fileIdentifier(-1), m_eventNumber(0), m_nMCTargets(0)
 {
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-CountingDetails::CountingDetails() :
-    m_nTotal(0),
-    m_nMatch0(0),
-    m_nMatch1(0),
-    m_nMatch2(0),
-    m_nMatch3Plus(0),
-    m_correctId(0)
+CountingDetails::CountingDetails() : m_nTotal(0), m_nMatch0(0), m_nMatch1(0), m_nMatch2(0), m_nMatch3Plus(0), m_correctId(0)
 {
 }
 

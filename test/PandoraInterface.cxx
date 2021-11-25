@@ -303,6 +303,13 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
 
             std::cout << "Produced " << mergedVoxels.size() << " merged voxels from " << voxelList.size() << " voxels." << std::endl;
 
+            // Stop processing the event if we have too many voxels: reco takes too long
+            if (parameters.m_maxMergedVoxels > 0 && mergedVoxels.size() > parameters.m_maxMergedVoxels)
+            {
+                std::cout << "SKIPPING EVENT: number of merged voxels " << mergedVoxels.size() << " > " << parameters.m_maxMergedVoxels << std::endl;
+                break;
+            }
+
             // Loop over the voxels and make them into caloHits
             for (const LArVoxel &voxel : mergedVoxels)
             {
@@ -924,7 +931,10 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
     std::string recoOption;
     std::string viewOption("3d");
 
-    while ((c = getopt(argc, argv, "r:i:e:n:s:j:w:pNh")) != -1)
+    // By default, process events with any number of voxels
+    parameters.m_maxMergedVoxels = -1;
+
+    while ((c = getopt(argc, argv, "r:i:e:n:s:j:w:m:pNh")) != -1)
     {
         switch (c)
         {
@@ -951,6 +961,9 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
                 break;
             case 'w':
                 parameters.m_voxelWidth = atof(optarg);
+                break;
+            case 'm':
+                parameters.m_maxMergedVoxels = atoi(optarg);
                 break;
             case 'N':
                 parameters.m_shouldDisplayEventNumber = true;
@@ -985,6 +998,8 @@ bool PrintOptions()
               << "    -N                     (optional) [print event numbers]" << std::endl
               << "    -j Projection          (optional) [3D (default), LArTPC, Both]" << std::endl
               << "    -w width               (optional) [voxel bin width (cm), default = 0.4 cm]" << std::endl
+              << "    -m maxMergedVoxels     (optional) [skip events that have N(merged voxels) > maxMergedVoxels (default = no events skipped)]"
+              << std::endl
               << std::endl;
 
     return false;

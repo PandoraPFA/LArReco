@@ -53,7 +53,8 @@ public:
     bool m_shouldPerformSliceId;        ///< Whether to identify slices and select most appropriate pfos
     bool m_printOverallRecoStatus;      ///< Whether to print current operation status messages
 
-    int m_nEventsToSkip; ///< The number of events to skip
+    int m_nEventsToSkip;   ///< The number of events to skip
+    int m_maxMergedVoxels; ///< The max number of merged voxels to process (default all)
 
     bool m_use3D;     ///< Create 3D LArCaloHits
     bool m_useLArTPC; ///< Create LArTPC LArCaloHits with u,v,w views

@@ -10,9 +10,9 @@
 
 #include "Validation.h"
 
+#include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <fstream>
 #include <sstream>
 
 void Validation(const std::string &inputFiles, const Parameters &parameters)
@@ -26,7 +26,7 @@ void Validation(const std::string &inputFiles, const Parameters &parameters)
     int nEvents(0), nProcessedEvents(0);
     const int nChainEntries(pTChain->GetEntries());
 
-    for (int iEntry = 0; iEntry < nChainEntries; )
+    for (int iEntry = 0; iEntry < nChainEntries;)
     {
         SimpleMCEvent simpleMCEvent;
         iEntry += ReadNextEvent(pTChain, iEntry, simpleMCEvent, parameters);
@@ -97,13 +97,17 @@ int ReadNextEvent(TChain *const pTChain, const int iEntry, SimpleMCEvent &simple
             pTChain->SetBranchAddress("nTargetNuMatches", &simpleMCTarget.m_nTargetNuMatches);
         }
 
-        IntVector *pMCPrimaryId(nullptr), *pMCPrimaryPdg(nullptr), *pNMCHitsTotal(nullptr), *pNMCHitsU(nullptr), *pNMCHitsV(nullptr), *pNMCHitsW(nullptr);
+        IntVector *pMCPrimaryId(nullptr), *pMCPrimaryPdg(nullptr), *pNMCHitsTotal(nullptr), *pNMCHitsU(nullptr), *pNMCHitsV(nullptr),
+            *pNMCHitsW(nullptr);
         FloatVector *pMCPrimaryE(nullptr), *pMCPrimaryPX(nullptr), *pMCPrimaryPY(nullptr), *pMCPrimaryPZ(nullptr);
-        FloatVector *pMCPrimaryVtxX(nullptr), *pMCPrimaryVtxY(nullptr), *pMCPrimaryVtxZ(nullptr), *pMCPrimaryEndX(nullptr), *pMCPrimaryEndY(nullptr), *pMCPrimaryEndZ(nullptr);
+        FloatVector *pMCPrimaryVtxX(nullptr), *pMCPrimaryVtxY(nullptr), *pMCPrimaryVtxZ(nullptr), *pMCPrimaryEndX(nullptr),
+            *pMCPrimaryEndY(nullptr), *pMCPrimaryEndZ(nullptr);
         IntVector *pNPrimaryMatchedPfos(nullptr), *pNPrimaryMatchedNuPfos(nullptr), *pNPrimaryMatchedCRPfos(nullptr);
-        IntVector *pBestMatchPfoId(nullptr), *pBestMatchPfoPdg(nullptr), *pBestMatchPfoIsRecoNu(nullptr), *pBestMatchPfoRecoNuId(nullptr), *pBestMatchPfoIsTestBeam(nullptr);
+        IntVector *pBestMatchPfoId(nullptr), *pBestMatchPfoPdg(nullptr), *pBestMatchPfoIsRecoNu(nullptr), *pBestMatchPfoRecoNuId(nullptr),
+            *pBestMatchPfoIsTestBeam(nullptr);
         IntVector *pBestMatchPfoNHitsTotal(nullptr), *pBestMatchPfoNHitsU(nullptr), *pBestMatchPfoNHitsV(nullptr), *pBestMatchPfoNHitsW(nullptr);
-        IntVector *pBestMatchPfoNSharedHitsTotal(nullptr), *pBestMatchPfoNSharedHitsU(nullptr), *pBestMatchPfoNSharedHitsV(nullptr), *pBestMatchPfoNSharedHitsW(nullptr);
+        IntVector *pBestMatchPfoNSharedHitsTotal(nullptr), *pBestMatchPfoNSharedHitsU(nullptr), *pBestMatchPfoNSharedHitsV(nullptr),
+            *pBestMatchPfoNSharedHitsW(nullptr);
 
         pTChain->SetBranchAddress("mcPrimaryId", &pMCPrimaryId);
         pTChain->SetBranchAddress("mcPrimaryPdg", &pMCPrimaryPdg);
@@ -214,58 +218,81 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const Param
     std::cout << "---INTERPRETED-MATCHING-OUTPUT------------------------------------------------------------------" << std::endl;
     std::cout << "File " << simpleMCEvent.m_fileIdentifier << ", event " << simpleMCEvent.m_eventNumber << std::endl;
 
-    int nCorrectNu(0), nTotalNu(0), nCorrectTB(0), nTotalTB(0), nCorrectCR(0), nTotalCR(0), nFakeNu(0), nFakeCR(0), nSplitNu(0), nSplitCR(0), nLost(0);
+    int nCorrectNu(0), nTotalNu(0), nCorrectTB(0), nTotalTB(0), nCorrectCR(0), nTotalCR(0), nFakeNu(0), nFakeCR(0), nSplitNu(0),
+        nSplitCR(0), nLost(0);
 
     for (const SimpleMCTarget &simpleMCTarget : simpleMCEvent.m_mcTargetList)
     {
-        std::cout << std::endl << ToString(static_cast<InteractionType>(simpleMCTarget.m_interactionType))
-                  << " (Nuance " << simpleMCTarget.m_mcNuanceCode << ", Nu " << simpleMCTarget.m_isNeutrino;
-        if (!PassFiducialCut(simpleMCTarget, parameters) && simpleMCTarget.m_isNeutrino) std::cout << " [NonFid]";
+        std::cout << std::endl
+                  << ToString(static_cast<InteractionType>(simpleMCTarget.m_interactionType)) << " (Nuance "
+                  << simpleMCTarget.m_mcNuanceCode << ", Nu " << simpleMCTarget.m_isNeutrino;
+        if (!PassFiducialCut(simpleMCTarget, parameters) && simpleMCTarget.m_isNeutrino)
+            std::cout << " [NonFid]";
         std::cout << ", TB " << simpleMCTarget.m_isBeamParticle << ", CR " << simpleMCTarget.m_isCosmicRay << ")" << std::endl;
 
         std::stringstream ss;
-        if (simpleMCTarget.m_isCorrectNu) ss << "IsCorrectNu ";
-        if (simpleMCTarget.m_isCorrectTB) ss << "IsCorrectTB ";
-        if (simpleMCTarget.m_isCorrectCR) ss << "IsCorrectCR ";
-        if (simpleMCTarget.m_isFakeNu) ss << "IsFakeNu ";
-        if (simpleMCTarget.m_isFakeCR) ss << "IsFakeCR ";
-        if (simpleMCTarget.m_isSplitNu) ss << "IsSplitNu ";
-        if (simpleMCTarget.m_isSplitCR) ss << "IsSplitCR ";
-        if (simpleMCTarget.m_isLost) ss << "IsLost ";
-        if (simpleMCTarget.m_nTargetNuMatches > 0) ss << "(NNuMatches: " << simpleMCTarget.m_nTargetNuMatches << ") ";
-        if (simpleMCTarget.m_nTargetNuSplits > 0) ss << "(NNuSplits: " << simpleMCTarget.m_nTargetNuSplits << ") ";
-        if (simpleMCTarget.m_nTargetNuLosses > 0) ss << "(NNuLosses: " << simpleMCTarget.m_nTargetNuLosses << ") ";
-        if (simpleMCTarget.m_nTargetCRMatches > 0) ss << "(NCRMatches: " << simpleMCTarget.m_nTargetCRMatches << ") ";
+        if (simpleMCTarget.m_isCorrectNu)
+            ss << "IsCorrectNu ";
+        if (simpleMCTarget.m_isCorrectTB)
+            ss << "IsCorrectTB ";
+        if (simpleMCTarget.m_isCorrectCR)
+            ss << "IsCorrectCR ";
+        if (simpleMCTarget.m_isFakeNu)
+            ss << "IsFakeNu ";
+        if (simpleMCTarget.m_isFakeCR)
+            ss << "IsFakeCR ";
+        if (simpleMCTarget.m_isSplitNu)
+            ss << "IsSplitNu ";
+        if (simpleMCTarget.m_isSplitCR)
+            ss << "IsSplitCR ";
+        if (simpleMCTarget.m_isLost)
+            ss << "IsLost ";
+        if (simpleMCTarget.m_nTargetNuMatches > 0)
+            ss << "(NNuMatches: " << simpleMCTarget.m_nTargetNuMatches << ") ";
+        if (simpleMCTarget.m_nTargetNuSplits > 0)
+            ss << "(NNuSplits: " << simpleMCTarget.m_nTargetNuSplits << ") ";
+        if (simpleMCTarget.m_nTargetNuLosses > 0)
+            ss << "(NNuLosses: " << simpleMCTarget.m_nTargetNuLosses << ") ";
+        if (simpleMCTarget.m_nTargetCRMatches > 0)
+            ss << "(NCRMatches: " << simpleMCTarget.m_nTargetCRMatches << ") ";
         std::cout << ss.str() << std::endl;
 
-        if (simpleMCTarget.m_isNeutrino) ++nTotalNu;
-        if (simpleMCTarget.m_isBeamParticle) ++nTotalTB;
-        if (simpleMCTarget.m_isCosmicRay) ++nTotalCR;
-        if (simpleMCTarget.m_isCorrectNu) ++nCorrectNu;
-        if (simpleMCTarget.m_isCorrectTB) ++nCorrectTB;
-        if (simpleMCTarget.m_isCorrectCR) ++nCorrectCR;
-        if (simpleMCTarget.m_isFakeNu) ++nFakeNu;
-        if (simpleMCTarget.m_isFakeCR) ++nFakeCR;
-        if (simpleMCTarget.m_isSplitNu) ++nSplitNu;
-        if (simpleMCTarget.m_isSplitCR) ++nSplitCR;
-        if (simpleMCTarget.m_isLost) ++nLost;
+        if (simpleMCTarget.m_isNeutrino)
+            ++nTotalNu;
+        if (simpleMCTarget.m_isBeamParticle)
+            ++nTotalTB;
+        if (simpleMCTarget.m_isCosmicRay)
+            ++nTotalCR;
+        if (simpleMCTarget.m_isCorrectNu)
+            ++nCorrectNu;
+        if (simpleMCTarget.m_isCorrectTB)
+            ++nCorrectTB;
+        if (simpleMCTarget.m_isCorrectCR)
+            ++nCorrectCR;
+        if (simpleMCTarget.m_isFakeNu)
+            ++nFakeNu;
+        if (simpleMCTarget.m_isFakeCR)
+            ++nFakeCR;
+        if (simpleMCTarget.m_isSplitNu)
+            ++nSplitNu;
+        if (simpleMCTarget.m_isSplitCR)
+            ++nSplitCR;
+        if (simpleMCTarget.m_isLost)
+            ++nLost;
 
         for (const SimpleMCPrimary &simpleMCPrimary : simpleMCTarget.m_mcPrimaryList)
         {
-            std::cout << "PrimaryId " << simpleMCPrimary.m_primaryId
-                      << ", Nu " << simpleMCTarget.m_isNeutrino
-                      << ", TB " << simpleMCTarget.m_isBeamParticle
-                      << ", CR " << simpleMCTarget.m_isCosmicRay
-                      << ", MCPDG " << simpleMCPrimary.m_pdgCode
-                      << ", Energy " << simpleMCPrimary.m_energy
-                      << ", Dist. " << std::sqrt(
-                            (simpleMCPrimary.m_vertex.m_x - simpleMCPrimary.m_endpoint.m_x) * (simpleMCPrimary.m_vertex.m_x - simpleMCPrimary.m_endpoint.m_x) +
-                            (simpleMCPrimary.m_vertex.m_y - simpleMCPrimary.m_endpoint.m_y) * (simpleMCPrimary.m_vertex.m_y - simpleMCPrimary.m_endpoint.m_y) +
-                            (simpleMCPrimary.m_vertex.m_z - simpleMCPrimary.m_endpoint.m_z) * (simpleMCPrimary.m_vertex.m_z - simpleMCPrimary.m_endpoint.m_z))
-                      << ", nMCHits " << simpleMCPrimary.m_nMCHitsTotal
-                      << " (" << simpleMCPrimary.m_nMCHitsU
-                      << ", " << simpleMCPrimary.m_nMCHitsV
-                      << ", " << simpleMCPrimary.m_nMCHitsW << ")" << std::endl;
+            std::cout << "PrimaryId " << simpleMCPrimary.m_primaryId << ", Nu " << simpleMCTarget.m_isNeutrino << ", TB "
+                      << simpleMCTarget.m_isBeamParticle << ", CR " << simpleMCTarget.m_isCosmicRay << ", MCPDG "
+                      << simpleMCPrimary.m_pdgCode << ", Energy " << simpleMCPrimary.m_energy << ", Dist. "
+                      << std::sqrt((simpleMCPrimary.m_vertex.m_x - simpleMCPrimary.m_endpoint.m_x) *
+                                       (simpleMCPrimary.m_vertex.m_x - simpleMCPrimary.m_endpoint.m_x) +
+                                   (simpleMCPrimary.m_vertex.m_y - simpleMCPrimary.m_endpoint.m_y) *
+                                       (simpleMCPrimary.m_vertex.m_y - simpleMCPrimary.m_endpoint.m_y) +
+                                   (simpleMCPrimary.m_vertex.m_z - simpleMCPrimary.m_endpoint.m_z) *
+                                       (simpleMCPrimary.m_vertex.m_z - simpleMCPrimary.m_endpoint.m_z))
+                      << ", nMCHits " << simpleMCPrimary.m_nMCHitsTotal << " (" << simpleMCPrimary.m_nMCHitsU << ", "
+                      << simpleMCPrimary.m_nMCHitsV << ", " << simpleMCPrimary.m_nMCHitsW << ")" << std::endl;
 
             if (0 == simpleMCPrimary.m_nPrimaryMatchedPfos)
             {
@@ -274,34 +301,45 @@ void DisplaySimpleMCEventMatches(const SimpleMCEvent &simpleMCEvent, const Param
             }
 
             std::cout << "-MatchedPfoId " << simpleMCPrimary.m_bestMatchPfoId;
-            if (simpleMCPrimary.m_nPrimaryMatchedPfos > 1) std::cout << " (NMatches " << simpleMCPrimary.m_nPrimaryMatchedPfos << ")";
+            if (simpleMCPrimary.m_nPrimaryMatchedPfos > 1)
+                std::cout << " (NMatches " << simpleMCPrimary.m_nPrimaryMatchedPfos << ")";
             std::cout << ", Nu " << simpleMCPrimary.m_bestMatchPfoIsRecoNu;
-            if (simpleMCPrimary.m_bestMatchPfoIsRecoNu) std::cout << " [NuId: " << simpleMCPrimary.m_bestMatchPfoRecoNuId << "]";
-            std::cout << ", TB " << (simpleMCPrimary.m_bestMatchPfoIsTestBeam)
-                      << ", CR " << (!simpleMCPrimary.m_bestMatchPfoIsRecoNu && !simpleMCPrimary.m_bestMatchPfoIsTestBeam)
-                      << ", PDG " << simpleMCPrimary.m_bestMatchPfoPdgCode
-                      << ", nMatchedHits " << simpleMCPrimary.m_bestMatchPfoNSharedHitsTotal
-                      << " (" << simpleMCPrimary.m_bestMatchPfoNSharedHitsU
-                      << ", " << simpleMCPrimary.m_bestMatchPfoNSharedHitsV
-                      << ", " << simpleMCPrimary.m_bestMatchPfoNSharedHitsW << ")"
-                      << ", nPfoHits " << simpleMCPrimary.m_bestMatchPfoNHitsTotal
-                      << " (" << simpleMCPrimary.m_bestMatchPfoNHitsU
-                      << ", " << simpleMCPrimary.m_bestMatchPfoNHitsV
-                      << ", " << simpleMCPrimary.m_bestMatchPfoNHitsW << ")" << std::endl;
+            if (simpleMCPrimary.m_bestMatchPfoIsRecoNu)
+                std::cout << " [NuId: " << simpleMCPrimary.m_bestMatchPfoRecoNuId << "]";
+            std::cout << ", TB " << (simpleMCPrimary.m_bestMatchPfoIsTestBeam) << ", CR "
+                      << (!simpleMCPrimary.m_bestMatchPfoIsRecoNu && !simpleMCPrimary.m_bestMatchPfoIsTestBeam) << ", PDG "
+                      << simpleMCPrimary.m_bestMatchPfoPdgCode << ", nMatchedHits " << simpleMCPrimary.m_bestMatchPfoNSharedHitsTotal
+                      << " (" << simpleMCPrimary.m_bestMatchPfoNSharedHitsU << ", " << simpleMCPrimary.m_bestMatchPfoNSharedHitsV << ", "
+                      << simpleMCPrimary.m_bestMatchPfoNSharedHitsW << ")"
+                      << ", nPfoHits " << simpleMCPrimary.m_bestMatchPfoNHitsTotal << " (" << simpleMCPrimary.m_bestMatchPfoNHitsU << ", "
+                      << simpleMCPrimary.m_bestMatchPfoNHitsV << ", " << simpleMCPrimary.m_bestMatchPfoNHitsW << ")" << std::endl;
         }
     }
 
     std::stringstream summarySS;
-    summarySS << std::endl << "---SUMMARY--------------------------------------------------------------------------------------" << std::endl;
-    if (nTotalNu > 0) summarySS << "#CorrectNu: " << nCorrectNu << "/" << nTotalNu << ", Fraction: " << (nTotalNu > 0 ? static_cast<float>(nCorrectNu) / static_cast<float>(nTotalNu) : 0.f) << std::endl;
-    if (nTotalTB > 0) summarySS << "#CorrectTB: " << nCorrectTB << "/" << nTotalTB << ", Fraction: " << (nTotalTB > 0 ? static_cast<float>(nCorrectTB) / static_cast<float>(nTotalTB) : 0.f) << std::endl;
-    if (nTotalCR > 0) summarySS << "#CorrectCR: " << nCorrectCR << "/" << nTotalCR << ", Fraction: " << (nTotalCR > 0 ? static_cast<float>(nCorrectCR) / static_cast<float>(nTotalCR) : 0.f) << std::endl;
-    if (nFakeNu > 0) summarySS << "#FakeNu: " << nFakeNu << " ";
-    if (nFakeCR > 0) summarySS << "#FakeCR: " << nFakeCR << " ";
-    if (nSplitNu > 0) summarySS << "#SplitNu: " << nSplitNu << " ";
-    if (nSplitCR > 0) summarySS << "#SplitCR: " << nSplitCR << " ";
-    if (nLost > 0) summarySS << "#Lost: " << nLost << " ";
-    if (nFakeNu || nFakeCR || nSplitNu || nSplitCR || nLost) summarySS << std::endl;
+    summarySS << std::endl
+              << "---SUMMARY--------------------------------------------------------------------------------------" << std::endl;
+    if (nTotalNu > 0)
+        summarySS << "#CorrectNu: " << nCorrectNu << "/" << nTotalNu
+                  << ", Fraction: " << (nTotalNu > 0 ? static_cast<float>(nCorrectNu) / static_cast<float>(nTotalNu) : 0.f) << std::endl;
+    if (nTotalTB > 0)
+        summarySS << "#CorrectTB: " << nCorrectTB << "/" << nTotalTB
+                  << ", Fraction: " << (nTotalTB > 0 ? static_cast<float>(nCorrectTB) / static_cast<float>(nTotalTB) : 0.f) << std::endl;
+    if (nTotalCR > 0)
+        summarySS << "#CorrectCR: " << nCorrectCR << "/" << nTotalCR
+                  << ", Fraction: " << (nTotalCR > 0 ? static_cast<float>(nCorrectCR) / static_cast<float>(nTotalCR) : 0.f) << std::endl;
+    if (nFakeNu > 0)
+        summarySS << "#FakeNu: " << nFakeNu << " ";
+    if (nFakeCR > 0)
+        summarySS << "#FakeCR: " << nFakeCR << " ";
+    if (nSplitNu > 0)
+        summarySS << "#SplitNu: " << nSplitNu << " ";
+    if (nSplitCR > 0)
+        summarySS << "#SplitCR: " << nSplitCR << " ";
+    if (nLost > 0)
+        summarySS << "#Lost: " << nLost << " ";
+    if (nFakeNu || nFakeCR || nSplitNu || nSplitCR || nLost)
+        summarySS << std::endl;
     std::cout << summarySS.str();
     std::cout << "------------------------------------------------------------------------------------------------" << std::endl;
 }
@@ -321,8 +359,8 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
         targetResult.m_fileIdentifier = simpleMCEvent.m_fileIdentifier;
         targetResult.m_eventNumber = simpleMCEvent.m_eventNumber;
         targetResult.m_isCorrect = (simpleMCTarget.m_isNeutrino && simpleMCTarget.m_isCorrectNu) ||
-            (simpleMCTarget.m_isBeamParticle && simpleMCTarget.m_isCorrectTB) ||
-            (simpleMCTarget.m_isCosmicRay && simpleMCTarget.m_isCorrectCR);
+                                   (simpleMCTarget.m_isBeamParticle && simpleMCTarget.m_isCorrectTB) ||
+                                   (simpleMCTarget.m_isCosmicRay && simpleMCTarget.m_isCorrectCR);
 
         if (simpleMCTarget.m_nTargetMatches > 0)
         {
@@ -342,7 +380,8 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
             ++countingDetails.m_nTotal;
 
             // ATTN Fail cosmic ray matches to neutrinos (or beam particles) and vice versa
-            bool incorrectMatchToCR(parameters.m_testBeamMode ? (simpleMCTarget.m_isCosmicRay == simpleMCPrimary.m_bestMatchPfoIsTestBeam) : (simpleMCTarget.m_isCosmicRay == simpleMCPrimary.m_bestMatchPfoIsRecoNu));
+            bool incorrectMatchToCR(parameters.m_testBeamMode ? (simpleMCTarget.m_isCosmicRay == simpleMCPrimary.m_bestMatchPfoIsTestBeam)
+                                                              : (simpleMCTarget.m_isCosmicRay == simpleMCPrimary.m_bestMatchPfoIsRecoNu));
 
             if ((simpleMCPrimary.m_bestMatchPfoId >= 0) && incorrectMatchToCR)
             {
@@ -350,17 +389,27 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
                 continue;
             }
 
-            if (0 == simpleMCPrimary.m_nPrimaryMatchedPfos) ++countingDetails.m_nMatch0;
-            else if (1 == simpleMCPrimary.m_nPrimaryMatchedPfos) ++countingDetails.m_nMatch1;
-            else if (2 == simpleMCPrimary.m_nPrimaryMatchedPfos) ++countingDetails.m_nMatch2;
-            else ++countingDetails.m_nMatch3Plus;
+            if (0 == simpleMCPrimary.m_nPrimaryMatchedPfos)
+                ++countingDetails.m_nMatch0;
+            else if (1 == simpleMCPrimary.m_nPrimaryMatchedPfos)
+                ++countingDetails.m_nMatch1;
+            else if (2 == simpleMCPrimary.m_nPrimaryMatchedPfos)
+                ++countingDetails.m_nMatch2;
+            else
+                ++countingDetails.m_nMatch3Plus;
 
             primaryResult.m_nPfoMatches = simpleMCPrimary.m_nPrimaryMatchedPfos;
             primaryResult.m_nMCHitsTotal = simpleMCPrimary.m_nMCHitsTotal;
             primaryResult.m_nBestMatchSharedHitsTotal = simpleMCPrimary.m_bestMatchPfoNSharedHitsTotal;
             primaryResult.m_nBestMatchRecoHitsTotal = simpleMCPrimary.m_bestMatchPfoNHitsTotal;
-            primaryResult.m_bestMatchCompleteness = (simpleMCPrimary.m_nMCHitsTotal > 0) ? static_cast<float>(simpleMCPrimary.m_bestMatchPfoNSharedHitsTotal) / static_cast<float>(simpleMCPrimary.m_nMCHitsTotal) : 0.f;
-            primaryResult.m_bestMatchPurity = (simpleMCPrimary.m_bestMatchPfoNHitsTotal > 0) ? static_cast<float>(simpleMCPrimary.m_bestMatchPfoNSharedHitsTotal) / static_cast<float>(simpleMCPrimary.m_bestMatchPfoNHitsTotal) : 0.f;
+            primaryResult.m_bestMatchCompleteness =
+                (simpleMCPrimary.m_nMCHitsTotal > 0)
+                    ? static_cast<float>(simpleMCPrimary.m_bestMatchPfoNSharedHitsTotal) / static_cast<float>(simpleMCPrimary.m_nMCHitsTotal)
+                    : 0.f;
+            primaryResult.m_bestMatchPurity = (simpleMCPrimary.m_bestMatchPfoNHitsTotal > 0)
+                                                  ? static_cast<float>(simpleMCPrimary.m_bestMatchPfoNSharedHitsTotal) /
+                                                        static_cast<float>(simpleMCPrimary.m_bestMatchPfoNHitsTotal)
+                                                  : 0.f;
             primaryResult.m_isCorrectParticleId = IsGoodParticleIdMatch(simpleMCPrimary, simpleMCPrimary.m_bestMatchPfoPdgCode);
 
             if ((simpleMCPrimary.m_nPrimaryMatchedPfos > 0) && primaryResult.m_isCorrectParticleId)
@@ -369,7 +418,9 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
             if (parameters.m_correctTrackShowerId && !primaryResult.m_isCorrectParticleId)
                 targetResult.m_isCorrect = false;
 
-            const float pTot(std::sqrt(simpleMCPrimary.m_momentum.m_x * simpleMCPrimary.m_momentum.m_x + simpleMCPrimary.m_momentum.m_y * simpleMCPrimary.m_momentum.m_y + simpleMCPrimary.m_momentum.m_z * simpleMCPrimary.m_momentum.m_z));
+            const float pTot(std::sqrt(simpleMCPrimary.m_momentum.m_x * simpleMCPrimary.m_momentum.m_x +
+                                       simpleMCPrimary.m_momentum.m_y * simpleMCPrimary.m_momentum.m_y +
+                                       simpleMCPrimary.m_momentum.m_z * simpleMCPrimary.m_momentum.m_z));
             primaryResult.m_trueMomentum = pTot;
         }
 
@@ -382,7 +433,7 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
 bool PassFiducialCut(const SimpleMCTarget &simpleMCTarget, const Parameters &parameters)
 {
     if (parameters.m_applyUbooneFiducialCut && parameters.m_applySBNDFiducialCut)
-      throw std::invalid_argument("Parameters has fiducial cuts for uBooNE and SBND");
+        throw std::invalid_argument("Parameters has fiducial cuts for uBooNE and SBND");
 
     if (parameters.m_applyUbooneFiducialCut)
         return PassUbooneFiducialCut(simpleMCTarget);
@@ -402,7 +453,7 @@ bool PassUbooneFiducialCut(const SimpleMCTarget &simpleMCTarget)
 
     if ((simpleMCTarget.m_targetVertex.m_x < (eVx - xBorder)) && (simpleMCTarget.m_targetVertex.m_x > xBorder) &&
         (simpleMCTarget.m_targetVertex.m_y < (eVy / 2. - yBorder)) && (simpleMCTarget.m_targetVertex.m_y > (-eVy / 2. + yBorder)) &&
-        (simpleMCTarget.m_targetVertex.m_z < (eVz - zBorder)) && (simpleMCTarget.m_targetVertex.m_z > zBorder) )
+        (simpleMCTarget.m_targetVertex.m_z < (eVz - zBorder)) && (simpleMCTarget.m_targetVertex.m_z > zBorder))
     {
         return true;
     }
@@ -420,7 +471,7 @@ bool PassSBNDFiducialCut(const SimpleMCTarget &simpleMCTarget)
     // ATTN origin definition is different in SBND to uBooNE. Both x & y are centered in the middle of the face
     if ((simpleMCTarget.m_targetVertex.m_x < (eVx / 2. - xBorder)) && (simpleMCTarget.m_targetVertex.m_x > (-eVx / 2. + xBorder)) &&
         (simpleMCTarget.m_targetVertex.m_y < (eVy / 2. - yBorder)) && (simpleMCTarget.m_targetVertex.m_y > (-eVy / 2. + yBorder)) &&
-        (simpleMCTarget.m_targetVertex.m_z < (eVz - zBorder)) && (simpleMCTarget.m_targetVertex.m_z > zBorder) )
+        (simpleMCTarget.m_targetVertex.m_z < (eVz - zBorder)) && (simpleMCTarget.m_targetVertex.m_z > zBorder))
     {
         return true;
     }
@@ -439,26 +490,44 @@ ExpectedPrimary GetExpectedPrimary(const SimpleMCPrimary &simpleMCPrimary, const
     {
         if (&simpleMCPrimary == &simpleMCPrimaryInList)
         {
-            if ((0 == nMuons) && (13 == std::fabs(simpleMCPrimaryInList.m_pdgCode))) return MUON;
-            if ((0 == nElectrons) && (11 == std::fabs(simpleMCPrimaryInList.m_pdgCode))) return ELECTRON;
-            if ((0 == nProtons) && (2212 == std::fabs(simpleMCPrimaryInList.m_pdgCode))) return PROTON1;
-            if ((1 == nProtons) && (2212 == std::fabs(simpleMCPrimaryInList.m_pdgCode))) return PROTON2;
-            if ((2 == nProtons) && (2212 == std::fabs(simpleMCPrimaryInList.m_pdgCode))) return PROTON3;
-            if ((3 == nProtons) && (2212 == std::fabs(simpleMCPrimaryInList.m_pdgCode))) return PROTON4;
-            if ((4 == nProtons) && (2212 == std::fabs(simpleMCPrimaryInList.m_pdgCode))) return PROTON5;
-            if ((0 == nPiPlus) && (211 == simpleMCPrimaryInList.m_pdgCode)) return PIPLUS;
-            if ((0 == nPiMinus) && (-211 == simpleMCPrimaryInList.m_pdgCode)) return PIMINUS;
-            if ((0 == nPhotons) && (22 == simpleMCPrimaryInList.m_pdgCode)) return PHOTON1;
-            if ((1 == nPhotons) && (22 == simpleMCPrimaryInList.m_pdgCode)) return PHOTON2;
+            if ((0 == nMuons) && (13 == std::fabs(simpleMCPrimaryInList.m_pdgCode)))
+                return MUON;
+            if ((0 == nElectrons) && (11 == std::fabs(simpleMCPrimaryInList.m_pdgCode)))
+                return ELECTRON;
+            if ((0 == nProtons) && (2212 == std::fabs(simpleMCPrimaryInList.m_pdgCode)))
+                return PROTON1;
+            if ((1 == nProtons) && (2212 == std::fabs(simpleMCPrimaryInList.m_pdgCode)))
+                return PROTON2;
+            if ((2 == nProtons) && (2212 == std::fabs(simpleMCPrimaryInList.m_pdgCode)))
+                return PROTON3;
+            if ((3 == nProtons) && (2212 == std::fabs(simpleMCPrimaryInList.m_pdgCode)))
+                return PROTON4;
+            if ((4 == nProtons) && (2212 == std::fabs(simpleMCPrimaryInList.m_pdgCode)))
+                return PROTON5;
+            if ((0 == nPiPlus) && (211 == simpleMCPrimaryInList.m_pdgCode))
+                return PIPLUS;
+            if ((0 == nPiMinus) && (-211 == simpleMCPrimaryInList.m_pdgCode))
+                return PIMINUS;
+            if ((0 == nPhotons) && (22 == simpleMCPrimaryInList.m_pdgCode))
+                return PHOTON1;
+            if ((1 == nPhotons) && (22 == simpleMCPrimaryInList.m_pdgCode))
+                return PHOTON2;
         }
 
-        if (13 == std::fabs(simpleMCPrimaryInList.m_pdgCode)) ++nMuons;
-        else if (11 == std::fabs(simpleMCPrimaryInList.m_pdgCode)) ++nElectrons;
-        else if (2212 == std::fabs(simpleMCPrimaryInList.m_pdgCode)) ++nProtons;
-        else if (211 == simpleMCPrimaryInList.m_pdgCode) ++nPiPlus;
-        else if (-211 == simpleMCPrimaryInList.m_pdgCode) ++nPiMinus;
-        else if (2112 == std::fabs(simpleMCPrimaryInList.m_pdgCode)) ++nNeutrons;
-        else if (22 == simpleMCPrimaryInList.m_pdgCode) ++nPhotons;
+        if (13 == std::fabs(simpleMCPrimaryInList.m_pdgCode))
+            ++nMuons;
+        else if (11 == std::fabs(simpleMCPrimaryInList.m_pdgCode))
+            ++nElectrons;
+        else if (2212 == std::fabs(simpleMCPrimaryInList.m_pdgCode))
+            ++nProtons;
+        else if (211 == simpleMCPrimaryInList.m_pdgCode)
+            ++nPiPlus;
+        else if (-211 == simpleMCPrimaryInList.m_pdgCode)
+            ++nPiMinus;
+        else if (2112 == std::fabs(simpleMCPrimaryInList.m_pdgCode))
+            ++nNeutrons;
+        else if (22 == simpleMCPrimaryInList.m_pdgCode)
+            ++nPhotons;
     }
 
     return OTHER_PRIMARY;
@@ -470,8 +539,9 @@ bool IsGoodParticleIdMatch(const SimpleMCPrimary &simpleMCPrimary, const int bes
 {
     const unsigned int absMCPdgCode(std::fabs(simpleMCPrimary.m_pdgCode));
 
-    if (((absMCPdgCode == 13 || absMCPdgCode == 2212 || absMCPdgCode == 211) && (13 != std::fabs(bestMatchPfoPdgCode) && 211 != std::fabs(bestMatchPfoPdgCode))) ||
-        ((absMCPdgCode == 22 || absMCPdgCode == 11) && (11 != std::fabs(bestMatchPfoPdgCode))) )
+    if (((absMCPdgCode == 13 || absMCPdgCode == 2212 || absMCPdgCode == 211) &&
+            (13 != std::fabs(bestMatchPfoPdgCode) && 211 != std::fabs(bestMatchPfoPdgCode))) ||
+        ((absMCPdgCode == 22 || absMCPdgCode == 11) && (11 != std::fabs(bestMatchPfoPdgCode))))
     {
         return false;
     }
@@ -487,7 +557,8 @@ void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCoun
     std::cout << std::setprecision(1);
 
     std::ofstream mapFile;
-    if (!parameters.m_mapFileName.empty()) mapFile.open(parameters.m_mapFileName, ios::app);
+    if (!parameters.m_mapFileName.empty())
+        mapFile.open(parameters.m_mapFileName, ios::app);
 
     for (const InteractionCountingMap::value_type &interactionTypeMapEntry : interactionCountingMap)
     {
@@ -503,23 +574,53 @@ void DisplayInteractionCountingMap(const InteractionCountingMap &interactionCoun
             const ExpectedPrimary expectedPrimary(countingMapEntry.first);
             const CountingDetails &countingDetails(countingMapEntry.second);
 
-            std::cout << "-" << ToString(expectedPrimary) << ": nEvents: " << countingDetails.m_nTotal
-                      << ", nPfos |0: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch0) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
-                      << "%|, |1: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch1) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
-                      << "%|, |2: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch2) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
-                      << "%|, |3+: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch3Plus) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
-                      << "%|, correctId " << ((countingDetails.m_nTotal - countingDetails.m_nMatch0 > 0) ? 100.f * static_cast<float>(countingDetails.m_correctId) / static_cast<float>(countingDetails.m_nTotal - countingDetails.m_nMatch0) : 0.f)
-                      <<  "%" << std::endl;
+            std::cout << "-" << ToString(expectedPrimary) << ": nEvents: " << countingDetails.m_nTotal << ", nPfos |0: "
+                      << ((countingDetails.m_nTotal > 0)
+                                 ? 100.f * static_cast<float>(countingDetails.m_nMatch0) / static_cast<float>(countingDetails.m_nTotal)
+                                 : 0.f)
+                      << "%|, |1: "
+                      << ((countingDetails.m_nTotal > 0)
+                                 ? 100.f * static_cast<float>(countingDetails.m_nMatch1) / static_cast<float>(countingDetails.m_nTotal)
+                                 : 0.f)
+                      << "%|, |2: "
+                      << ((countingDetails.m_nTotal > 0)
+                                 ? 100.f * static_cast<float>(countingDetails.m_nMatch2) / static_cast<float>(countingDetails.m_nTotal)
+                                 : 0.f)
+                      << "%|, |3+: "
+                      << ((countingDetails.m_nTotal > 0)
+                                 ? 100.f * static_cast<float>(countingDetails.m_nMatch3Plus) / static_cast<float>(countingDetails.m_nTotal)
+                                 : 0.f)
+                      << "%|, correctId "
+                      << ((countingDetails.m_nTotal - countingDetails.m_nMatch0 > 0)
+                                 ? 100.f * static_cast<float>(countingDetails.m_correctId) /
+                                       static_cast<float>(countingDetails.m_nTotal - countingDetails.m_nMatch0)
+                                 : 0.f)
+                      << "%" << std::endl;
 
             if (!parameters.m_mapFileName.empty())
             {
-                mapFile << "-" << ToString(expectedPrimary) << ": nEvents: " << countingDetails.m_nTotal
-                        << ", nPfos |0: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch0) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
-                        << "%|, |1: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch1) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
-                        << "%|, |2: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch2) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
-                        << "%|, |3+: " << ((countingDetails.m_nTotal > 0) ? 100.f * static_cast<float>(countingDetails.m_nMatch3Plus) / static_cast<float>(countingDetails.m_nTotal) : 0.f)
-                        << "%|, correctId " << ((countingDetails.m_nTotal - countingDetails.m_nMatch0 > 0) ? 100.f * static_cast<float>(countingDetails.m_correctId) / static_cast<float>(countingDetails.m_nTotal - countingDetails.m_nMatch0) : 0.f)
-                        <<  "%" << std::endl;
+                mapFile << "-" << ToString(expectedPrimary) << ": nEvents: " << countingDetails.m_nTotal << ", nPfos |0: "
+                        << ((countingDetails.m_nTotal > 0)
+                                   ? 100.f * static_cast<float>(countingDetails.m_nMatch0) / static_cast<float>(countingDetails.m_nTotal)
+                                   : 0.f)
+                        << "%|, |1: "
+                        << ((countingDetails.m_nTotal > 0)
+                                   ? 100.f * static_cast<float>(countingDetails.m_nMatch1) / static_cast<float>(countingDetails.m_nTotal)
+                                   : 0.f)
+                        << "%|, |2: "
+                        << ((countingDetails.m_nTotal > 0)
+                                   ? 100.f * static_cast<float>(countingDetails.m_nMatch2) / static_cast<float>(countingDetails.m_nTotal)
+                                   : 0.f)
+                        << "%|, |3+: "
+                        << ((countingDetails.m_nTotal > 0)
+                                   ? 100.f * static_cast<float>(countingDetails.m_nMatch3Plus) / static_cast<float>(countingDetails.m_nTotal)
+                                   : 0.f)
+                        << "%|, correctId "
+                        << ((countingDetails.m_nTotal - countingDetails.m_nMatch0 > 0)
+                                   ? 100.f * static_cast<float>(countingDetails.m_correctId) /
+                                         static_cast<float>(countingDetails.m_nTotal - countingDetails.m_nMatch0)
+                                   : 0.f)
+                        << "%" << std::endl;
             }
         }
     }
@@ -534,8 +635,10 @@ void AnalyseInteractionTargetResultMap(const InteractionTargetResultMap &interac
 {
     // Intended for filling histograms, post-processing of information collected in main loop over ntuple, etc.
     std::ofstream mapFile, eventFile;
-    if (!parameters.m_mapFileName.empty()) mapFile.open(parameters.m_mapFileName, ios::app);
-    if (!parameters.m_eventFileName.empty()) eventFile.open(parameters.m_eventFileName, ios::app);
+    if (!parameters.m_mapFileName.empty())
+        mapFile.open(parameters.m_mapFileName, ios::app);
+    if (!parameters.m_eventFileName.empty())
+        eventFile.open(parameters.m_eventFileName, ios::app);
 
     std::cout << std::endl << "EVENT INFO " << std::endl;
     mapFile << std::endl << "EVENT INFO " << std::endl;
@@ -557,7 +660,8 @@ void AnalyseInteractionTargetResultMap(const InteractionTargetResultMap &interac
                 ++nCorrectEvents;
 
                 if (!parameters.m_eventFileName.empty())
-                    eventFile << "Correct event: fileId: " << targetResult.m_fileIdentifier << ", eventNumber: " << targetResult.m_eventNumber << ", interactionType " << ToString(interactionType) << std::endl;
+                    eventFile << "Correct event: fileId: " << targetResult.m_fileIdentifier << ", eventNumber: " << targetResult.m_eventNumber
+                              << ", interactionType " << ToString(interactionType) << std::endl;
             }
 
             const PrimaryResultMap &primaryResultMap(targetResult.m_primaryResultMap);
@@ -591,21 +695,29 @@ void AnalyseInteractionTargetResultMap(const InteractionTargetResultMap &interac
             }
         }
 
-        std::cout << ToString(interactionType) << std::endl << "-nEvents " << targetResultList.size() << ", nCorrect " << nCorrectEvents
-                  << ", fCorrect " << 100.f * static_cast<float>(nCorrectEvents) / static_cast<float>(targetResultList.size()) << "%" << std::endl;
+        std::cout << ToString(interactionType) << std::endl
+                  << "-nEvents " << targetResultList.size() << ", nCorrect " << nCorrectEvents << ", fCorrect "
+                  << 100.f * static_cast<float>(nCorrectEvents) / static_cast<float>(targetResultList.size()) << "%" << std::endl;
 
         if (!parameters.m_mapFileName.empty())
         {
-            mapFile << ToString(interactionType) << std::endl << "-nEvents " << targetResultList.size() << ", nCorrect " << nCorrectEvents
-                    << ", fCorrect " << 100.f * static_cast<float>(nCorrectEvents) / static_cast<float>(targetResultList.size()) << "%" << std::endl;
+            mapFile << ToString(interactionType) << std::endl
+                    << "-nEvents " << targetResultList.size() << ", nCorrect " << nCorrectEvents << ", fCorrect "
+                    << 100.f * static_cast<float>(nCorrectEvents) / static_cast<float>(targetResultList.size()) << "%" << std::endl;
         }
     }
 
     if (parameters.m_histogramOutput)
+    {
         ProcessHistogramCollections(interactionPrimaryHistogramMap);
+        if (!parameters.m_histFileName.empty())
+            WriteHistogramCollections(parameters.m_histFileName, interactionPrimaryHistogramMap, interactionTargetHistogramMap);
+    }
 
-    if (!parameters.m_mapFileName.empty()) mapFile.close();
-    if (!parameters.m_eventFileName.empty()) eventFile.close();
+    if (!parameters.m_mapFileName.empty())
+        mapFile.close();
+    if (!parameters.m_eventFileName.empty())
+        eventFile.close();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -647,16 +759,21 @@ void FillTargetHistogramCollection(const std::string &histPrefix, const TargetRe
     targetHistogramCollection.m_hVtxDeltaX->Fill(targetResult.m_vertexOffset.m_x);
     targetHistogramCollection.m_hVtxDeltaY->Fill(targetResult.m_vertexOffset.m_y);
     targetHistogramCollection.m_hVtxDeltaZ->Fill(targetResult.m_vertexOffset.m_z);
-    targetHistogramCollection.m_hVtxDeltaR->Fill(std::sqrt(targetResult.m_vertexOffset.m_x * targetResult.m_vertexOffset.m_x + targetResult.m_vertexOffset.m_y * targetResult.m_vertexOffset.m_y + targetResult.m_vertexOffset.m_z * targetResult.m_vertexOffset.m_z));
+    targetHistogramCollection.m_hVtxDeltaR->Fill(std::sqrt(targetResult.m_vertexOffset.m_x * targetResult.m_vertexOffset.m_x +
+                                                           targetResult.m_vertexOffset.m_y * targetResult.m_vertexOffset.m_y +
+                                                           targetResult.m_vertexOffset.m_z * targetResult.m_vertexOffset.m_z));
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-void FillPrimaryHistogramCollection(const std::string &histPrefix, const Parameters &parameters, const PrimaryResult &primaryResult, PrimaryHistogramCollection &primaryHistogramCollection)
+void FillPrimaryHistogramCollection(const std::string &histPrefix, const Parameters &parameters, const PrimaryResult &primaryResult,
+    PrimaryHistogramCollection &primaryHistogramCollection)
 {
-    const int nHitBins(35); const int nHitBinEdges(nHitBins + 1);
+    const int nHitBins(35);
+    const int nHitBinEdges(nHitBins + 1);
     float hitsBinning[nHitBinEdges];
-    for (int n = 0; n < nHitBinEdges; ++n) hitsBinning[n] = std::pow(10., 1 + static_cast<float>(n + 2) / 10.);
+    for (int n = 0; n < nHitBinEdges; ++n)
+        hitsBinning[n] = std::pow(10., 1 + static_cast<float>(n + 2) / 10.);
 
     if (!primaryHistogramCollection.m_hHitsAll)
     {
@@ -675,13 +792,15 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Paramet
         primaryHistogramCollection.m_hHitsEfficiency->GetYaxis()->SetTitle("Reconstruction Efficiency");
     }
 
-    const int nMomentumBins(26); const int nMomentumBinEdges(nMomentumBins + 1);
-    float momentumBinning[nMomentumBinEdges] = {0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1., 1.1, 1.2, 1.4, 1.6, 2.0, 2.4, 2.8, 3.4, 4., 5., 10., 15., 20., 30., 40., 50.};
+    const int nMomentumBins(26);
+    const int nMomentumBinEdges(nMomentumBins + 1);
+    float momentumBinning[nMomentumBinEdges] = {
+        0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1., 1.1, 1.2, 1.4, 1.6, 2.0, 2.4, 2.8, 3.4, 4., 5., 10., 15., 20., 30., 40., 50.};
 
     if (!primaryHistogramCollection.m_hMomentumAll)
     {
         primaryHistogramCollection.m_hMomentumAll = new TH1F((histPrefix + "MomentumAll").c_str(), "", nMomentumBins, momentumBinning);
-        primaryHistogramCollection.m_hMomentumAll->GetXaxis()->SetRangeUser(0., +5.5);
+        primaryHistogramCollection.m_hMomentumAll->GetXaxis()->SetRangeUser(0., +4.5);
         primaryHistogramCollection.m_hMomentumAll->GetXaxis()->SetTitle("True Momentum [GeV]");
         primaryHistogramCollection.m_hMomentumAll->GetYaxis()->SetTitle("Number of Events");
     }
@@ -689,7 +808,7 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Paramet
     if (!primaryHistogramCollection.m_hMomentumEfficiency)
     {
         primaryHistogramCollection.m_hMomentumEfficiency = new TH1F((histPrefix + "MomentumEfficiency").c_str(), "", nMomentumBins, momentumBinning);
-        primaryHistogramCollection.m_hMomentumEfficiency->GetXaxis()->SetRangeUser(1., +5.5);
+        primaryHistogramCollection.m_hMomentumEfficiency->GetXaxis()->SetRangeUser(0., +4.5);
         primaryHistogramCollection.m_hMomentumEfficiency->GetXaxis()->SetTitle("True Momentum [GeV]");
         primaryHistogramCollection.m_hMomentumEfficiency->GetYaxis()->SetRangeUser(0., +1.01);
         primaryHistogramCollection.m_hMomentumEfficiency->GetYaxis()->SetTitle("Reconstruction Efficiency");
@@ -714,8 +833,7 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Paramet
     primaryHistogramCollection.m_hHitsAll->Fill(primaryResult.m_nMCHitsTotal);
     primaryHistogramCollection.m_hMomentumAll->Fill(primaryResult.m_trueMomentum);
 
-    if ((primaryResult.m_nPfoMatches > 0) &&
-        (!parameters.m_correctTrackShowerId || primaryResult.m_isCorrectParticleId))
+    if ((primaryResult.m_nPfoMatches > 0) && (!parameters.m_correctTrackShowerId || primaryResult.m_isCorrectParticleId))
     {
         primaryHistogramCollection.m_hHitsEfficiency->Fill(primaryResult.m_nMCHitsTotal);
         primaryHistogramCollection.m_hMomentumEfficiency->Fill(primaryResult.m_trueMomentum);
@@ -728,7 +846,10 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Paramet
 
 void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interactionPrimaryHistogramMap)
 {
-    for (InteractionPrimaryHistogramMap::const_iterator iter = interactionPrimaryHistogramMap.begin(), iterEnd = interactionPrimaryHistogramMap.end(); iter != iterEnd; ++iter)
+
+    for (InteractionPrimaryHistogramMap::const_iterator iter = interactionPrimaryHistogramMap.begin(),
+                                                        iterEnd = interactionPrimaryHistogramMap.end();
+         iter != iterEnd; ++iter)
     {
         const InteractionType interactionType(iter->first);
         const PrimaryHistogramMap &primaryHistogramMap(iter->second);
@@ -766,24 +887,80 @@ void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interacti
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
+void WriteHistogramCollections(const std::string &outputFile, const InteractionPrimaryHistogramMap &interactionPrimaryHistogramMap,
+    const InteractionTargetHistogramMap &interactionTargetHistogramMap)
+{
+
+    TFile *outFile = TFile::Open(outputFile.c_str(), "recreate");
+    outFile->cd();
+
+    for (InteractionPrimaryHistogramMap::const_iterator iter = interactionPrimaryHistogramMap.begin(),
+                                                        iterEnd = interactionPrimaryHistogramMap.end();
+         iter != iterEnd; ++iter)
+    {
+        const PrimaryHistogramMap &primaryHistogramMap(iter->second);
+
+        for (PrimaryHistogramMap::const_iterator hIter = primaryHistogramMap.begin(), hIterEnd = primaryHistogramMap.end(); hIter != hIterEnd; ++hIter)
+        {
+            const PrimaryHistogramCollection &primaryHistogramCollection(hIter->second);
+
+            primaryHistogramCollection.m_hHitsAll->Write();
+            primaryHistogramCollection.m_hHitsEfficiency->Write();
+            primaryHistogramCollection.m_hMomentumAll->Write();
+            primaryHistogramCollection.m_hMomentumEfficiency->Write();
+            primaryHistogramCollection.m_hCompleteness->Write();
+            primaryHistogramCollection.m_hPurity->Write();
+        }
+    }
+
+    for (InteractionTargetHistogramMap::const_iterator hIter = interactionTargetHistogramMap.begin(),
+                                                       iterEnd = interactionTargetHistogramMap.end();
+         hIter != iterEnd; ++hIter)
+    {
+        const TargetHistogramCollection &targetHistogramCollection(hIter->second);
+        targetHistogramCollection.m_hVtxDeltaX->Write();
+        targetHistogramCollection.m_hVtxDeltaY->Write();
+        targetHistogramCollection.m_hVtxDeltaZ->Write();
+        targetHistogramCollection.m_hVtxDeltaR->Write();
+    }
+
+    outFile->Close();
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
 std::string ToString(const ExpectedPrimary expectedPrimary)
 {
     switch (expectedPrimary)
     {
-    case MUON : return "MUON";
-    case ELECTRON : return "ELECTRON";
-    case PROTON1 : return "PROTON1";
-    case PROTON2 : return "PROTON2";
-    case PROTON3 : return "PROTON3";
-    case PROTON4 : return "PROTON4";
-    case PROTON5 : return "PROTON5";
-    case PIPLUS : return "PIPLUS";
-    case PIMINUS : return "PIMINUS";
-    case NEUTRON : return "NEUTRON";
-    case PHOTON1 : return "PHOTON1";
-    case PHOTON2 : return "PHOTON2";
-    case OTHER_PRIMARY: return "OTHER_PRIMARY";
-    default: return "UNKNOWN";
+        case MUON:
+            return "MUON";
+        case ELECTRON:
+            return "ELECTRON";
+        case PROTON1:
+            return "PROTON1";
+        case PROTON2:
+            return "PROTON2";
+        case PROTON3:
+            return "PROTON3";
+        case PROTON4:
+            return "PROTON4";
+        case PROTON5:
+            return "PROTON5";
+        case PIPLUS:
+            return "PIPLUS";
+        case PIMINUS:
+            return "PIMINUS";
+        case NEUTRON:
+            return "NEUTRON";
+        case PHOTON1:
+            return "PHOTON1";
+        case PHOTON2:
+            return "PHOTON2";
+        case OTHER_PRIMARY:
+            return "OTHER_PRIMARY";
+        default:
+            return "UNKNOWN";
     }
 }
 
@@ -793,171 +970,337 @@ std::string ToString(const InteractionType interactionType)
 {
     switch (interactionType)
     {
-    case CCQEL_MU: return "CCQEL_MU";
-    case CCQEL_MU_P: return "CCQEL_MU_P";
-    case CCQEL_MU_P_P: return "CCQEL_MU_P_P";
-    case CCQEL_MU_P_P_P: return "CCQEL_MU_P_P_P";
-    case CCQEL_MU_P_P_P_P: return "CCQEL_MU_P_P_P_P";
-    case CCQEL_MU_P_P_P_P_P: return "CCQEL_MU_P_P_P_P_P";
-    case CCQEL_E: return "CCQEL_E";
-    case CCQEL_E_P: return "CCQEL_E_P";
-    case CCQEL_E_P_P: return "CCQEL_E_P_P";
-    case CCQEL_E_P_P_P: return "CCQEL_E_P_P_P";
-    case CCQEL_E_P_P_P_P: return "CCQEL_E_P_P_P_P";
-    case CCQEL_E_P_P_P_P_P: return "CCQEL_E_P_P_P_P_P";
-    case NCQEL_P: return "NCQEL_P";
-    case NCQEL_P_P: return "NCQEL_P_P";
-    case NCQEL_P_P_P: return "NCQEL_P_P_P";
-    case NCQEL_P_P_P_P: return "NCQEL_P_P_P_P";
-    case NCQEL_P_P_P_P_P: return "NCQEL_P_P_P_P_P";
-    case CCRES_MU: return "CCRES_MU";
-    case CCRES_MU_P: return "CCRES_MU_P";
-    case CCRES_MU_P_P: return "CCRES_MU_P_P";
-    case CCRES_MU_P_P_P: return "CCRES_MU_P_P_P";
-    case CCRES_MU_P_P_P_P: return "CCRES_MU_P_P_P_P";
-    case CCRES_MU_P_P_P_P_P: return "CCRES_MU_P_P_P_P_P";
-    case CCRES_MU_PIPLUS: return "CCRES_MU_PIPLUS";
-    case CCRES_MU_P_PIPLUS: return "CCRES_MU_P_PIPLUS";
-    case CCRES_MU_P_P_PIPLUS: return "CCRES_MU_P_P_PIPLUS";
-    case CCRES_MU_P_P_P_PIPLUS: return "CCRES_MU_P_P_P_PIPLUS";
-    case CCRES_MU_P_P_P_P_PIPLUS: return "CCRES_MU_P_P_P_P_PIPLUS";
-    case CCRES_MU_P_P_P_P_P_PIPLUS: return "CCRES_MU_P_P_P_P_P_PIPLUS";
-    case CCRES_MU_PHOTON: return "CCRES_MU_PHOTON";
-    case CCRES_MU_P_PHOTON: return "CCRES_MU_P_PHOTON";
-    case CCRES_MU_P_P_PHOTON: return "CCRES_MU_P_P_PHOTON";
-    case CCRES_MU_P_P_P_PHOTON: return "CCRES_MU_P_P_P_PHOTON";
-    case CCRES_MU_P_P_P_P_PHOTON: return "CCRES_MU_P_P_P_P_PHOTON";
-    case CCRES_MU_P_P_P_P_P_PHOTON: return "CCRES_MU_P_P_P_P_P_PHOTON";
-    case CCRES_MU_PIZERO: return "CCRES_MU_PIZERO";
-    case CCRES_MU_P_PIZERO: return "CCRES_MU_P_PIZERO";
-    case CCRES_MU_P_P_PIZERO: return "CCRES_MU_P_P_PIZERO";
-    case CCRES_MU_P_P_P_PIZERO: return "CCRES_MU_P_P_P_PIZERO";
-    case CCRES_MU_P_P_P_P_PIZERO: return "CCRES_MU_P_P_P_P_PIZERO";
-    case CCRES_MU_P_P_P_P_P_PIZERO: return "CCRES_MU_P_P_P_P_P_PIZERO";
-    case CCRES_E: return "CCRES_E";
-    case CCRES_E_P: return "CCRES_E_P";
-    case CCRES_E_P_P: return "CCRES_E_P_P";
-    case CCRES_E_P_P_P: return "CCRES_E_P_P_P";
-    case CCRES_E_P_P_P_P: return "CCRES_E_P_P_P_P";
-    case CCRES_E_P_P_P_P_P: return "CCRES_E_P_P_P_P_P";
-    case CCRES_E_PIPLUS: return "CCRES_E_PIPLUS";
-    case CCRES_E_P_PIPLUS: return "CCRES_E_P_PIPLUS";
-    case CCRES_E_P_P_PIPLUS: return "CCRES_E_P_P_PIPLUS";
-    case CCRES_E_P_P_P_PIPLUS: return "CCRES_E_P_P_P_PIPLUS";
-    case CCRES_E_P_P_P_P_PIPLUS: return "CCRES_E_P_P_P_P_PIPLUS";
-    case CCRES_E_P_P_P_P_P_PIPLUS: return "CCRES_E_P_P_P_P_P_PIPLUS";
-    case CCRES_E_PHOTON: return "CCRES_E_PHOTON";
-    case CCRES_E_P_PHOTON: return "CCRES_E_P_PHOTON";
-    case CCRES_E_P_P_PHOTON: return "CCRES_E_P_P_PHOTON";
-    case CCRES_E_P_P_P_PHOTON: return "CCRES_E_P_P_P_PHOTON";
-    case CCRES_E_P_P_P_P_PHOTON: return "CCRES_E_P_P_P_P_PHOTON";
-    case CCRES_E_P_P_P_P_P_PHOTON: return "CCRES_E_P_P_P_P_P_PHOTON";
-    case CCRES_E_PIZERO: return "CCRES_E_PIZERO";
-    case CCRES_E_P_PIZERO: return "CCRES_E_P_PIZERO";
-    case CCRES_E_P_P_PIZERO: return "CCRES_E_P_P_PIZERO";
-    case CCRES_E_P_P_P_PIZERO: return "CCRES_E_P_P_P_PIZERO";
-    case CCRES_E_P_P_P_P_PIZERO: return "CCRES_E_P_P_P_P_PIZERO";
-    case CCRES_E_P_P_P_P_P_PIZERO: return "CCRES_E_P_P_P_P_P_PIZERO";
-    case NCRES_P: return "NCRES_P";
-    case NCRES_P_P: return "NCRES_P_P";
-    case NCRES_P_P_P: return "NCRES_P_P_P";
-    case NCRES_P_P_P_P: return "NCRES_P_P_P_P";
-    case NCRES_P_P_P_P_P: return "NCRES_P_P_P_P_P";
-    case NCRES_PIPLUS: return "NCRES_PIPLUS";
-    case NCRES_P_PIPLUS: return "NCRES_P_PIPLUS";
-    case NCRES_P_P_PIPLUS: return "NCRES_P_P_PIPLUS";
-    case NCRES_P_P_P_PIPLUS: return "NCRES_P_P_P_PIPLUS";
-    case NCRES_P_P_P_P_PIPLUS: return "NCRES_P_P_P_P_PIPLUS";
-    case NCRES_P_P_P_P_P_PIPLUS: return "NCRES_P_P_P_P_P_PIPLUS";
-    case NCRES_PIMINUS: return "NCRES_PIMINUS";
-    case NCRES_P_PIMINUS: return "NCRES_P_PIMINUS";
-    case NCRES_P_P_PIMINUS: return "NCRES_P_P_PIMINUS";
-    case NCRES_P_P_P_PIMINUS: return "NCRES_P_P_P_PIMINUS";
-    case NCRES_P_P_P_P_PIMINUS: return "NCRES_P_P_P_P_PIMINUS";
-    case NCRES_P_P_P_P_P_PIMINUS: return "NCRES_P_P_P_P_P_PIMINUS";
-    case NCRES_PHOTON: return "NCRES_PHOTON";
-    case NCRES_P_PHOTON: return "NCRES_P_PHOTON";
-    case NCRES_P_P_PHOTON: return "NCRES_P_P_PHOTON";
-    case NCRES_P_P_P_PHOTON: return "NCRES_P_P_P_PHOTON";
-    case NCRES_P_P_P_P_PHOTON: return "NCRES_P_P_P_P_PHOTON";
-    case NCRES_P_P_P_P_P_PHOTON: return "NCRES_P_P_P_P_P_PHOTON";
-    case NCRES_PIZERO: return "NCRES_PIZERO";
-    case NCRES_P_PIZERO: return "NCRES_P_PIZERO";
-    case NCRES_P_P_PIZERO: return "NCRES_P_P_PIZERO";
-    case NCRES_P_P_P_PIZERO: return "NCRES_P_P_P_PIZERO";
-    case NCRES_P_P_P_P_PIZERO: return "NCRES_P_P_P_P_PIZERO";
-    case NCRES_P_P_P_P_P_PIZERO: return "NCRES_P_P_P_P_P_PIZERO";
-    case CCDIS_MU: return "CCDIS_MU";
-    case CCDIS_MU_P: return "CCDIS_MU_P";
-    case CCDIS_MU_P_P: return "CCDIS_MU_P_P";
-    case CCDIS_MU_P_P_P: return "CCDIS_MU_P_P_P";
-    case CCDIS_MU_P_P_P_P: return "CCDIS_MU_P_P_P_P";
-    case CCDIS_MU_P_P_P_P_P: return "CCDIS_MU_P_P_P_P_P";
-    case CCDIS_MU_PIPLUS: return "CCDIS_MU_PIPLUS";
-    case CCDIS_MU_P_PIPLUS: return "CCDIS_MU_P_PIPLUS";
-    case CCDIS_MU_P_P_PIPLUS: return "CCDIS_MU_P_P_PIPLUS";
-    case CCDIS_MU_P_P_P_PIPLUS: return "CCDIS_MU_P_P_P_PIPLUS";
-    case CCDIS_MU_P_P_P_P_PIPLUS: return "CCDIS_MU_P_P_P_P_PIPLUS";
-    case CCDIS_MU_P_P_P_P_P_PIPLUS: return "CCDIS_MU_P_P_P_P_P_PIPLUS";
-    case CCDIS_MU_PHOTON: return "CCDIS_MU_PHOTON";
-    case CCDIS_MU_P_PHOTON: return "CCDIS_MU_P_PHOTON";
-    case CCDIS_MU_P_P_PHOTON: return "CCDIS_MU_P_P_PHOTON";
-    case CCDIS_MU_P_P_P_PHOTON: return "CCDIS_MU_P_P_P_PHOTON";
-    case CCDIS_MU_P_P_P_P_PHOTON: return "CCDIS_MU_P_P_P_P_PHOTON";
-    case CCDIS_MU_P_P_P_P_P_PHOTON: return "CCDIS_MU_P_P_P_P_P_PHOTON";
-    case CCDIS_MU_PIZERO: return "CCDIS_MU_PIZERO";
-    case CCDIS_MU_P_PIZERO: return "CCDIS_MU_P_PIZERO";
-    case CCDIS_MU_P_P_PIZERO: return "CCDIS_MU_P_P_PIZERO";
-    case CCDIS_MU_P_P_P_PIZERO: return "CCDIS_MU_P_P_P_PIZERO";
-    case CCDIS_MU_P_P_P_P_PIZERO: return "CCDIS_MU_P_P_P_P_PIZERO";
-    case CCDIS_MU_P_P_P_P_P_PIZERO: return "CCDIS_MU_P_P_P_P_P_PIZERO";
-    case NCDIS_P: return "NCDIS_P";
-    case NCDIS_P_P: return "NCDIS_P_P";
-    case NCDIS_P_P_P: return "NCDIS_P_P_P";
-    case NCDIS_P_P_P_P: return "NCDIS_P_P_P_P";
-    case NCDIS_P_P_P_P_P: return "NCDIS_P_P_P_P_P";
-    case NCDIS_PIPLUS: return "NCDIS_PIPLUS";
-    case NCDIS_P_PIPLUS: return "NCDIS_P_PIPLUS";
-    case NCDIS_P_P_PIPLUS: return "NCDIS_P_P_PIPLUS";
-    case NCDIS_P_P_P_PIPLUS: return "NCDIS_P_P_P_PIPLUS";
-    case NCDIS_P_P_P_P_PIPLUS: return "NCDIS_P_P_P_P_PIPLUS";
-    case NCDIS_P_P_P_P_P_PIPLUS: return "NCDIS_P_P_P_P_P_PIPLUS";
-    case NCDIS_PIMINUS: return "NCDIS_PIMINUS";
-    case NCDIS_P_PIMINUS: return "NCDIS_P_PIMINUS";
-    case NCDIS_P_P_PIMINUS: return "NCDIS_P_P_PIMINUS";
-    case NCDIS_P_P_P_PIMINUS: return "NCDIS_P_P_P_PIMINUS";
-    case NCDIS_P_P_P_P_PIMINUS: return "NCDIS_P_P_P_P_PIMINUS";
-    case NCDIS_P_P_P_P_P_PIMINUS: return "NCDIS_P_P_P_P_P_PIMINUS";
-    case NCDIS_PHOTON: return "NCDIS_PHOTON";
-    case NCDIS_P_PHOTON: return "NCDIS_P_PHOTON";
-    case NCDIS_P_P_PHOTON: return "NCDIS_P_P_PHOTON";
-    case NCDIS_P_P_P_PHOTON: return "NCDIS_P_P_P_PHOTON";
-    case NCDIS_P_P_P_P_PHOTON: return "NCDIS_P_P_P_P_PHOTON";
-    case NCDIS_P_P_P_P_P_PHOTON: return "NCDIS_P_P_P_P_P_PHOTON";
-    case NCDIS_PIZERO: return "NCDIS_PIZERO";
-    case NCDIS_P_PIZERO: return "NCDIS_P_PIZERO";
-    case NCDIS_P_P_PIZERO: return "NCDIS_P_P_PIZERO";
-    case NCDIS_P_P_P_PIZERO: return "NCDIS_P_P_P_PIZERO";
-    case NCDIS_P_P_P_P_PIZERO: return "NCDIS_P_P_P_P_PIZERO";
-    case NCDIS_P_P_P_P_P_PIZERO: return "NCDIS_P_P_P_P_P_PIZERO";
-    case CCCOH: return "CCCOH";
-    case NCCOH: return "NCCOH";
-    case COSMIC_RAY_MU: return "COSMIC_RAY_MU";
-    case COSMIC_RAY_P: return "COSMIC_RAY_P";
-    case COSMIC_RAY_E: return "COSMIC_RAY_E";
-    case COSMIC_RAY_PHOTON: return "COSMIC_RAY_PHOTON";
-    case COSMIC_RAY_OTHER: return "COSMIC_RAY_OTHER";
-    case BEAM_PARTICLE_MU: return "BEAM_PARTICLE_MU";
-    case BEAM_PARTICLE_P: return "BEAM_PARTICLE_P";
-    case BEAM_PARTICLE_E: return "BEAM_PARTICLE_E";
-    case BEAM_PARTICLE_PHOTON: return "BEAM_PARTICLE_PHOTON";
-    case BEAM_PARTICLE_PI_PLUS: return "BEAM_PARTICLE_PI_PLUS";
-    case BEAM_PARTICLE_PI_MINUS: return "BEAM_PARTICLE_PI_MINUS";
-    case BEAM_PARTICLE_KAON_PLUS: return "BEAM_PARTICLE_KAON_PLUS";
-    case BEAM_PARTICLE_KAON_MINUS: return "BEAM_PARTICLE_KAON_MINUS";
-    case BEAM_PARTICLE_OTHER: return "BEAM_PARTICLE_OTHER";
-    case OTHER_INTERACTION: return "OTHER_INTERACTION";
-    case ALL_INTERACTIONS: return "ALL_INTERACTIONS";
-    default: return "UNKNOWN";
+        case CCQEL_MU:
+            return "CCQEL_MU";
+        case CCQEL_MU_P:
+            return "CCQEL_MU_P";
+        case CCQEL_MU_P_P:
+            return "CCQEL_MU_P_P";
+        case CCQEL_MU_P_P_P:
+            return "CCQEL_MU_P_P_P";
+        case CCQEL_MU_P_P_P_P:
+            return "CCQEL_MU_P_P_P_P";
+        case CCQEL_MU_P_P_P_P_P:
+            return "CCQEL_MU_P_P_P_P_P";
+        case CCQEL_E:
+            return "CCQEL_E";
+        case CCQEL_E_P:
+            return "CCQEL_E_P";
+        case CCQEL_E_P_P:
+            return "CCQEL_E_P_P";
+        case CCQEL_E_P_P_P:
+            return "CCQEL_E_P_P_P";
+        case CCQEL_E_P_P_P_P:
+            return "CCQEL_E_P_P_P_P";
+        case CCQEL_E_P_P_P_P_P:
+            return "CCQEL_E_P_P_P_P_P";
+        case NCQEL_P:
+            return "NCQEL_P";
+        case NCQEL_P_P:
+            return "NCQEL_P_P";
+        case NCQEL_P_P_P:
+            return "NCQEL_P_P_P";
+        case NCQEL_P_P_P_P:
+            return "NCQEL_P_P_P_P";
+        case NCQEL_P_P_P_P_P:
+            return "NCQEL_P_P_P_P_P";
+        case CCRES_MU:
+            return "CCRES_MU";
+        case CCRES_MU_P:
+            return "CCRES_MU_P";
+        case CCRES_MU_P_P:
+            return "CCRES_MU_P_P";
+        case CCRES_MU_P_P_P:
+            return "CCRES_MU_P_P_P";
+        case CCRES_MU_P_P_P_P:
+            return "CCRES_MU_P_P_P_P";
+        case CCRES_MU_P_P_P_P_P:
+            return "CCRES_MU_P_P_P_P_P";
+        case CCRES_MU_PIPLUS:
+            return "CCRES_MU_PIPLUS";
+        case CCRES_MU_P_PIPLUS:
+            return "CCRES_MU_P_PIPLUS";
+        case CCRES_MU_P_P_PIPLUS:
+            return "CCRES_MU_P_P_PIPLUS";
+        case CCRES_MU_P_P_P_PIPLUS:
+            return "CCRES_MU_P_P_P_PIPLUS";
+        case CCRES_MU_P_P_P_P_PIPLUS:
+            return "CCRES_MU_P_P_P_P_PIPLUS";
+        case CCRES_MU_P_P_P_P_P_PIPLUS:
+            return "CCRES_MU_P_P_P_P_P_PIPLUS";
+        case CCRES_MU_PHOTON:
+            return "CCRES_MU_PHOTON";
+        case CCRES_MU_P_PHOTON:
+            return "CCRES_MU_P_PHOTON";
+        case CCRES_MU_P_P_PHOTON:
+            return "CCRES_MU_P_P_PHOTON";
+        case CCRES_MU_P_P_P_PHOTON:
+            return "CCRES_MU_P_P_P_PHOTON";
+        case CCRES_MU_P_P_P_P_PHOTON:
+            return "CCRES_MU_P_P_P_P_PHOTON";
+        case CCRES_MU_P_P_P_P_P_PHOTON:
+            return "CCRES_MU_P_P_P_P_P_PHOTON";
+        case CCRES_MU_PIZERO:
+            return "CCRES_MU_PIZERO";
+        case CCRES_MU_P_PIZERO:
+            return "CCRES_MU_P_PIZERO";
+        case CCRES_MU_P_P_PIZERO:
+            return "CCRES_MU_P_P_PIZERO";
+        case CCRES_MU_P_P_P_PIZERO:
+            return "CCRES_MU_P_P_P_PIZERO";
+        case CCRES_MU_P_P_P_P_PIZERO:
+            return "CCRES_MU_P_P_P_P_PIZERO";
+        case CCRES_MU_P_P_P_P_P_PIZERO:
+            return "CCRES_MU_P_P_P_P_P_PIZERO";
+        case CCRES_E:
+            return "CCRES_E";
+        case CCRES_E_P:
+            return "CCRES_E_P";
+        case CCRES_E_P_P:
+            return "CCRES_E_P_P";
+        case CCRES_E_P_P_P:
+            return "CCRES_E_P_P_P";
+        case CCRES_E_P_P_P_P:
+            return "CCRES_E_P_P_P_P";
+        case CCRES_E_P_P_P_P_P:
+            return "CCRES_E_P_P_P_P_P";
+        case CCRES_E_PIPLUS:
+            return "CCRES_E_PIPLUS";
+        case CCRES_E_P_PIPLUS:
+            return "CCRES_E_P_PIPLUS";
+        case CCRES_E_P_P_PIPLUS:
+            return "CCRES_E_P_P_PIPLUS";
+        case CCRES_E_P_P_P_PIPLUS:
+            return "CCRES_E_P_P_P_PIPLUS";
+        case CCRES_E_P_P_P_P_PIPLUS:
+            return "CCRES_E_P_P_P_P_PIPLUS";
+        case CCRES_E_P_P_P_P_P_PIPLUS:
+            return "CCRES_E_P_P_P_P_P_PIPLUS";
+        case CCRES_E_PHOTON:
+            return "CCRES_E_PHOTON";
+        case CCRES_E_P_PHOTON:
+            return "CCRES_E_P_PHOTON";
+        case CCRES_E_P_P_PHOTON:
+            return "CCRES_E_P_P_PHOTON";
+        case CCRES_E_P_P_P_PHOTON:
+            return "CCRES_E_P_P_P_PHOTON";
+        case CCRES_E_P_P_P_P_PHOTON:
+            return "CCRES_E_P_P_P_P_PHOTON";
+        case CCRES_E_P_P_P_P_P_PHOTON:
+            return "CCRES_E_P_P_P_P_P_PHOTON";
+        case CCRES_E_PIZERO:
+            return "CCRES_E_PIZERO";
+        case CCRES_E_P_PIZERO:
+            return "CCRES_E_P_PIZERO";
+        case CCRES_E_P_P_PIZERO:
+            return "CCRES_E_P_P_PIZERO";
+        case CCRES_E_P_P_P_PIZERO:
+            return "CCRES_E_P_P_P_PIZERO";
+        case CCRES_E_P_P_P_P_PIZERO:
+            return "CCRES_E_P_P_P_P_PIZERO";
+        case CCRES_E_P_P_P_P_P_PIZERO:
+            return "CCRES_E_P_P_P_P_P_PIZERO";
+        case NCRES_P:
+            return "NCRES_P";
+        case NCRES_P_P:
+            return "NCRES_P_P";
+        case NCRES_P_P_P:
+            return "NCRES_P_P_P";
+        case NCRES_P_P_P_P:
+            return "NCRES_P_P_P_P";
+        case NCRES_P_P_P_P_P:
+            return "NCRES_P_P_P_P_P";
+        case NCRES_PIPLUS:
+            return "NCRES_PIPLUS";
+        case NCRES_P_PIPLUS:
+            return "NCRES_P_PIPLUS";
+        case NCRES_P_P_PIPLUS:
+            return "NCRES_P_P_PIPLUS";
+        case NCRES_P_P_P_PIPLUS:
+            return "NCRES_P_P_P_PIPLUS";
+        case NCRES_P_P_P_P_PIPLUS:
+            return "NCRES_P_P_P_P_PIPLUS";
+        case NCRES_P_P_P_P_P_PIPLUS:
+            return "NCRES_P_P_P_P_P_PIPLUS";
+        case NCRES_PIMINUS:
+            return "NCRES_PIMINUS";
+        case NCRES_P_PIMINUS:
+            return "NCRES_P_PIMINUS";
+        case NCRES_P_P_PIMINUS:
+            return "NCRES_P_P_PIMINUS";
+        case NCRES_P_P_P_PIMINUS:
+            return "NCRES_P_P_P_PIMINUS";
+        case NCRES_P_P_P_P_PIMINUS:
+            return "NCRES_P_P_P_P_PIMINUS";
+        case NCRES_P_P_P_P_P_PIMINUS:
+            return "NCRES_P_P_P_P_P_PIMINUS";
+        case NCRES_PHOTON:
+            return "NCRES_PHOTON";
+        case NCRES_P_PHOTON:
+            return "NCRES_P_PHOTON";
+        case NCRES_P_P_PHOTON:
+            return "NCRES_P_P_PHOTON";
+        case NCRES_P_P_P_PHOTON:
+            return "NCRES_P_P_P_PHOTON";
+        case NCRES_P_P_P_P_PHOTON:
+            return "NCRES_P_P_P_P_PHOTON";
+        case NCRES_P_P_P_P_P_PHOTON:
+            return "NCRES_P_P_P_P_P_PHOTON";
+        case NCRES_PIZERO:
+            return "NCRES_PIZERO";
+        case NCRES_P_PIZERO:
+            return "NCRES_P_PIZERO";
+        case NCRES_P_P_PIZERO:
+            return "NCRES_P_P_PIZERO";
+        case NCRES_P_P_P_PIZERO:
+            return "NCRES_P_P_P_PIZERO";
+        case NCRES_P_P_P_P_PIZERO:
+            return "NCRES_P_P_P_P_PIZERO";
+        case NCRES_P_P_P_P_P_PIZERO:
+            return "NCRES_P_P_P_P_P_PIZERO";
+        case CCDIS_MU:
+            return "CCDIS_MU";
+        case CCDIS_MU_P:
+            return "CCDIS_MU_P";
+        case CCDIS_MU_P_P:
+            return "CCDIS_MU_P_P";
+        case CCDIS_MU_P_P_P:
+            return "CCDIS_MU_P_P_P";
+        case CCDIS_MU_P_P_P_P:
+            return "CCDIS_MU_P_P_P_P";
+        case CCDIS_MU_P_P_P_P_P:
+            return "CCDIS_MU_P_P_P_P_P";
+        case CCDIS_MU_PIPLUS:
+            return "CCDIS_MU_PIPLUS";
+        case CCDIS_MU_P_PIPLUS:
+            return "CCDIS_MU_P_PIPLUS";
+        case CCDIS_MU_P_P_PIPLUS:
+            return "CCDIS_MU_P_P_PIPLUS";
+        case CCDIS_MU_P_P_P_PIPLUS:
+            return "CCDIS_MU_P_P_P_PIPLUS";
+        case CCDIS_MU_P_P_P_P_PIPLUS:
+            return "CCDIS_MU_P_P_P_P_PIPLUS";
+        case CCDIS_MU_P_P_P_P_P_PIPLUS:
+            return "CCDIS_MU_P_P_P_P_P_PIPLUS";
+        case CCDIS_MU_PHOTON:
+            return "CCDIS_MU_PHOTON";
+        case CCDIS_MU_P_PHOTON:
+            return "CCDIS_MU_P_PHOTON";
+        case CCDIS_MU_P_P_PHOTON:
+            return "CCDIS_MU_P_P_PHOTON";
+        case CCDIS_MU_P_P_P_PHOTON:
+            return "CCDIS_MU_P_P_P_PHOTON";
+        case CCDIS_MU_P_P_P_P_PHOTON:
+            return "CCDIS_MU_P_P_P_P_PHOTON";
+        case CCDIS_MU_P_P_P_P_P_PHOTON:
+            return "CCDIS_MU_P_P_P_P_P_PHOTON";
+        case CCDIS_MU_PIZERO:
+            return "CCDIS_MU_PIZERO";
+        case CCDIS_MU_P_PIZERO:
+            return "CCDIS_MU_P_PIZERO";
+        case CCDIS_MU_P_P_PIZERO:
+            return "CCDIS_MU_P_P_PIZERO";
+        case CCDIS_MU_P_P_P_PIZERO:
+            return "CCDIS_MU_P_P_P_PIZERO";
+        case CCDIS_MU_P_P_P_P_PIZERO:
+            return "CCDIS_MU_P_P_P_P_PIZERO";
+        case CCDIS_MU_P_P_P_P_P_PIZERO:
+            return "CCDIS_MU_P_P_P_P_P_PIZERO";
+        case NCDIS_P:
+            return "NCDIS_P";
+        case NCDIS_P_P:
+            return "NCDIS_P_P";
+        case NCDIS_P_P_P:
+            return "NCDIS_P_P_P";
+        case NCDIS_P_P_P_P:
+            return "NCDIS_P_P_P_P";
+        case NCDIS_P_P_P_P_P:
+            return "NCDIS_P_P_P_P_P";
+        case NCDIS_PIPLUS:
+            return "NCDIS_PIPLUS";
+        case NCDIS_P_PIPLUS:
+            return "NCDIS_P_PIPLUS";
+        case NCDIS_P_P_PIPLUS:
+            return "NCDIS_P_P_PIPLUS";
+        case NCDIS_P_P_P_PIPLUS:
+            return "NCDIS_P_P_P_PIPLUS";
+        case NCDIS_P_P_P_P_PIPLUS:
+            return "NCDIS_P_P_P_P_PIPLUS";
+        case NCDIS_P_P_P_P_P_PIPLUS:
+            return "NCDIS_P_P_P_P_P_PIPLUS";
+        case NCDIS_PIMINUS:
+            return "NCDIS_PIMINUS";
+        case NCDIS_P_PIMINUS:
+            return "NCDIS_P_PIMINUS";
+        case NCDIS_P_P_PIMINUS:
+            return "NCDIS_P_P_PIMINUS";
+        case NCDIS_P_P_P_PIMINUS:
+            return "NCDIS_P_P_P_PIMINUS";
+        case NCDIS_P_P_P_P_PIMINUS:
+            return "NCDIS_P_P_P_P_PIMINUS";
+        case NCDIS_P_P_P_P_P_PIMINUS:
+            return "NCDIS_P_P_P_P_P_PIMINUS";
+        case NCDIS_PHOTON:
+            return "NCDIS_PHOTON";
+        case NCDIS_P_PHOTON:
+            return "NCDIS_P_PHOTON";
+        case NCDIS_P_P_PHOTON:
+            return "NCDIS_P_P_PHOTON";
+        case NCDIS_P_P_P_PHOTON:
+            return "NCDIS_P_P_P_PHOTON";
+        case NCDIS_P_P_P_P_PHOTON:
+            return "NCDIS_P_P_P_P_PHOTON";
+        case NCDIS_P_P_P_P_P_PHOTON:
+            return "NCDIS_P_P_P_P_P_PHOTON";
+        case NCDIS_PIZERO:
+            return "NCDIS_PIZERO";
+        case NCDIS_P_PIZERO:
+            return "NCDIS_P_PIZERO";
+        case NCDIS_P_P_PIZERO:
+            return "NCDIS_P_P_PIZERO";
+        case NCDIS_P_P_P_PIZERO:
+            return "NCDIS_P_P_P_PIZERO";
+        case NCDIS_P_P_P_P_PIZERO:
+            return "NCDIS_P_P_P_P_PIZERO";
+        case NCDIS_P_P_P_P_P_PIZERO:
+            return "NCDIS_P_P_P_P_P_PIZERO";
+        case CCCOH:
+            return "CCCOH";
+        case NCCOH:
+            return "NCCOH";
+        case COSMIC_RAY_MU:
+            return "COSMIC_RAY_MU";
+        case COSMIC_RAY_P:
+            return "COSMIC_RAY_P";
+        case COSMIC_RAY_E:
+            return "COSMIC_RAY_E";
+        case COSMIC_RAY_PHOTON:
+            return "COSMIC_RAY_PHOTON";
+        case COSMIC_RAY_OTHER:
+            return "COSMIC_RAY_OTHER";
+        case BEAM_PARTICLE_MU:
+            return "BEAM_PARTICLE_MU";
+        case BEAM_PARTICLE_P:
+            return "BEAM_PARTICLE_P";
+        case BEAM_PARTICLE_E:
+            return "BEAM_PARTICLE_E";
+        case BEAM_PARTICLE_PHOTON:
+            return "BEAM_PARTICLE_PHOTON";
+        case BEAM_PARTICLE_PI_PLUS:
+            return "BEAM_PARTICLE_PI_PLUS";
+        case BEAM_PARTICLE_PI_MINUS:
+            return "BEAM_PARTICLE_PI_MINUS";
+        case BEAM_PARTICLE_KAON_PLUS:
+            return "BEAM_PARTICLE_KAON_PLUS";
+        case BEAM_PARTICLE_KAON_MINUS:
+            return "BEAM_PARTICLE_KAON_MINUS";
+        case BEAM_PARTICLE_OTHER:
+            return "BEAM_PARTICLE_OTHER";
+        case OTHER_INTERACTION:
+            return "OTHER_INTERACTION";
+        case ALL_INTERACTIONS:
+            return "ALL_INTERACTIONS";
+        default:
+            return "UNKNOWN";
     }
 }
