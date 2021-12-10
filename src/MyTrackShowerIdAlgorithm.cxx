@@ -37,7 +37,9 @@ MyTrackShowerIdAlgorithm::~MyTrackShowerIdAlgorithm()
     if (m_writeToTree)
         PANDORA_MONITORING_API(SaveTree(this->GetPandora(), m_treeName.c_str(), m_fileName.c_str(), "UPDATE"));
 }
+
 //------------------------------------------------------------------------------------------------------------------------------------------
+
 StatusCode MyTrackShowerIdAlgorithm::Run()
 {
     // ATTN - m_eventId is initialised to -1, so the first event is event zero
@@ -92,7 +94,57 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
     }
 
     int interactionType{static_cast<int>(LArInteractionTypeHelper::GetInteractionType(primaryMCList))};
-    
+
+    std::map<const MCParticle *, int> mcToHitsMapU, mcToHitsMapV, mcToHitsMapW;
+    for (const CaloHit *pCaloHit : *pCaloHitList)
+    {
+        try
+        {
+            const MCParticle *pMCParticle(MCParticleHelper::GetMainMCParticle(pCaloHit));
+            if (std::find(primaryMCList.begin(), primaryMCList.end(), pMCParticle) != primaryMCList.end())
+            {
+                if (pCaloHit->GetHitType() == TPC_VIEW_U)
+                    mcToHitsMapU[pMCParticle]++;
+                else if (pCaloHit->GetHitType() == TPC_VIEW_V)
+                    mcToHitsMapV[pMCParticle]++;
+                else if (pCaloHit->GetHitType() == TPC_VIEW_W)
+                    mcToHitsMapW[pMCParticle]++;
+            }
+        }
+        catch (const StatusCodeException &)
+        {
+        }
+    }
+
+    int nTrueTracksU{0}, nTrueTracksV{0}, nTrueTracksW{0}, nTrueShowersU{0}, nTrueShowersV{0}, nTrueShowersW{0};
+    for (const MCParticle *pMCParticle : primaryMCList)
+    {
+        const int pdg{std::abs(pMCParticle->GetParticleId())};
+        const bool isTrack{!(pdg == E_MINUS || pdg == PHOTON)};
+        const int nHitsU{mcToHitsMapU[pMCParticle]}, nHitsV{mcToHitsMapV[pMCParticle]}, nHitsW{mcToHitsMapW[pMCParticle]};
+        if (nHitsU >= 5)
+        {
+            if (isTrack)
+                ++nTrueTracksU;
+            else
+                ++nTrueShowersU;
+        }
+        if (nHitsV >= 5)
+        {
+            if (isTrack)
+                ++nTrueTracksV;
+            else
+                ++nTrueShowersV;
+        }
+        if (nHitsW >= 5)
+        {
+            if (isTrack)
+                ++nTrueTracksW;
+            else
+                ++nTrueShowersW;
+        }
+    }
+
     // Mapping target MCParticles -> truth associated Hits
     // ATTN - We're writing out PFOs from the end of the reco chain, so don't apply any reconstructability criteria, or empty PFOs may result
     LArMCParticleHelper::MCContributionMap targetMCParticleToHitsMap;
@@ -322,6 +374,12 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "trueNuVtxU", trueNeutrinoVertexU));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "trueNuVtxV", trueNeutrinoVertexV));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "trueNuVtxW", trueNeutrinoVertexW));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nTrueTracksU", nTrueTracksU));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nTrueTracksV", nTrueTracksV));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nTrueTracksW", nTrueTracksW));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nTrueShowersU", nTrueShowersU));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nTrueShowersV", nTrueShowersV));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nTrueShowersW", nTrueShowersW));
         PANDORA_MONITORING_API(FillTree(this->GetPandora(), m_treeName.c_str()));
     }
     std::cout << std::endl;
