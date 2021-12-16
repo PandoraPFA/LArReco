@@ -224,6 +224,10 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
             nHitsInBestMCParticleV(-1),
             nHitsInBestMCParticleW(-1),
             bestMCParticlePdgCode(0);
+        double bestMCParticleEnergy(-999999),
+               bestMCParticleMomentumX(-999999),
+               bestMCParticleMomentumY(-999999),
+               bestMCParticleMomentumZ(-999999);
         int nHitsSharedWithBestMCParticleTotal(-1);
         
         const LArMCParticleHelper::MCParticleToSharedHitsVector &mcParticleToSharedHitsVector(pfoToMCHitSharingMap.at(pPfo));
@@ -250,6 +254,10 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
                 nHitsInBestMCParticleV = LArMonitoringHelper::CountHitsByType(TPC_VIEW_V, allMCHits);
                 nHitsInBestMCParticleW = LArMonitoringHelper::CountHitsByType(TPC_VIEW_W, allMCHits);
                 bestMCParticlePdgCode = pAssociatedMCParticle->GetParticleId();
+                bestMCParticleEnergy = pAssociatedMCParticle->GetEnergy();
+                bestMCParticleMomentumX = pAssociatedMCParticle->GetMomentum().GetX();
+                bestMCParticleMomentumY = pAssociatedMCParticle->GetMomentum().GetY();
+                bestMCParticleMomentumZ = pAssociatedMCParticle->GetMomentum().GetZ();
             }
         }
         bool isTrack(true);
@@ -337,6 +345,10 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInBestMCParticleV", nHitsInBestMCParticleV));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nHitsInBestMCParticleW", nHitsInBestMCParticleW));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "bestMCParticlePdgCode", bestMCParticlePdgCode));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "bestMCParticleEnergy", bestMCParticleEnergy));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "bestMCParticleMomentumX", bestMCParticleMomentumX));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "bestMCParticleMomentumY", bestMCParticleMomentumY));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "bestMCParticleMomentumZ", bestMCParticleMomentumZ));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "purity", purity));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "completeness", completeness));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "isPandoraTrack", isPandoraTrack));
