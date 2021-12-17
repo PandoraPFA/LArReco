@@ -53,8 +53,9 @@ public:
     bool m_shouldPerformSliceId;        ///< Whether to identify slices and select most appropriate pfos
     bool m_printOverallRecoStatus;      ///< Whether to print current operation status messages
 
-    int m_nEventsToSkip;   ///< The number of events to skip
-    int m_maxMergedVoxels; ///< The max number of merged voxels to process (default all)
+    int m_nEventsToSkip;       ///< The number of events to skip
+    int m_maxMergedVoxels;     ///< The max number of merged voxels to process (default all)
+    float m_minVoxelMipEquivE; ///< The minimum required voxel equivalent MIP energy (default = 0.3)
 
     bool m_use3D;     ///< Create 3D LArCaloHits
     bool m_useLArTPC; ///< Create LArTPC LArCaloHits with u,v,w views
@@ -82,6 +83,8 @@ inline Parameters::Parameters() :
     m_shouldPerformSliceId(true),
     m_printOverallRecoStatus(false),
     m_nEventsToSkip(0),
+    m_maxMergedVoxels(-1),
+    m_minVoxelMipEquivE(0.3),
     m_use3D(true),
     m_useLArTPC(false),
     m_voxelWidth(0.4f)
