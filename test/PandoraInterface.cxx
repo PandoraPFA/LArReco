@@ -104,7 +104,7 @@ void CreatePandoraInstances(const Parameters &parameters, const Pandora *&pPrima
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=,
         PandoraApi::SetLArTransformationPlugin(*pPrimaryPandora, new lar_content::LArRotationalTransformationPlugin));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=,
-        LArContent::RegisterAlgorithmFactory(*pPrimaryPandora,"MyTrackShowerId", new lar_reco::MyTrackShowerIdAlgorithm::Factory));
+        PandoraApi::RegisterAlgorithmFactory(*pPrimaryPandora,"MyTrackShowerId", new lar_reco::MyTrackShowerIdAlgorithm::Factory));
     PANDORA_THROW_RESULT_IF(STATUS_CODE_SUCCESS, !=, PandoraApi::ReadSettings(*pPrimaryPandora, parameters.m_settingsFile));
 }
 
