@@ -121,28 +121,18 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
     {
         const int pdg{std::abs(pMCParticle->GetParticleId())};
         const bool isTrack{!(pdg == E_MINUS || pdg == PHOTON)};
-        const int nHitsU{mcToHitsMapU[pMCParticle]}, nHitsV{mcToHitsMapV[pMCParticle]}, nHitsW{mcToHitsMapW[pMCParticle]};
-        if (nHitsU >= 5)
-        {
-            if (isTrack)
-                ++nTrueTracksU;
-            else
-                ++nTrueShowersU;
-        }
-        if (nHitsV >= 5)
-        {
-            if (isTrack)
-                ++nTrueTracksV;
-            else
-                ++nTrueShowersV;
-        }
-        if (nHitsW >= 5)
-        {
-            if (isTrack)
-                ++nTrueTracksW;
-            else
-                ++nTrueShowersW;
-        }
+        if (isTrack)
+            ++nTrueTracksU;
+        else
+            ++nTrueShowersU;
+        if (isTrack)
+            ++nTrueTracksV;
+        else
+            ++nTrueShowersV;
+        if (isTrack)
+            ++nTrueTracksW;
+        else
+            ++nTrueShowersW;
     }
 
     // Mapping target MCParticles -> truth associated Hits
