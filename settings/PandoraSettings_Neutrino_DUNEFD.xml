@@ -81,6 +81,18 @@
     <algorithm type = "LArHitWidthClusterMerging"/>
 
     <!-- VertexAlgorithms -->
+    <algorithm type = "LArDLVertexing">
+        <TrainingMode>false</TrainingMode>
+        <TrainingOutputFileName>DUNEFD_MC11</TrainingOutputFileName>
+        <OutputVertexListName>DlVertexList3D</OutputVertexListName>
+        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
+        <ModelFileNameU>PandoraUnet_Vertex_DUNEFD_U.pt</ModelFileNameU>
+        <ModelFileNameV>PandoraUnet_Vertex_DUNEFD_V.pt</ModelFileNameV>
+        <ModelFileNameW>PandoraUnet_Vertex_DUNEFD_W.pt</ModelFileNameW>
+        <PixelShift>0.0</PixelShift>
+        <PixelScale>255.0</PixelScale>
+        <Visualise>false</Visualise>
+    </algorithm>    
     <algorithm type = "LArCutClusterCharacterisation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <MaxShowerLengthCut>500.</MaxShowerLengthCut>
@@ -90,6 +102,7 @@
     </algorithm>
     <algorithm type = "LArCandidateVertexCreation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
+        <InputVertexListName>DlVertexList3D</InputVertexListName>
         <OutputVertexListName>CandidateVertices3D</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
         <EnableCrossingCandidates>false</EnableCrossingCandidates>
@@ -651,6 +664,10 @@
     <algorithm type = "LArTrackParticleBuilding">
         <PfoListName>TrackParticles3D</PfoListName>
         <VertexListName>DaughterVertices3D</VertexListName>
+    </algorithm>
+    
+    <algorithm type = "LArVertexAssessment">
+        <Visualize>false</Visualize>
     </algorithm>
 
     <!-- Output list management -->
