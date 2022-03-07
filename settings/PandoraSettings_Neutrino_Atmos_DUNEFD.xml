@@ -100,9 +100,9 @@
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-        <MvaFileName>PandoraMVAData/PandoraBdt_Vertexing_Atmos_DUNEFD_v03_26_00.xml</MvaFileName>
-        <RegionMvaName>DUNEFD_VertexSelectionRegion</RegionMvaName>
-        <VertexMvaName>DUNEFD_VertexSelectionVertex</VertexMvaName>
+        <MvaFileName>PandoraMVAData/PandoraBdt_Vertexing_DUNEFD_v03_27_00.xml</MvaFileName>
+        <RegionMvaName>DUNEFD_Atmos_VertexSelectionRegion</RegionMvaName>
+        <VertexMvaName>DUNEFD_Atmos_VertexSelectionVertex</VertexMvaName>
         <FeatureTools>
             <tool type = "LArEnergyKickFeature"/>
             <tool type = "LArLocalAsymmetryFeature"/>
@@ -115,25 +115,6 @@
         <LegacyEventShapes>false</LegacyEventShapes>
         <LegacyVariables>false</LegacyVariables>
     </algorithm>
-    <!--algorithm type = "LArBdtVertexSelection">
-        <InputCaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</InputCaloHitListNames>
-        <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
-        <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
-        <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-        <MvaFileName>PandoraMVAData/PandoraBdt_Vertexing_DUNEFD_v03_26_00.xml</MvaFileName>
-        <RegionMvaName>DUNEFD_VertexSelectionRegion</RegionMvaName>
-        <VertexMvaName>DUNEFD_VertexSelectionVertex</VertexMvaName>
-        <FeatureTools>
-            <tool type = "LArEnergyKickFeature"/>
-            <tool type = "LArLocalAsymmetryFeature"/>
-            <tool type = "LArGlobalAsymmetryFeature"/>
-            <tool type = "LArShowerAsymmetryFeature"/>
-            <tool type = "LArRPhiFeature"/>
-            <tool type = "LArEnergyDepositionAsymmetryFeature"/>
-        </FeatureTools>
-        <LegacyEventShapes>false</LegacyEventShapes>
-        <LegacyVariables>false</LegacyVariables>
-    </algorithm-->
     <algorithm type = "LArCutClusterCharacterisation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <ZeroMode>true</ZeroMode>
