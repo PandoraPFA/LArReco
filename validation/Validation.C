@@ -6,6 +6,7 @@
  *  $Log: $
  */
 #include "TChain.h"
+#include "TFile.h"
 #include "TH1F.h"
 
 #include "Validation.h"
