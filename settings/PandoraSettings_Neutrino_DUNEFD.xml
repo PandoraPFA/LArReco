@@ -20,8 +20,7 @@
         <ModelFileNameU>PandoraNetworkData/PandoraUnet_Vertex_DUNEFD_1_U.pt</ModelFileNameU>
         <ModelFileNameV>PandoraNetworkData/PandoraUnet_Vertex_DUNEFD_1_V.pt</ModelFileNameV>
         <ModelFileNameW>PandoraNetworkData/PandoraUnet_Vertex_DUNEFD_1_W.pt</ModelFileNameW>
-        <PixelShift>0.0</PixelShift>
-        <PixelScale>255.0</PixelScale>
+        <MaxHitAdc>500</MaxHitAdc>
         <Visualise>false</Visualise>
     </algorithm>
 
@@ -36,8 +35,7 @@
         <ModelFileNameW>PandoraNetworkData/PandoraUnet_Vertex_DUNEFD_2_W.pt</ModelFileNameW>
         <ImageWidth>128</ImageWidth>
         <ImageHeight>128</ImageHeight>
-        <PixelShift>0.0</PixelShift>
-        <PixelScale>255.0</PixelScale>
+        <MaxHitAdc>500</MaxHitAdc>
         <Visualise>false</Visualise>
     </algorithm>
 
