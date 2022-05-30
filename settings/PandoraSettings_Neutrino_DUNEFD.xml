@@ -13,6 +13,34 @@
         <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
     </algorithm>
 
+    <algorithm type = "LArDLVertexing">
+        <TrainingMode>false</TrainingMode>
+        <OutputVertexListName>NeutrinoVertices3D_Pass1</OutputVertexListName>
+        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
+        <ModelFileNameU>PandoraNetworkData/PandoraUnet_Vertex_DUNEFD_1_U.pt</ModelFileNameU>
+        <ModelFileNameV>PandoraNetworkData/PandoraUnet_Vertex_DUNEFD_1_V.pt</ModelFileNameV>
+        <ModelFileNameW>PandoraNetworkData/PandoraUnet_Vertex_DUNEFD_1_W.pt</ModelFileNameW>
+        <PixelShift>0.0</PixelShift>
+        <PixelScale>255.0</PixelScale>
+        <Visualise>false</Visualise>
+    </algorithm>
+
+    <algorithm type = "LArDLVertexing">
+        <TrainingMode>false</TrainingMode>
+        <Pass>2</Pass>
+        <InputVertexListName>NeutrinoVertices3D_Pass1</InputVertexListName>
+        <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
+        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
+        <ModelFileNameU>PandoraNetworkData/PandoraUnet_Vertex_DUNEFD_2_U.pt</ModelFileNameU>
+        <ModelFileNameV>PandoraNetworkData/PandoraUnet_Vertex_DUNEFD_2_V.pt</ModelFileNameV>
+        <ModelFileNameW>PandoraNetworkData/PandoraUnet_Vertex_DUNEFD_2_W.pt</ModelFileNameW>
+        <ImageWidth>128</ImageWidth>
+        <ImageHeight>128</ImageHeight>
+        <PixelShift>0.0</PixelShift>
+        <PixelScale>255.0</PixelScale>
+        <Visualise>false</Visualise>
+    </algorithm>
+
     <!-- TwoDReconstruction -->
     <algorithm type = "LArClusteringParent">
         <algorithm type = "LArTrackClusterCreation" description = "ClusterFormation"/>
@@ -81,18 +109,6 @@
     <algorithm type = "LArHitWidthClusterMerging"/>
 
     <!-- VertexAlgorithms -->
-    <algorithm type = "LArDLVertexing">
-        <TrainingMode>false</TrainingMode>
-        <TrainingOutputFileName>DUNEFD_MC11</TrainingOutputFileName>
-        <OutputVertexListName>DlVertexList3D</OutputVertexListName>
-        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
-        <ModelFileNameU>PandoraUnet_Vertex_DUNEFD_U.pt</ModelFileNameU>
-        <ModelFileNameV>PandoraUnet_Vertex_DUNEFD_V.pt</ModelFileNameV>
-        <ModelFileNameW>PandoraUnet_Vertex_DUNEFD_W.pt</ModelFileNameW>
-        <PixelShift>0.0</PixelShift>
-        <PixelScale>255.0</PixelScale>
-        <Visualise>false</Visualise>
-    </algorithm>    
     <algorithm type = "LArCutClusterCharacterisation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <MaxShowerLengthCut>500.</MaxShowerLengthCut>
@@ -100,9 +116,8 @@
         <PathLengthRatioCut>1.012</PathLengthRatioCut>
         <ShowerWidthRatioCut>0.2</ShowerWidthRatioCut>
     </algorithm>
-    <algorithm type = "LArCandidateVertexCreation">
+    <!--algorithm type = "LArCandidateVertexCreation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
-        <InputVertexListName>DlVertexList3D</InputVertexListName>
         <OutputVertexListName>CandidateVertices3D</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
         <EnableCrossingCandidates>false</EnableCrossingCandidates>
@@ -126,7 +141,7 @@
         </FeatureTools>
         <LegacyEventShapes>false</LegacyEventShapes>
         <LegacyVariables>false</LegacyVariables>
-    </algorithm>
+    </algorithm-->
     <algorithm type = "LArCutClusterCharacterisation">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <ZeroMode>true</ZeroMode>
@@ -664,10 +679,6 @@
     <algorithm type = "LArTrackParticleBuilding">
         <PfoListName>TrackParticles3D</PfoListName>
         <VertexListName>DaughterVertices3D</VertexListName>
-    </algorithm>
-    
-    <algorithm type = "LArVertexAssessment">
-        <Visualize>false</Visualize>
     </algorithm>
 
     <!-- Output list management -->
