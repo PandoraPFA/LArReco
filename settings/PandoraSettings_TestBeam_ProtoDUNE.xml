@@ -94,7 +94,7 @@
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
         <OutputVertexListName>NeutrinoVertices3D</OutputVertexListName>
         <ReplaceCurrentVertexList>true</ReplaceCurrentVertexList>
-        <MvaFileName>PandoraBdt_v03_20_00.xml</MvaFileName>
+        <MvaFileName>PandoraMVAData/PandoraBdt_Vertexing_ProtoDUNESP_v03_26_00.xml</MvaFileName>
         <RegionMvaName>ProtoDUNE_VertexSelectionRegion</RegionMvaName>
         <VertexMvaName>ProtoDUNE_VertexSelectionVertex</VertexMvaName>
         <TestBeamMode>true</TestBeamMode>
@@ -340,9 +340,9 @@
         <MCParticleListName>Input</MCParticleListName>
         <CaloHitListName>CaloHitList2D</CaloHitListName>
         <UseThreeDInformation>true</UseThreeDInformation>
-        <MvaFileName>PandoraBdt_ProtoDUNE_v03_20_00.xml</MvaFileName>
+        <MvaFileName>PandoraMVAData/PandoraBdt_PfoCharacterisation_ProtoDUNESP_v03_26_00.xml</MvaFileName>
         <MvaName>PfoCharacterisation</MvaName>
-        <MvaFileNameNoChargeInfo>PandoraBdt_ProtoDUNE_v03_20_00.xml</MvaFileNameNoChargeInfo>
+        <MvaFileNameNoChargeInfo>PandoraMVAData/PandoraBdt_PfoCharacterisation_ProtoDUNESP_v03_26_00.xml</MvaFileNameNoChargeInfo>
         <MvaNameNoChargeInfo>PfoCharacterisationNoChargeInfo</MvaNameNoChargeInfo>
         <TrainingSetMode>false</TrainingSetMode>
         <TrainingOutputFileName>training_output</TrainingOutputFileName>
