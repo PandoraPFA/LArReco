@@ -39,6 +39,9 @@ public:
     std::string m_inputFileName; ///< The path to the input file containing events
                                  ///< and/or geometry information
 
+    std::string m_geometryVolName;  ///< The name of the Geant4 detector placement volume
+    std::string m_sensitiveDetName; ///< The name of the Geant4 sensitive hit detector
+
     int m_nEventsToProcess;          ///< The number of events to process (default all
                                      ///< events in file)
     bool m_shouldDisplayEventNumber; ///< Whether event numbers should be

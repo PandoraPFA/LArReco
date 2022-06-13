@@ -11,6 +11,7 @@
 
 #include "TGeoBBox.h"
 #include "TGeoManager.h"
+#include "TGeoMatrix.h"
 #include "TGeoShape.h"
 #include "TGeoVolume.h"
 
@@ -39,6 +40,7 @@
 
 #include <getopt.h>
 #include <iostream>
+#include <memory>
 #include <random>
 #include <string>
 
@@ -116,28 +118,39 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
 
     // Start by looking at the top level volume and move down to the one we need
     std::string name;
-    std::string needednode("volArgonCubeDetector_PV_0");
+    std::string needednode(parameters.m_geometryVolName);
+    needednode += "_PV_0";
     TGeoNode *currentnode = pEDepSimGeo->GetCurrentNode();
     bool foundnode(false);
 
-    TGeoVolume *pMasterVol = pEDepSimGeo->GetMasterVolume();
-    for (int i = 0; i < pMasterVol->GetNdaughters(); i++)
-        pEDepSimGeo->CdDown(i);
+    // Initialise volume matrix using the master (top) volume.
+    // This is updated as we go down the volume hierarchy
+    std::unique_ptr<TGeoHMatrix> volMatrix = std::make_unique<TGeoHMatrix>(*currentnode->GetMatrix());
 
-    while (foundnode == false)
+    // Maximum number of nodes to search through, same as default TGeoManager counting node limit
+    const int maxNodes(10000);
+    int iNode(0);
+    while (foundnode == false && iNode < maxNodes)
     {
         currentnode = pEDepSimGeo->GetCurrentNode();
+        iNode++;
         name = currentnode->GetName();
+        std::unique_ptr<TGeoHMatrix> currentMatrix = std::make_unique<TGeoHMatrix>(*currentnode->GetMatrix());
+        volMatrix->Multiply(currentMatrix.get());
 
         int i1 = 0;
         for (int i = 0; i < currentnode->GetNdaughters(); i++)
         {
+
             pEDepSimGeo->CdDown(i1);
             TGeoNode *node = pEDepSimGeo->GetCurrentNode();
             name = node->GetName();
+            std::unique_ptr<TGeoHMatrix> matrix = std::make_unique<TGeoHMatrix>(*node->GetMatrix());
+
             if (name == needednode)
             {
                 foundnode = true;
+                volMatrix->Multiply(matrix.get());
                 break;
             }
             else if (i + 1 != currentnode->GetNdaughters())
@@ -147,18 +160,25 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
             }
         }
 
-        if (foundnode == true)
+        if (foundnode)
             break;
     }
 
-    // This should now be the ArgonCube volume
+    if (!foundnode)
+    {
+        std::cout << "Could not find the required placement geometry volume " << needednode << std::endl;
+        return;
+    }
+
+    // The current node should now be the placement volume we need to set the geometry parameters
     currentnode = pEDepSimGeo->GetCurrentNode();
     name = currentnode->GetName();
     std::cout << "Current Node: " << name << std::endl;
     std::cout << "Current N daughters: " << currentnode->GetVolume()->GetNdaughters() << std::endl;
-    std::cout << "  " << std::endl;
+    std::cout << "Current transformation matrix:" << std::endl;
+    volMatrix->Print();
 
-    // Get the BBox for the ArgonCube
+    // Get the BBox dimensions from the placement volume, which is assumed to be a cube
     TGeoVolume *pCurrentVol = currentnode->GetVolume();
     TGeoShape *pCurrentShape = pCurrentVol->GetShape();
     pCurrentShape->InspectShape();
@@ -170,21 +190,23 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
     const float dz = pBox->GetDZ() * parameters.m_mm2cm;
     const double *origin = pBox->GetOrigin();
 
+    std::cout << "Origin = (" << origin[0] << ", " << origin[1] << ", " << origin[2] << ")" << std::endl;
+
     // Translate local origin to global coordinates
     double level1[3] = {0.0, 0.0, 0.0};
     currentnode->LocalToMasterVect(origin, level1);
+
+    std::cout << "Level1 = (" << level1[0] << ", " << level1[1] << ", " << level1[2] << ")" << std::endl;
 
     // Can now create a geometry using the found parameters
     PandoraApi::Geometry::LArTPC::Parameters geoparameters;
 
     try
     {
-        geoparameters.m_centerX = level1[0] * parameters.m_mm2cm;
-        // ATTN: offsets taken by visual comparison with edep-disp.
-        // Diff between volWorld_PV (global) and volArgonCubeDetector_PV coords.
-        // TODO: Get these transformation offsets from the geometry objects?
-        geoparameters.m_centerY = (level1[1] - 675.0) * parameters.m_mm2cm;
-        geoparameters.m_centerZ = (level1[2] + 6660.0) * parameters.m_mm2cm;
+        const double *volTrans = volMatrix->GetTranslation();
+        geoparameters.m_centerX = (level1[0] + volTrans[0]) * parameters.m_mm2cm;
+        geoparameters.m_centerY = (level1[1] + volTrans[1]) * parameters.m_mm2cm;
+        geoparameters.m_centerZ = (level1[2] + volTrans[2]) * parameters.m_mm2cm;
         geoparameters.m_widthX = dx * 2.0;
         geoparameters.m_widthY = dy * 2.0;
         geoparameters.m_widthZ = dz * 2.0;
@@ -278,10 +300,18 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
         // Create MCParticles from Geant4 trajectories
         const MCParticleEnergyMap MCEnergyMap = CreateMCParticles(*pEDepSimEvent, pPrimaryPandora, parameters);
 
-        // Loop over (EDep) hits, which are stored in the hit segment detectors
+        // Loop over (EDep) hits, which are stored in the hit segment detectors.
+        // Only process hits from the detector we are interested in
         for (TG4HitSegmentDetectors::iterator detector = pEDepSimEvent->SegmentDetectors.begin();
              detector != pEDepSimEvent->SegmentDetectors.end(); ++detector)
         {
+
+            if (detector->first != parameters.m_sensitiveDetName)
+            {
+                std::cout << "Skipping sensitive detector " << detector->first << "; expecting " << parameters.m_sensitiveDetName << std::endl;
+                continue;
+            }
+
             std::cout << "Show hits for " << detector->first << " (" << detector->second.size() << " hits)" << std::endl;
             std::cout << "                                 " << std::endl;
 
@@ -395,12 +425,6 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
                         *pPrimaryPandora, (void *)((intptr_t)hitCounter), (void *)((intptr_t)trackID), energyFrac);
                 }
             } // end voxel loop
-
-            // The voxelisation only works with ArgonCube. The geometry parameters
-            // are set assuming that we only have an ArgonCube detector.
-            // So stop processing other hit segment detectors.
-            // TODO: Allow hits in any geometry/detector to be voxelised.
-            break;
 
         } // end segment detector loop
 
@@ -935,8 +959,10 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
 
     std::string recoOption;
     std::string viewOption("3d");
+    parameters.m_geometryVolName = "volArgonCubeDetector";
+    parameters.m_sensitiveDetName = "ArgonCube";
 
-    while ((cOpt = getopt(argc, argv, "r:i:e:n:s:j:w:m:c:pNh")) != -1)
+    while ((cOpt = getopt(argc, argv, "r:i:e:g:d:n:s:j:w:m:c:pNh")) != -1)
     {
         switch (cOpt)
         {
@@ -948,6 +974,12 @@ bool ParseCommandLine(int argc, char *argv[], Parameters &parameters)
                 break;
             case 'e':
                 parameters.m_inputFileName = optarg;
+                break;
+            case 'g':
+                parameters.m_geometryVolName = optarg;
+                break;
+            case 'd':
+                parameters.m_sensitiveDetName = optarg;
                 break;
             case 'n':
                 parameters.m_nEventsToProcess = atoi(optarg);
@@ -1006,6 +1038,8 @@ bool PrintOptions()
               << "    -m maxMergedVoxels     (optional) [skip events that have N(merged voxels) > maxMergedVoxels (default = no events skipped)]"
               << std::endl
               << "    -c minMipEquivE        (optional) [minimum MIP equivalent energy, default = 0.3]" << std::endl
+              << "    -g geometryVolName     (optional) [Geant4 geometry placement detector volume name, default = volArgonCubeDetector]" << std::endl
+              << "    -d sensitiveDetName    (optional) [Geant4 sensitive hits detector name, default = ArgonCube]" << std::endl
               << std::endl;
 
     return false;
