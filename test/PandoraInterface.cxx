@@ -118,68 +118,67 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
 
     // Start by looking at the top level volume and move down to the one we need
     std::string name;
-    std::string needednode(parameters.m_geometryVolName);
-    needednode += "_PV_0";
-    TGeoNode *currentnode = pEDepSimGeo->GetCurrentNode();
-    bool foundnode(false);
+    const std::string neededNode(parameters.m_geometryVolName + "_PV_0");
+    TGeoNode *pCurrentNode = pEDepSimGeo->GetCurrentNode();
+    bool foundNode(false);
 
     // Initialise volume matrix using the master (top) volume.
     // This is updated as we go down the volume hierarchy
-    std::unique_ptr<TGeoHMatrix> volMatrix = std::make_unique<TGeoHMatrix>(*currentnode->GetMatrix());
+    std::unique_ptr<TGeoHMatrix> pVolMatrix = std::make_unique<TGeoHMatrix>(*pCurrentNode->GetMatrix());
 
     // Maximum number of nodes to search through, same as default TGeoManager counting node limit
     const int maxNodes(10000);
     int iNode(0);
-    while (foundnode == false && iNode < maxNodes)
+    while (foundNode == false && iNode < maxNodes)
     {
-        currentnode = pEDepSimGeo->GetCurrentNode();
+        pCurrentNode = pEDepSimGeo->GetCurrentNode();
         iNode++;
-        name = currentnode->GetName();
-        std::unique_ptr<TGeoHMatrix> currentMatrix = std::make_unique<TGeoHMatrix>(*currentnode->GetMatrix());
-        volMatrix->Multiply(currentMatrix.get());
+        name = pCurrentNode->GetName();
+        std::unique_ptr<TGeoHMatrix> pCurrentMatrix = std::make_unique<TGeoHMatrix>(*pCurrentNode->GetMatrix());
+        pVolMatrix->Multiply(pCurrentMatrix.get());
 
         int i1 = 0;
-        for (int i = 0; i < currentnode->GetNdaughters(); i++)
+        for (int i = 0; i < pCurrentNode->GetNdaughters(); i++)
         {
 
             pEDepSimGeo->CdDown(i1);
-            TGeoNode *node = pEDepSimGeo->GetCurrentNode();
-            name = node->GetName();
-            std::unique_ptr<TGeoHMatrix> matrix = std::make_unique<TGeoHMatrix>(*node->GetMatrix());
+            TGeoNode *pNode = pEDepSimGeo->GetCurrentNode();
+            name = pNode->GetName();
+            std::unique_ptr<TGeoHMatrix> pMatrix = std::make_unique<TGeoHMatrix>(*pNode->GetMatrix());
 
-            if (name == needednode)
+            if (name == neededNode)
             {
-                foundnode = true;
-                volMatrix->Multiply(matrix.get());
+                foundNode = true;
+                pVolMatrix->Multiply(pMatrix.get());
                 break;
             }
-            else if (i + 1 != currentnode->GetNdaughters())
+            else if (i + 1 != pCurrentNode->GetNdaughters())
             {
                 pEDepSimGeo->CdUp();
                 i1++;
             }
         }
 
-        if (foundnode)
+        if (foundNode)
             break;
     }
 
-    if (!foundnode)
+    if (!foundNode)
     {
-        std::cout << "Could not find the required placement geometry volume " << needednode << std::endl;
+        std::cout << "Could not find the required placement geometry volume " << neededNode << std::endl;
         return;
     }
 
     // The current node should now be the placement volume we need to set the geometry parameters
-    currentnode = pEDepSimGeo->GetCurrentNode();
-    name = currentnode->GetName();
+    pCurrentNode = pEDepSimGeo->GetCurrentNode();
+    name = pCurrentNode->GetName();
     std::cout << "Current Node: " << name << std::endl;
-    std::cout << "Current N daughters: " << currentnode->GetVolume()->GetNdaughters() << std::endl;
+    std::cout << "Current N daughters: " << pCurrentNode->GetVolume()->GetNdaughters() << std::endl;
     std::cout << "Current transformation matrix:" << std::endl;
-    volMatrix->Print();
+    pVolMatrix->Print();
 
     // Get the BBox dimensions from the placement volume, which is assumed to be a cube
-    TGeoVolume *pCurrentVol = currentnode->GetVolume();
+    TGeoVolume *pCurrentVol = pCurrentNode->GetVolume();
     TGeoShape *pCurrentShape = pCurrentVol->GetShape();
     pCurrentShape->InspectShape();
     TGeoBBox *pBox = dynamic_cast<TGeoBBox *>(pCurrentShape);
@@ -188,13 +187,13 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
     const float dx = pBox->GetDX() * parameters.m_mm2cm; // Note these are the half widths
     const float dy = pBox->GetDY() * parameters.m_mm2cm;
     const float dz = pBox->GetDZ() * parameters.m_mm2cm;
-    const double *origin = pBox->GetOrigin();
+    const double *pOrigin = pBox->GetOrigin();
 
-    std::cout << "Origin = (" << origin[0] << ", " << origin[1] << ", " << origin[2] << ")" << std::endl;
+    std::cout << "Origin = (" << pOrigin[0] << ", " << pOrigin[1] << ", " << pOrigin[2] << ")" << std::endl;
 
     // Translate local origin to global coordinates
     double level1[3] = {0.0, 0.0, 0.0};
-    currentnode->LocalToMasterVect(origin, level1);
+    pCurrentNode->LocalToMasterVect(pOrigin, level1);
 
     std::cout << "Level1 = (" << level1[0] << ", " << level1[1] << ", " << level1[2] << ")" << std::endl;
 
@@ -203,10 +202,10 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
 
     try
     {
-        const double *volTrans = volMatrix->GetTranslation();
-        geoparameters.m_centerX = (level1[0] + volTrans[0]) * parameters.m_mm2cm;
-        geoparameters.m_centerY = (level1[1] + volTrans[1]) * parameters.m_mm2cm;
-        geoparameters.m_centerZ = (level1[2] + volTrans[2]) * parameters.m_mm2cm;
+        const double *pVolTrans = pVolMatrix->GetTranslation();
+        geoparameters.m_centerX = (level1[0] + pVolTrans[0]) * parameters.m_mm2cm;
+        geoparameters.m_centerY = (level1[1] + pVolTrans[1]) * parameters.m_mm2cm;
+        geoparameters.m_centerZ = (level1[2] + pVolTrans[2]) * parameters.m_mm2cm;
         geoparameters.m_widthX = dx * 2.0;
         geoparameters.m_widthY = dy * 2.0;
         geoparameters.m_widthZ = dz * 2.0;
