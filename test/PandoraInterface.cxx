@@ -242,7 +242,6 @@ void CreateGeometry(const Parameters &parameters, const Pandora *const pPrimaryP
 
 void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPandora)
 {
-    int nEvents(0);
 
     TFile fileSource(parameters.m_inputFileName.c_str(), "READ");
     TTree *pEDepSimTree = dynamic_cast<TTree *>(fileSource.Get("EDepSimEvents"));
@@ -276,20 +275,24 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
     std::cout << "Total grid volume: bot = " << grid.m_bottom << "\n top = " << grid.m_top << std::endl;
     std::cout << "Making voxels with size " << grid.m_binWidths << std::endl;
 
-    const int eventMax(parameters.m_nEventsToProcess + parameters.m_nEventsToSkip);
+    // Total number of entries in the TTree
     const int nEntries(pEDepSimTree->GetEntries());
-    while ((nEvents < eventMax && nEvents < nEntries) || (0 > parameters.m_nEventsToProcess))
+
+    // Starting event
+    const int startEvt = parameters.m_nEventsToSkip > 0 ? parameters.m_nEventsToSkip : 0;
+    // Number of events to process, up to nEntries
+    const int nProcess = parameters.m_nEventsToProcess > 0 ? parameters.m_nEventsToProcess : nEntries;
+    // End event, up to nEntries
+    const int endEvt = (startEvt + nProcess) < nEntries ? startEvt + nProcess : nEntries;
+
+    std::cout << "Start event is " << startEvt << " and end event is " << endEvt - 1 << std::endl;
+
+    for (int iEvt = startEvt; iEvt < endEvt; iEvt++)
     {
-        if (nEvents < parameters.m_nEventsToSkip)
-        {
-            nEvents++;
-            continue;
-        }
-
         if (parameters.m_shouldDisplayEventNumber)
-            std::cout << std::endl << "   PROCESSING EVENT: " << nEvents << std::endl << std::endl;
+            std::cout << std::endl << "   PROCESSING EVENT: " << iEvt << std::endl << std::endl;
 
-        pEDepSimTree->GetEntry(nEvents++);
+        pEDepSimTree->GetEntry(iEvt);
 
         if (!pEDepSimEvent)
             return;
@@ -304,7 +307,6 @@ void ProcessEvents(const Parameters &parameters, const Pandora *const pPrimaryPa
         for (TG4HitSegmentDetectors::iterator detector = pEDepSimEvent->SegmentDetectors.begin();
              detector != pEDepSimEvent->SegmentDetectors.end(); ++detector)
         {
-
             if (detector->first != parameters.m_sensitiveDetName)
             {
                 std::cout << "Skipping sensitive detector " << detector->first << "; expecting " << parameters.m_sensitiveDetName << std::endl;
