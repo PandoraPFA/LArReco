@@ -67,7 +67,7 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
             pTrueNeutrino = parents.front();
     }
     float trueNeutrinoVertexX{0.f}, trueNeutrinoVertexY{0.f}, trueNeutrinoVertexZ{0.f}, trueNeutrinoVertexU{0.f}, trueNeutrinoVertexV{0.f},
-        trueNeutrinoVertexW{0.f};
+        trueNeutrinoVertexW{0.f}, trueNeutrinoEnergy{0.f};
     if (pTrueNeutrino)
     {
         const LArTransformationPlugin *transform{this->GetPandora().GetPlugins()->GetLArTransformationPlugin()}; 
@@ -78,6 +78,7 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         trueNeutrinoVertexU = static_cast<float>(transform->YZtoU(trueVertex.GetY(), trueVertex.GetZ()));
         trueNeutrinoVertexV = static_cast<float>(transform->YZtoV(trueVertex.GetY(), trueVertex.GetZ()));
         trueNeutrinoVertexW = static_cast<float>(transform->YZtoW(trueVertex.GetY(), trueVertex.GetZ()));
+        trueNeutrinoEnergy = pTrueNeutrino->GetEnergy();
     }
 
     // Get reconstructable MC
@@ -376,6 +377,7 @@ StatusCode MyTrackShowerIdAlgorithm::Run()
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "trueNuVtxU", trueNeutrinoVertexU));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "trueNuVtxV", trueNeutrinoVertexV));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "trueNuVtxW", trueNeutrinoVertexW));
+        PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "trueNuEnergy", trueNeutrinoEnergy));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nTrueTracksU", nTrueTracksU));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nTrueTracksV", nTrueTracksV));
         PANDORA_MONITORING_API(SetTreeVariable(this->GetPandora(), m_treeName.c_str(), "nTrueTracksW", nTrueTracksW));
