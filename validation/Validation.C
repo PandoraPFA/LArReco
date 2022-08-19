@@ -6,6 +6,7 @@
  *  $Log: $
  */
 #include "TChain.h"
+#include "TVector3.h"
 #include "TH1F.h"
 
 #include "Validation.h"
@@ -371,6 +372,14 @@ void CountPfoMatches(const SimpleMCEvent &simpleMCEvent, const Parameters &param
 
             const float pTot(std::sqrt(simpleMCPrimary.m_momentum.m_x * simpleMCPrimary.m_momentum.m_x + simpleMCPrimary.m_momentum.m_y * simpleMCPrimary.m_momentum.m_y + simpleMCPrimary.m_momentum.m_z * simpleMCPrimary.m_momentum.m_z));
             primaryResult.m_trueMomentum = pTot;
+
+            primaryResult.m_trueMomentumX = simpleMCPrimary.m_momentum.m_x;
+            primaryResult.m_trueMomentumY = simpleMCPrimary.m_momentum.m_y;
+            primaryResult.m_trueMomentumZ = simpleMCPrimary.m_momentum.m_z;
+            primaryResult.m_trueVertexX = simpleMCPrimary.m_vertex.m_x;
+            primaryResult.m_trueVertexY = simpleMCPrimary.m_vertex.m_y;
+            primaryResult.m_trueVertexZ = simpleMCPrimary.m_vertex.m_z;
+
         }
 
         interactionTargetResultMap[interactionType].push_back(targetResult);
@@ -695,6 +704,140 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Paramet
         primaryHistogramCollection.m_hMomentumEfficiency->GetYaxis()->SetTitle("Reconstruction Efficiency");
     }
 
+    const int nAngleWithYZBins(26); const int nAngleWithYZBinEdges(nAngleWithYZBins + 1);
+    const float angleWithYZMin(0), angleWithYZMax(180);
+    float angleWithYZStep = (angleWithYZMax-angleWithYZMin)/nAngleWithYZBins;
+    float angleWithYZBinning[nAngleWithYZBinEdges];
+    for(int iBin=0; iBin<nAngleWithYZBins; iBin++){
+      angleWithYZBinning[iBin] = angleWithYZMin+angleWithYZStep*(iBin);
+      //std::cout << "AngleWithYZ bin edge nr. " << iBin << " = " << angleWithYZBinning[iBin] << std::endl;
+    }
+    angleWithYZBinning[nAngleWithYZBinEdges-1]=angleWithYZMax;
+
+    if (!primaryHistogramCollection.m_hAngleWithYZAll)
+    {
+        primaryHistogramCollection.m_hAngleWithYZAll = new TH1F((histPrefix + "AngleWithYZAll").c_str(), "", nAngleWithYZBins, angleWithYZBinning);
+        primaryHistogramCollection.m_hAngleWithYZAll->GetXaxis()->SetRangeUser(0., +180.);
+        primaryHistogramCollection.m_hAngleWithYZAll->GetXaxis()->SetTitle("True Momentum Angle with YZ plane [degrees]");
+        primaryHistogramCollection.m_hAngleWithYZAll->GetYaxis()->SetTitle("Number of Events");
+    }
+
+
+    if (!primaryHistogramCollection.m_hAngleWithYZEfficiency)
+    {
+        primaryHistogramCollection.m_hAngleWithYZEfficiency = new TH1F((histPrefix + "AngleWithYZEfficiency").c_str(), "", nAngleWithYZBins, angleWithYZBinning);
+        primaryHistogramCollection.m_hAngleWithYZEfficiency->GetXaxis()->SetRangeUser(0., +180.);
+        primaryHistogramCollection.m_hAngleWithYZEfficiency->GetXaxis()->SetTitle("True Momentum Angle with YZ plane [degrees]");
+        primaryHistogramCollection.m_hAngleWithYZEfficiency->GetYaxis()->SetRangeUser(0., +1.01);
+        primaryHistogramCollection.m_hAngleWithYZEfficiency->GetYaxis()->SetTitle("Reconstruction Efficiency");
+    }
+
+    const int nAngleInYZBins(26); const int nAngleInYZBinEdges(nAngleInYZBins + 1);
+    const float angleInYZMin(0), angleInYZMax(180);
+    float angleInYZStep = (angleInYZMax-angleInYZMin)/nAngleInYZBins;
+    float angleInYZBinning[nAngleInYZBinEdges];
+    for(int iBin=0; iBin<nAngleInYZBins; iBin++){
+      angleInYZBinning[iBin] = angleInYZMin+angleInYZStep*(iBin);
+      //std::cout << "AngleInYZ bin edge nr. " << iBin << " = " << angleInYZBinning[iBin] << std::endl;
+    }
+    angleInYZBinning[nAngleInYZBinEdges-1]=angleInYZMax;
+
+    if (!primaryHistogramCollection.m_hAngleInYZAll)
+    {
+        primaryHistogramCollection.m_hAngleInYZAll = new TH1F((histPrefix + "AngleInYZAll").c_str(), "", nAngleInYZBins, angleInYZBinning);
+        primaryHistogramCollection.m_hAngleInYZAll->GetXaxis()->SetRangeUser(0., +180);
+        primaryHistogramCollection.m_hAngleInYZAll->GetXaxis()->SetTitle("True Momentum Angle with YZ plane [degrees]");
+        primaryHistogramCollection.m_hAngleInYZAll->GetYaxis()->SetTitle("Number of Events");
+    }
+
+    if (!primaryHistogramCollection.m_hAngleInYZEfficiency)
+    {
+        primaryHistogramCollection.m_hAngleInYZEfficiency = new TH1F((histPrefix + "AngleInYZEfficiency").c_str(), "", nAngleInYZBins, angleInYZBinning);
+        primaryHistogramCollection.m_hAngleInYZEfficiency->GetXaxis()->SetRangeUser(0., 180.);
+        primaryHistogramCollection.m_hAngleInYZEfficiency->GetXaxis()->SetTitle("Momentum Angle in YZ plane with respect to Y axis [degrees]");
+        primaryHistogramCollection.m_hAngleInYZEfficiency->GetYaxis()->SetRangeUser(0., +1.01);
+        primaryHistogramCollection.m_hAngleInYZEfficiency->GetYaxis()->SetTitle("Reconstruction Efficiency");
+    }
+
+    const int nVertexXBins(300); const int nVertexXBinEdges(nVertexXBins + 1);
+    const float vertexXMin(-1500), vertexXMax(1500);
+    float vertexXStep = (vertexXMax-vertexXMin)/nVertexXBins;
+    float vertexXBinning[nVertexXBinEdges];
+    for(int iBin=0; iBin<nVertexXBins; iBin++){
+      vertexXBinning[iBin] = vertexXMin+vertexXStep*(iBin);
+    }
+    vertexXBinning[nVertexXBinEdges-1]=vertexXMax;
+
+    const int nVertexYBins(300); const int nVertexYBinEdges(nVertexYBins + 1);
+    const float vertexYMin(-1500), vertexYMax(1500);
+    float vertexYStep = (vertexYMax-vertexYMin)/nVertexYBins;
+    float vertexYBinning[nVertexYBinEdges];
+    for(int iBin=0; iBin<nVertexYBins; iBin++){
+      vertexYBinning[iBin] = vertexYMin+vertexYStep*(iBin);
+    }
+    vertexYBinning[nVertexYBinEdges-1]=vertexYMax;
+
+    const int nVertexZBins(300); const int nVertexZBinEdges(nVertexZBins + 1);
+    const float vertexZMin(-1500), vertexZMax(1500);
+    float vertexZStep = (vertexZMax-vertexZMin)/nVertexZBins;
+    float vertexZBinning[nVertexZBinEdges];
+    for(int iBin=0; iBin<nVertexZBins; iBin++){
+      vertexZBinning[iBin] = vertexZMin+vertexZStep*(iBin);
+    }
+    vertexZBinning[nVertexZBinEdges-1]=vertexZMax;
+
+    if (!primaryHistogramCollection.m_hXVertexAll)
+    {
+        primaryHistogramCollection.m_hXVertexAll = new TH1F((histPrefix + "XVertexAll").c_str(), "", nVertexXBins, vertexXBinning);
+        primaryHistogramCollection.m_hXVertexAll->GetXaxis()->SetRangeUser(-1500, +1500);
+        primaryHistogramCollection.m_hXVertexAll->GetXaxis()->SetTitle("True particle vertex position X [cm]");
+        primaryHistogramCollection.m_hXVertexAll->GetYaxis()->SetTitle("Number of Events");
+    }
+
+    if (!primaryHistogramCollection.m_hXVertexEfficiency)
+    {
+        primaryHistogramCollection.m_hXVertexEfficiency = new TH1F((histPrefix + "XVertexEfficiency").c_str(), "", nVertexXBins, vertexXBinning);
+        primaryHistogramCollection.m_hXVertexEfficiency->GetXaxis()->SetRangeUser(-1500., 1500.);
+        primaryHistogramCollection.m_hXVertexEfficiency->GetXaxis()->SetTitle("True particle vertex position X [cm]");
+        primaryHistogramCollection.m_hXVertexEfficiency->GetYaxis()->SetRangeUser(0., +1.01);
+        primaryHistogramCollection.m_hXVertexEfficiency->GetYaxis()->SetTitle("Reconstruction Efficiency");
+    }
+
+    if (!primaryHistogramCollection.m_hYVertexAll)
+    {
+        primaryHistogramCollection.m_hYVertexAll = new TH1F((histPrefix + "YVertexAll").c_str(), "", nVertexYBins, vertexYBinning);
+        primaryHistogramCollection.m_hYVertexAll->GetXaxis()->SetRangeUser(-1500, +1500);
+        primaryHistogramCollection.m_hYVertexAll->GetXaxis()->SetTitle("True particle vertex position Y [cm]");
+        primaryHistogramCollection.m_hYVertexAll->GetYaxis()->SetTitle("Number of Events");
+    }
+
+
+    if (!primaryHistogramCollection.m_hYVertexEfficiency)
+    {
+        primaryHistogramCollection.m_hYVertexEfficiency = new TH1F((histPrefix + "YVertexEfficiency").c_str(), "", nVertexYBins, vertexYBinning);
+        primaryHistogramCollection.m_hYVertexEfficiency->GetXaxis()->SetRangeUser(-1500., 1500.);
+        primaryHistogramCollection.m_hYVertexEfficiency->GetXaxis()->SetTitle("True particle vertex position Y [cm]");
+        primaryHistogramCollection.m_hYVertexEfficiency->GetYaxis()->SetRangeUser(0., +1.01);
+        primaryHistogramCollection.m_hYVertexEfficiency->GetYaxis()->SetTitle("Reconstruction Efficiency");
+    }
+
+    if (!primaryHistogramCollection.m_hZVertexAll)
+    {
+        primaryHistogramCollection.m_hZVertexAll = new TH1F((histPrefix + "ZVertexAll").c_str(), "", nVertexZBins, vertexZBinning);
+        primaryHistogramCollection.m_hZVertexAll->GetXaxis()->SetRangeUser(-1500, +1500);
+        primaryHistogramCollection.m_hZVertexAll->GetXaxis()->SetTitle("True particle vertex position Z [cm]");
+        primaryHistogramCollection.m_hZVertexAll->GetYaxis()->SetTitle("Number of Events");
+    }
+
+    if (!primaryHistogramCollection.m_hZVertexEfficiency)
+    {
+        primaryHistogramCollection.m_hZVertexEfficiency = new TH1F((histPrefix + "ZVertexEfficiency").c_str(), "", nVertexZBins, vertexZBinning);
+        primaryHistogramCollection.m_hZVertexEfficiency->GetXaxis()->SetRangeUser(-1500, 1500.);
+        primaryHistogramCollection.m_hZVertexEfficiency->GetXaxis()->SetTitle("True particle vertex position Z [cm]");
+        primaryHistogramCollection.m_hZVertexEfficiency->GetYaxis()->SetRangeUser(0., +1.01);
+        primaryHistogramCollection.m_hZVertexEfficiency->GetYaxis()->SetTitle("Reconstruction Efficiency");
+    }
+
     if (!primaryHistogramCollection.m_hCompleteness)
     {
         primaryHistogramCollection.m_hCompleteness = new TH1F((histPrefix + "Completeness").c_str(), "", 51, -0.01, 1.01);
@@ -714,11 +857,31 @@ void FillPrimaryHistogramCollection(const std::string &histPrefix, const Paramet
     primaryHistogramCollection.m_hHitsAll->Fill(primaryResult.m_nMCHitsTotal);
     primaryHistogramCollection.m_hMomentumAll->Fill(primaryResult.m_trueMomentum);
 
+    TVector3 momentumVector(primaryResult.m_trueMomentumX,primaryResult.m_trueMomentumY,primaryResult.m_trueMomentumZ);
+    TVector3 vectorInYZ(0,primaryResult.m_trueMomentumY,primaryResult.m_trueMomentumZ);
+    TVector3 yUnitVector(0,1,0);
+    float angleWithYZ=vectorInYZ.Angle(momentumVector);
+    float angleInYZ=TMath::ACos((vectorInYZ.Dot(yUnitVector))/vectorInYZ.Mag());
+    //float angleInYZ=vectorInYZ.Angle(yUnitVector);
+
+    //std::cout << " angleWithYZ " << angleWithYZ << " angleInYZ = " << angleInYZ << std::endl;
+
+    primaryHistogramCollection.m_hAngleWithYZAll->Fill(angleWithYZ*180/TMath::Pi());
+    primaryHistogramCollection.m_hAngleInYZAll->Fill(angleInYZ*180/TMath::Pi());
+    primaryHistogramCollection.m_hXVertexAll->Fill(primaryResult.m_trueVertexX);
+    primaryHistogramCollection.m_hYVertexAll->Fill(primaryResult.m_trueVertexY);
+    primaryHistogramCollection.m_hZVertexAll->Fill(primaryResult.m_trueVertexZ);
+
     if ((primaryResult.m_nPfoMatches > 0) &&
         (!parameters.m_correctTrackShowerId || primaryResult.m_isCorrectParticleId))
     {
         primaryHistogramCollection.m_hHitsEfficiency->Fill(primaryResult.m_nMCHitsTotal);
         primaryHistogramCollection.m_hMomentumEfficiency->Fill(primaryResult.m_trueMomentum);
+        primaryHistogramCollection.m_hAngleWithYZEfficiency->Fill(angleWithYZ*180/TMath::Pi());
+        primaryHistogramCollection.m_hAngleInYZEfficiency->Fill(angleInYZ*180/TMath::Pi());
+        primaryHistogramCollection.m_hXVertexEfficiency->Fill(primaryResult.m_trueVertexX);
+        primaryHistogramCollection.m_hYVertexEfficiency->Fill(primaryResult.m_trueVertexY);
+        primaryHistogramCollection.m_hZVertexEfficiency->Fill(primaryResult.m_trueVertexZ);
         primaryHistogramCollection.m_hCompleteness->Fill(primaryResult.m_bestMatchCompleteness);
         primaryHistogramCollection.m_hPurity->Fill(primaryResult.m_bestMatchPurity);
     }
@@ -756,6 +919,54 @@ void ProcessHistogramCollections(const InteractionPrimaryHistogramMap &interacti
                 const float error = (all > found) ? std::sqrt(efficiency * (1. - efficiency) / all) : 0.f;
                 primaryHistogramCollection.m_hMomentumEfficiency->SetBinContent(n + 1, efficiency);
                 primaryHistogramCollection.m_hMomentumEfficiency->SetBinError(n + 1, error);
+            }
+
+            for (int n = -1; n <= primaryHistogramCollection.m_hAngleWithYZEfficiency->GetXaxis()->GetNbins(); ++n)
+            {
+                const float found = primaryHistogramCollection.m_hAngleWithYZEfficiency->GetBinContent(n + 1);
+                const float all = primaryHistogramCollection.m_hAngleWithYZAll->GetBinContent(n + 1);
+                const float efficiency = (all > 0.f) ? found / all : 0.f;
+                const float error = (all > found) ? std::sqrt(efficiency * (1. - efficiency) / all) : 0.f;
+                primaryHistogramCollection.m_hAngleWithYZEfficiency->SetBinContent(n + 1, efficiency);
+                primaryHistogramCollection.m_hAngleWithYZEfficiency->SetBinError(n + 1, error);
+            }
+
+            for (int n = -1; n <= primaryHistogramCollection.m_hAngleInYZEfficiency->GetXaxis()->GetNbins(); ++n)
+            {
+                const float found = primaryHistogramCollection.m_hAngleInYZEfficiency->GetBinContent(n + 1);
+                const float all = primaryHistogramCollection.m_hAngleInYZAll->GetBinContent(n + 1);
+                const float efficiency = (all > 0.f) ? found / all : 0.f;
+                const float error = (all > found) ? std::sqrt(efficiency * (1. - efficiency) / all) : 0.f;
+                primaryHistogramCollection.m_hAngleInYZEfficiency->SetBinContent(n + 1, efficiency);
+                primaryHistogramCollection.m_hAngleInYZEfficiency->SetBinError(n + 1, error);
+            }
+
+            for (int n = -1; n <= primaryHistogramCollection.m_hXVertexEfficiency->GetXaxis()->GetNbins(); ++n)
+            {
+                const float found = primaryHistogramCollection.m_hXVertexEfficiency->GetBinContent(n + 1);
+                const float all = primaryHistogramCollection.m_hXVertexAll->GetBinContent(n + 1);
+                const float efficiency = (all > 0.f) ? found / all : 0.f;
+                const float error = (all > found) ? std::sqrt(efficiency * (1. - efficiency) / all) : 0.f;
+                primaryHistogramCollection.m_hXVertexEfficiency->SetBinContent(n + 1, efficiency);
+                primaryHistogramCollection.m_hXVertexEfficiency->SetBinError(n + 1, error);
+            }
+            for (int n = -1; n <= primaryHistogramCollection.m_hYVertexEfficiency->GetXaxis()->GetNbins(); ++n)
+            {
+                const float found = primaryHistogramCollection.m_hYVertexEfficiency->GetBinContent(n + 1);
+                const float all = primaryHistogramCollection.m_hYVertexAll->GetBinContent(n + 1);
+                const float efficiency = (all > 0.f) ? found / all : 0.f;
+                const float error = (all > found) ? std::sqrt(efficiency * (1. - efficiency) / all) : 0.f;
+                primaryHistogramCollection.m_hYVertexEfficiency->SetBinContent(n + 1, efficiency);
+                primaryHistogramCollection.m_hYVertexEfficiency->SetBinError(n + 1, error);
+            }
+            for (int n = -1; n <= primaryHistogramCollection.m_hZVertexEfficiency->GetXaxis()->GetNbins(); ++n)
+            {
+                const float found = primaryHistogramCollection.m_hZVertexEfficiency->GetBinContent(n + 1);
+                const float all = primaryHistogramCollection.m_hZVertexAll->GetBinContent(n + 1);
+                const float efficiency = (all > 0.f) ? found / all : 0.f;
+                const float error = (all > found) ? std::sqrt(efficiency * (1. - efficiency) / all) : 0.f;
+                primaryHistogramCollection.m_hZVertexEfficiency->SetBinContent(n + 1, efficiency);
+                primaryHistogramCollection.m_hZVertexEfficiency->SetBinError(n + 1, error);
             }
 
             primaryHistogramCollection.m_hCompleteness->Scale(1. / static_cast<double>(primaryHistogramCollection.m_hCompleteness->GetEntries()));

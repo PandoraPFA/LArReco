@@ -9,6 +9,9 @@
 #define NEW_LAR_VALIDATION_H 1
 
 #include <limits>
+#include <map>
+
+#include "TChain.h"
 
 typedef std::vector<int> IntVector;
 typedef std::vector<float> FloatVector;
@@ -453,6 +456,13 @@ public:
     float                   m_bestMatchPurity;          ///< The purity of the best matched pfo
     bool                    m_isCorrectParticleId;      ///< Whether the best matched pfo has the correct particle id
     float                   m_trueMomentum;             ///< The true momentum of the mc primary
+    float                   m_trueMomentumX;            ///< The true momentum of the mc primary - X comp
+    float                   m_trueMomentumY;            ///< The true momentum of the mc primary - Y comp
+    float                   m_trueMomentumZ;            ///< The true momentum of the mc primary - Z comp
+    float                   m_trueVertexX;              ///< The true vertex of the mc primary - X comp
+    float                   m_trueVertexY;              ///< The true vertex of the mc primary - Y comp
+    float                   m_trueVertexZ;              ///< The true vertex of the mc primary - Z comp
+
 };
 
 typedef std::map<ExpectedPrimary, PrimaryResult> PrimaryResultMap;
@@ -521,6 +531,16 @@ public:
     TH1F                   *m_hHitsEfficiency;          ///< The primary efficiency vs number of hits histogram
     TH1F                   *m_hMomentumAll;             ///< The number of primaries vs momentum histogram
     TH1F                   *m_hMomentumEfficiency;      ///< The primary efficiency vs momentum histogram
+    TH1F                   *m_hAngleWithYZAll;          ///< The number of primaries vs momentum angle with YZ plane histogram
+    TH1F                   *m_hAngleWithYZEfficiency;   ///< The primary efficiency vs momentum angle with YZ planer histogram
+    TH1F                   *m_hAngleInYZAll;            ///< The number of primaries vs angle in YZ plane with Z axis histogram
+    TH1F                   *m_hAngleInYZEfficiency;     ///< The primary efficiency vs angle in YZ plane with Z axis histogram
+    TH1F                   *m_hXVertexAll;
+    TH1F                   *m_hYVertexAll;
+    TH1F                   *m_hZVertexAll;
+    TH1F                   *m_hXVertexEfficiency;
+    TH1F                   *m_hYVertexEfficiency;
+    TH1F                   *m_hZVertexEfficiency;
     TH1F                   *m_hCompleteness;            ///< The primary (best match) completeness histogram
     TH1F                   *m_hPurity;                  ///< The primary (best match) purity histogram
 };
@@ -806,7 +826,13 @@ PrimaryResult::PrimaryResult() :
     m_bestMatchCompleteness(0.f),
     m_bestMatchPurity(0.f),
     m_isCorrectParticleId(false),
-    m_trueMomentum(-1.f)
+    m_trueMomentum(-1.f),
+    m_trueMomentumX(-1.f),
+    m_trueMomentumY(-1.f),
+    m_trueMomentumZ(-1.f),
+    m_trueVertexX(-1.f),
+    m_trueVertexY(-1.f),
+    m_trueVertexZ(-1.f)
 {
 }
 
@@ -830,6 +856,16 @@ PrimaryHistogramCollection::PrimaryHistogramCollection() :
     m_hHitsEfficiency(nullptr),
     m_hMomentumAll(nullptr),
     m_hMomentumEfficiency(nullptr),
+    m_hAngleWithYZAll(nullptr),
+    m_hAngleWithYZEfficiency(nullptr),
+    m_hAngleInYZAll(nullptr),
+    m_hAngleInYZEfficiency(nullptr),
+    m_hXVertexAll(nullptr),
+    m_hYVertexAll(nullptr),
+    m_hZVertexAll(nullptr),
+    m_hXVertexEfficiency(nullptr),
+    m_hYVertexEfficiency(nullptr),
+    m_hZVertexEfficiency(nullptr),
     m_hCompleteness(nullptr),
     m_hPurity(nullptr)
 {
