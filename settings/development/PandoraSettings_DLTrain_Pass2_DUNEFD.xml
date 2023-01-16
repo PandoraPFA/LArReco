@@ -6,7 +6,8 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-        <LArMCParticleVersion>1</LArMCParticleVersion>
+        <LArMCParticleVersion>2</LArMCParticleVersion>
+        <LArCaloHitVersion>2</LArCaloHitVersion>
     </algorithm>
 
     <algorithm type = "LArPreProcessing">
@@ -32,7 +33,7 @@
         <Pass>2</Pass>
         <ImageWidth>128</ImageWidth>
         <ImageHeight>128</ImageHeight>
-        <TrainingOutputFileName>DUNEFD_MC11_Accel_Pass2</TrainingOutputFileName>
+        <TrainingOutputFileName>DUNEFD_MC11_Atmos_Pass2</TrainingOutputFileName>
         <InputVertexListName>NeutrinoVertices3D_Pass1</InputVertexListName>
         <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
         <DistanceThresholds>0. 0.00275 0.00825 0.01925 0.03575 0.05775 0.08525 0.12375 0.15125 0.20625 0.26125 0.31625 0.37125 0.42625 0.50875 0.59125 0.67375 0.75625 0.85 1.0</DistanceThresholds>
