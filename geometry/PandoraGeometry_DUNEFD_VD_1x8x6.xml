@@ -1,0 +1,19 @@
+<Geometry>
+    <LArTPC>
+        <LArTPCVolumeId>0</LArTPCVolumeId>
+        <CenterX>0.0400085449219</CenterX>
+        <CenterY>0</CenterY>
+        <CenterZ>448.260009766</CenterZ>
+        <WidthX>650</WidthX>
+        <WidthY>1344.6048584</WidthY>
+        <WidthZ>895.520019531</WidthZ>
+        <WirePitchU>0.764999985695</WirePitchU>
+        <WirePitchV>0.764999985695</WirePitchV>
+        <WirePitchW>0.509999990463</WirePitchW>
+        <WireAngleU>1.04719758034</WireAngleU>
+        <WireAngleV>-1.04719758034</WireAngleV>
+        <WireAngleW>0</WireAngleW>
+        <SigmaUVW>2.13999986649</SigmaUVW>
+        <IsDriftInPositiveX>1</IsDriftInPositiveX>
+    </LArTPC>
+</Geometry>
