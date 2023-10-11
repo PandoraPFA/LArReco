@@ -1,0 +1,81 @@
+<pandora>
+    <!-- GLOBAL SETTINGS -->
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
+    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
+    <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
+
+    <!-- ALGORITHM SETTINGS -->
+    <algorithm type = "LArEventReading">
+        <LArMCParticleVersion>2</LArMCParticleVersion>
+        <LArCaloHitVersion>2</LArCaloHitVersion>
+    </algorithm>
+    <algorithm type = "LArPreProcessing">
+        <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
+        <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
+        <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
+        <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
+        <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
+    </algorithm>
+    <!--algorithm type = "LArVisualMonitoring">
+        <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
+        <ShowDetector>true</ShowDetector>
+    </algorithm-->
+
+    <algorithm type = "LArMCParticleMonitoring">
+       <MCParticleListName>Input</MCParticleListName>
+       <CaloHitListName>CaloHitList2D</CaloHitListName>
+       <MinHitsForDisplay>1</MinHitsForDisplay>
+    </algorithm>
+
+    <algorithm type = "LArDLMaster">
+        <CRSettingsFile>PandoraSettings_Cosmic_DUNEFD_VD.xml</CRSettingsFile>
+        <NuSettingsFile>PandoraSettings_Neutrino_DUNEFD_VD_LowE_DL.xml</NuSettingsFile>
+        <SlicingSettingsFile>PandoraSettings_Slicing_Standard.xml</SlicingSettingsFile>
+        <StitchingTools>
+            <tool type = "LArStitchingCosmicRayMerging"><ThreeDStitchingMode>true</ThreeDStitchingMode></tool>
+            <tool type = "LArStitchingCosmicRayMerging"><ThreeDStitchingMode>false</ThreeDStitchingMode></tool>
+        </StitchingTools>
+        <CosmicRayTaggingTools>
+            <tool type = "LArCosmicRayTagging"/>
+        </CosmicRayTaggingTools>
+        <SliceIdTools>
+            <tool type = "LArSimpleNeutrinoId"/>
+        </SliceIdTools>
+        <InputHitListName>CaloHitList2D</InputHitListName>
+        <InputMCParticleListName>Input</InputMCParticleListName>
+        <PassMCParticlesToWorkerInstances>true</PassMCParticlesToWorkerInstances>
+        <RecreatedPfoListName>RecreatedPfos</RecreatedPfoListName>
+        <RecreatedClusterListName>RecreatedClusters</RecreatedClusterListName>
+        <RecreatedVertexListName>RecreatedVertices</RecreatedVertexListName>
+        <VisualizeOverallRecoStatus>false</VisualizeOverallRecoStatus>
+        <LArCaloHitVersion>2</LArCaloHitVersion>
+    </algorithm>
+
+    <!--algorithm type = "LArVertexMonitoring">
+        <Visualize>false</Visualize>
+        <WriteFile>true</WriteFile>
+        <Filename>vertices_LowE_DL.root</Filename>
+        <Treename>vertices</Treename>
+    </algorithm-->   
+  
+    <!--algorithm type = "LArHierarchyValidation">
+        <ValidateMC>true</ValidateMC>
+        <WriteTree>true</WriteTree>
+        <FileName>hierarchy_validation_LowE_DL.root</FileName>
+        <TreeName>mc</TreeName>
+        <FoldToPrimaries>true</FoldToPrimaries>
+        <MinHits>3</MinHits>
+        <MinHitsForGoodView>1</MinHitsForGoodView>
+        <MinGoodViews>2</MinGoodViews>
+        <RemoveNeutrons>false</RemoveNeutrons>
+    </algorithm-->
+ 
+    <!--algorithm type = "LArVisualParticleMonitoring">
+        <CaloHitListNames>CaloHitList2D</CaloHitListNames>
+        <MCParticleListNames>Input</MCParticleListNames>
+        <ShowPFOMatchedMC>true</ShowPFOMatchedMC>
+        <VisualizeMC>true</VisualizeMC>
+        <VisualizePFO>true</VisualizePFO>
+    </algorithm-->
+
+</pandora>

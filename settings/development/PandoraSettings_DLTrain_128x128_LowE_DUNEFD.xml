@@ -1,0 +1,29 @@
+<pandora>
+    <!-- GLOBAL SETTINGS -->
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
+    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
+    <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
+
+    <!-- ALGORITHM SETTINGS -->
+    <algorithm type = "LArEventReading">
+        <LArMCParticleVersion>2</LArMCParticleVersion>
+        <LArCaloHitVersion>2</LArCaloHitVersion>
+    </algorithm>
+
+    <algorithm type = "LArPreProcessing">
+        <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
+        <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
+        <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
+        <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
+        <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
+    </algorithm>
+
+    <algorithm type = "LArDLVertexing">
+        <TrainingMode>true</TrainingMode>
+        <TrainingOutputFileName>DUNEFD_MC11_LowE_128x128</TrainingOutputFileName>
+        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
+        <ImageHeight>128</ImageHeight>
+        <ImageWidth>128</ImageWidth>
+        <DistanceThresholds>0., 0.012, 0.019, 0.0245, 0.03, 0.036, 0.048, 0.066, 0.076, 0.088, 0.104, 0.122, 0.1425, 0.1775, 0.23, 0.31, 0.40, 0.6, 0.8, 1.0</DistanceThresholds>
+    </algorithm>
+</pandora>
