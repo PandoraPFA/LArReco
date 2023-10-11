@@ -18,15 +18,21 @@
         <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
         <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
     </algorithm>
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <CaloHitListNames>CaloHitListU CaloHitListV CaloHitListW</CaloHitListNames>
         <ShowDetector>true</ShowDetector>
+    </algorithm-->
+
+    <algorithm type = "LArMCParticleMonitoring">
+       <MCParticleListName>Input</MCParticleListName>
+       <CaloHitListName>CaloHitList2D</CaloHitListName>
+       <MinHitsForDisplay>1</MinHitsForDisplay>
     </algorithm>
 
     <algorithm type = "LArDLMaster">
         <LArCaloHitVersion>2</LArCaloHitVersion>
         <CRSettingsFile>PandoraSettings_Cosmic_DUNEFD_VD.xml</CRSettingsFile>
-        <NuSettingsFile>PandoraSettings_Neutrino_DUNEFD_VD.xml</NuSettingsFile>
+        <NuSettingsFile>PandoraSettings_Neutrino_DUNEFD_VD_stdDL.xml</NuSettingsFile>
         <SlicingSettingsFile>PandoraSettings_Slicing_Standard.xml</SlicingSettingsFile>
         <StitchingTools>
             <tool type = "LArStitchingCosmicRayMerging"><ThreeDStitchingMode>true</ThreeDStitchingMode></tool>
@@ -40,27 +46,28 @@
         </SliceIdTools>
         <InputHitListName>CaloHitList2D</InputHitListName>
         <InputMCParticleListName>Input</InputMCParticleListName>
-        <PassMCParticlesToWorkerInstances>false</PassMCParticlesToWorkerInstances>
+        <PassMCParticlesToWorkerInstances>true</PassMCParticlesToWorkerInstances>
         <RecreatedPfoListName>RecreatedPfos</RecreatedPfoListName>
         <RecreatedClusterListName>RecreatedClusters</RecreatedClusterListName>
         <RecreatedVertexListName>RecreatedVertices</RecreatedVertexListName>
         <VisualizeOverallRecoStatus>false</VisualizeOverallRecoStatus>
     </algorithm>
 
-    <algorithm type = "LArNeutrinoEventValidation">
-        <CaloHitListName>CaloHitList2D</CaloHitListName>
-        <MCParticleListName>Input</MCParticleListName>
-        <PfoListName>RecreatedPfos</PfoListName>
-        <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
-        <PrintAllToScreen>false</PrintAllToScreen>
-        <PrintMatchingToScreen>true</PrintMatchingToScreen>
-        <WriteToTree>false</WriteToTree>
-        <OutputTree>Validation</OutputTree>
-        <OutputFile>Validation.root</OutputFile>
+     <algorithm type = "LArHierarchyValidation">
+        <ValidateMC>true</ValidateMC>
+        <WriteTree>true</WriteTree>
+        <FileName>hierarchy_validation_stdDL.root</FileName>
+        <TreeName>mc</TreeName>
+        <FoldToPrimaries>true</FoldToPrimaries>
+        <MinHits>3</MinHits>
+        <MinHitsForGoodView>1</MinHitsForGoodView>
+        <MinGoodViews>2</MinGoodViews>
+        <RemoveNeutrons>false</RemoveNeutrons>
     </algorithm>
+ 
 
-    <algorithm type = "LArVisualMonitoring">
+    <!--algorithm type = "LArVisualMonitoring">
         <ShowCurrentPfos>true</ShowCurrentPfos>
         <ShowDetector>true</ShowDetector>
-    </algorithm>
+    </algorithm-->
 </pandora>
