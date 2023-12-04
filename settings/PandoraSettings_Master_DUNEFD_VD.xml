@@ -9,6 +9,8 @@
         <LArMCParticleVersion>2</LArMCParticleVersion>
         <LArCaloHitVersion>2</LArCaloHitVersion>
     </algorithm>
+
+    <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArPreProcessing">
         <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
         <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
@@ -22,6 +24,7 @@
     </algorithm>
 
     <algorithm type = "LArDLMaster">
+        <LArCaloHitVersion>2</LArCaloHitVersion>
         <CRSettingsFile>PandoraSettings_Cosmic_DUNEFD_VD.xml</CRSettingsFile>
         <NuSettingsFile>PandoraSettings_Neutrino_DUNEFD_VD.xml</NuSettingsFile>
         <SlicingSettingsFile>PandoraSettings_Slicing_Standard.xml</SlicingSettingsFile>
@@ -42,7 +45,6 @@
         <RecreatedClusterListName>RecreatedClusters</RecreatedClusterListName>
         <RecreatedVertexListName>RecreatedVertices</RecreatedVertexListName>
         <VisualizeOverallRecoStatus>false</VisualizeOverallRecoStatus>
-        <LArCaloHitVersion>2</LArCaloHitVersion>
     </algorithm>
 
     <algorithm type = "LArNeutrinoEventValidation">

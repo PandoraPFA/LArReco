@@ -6,7 +6,8 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-        <LArMCParticleVersion>1</LArMCParticleVersion>
+        <LArMCParticleVersion>2</LArMCParticleVersion>
+        <LArCaloHitVersion>2</LArCaloHitVersion>
     </algorithm>
     <algorithm type = "LArPreProcessing">
         <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
@@ -21,6 +22,7 @@
     </algorithm>
 
     <algorithm type = "LArDLMaster">
+        <LArCaloHitVersion>2</LArCaloHitVersion>
         <CRSettingsFile>PandoraSettings_Cosmic_DUNEFD.xml</CRSettingsFile>
         <NuSettingsFile>PandoraSettings_Neutrino_DUNEFD.xml</NuSettingsFile>
         <SlicingSettingsFile>PandoraSettings_Slicing_Standard.xml</SlicingSettingsFile>
