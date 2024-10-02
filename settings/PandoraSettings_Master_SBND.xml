@@ -4,10 +4,12 @@
     <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
     <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
 
-    <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-        <LArMCParticleVersion>1</LArMCParticleVersion>
+        <LArMCParticleVersion>2</LArMCParticleVersion>
+        <LArCaloHitVersion>2</LArCaloHitVersion>
     </algorithm>
+
+    <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArPreProcessing">
         <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
         <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
@@ -33,29 +35,22 @@
         </CosmicRayTaggingTools>
         <SliceIdTools>
             <tool type = "LArBdtNeutrinoId">
-                <MvaFileName>PandoraMVAs/PandoraBdt_v09_32_00_SBND.xml</MvaFileName>
+                <MvaFileName>PandoraMVAs/PandoraBdt_v09_67_00_SBND.xml</MvaFileName>
                 <MvaName>NeutrinoId</MvaName>
                 <MinimumNeutrinoProbability>0</MinimumNeutrinoProbability>
+                <DefaultProbability>-1</DefaultProbability>
                 <MaximumNeutrinos>999</MaximumNeutrinos>
+                <PersistFeatures>true</PersistFeatures>
             </tool>
         </SliceIdTools>
         <InputHitListName>CaloHitList2D</InputHitListName>
+        <InputMCParticleListName>Input</InputMCParticleListName>
+        <PassMCParticlesToWorkerInstances>false</PassMCParticlesToWorkerInstances>
         <RecreatedPfoListName>RecreatedPfos</RecreatedPfoListName>
         <RecreatedClusterListName>RecreatedClusters</RecreatedClusterListName>
         <RecreatedVertexListName>RecreatedVertices</RecreatedVertexListName>
         <VisualizeOverallRecoStatus>false</VisualizeOverallRecoStatus>
-    </algorithm>
-
-    <algorithm type = "LArNeutrinoEventValidation">
-        <CaloHitListName>CaloHitList2D</CaloHitListName>
-        <MCParticleListName>Input</MCParticleListName>
-        <PfoListName>RecreatedPfos</PfoListName>
-        <UseTrueNeutrinosOnly>false</UseTrueNeutrinosOnly>
-        <PrintAllToScreen>false</PrintAllToScreen>
-        <PrintMatchingToScreen>true</PrintMatchingToScreen>
-        <WriteToTree>false</WriteToTree>
-        <OutputTree>Validation</OutputTree>
-        <OutputFile>Validation.root</OutputFile>
+        <LArCaloHitVersion>2</LArCaloHitVersion>
     </algorithm>
 
     <algorithm type = "LArVisualMonitoring">
