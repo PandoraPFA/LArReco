@@ -1,0 +1,53 @@
+<pandora>
+    <!-- GLOBAL SETTINGS -->
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
+    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
+    <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
+
+    <!-- ALGORITHM SETTINGS -->
+    <algorithm type = "LArEventReading">
+        <LArMCParticleVersion>2</LArMCParticleVersion>
+        <LArCaloHitVersion>2</LArCaloHitVersion>
+    </algorithm>
+
+    <algorithm type = "LArPreProcessing">
+        <OutputCaloHitListNameU>SSCaloHitListU</OutputCaloHitListNameU>
+        <OutputCaloHitListNameV>SSCaloHitListV</OutputCaloHitListNameV>
+        <OutputCaloHitListNameW>SSCaloHitListW</OutputCaloHitListNameW>
+        <FilteredCaloHitListName>SSCaloHitList2D</FilteredCaloHitListName>
+        <CurrentCaloHitListReplacement>SSCaloHitList2D</CurrentCaloHitListReplacement>
+    </algorithm>
+
+    <algorithm type = "LArDLSNSignal">
+        <TrainingMode>false</TrainingMode>
+	<ImageWidth>256</ImageWidth>
+	<ImageHeight>256</ImageHeight>
+	<CaloHitListNames>SSCaloHitListW SSCaloHitListU SSCaloHitListV</CaloHitListNames>
+        <InputCaloHitListNames>SSCaloHitListW SSCaloHitListU SSCaloHitListV</InputCaloHitListNames>
+	<CaloHitListName2D>SSCaloHitList2D</CaloHitListName2D>
+        <SignalListNameU>SCaloHitListU</SignalListNameU>
+        <SignalListNameV>SCaloHitListV</SignalListNameV>
+        <SignalListNameW>SCaloHitListW</SignalListNameW>
+        <SignalListName2D>SCaloHitList2D</SignalListName2D>
+        <ModelFileNameU>PandoraNetworkData/PandoraUnet_dunefdvd_backgrounds_lowe_28_11_24_1_U.pt</ModelFileNameU>
+        <ModelFileNameV>PandoraNetworkData/PandoraUnet_dunefdvd_backgrounds_lowe_28_11_24_1_V.pt</ModelFileNameV>
+        <ModelFileNameW>PandoraNetworkData/PandoraUnet_dunefdvd_backgrounds_lowe_28_11_24_1_W.pt</ModelFileNameW>
+        <Visualise>false</Visualise>
+    </algorithm>
+
+    <algorithm type = "LArDLSNSignal">
+	<TrainingMode>true</TrainingMode>
+	<Pass>2</Pass>
+	<TrainingOutputFileName>DUNEFD_VD_Production_LowE_Backgrounds_28_11_24_Pass2</TrainingOutputFileName>
+	<ImageWidth>128</ImageWidth>
+        <ImageHeight>128</ImageHeight>
+	<CaloHitListNames>SSCaloHitListW SSCaloHitListU SSCaloHitListV</CaloHitListNames>
+        <CaloHitListName2D>SSCaloHitList2D</CaloHitListName2D>
+	<InputCaloHitListNames>SCaloHitListW SCaloHitListU SCaloHitListV</InputCaloHitListNames>
+	<SignalListNameU>CaloHitListU</SignalListNameU>
+        <SignalListNameV>CaloHitListV</SignalListNameV>
+        <SignalListNameW>CaloHitListW</SignalListNameW>
+        <SignalListName2D>CaloHitList2D</SignalListName2D>
+        <Visualise>false</Visualise>
+    </algorithm>
+</pandora>
