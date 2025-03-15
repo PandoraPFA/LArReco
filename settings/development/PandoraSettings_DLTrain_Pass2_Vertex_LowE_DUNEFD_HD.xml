@@ -1,0 +1,51 @@
+<pandora>
+    <!-- GLOBAL SETTINGS -->
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
+    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
+    <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
+
+    <!-- ALGORITHM SETTINGS -->
+    <algorithm type = "LArEventReading">
+        <LArMCParticleVersion>2</LArMCParticleVersion>
+        <LArCaloHitVersion>2</LArCaloHitVersion>
+    </algorithm>
+
+    <algorithm type = "LArPreProcessing">
+        <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
+        <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
+        <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
+        <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
+        <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
+    </algorithm>
+ 
+    <algorithm type = "LArMCParticleMonitoring">
+       <MCParticleListName>Input</MCParticleListName>
+       <CaloHitListName>CaloHitList2D</CaloHitListName>
+       <MinHitsForDisplay>1</MinHitsForDisplay>
+    </algorithm>
+
+    <algorithm type = "LArDLVertexing">
+        <TrainingMode>false</TrainingMode>
+        <OutputVertexListName>NeutrinoVertices3D_Pass1</OutputVertexListName>
+        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
+        <ImageHeight>256</ImageHeight>
+        <ImageWidth>256</ImageWidth>
+	<ModelFileNameU>PandoraNetworkData/PandoraUnet_Vertex_DUNEFD_HD_LOWE_Prod_06_12_24_1_U.pt</ModelFileNameU>
+        <ModelFileNameV>PandoraNetworkData/PandoraUnet_Vertex_DUNEFD_HD_LOWE_Prod_06_12_24_1_V.pt</ModelFileNameV>
+        <ModelFileNameW>PandoraNetworkData/PandoraUnet_Vertex_DUNEFD_HD_LOWE_Prod_06_12_24_1_W.pt</ModelFileNameW>
+        <DistanceThresholds>0. 0.005 0.009 0.015 0.025 0.04 0.06 0.18 0.25 1.0</DistanceThresholds>
+    </algorithm>
+
+    <algorithm type = "LArDLVertexing">
+        <TrainingMode>true</TrainingMode>
+        <Pass>2</Pass>
+        <ImageWidth>128</ImageWidth>
+        <ImageHeight>128</ImageHeight>
+        <TrainingOutputFileName>DUNEFD_HD_Production_LowE_Vertex_Pass2_06_12_24</TrainingOutputFileName>
+        <InputVertexListName>NeutrinoVertices3D_Pass1</InputVertexListName>
+        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
+        <DistanceThresholds>0. 0.005 0.009 0.015 0.025 0.04 0.06 0.18 0.25 1.0</DistanceThresholds>
+    </algorithm>
+
+</pandora>
+

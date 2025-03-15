@@ -1,0 +1,30 @@
+<pandora>
+    <!-- GLOBAL SETTINGS -->
+    <IsMonitoringEnabled>true</IsMonitoringEnabled>
+    <ShouldDisplayAlgorithmInfo>false</ShouldDisplayAlgorithmInfo>
+    <SingleHitTypeClusteringMode>true</SingleHitTypeClusteringMode>
+
+    <!-- ALGORITHM SETTINGS -->
+    <algorithm type = "LArEventReading">
+        <LArMCParticleVersion>2</LArMCParticleVersion>
+        <LArCaloHitVersion>2</LArCaloHitVersion>
+    </algorithm>
+
+    <algorithm type = "LArPreProcessing">
+        <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
+        <OutputCaloHitListNameV>CaloHitListV</OutputCaloHitListNameV>
+        <OutputCaloHitListNameW>CaloHitListW</OutputCaloHitListNameW>
+        <FilteredCaloHitListName>CaloHitList2D</FilteredCaloHitListName>
+        <CurrentCaloHitListReplacement>CaloHitList2D</CurrentCaloHitListReplacement>
+    </algorithm>
+
+    <algorithm type = "LArDLSNSignal">
+        <TrainingMode>true</TrainingMode>
+        <ImageWidth>256</ImageWidth>
+        <ImageHeight>256</ImageHeight>
+        <TrainingOutputFileName>DUNEFD_VD_Production_LowE_Backgrounds_27_11_24_Pass1</TrainingOutputFileName>
+        <CaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</CaloHitListNames>
+        <InputCaloHitListNames>CaloHitListW CaloHitListU CaloHitListV</InputCaloHitListNames>
+        <CaloHitListName2D>CaloHitList2D</CaloHitListName2D>
+    </algorithm>
+</pandora>
