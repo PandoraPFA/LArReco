@@ -106,18 +106,6 @@
     </algorithm>
     <algorithm type = "LArHitWidthClusterMerging"/>
 
-    <!-- VertexAlgorithms -->
-    <algorithm type = "LArCutClusterCharacterisation">
-        <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
-        <MaxShowerLengthCut>500.</MaxShowerLengthCut>
-        <VertexDistanceRatioCut>500.</VertexDistanceRatioCut>
-        <PathLengthRatioCut>1.012</PathLengthRatioCut>
-        <ShowerWidthRatioCut>0.2</ShowerWidthRatioCut>
-    </algorithm>
-    <algorithm type = "LArCutClusterCharacterisation">
-        <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
-        <ZeroMode>true</ZeroMode>
-    </algorithm>
     <algorithm type = "LArVertexSplitting">
         <InputClusterListNames>ClustersU ClustersV ClustersW</InputClusterListNames>
     </algorithm>
