@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 project(LArReco VERSION 04.19.05 LANGUAGES CXX)
 
+# Automatically add the path of the linked libraries to the RPATH
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+# Apply the RPATH settings to the executable in the build tree, not just the installed one
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+
+# Allow relocatable installations
+set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+
 # Enforce out-of-source builds, a good practice from the original file 
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
     message(FATAL_ERROR "LArReco requires an out-of-source build.")
