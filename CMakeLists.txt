@@ -25,15 +25,21 @@ option(PANDORA_MONITORING "Build with PandoraMonitoring support" ON)
 option(LArReco_BUILD_DOCS "Build documentation for ${PROJECT_NAME}" OFF)
 
 # Dependencies
-find_package(PandoraSDK 04.00.02 REQUIRED)
-find_package(LArContent 04.19.05 REQUIRED)
+if (NOT TARGET PandoraPFA::PandoraSDK)
+    find_package(PandoraSDK 04.00.02 REQUIRED)
+endif()
+if (NOT TARGET PandoraPFA::LArContent)
+    find_package(LArContent 04.19.05 REQUIRED)
+endif()
 
 if(PANDORA_LIBTORCH)
     find_package(LArDLContent 04.19.05 REQUIRED)
 endif()
 
 if(PANDORA_MONITORING)
-    find_package(PandoraMonitoring 04.00.02 REQUIRED)
+    if (NOT TARGET PandoraPFA::PandoraMonitoring)
+        find_package(PandoraMonitoring 04.00.02 REQUIRED)
+    endif()
     find_package(ROOT 6.18.04 REQUIRED COMPONENTS Eve Geom RGL EG)
 endif()
 
