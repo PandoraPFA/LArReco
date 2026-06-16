@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
-project(LArReco VERSION 05.01.00 LANGUAGES CXX)
+project(LArReco VERSION 05.02.00 LANGUAGES CXX)
 
 # Automatically add the path of the linked libraries to the RPATH
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
