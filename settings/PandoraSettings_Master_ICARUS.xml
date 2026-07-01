@@ -10,7 +10,8 @@
 
     <!-- ALGORITHM SETTINGS -->
     <algorithm type = "LArEventReading">
-        <LArMCParticleVersion>1</LArMCParticleVersion>
+        <LArMCParticleVersion>3</LArMCParticleVersion>
+        <IsEnhancedEventFile>true</IsEnhancedEventFile>
     </algorithm>
     <algorithm type = "LArPreProcessing">
         <OutputCaloHitListNameU>CaloHitListU</OutputCaloHitListNameU>
