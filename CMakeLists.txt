@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
-project(LArReco VERSION 05.07.00 LANGUAGES CXX)
+project(LArReco VERSION 05.08.00 LANGUAGES CXX)
 
 # Automatically add the path of the linked libraries to the RPATH
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
@@ -29,11 +29,11 @@ if (NOT TARGET PandoraPFA::PandoraSDK)
     find_package(PandoraSDK 05.01.00 REQUIRED)
 endif()
 if (NOT TARGET PandoraPFA::LArContent)
-    find_package(LArContent 05.07.00 REQUIRED)
+    find_package(LArContent 05.08.00 REQUIRED)
 endif()
 
 if(PANDORA_LIBTORCH)
-    find_package(LArDLContent 05.07.00 REQUIRED)
+    find_package(LArDLContent 05.08.00 REQUIRED)
 endif()
 
 if(PANDORA_MONITORING)
